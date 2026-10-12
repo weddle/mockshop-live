@@ -1,0 +1,11 @@
+# Native NoAgentModal admin branch; settings writes remain the existing #65 owner's responsibility.
+GET /mockshop/user-extras-options:
+  enabled: true
+  empty_sidebar: true
+  empty_gallery: true
+  notifications: []
+  settings: { disable_default_assistant: true }
+  branding: { show_first_visit_notice: false }
+GET /chat/get-user-chat-sessions: { sessions: [] }
+GET /user/projects: []
+GET /user/files: []

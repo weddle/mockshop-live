@@ -1,0 +1,71 @@
+# DEVELOPMENT inventory; independent parent strict/every-PNG acceptance/publication remains pending.
+# Independent fresh reset uses the existing control plane; mutations under test use only native controls.
+
+name: sharing-feedback-reset
+title: Native dirty future conversation, public link and vote reset consumers
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 900]
+overlays: []
+steps:
+  - goto: /app
+  - eval: |
+      (async () => {
+        const currentResponse = await fetch('/api/__mockshop/state');
+        if (!currentResponse.ok) throw new Error('Independent Sharing seed read failed');
+        const current = await currentResponse.json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:[],locale:'en',keep:false,resetChats:true,anchor:current.demo_anchor})});
+        if (!response.ok) throw new Error('Independent Sharing reset failed');
+        sessionStorage.removeItem('sharing-workshop-id');
+        sessionStorage.removeItem('sharing-workshop-link');
+      })();
+  # Native prerequisite replay only; original screenshots remain in their single primary owning unit.
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+  - wait: { testid: 'AgentMessage/toolbar', nth: 1 }
+  - settle: 1200
+  - eval: |
+      const toolbars = [...document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')];
+      if (toolbars.length !== 2 || !document.body.innerText.includes('Start with a short reading circle.')) throw new Error('Seeded workshop did not replay both saved turns');
+      if (toolbars.some(t => !t.textContent.includes('GPT-5.2'))) throw new Error('Saved answer model labels did not replay');
+      if ([...toolbars[1].querySelectorAll('button')].some(b => b.textContent.trim() === 'Sources')) throw new Error('No-source closing reflection invented a Sources control');
+      sessionStorage.setItem('sharing-workshop-id', '61616161-0000-4000-8000-000000000001');
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'Library sharing follow-up: add one fictional accessible activity.' }
+  - click: { selector: '#onyx-chat-input-send-button' }
+  - wait: { text: Future shared library activity, exact: true, timeout: 30000 }
+  - wait: { testid: 'AgentMessage/toolbar', nth: 2 }
+  - eval: |
+      const toolbar = document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')[2];
+      if (!toolbar?.textContent.includes('GPT-5.2') || [...toolbar.querySelectorAll('button')].some(b => b.textContent.trim() === 'Sources')) throw new Error('Future no-source answer lost its model label or invented Sources');
+  - settle: 1000
+  # Primary original operations 254-278; every original interaction and named PNG is retained.
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+  - click: { selector: '[aria-label="share-chat-button"]' }
+  - click: { selector: '[aria-label="share-modal-option-public"]' }
+  - click: { selector: '[aria-label="share-modal-submit"]' }
+  - wait: { text: Chat shared, exact: true }
+  - press: Escape
+  - click: { testid: 'AgentMessage/like-button', nth: 1 }
+  - click: { role: button, name: Submit, exact: true }
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+  - shot: before-reset-public-with-feedback
+  - eval: |
+      (async () => { const r = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], locale:'en', resetChats:true, anchor:'2026-10-09T10:00:00-04:00'})}); if (!r.ok) throw new Error('Fresh run reset failed'); location.reload(); })()
+  - wait: { text: Closing reflection, exact: true }
+  - wait: { testid: 'AgentMessage/toolbar', nth: 1 }
+  - eval: |
+      if (document.querySelectorAll('[data-testid="AgentMessage/like-button"][data-interactive-state="selected"], [data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]').length) throw new Error('Reset retained a saved feedback vote');
+      if (document.querySelectorAll('[data-testid="AgentMessage/toolbar"]').length !== 2 || document.body.innerText.includes('Future shared library activity')) throw new Error('Reset retained a future turn instead of restoring the exact seed conversation');
+  - shot: reset-restores-conversation-and-feedback
+  - click: { selector: '[aria-label="share-chat-button"]' }
+  - wait: { text: Share this chat, exact: true }
+  - eval: |
+      if (document.querySelector('[aria-label="share-modal-link-input"]')) throw new Error('Reset retained a published fake link');
+  - shot: reset-restores-private-modal
+  - press: Escape
+  - goto: /app/shared/61616161-0000-4000-8000-000000000001
+  - wait: { text: Shared chat not found, exact: true }
+  - shot: reset-revokes-fake-shared-link

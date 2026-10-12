@@ -1,0 +1,34 @@
+# Admin: connector catalog -> add a Confluence connector (form filled in) ->
+# indexing status across sources -> a connector mid-reindex with attempt history.
+name: admin-connectors
+requires: enterprise            # Document Access field (add form) and the Public/Permission Syncing columns (indexing status) are Business+ only
+title: Admin adds a Confluence connector and checks indexing
+viewport: [1440, 900]
+steps:
+  - goto: /admin/connectors
+  - shot: connector-catalog
+  - click: { text: Confluence }
+  - wait: { text: Authentication Account }
+  - fill: { placeholder: "https://your-domain.atlassian.net/wiki", value: "https://seaside.atlassian.example/wiki" }
+  - click: { selector: "input[type=radio]" }
+  - wait_gone: { text: "Swapped credential successfully!", timeout: 12000 }
+  - shot: add-confluence-form
+  - fill: { label: Space Key, value: OPS }
+  - fill: { placeholder: Confluence, value: "Confluence – OPS space" }
+  - scroll: { text: Connector Content }
+  - shot: add-confluence-content
+  - goto: /admin/indexing-status
+  - shot: indexing-status
+  - type: { placeholder: Search connectors..., value: Confluence }
+  - settle: 800
+  - click: { text: Expand All }
+  - settle: 600
+  - shot: indexing-status-confluence
+  - click: { text: "Confluence – OPS space" }
+  - wait: { text: Connector Configuration }
+  - settle: 800
+  - shot: connector-detail
+  - click: { text: Advanced }
+  - settle: 800
+  - scroll: { selector: "table", last: true }
+  - shot: connector-index-attempts

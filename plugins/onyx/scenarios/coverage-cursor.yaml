@@ -1,0 +1,32 @@
+# #34 cursor VISUAL proof gap; ordinary existing cursor-demo conventions only.
+# Prepared, NOT accepted. Parent inspects all three real rendered PNGs.
+# This retains every original movement/style/effect operation. Stills do not
+# certify temporal motion/clip output; that remains a distinct visual condition.
+name: coverage-cursor
+title: Native chat cursor presentation missing visual witnesses
+strict: true
+locale: en
+overlays: []
+viewport: [1280, 800]
+cursor:
+  style: signature_arc
+  screenshots: true
+  look: { shape: pointer, fill: "#2563eb", effect_color: "#60a5fa", rotate: true, halo: true }
+steps:
+  - goto: /app
+  - wait: { selector: "#onyx-chat-input-textbox" }
+  - move: [260, 170]
+    cursor: { style: comet_swoop, effects: { trail: true, glow: true } }
+  - hover: { selector: "#onyx-chat-input-textbox" }
+    cursor: magnetic
+  - move: [1100, 220]
+    cursor: { style: spring_settle, speed: 1.3 }
+  - click: { selector: "#onyx-chat-input-textbox" }
+    cursor: { style: custom, path: straight, ease: "cubic-bezier(.3,1.4,.5,1)", timing: fixed, ms: 650, look: { shape: ring } }
+  - move: [640, 660]
+    cursor: { style: classic, effects: { trail: true }, look: { shape: arrow, fill: "#111111", rotate: true } }
+  - shot: cursor-at-rest
+  - shot: click-ripple
+    cursor: { at: { selector: "#onyx-chat-input-textbox" }, ripple: 0.35, squish: true }
+  - shot: magnet-highlight
+    cursor: { at: { selector: "#onyx-chat-input-textbox" }, magnet: true, look: { shape: dot, fill: "#ef4444", effect_color: "#ef4444" } }

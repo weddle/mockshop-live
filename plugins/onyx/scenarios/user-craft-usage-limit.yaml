@@ -1,0 +1,48 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-usage-limit
+title: "Craft native recoverable usage-limit banner"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+known_errors:
+  - match: "/^http 429 POST http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/sessions\\/craft-workshop\\/send-message$/"
+    reason: "Only this independently staged native usage-budget response; positively assert actual Usage limit reached title and fixture detail before original644. Exact status, verb, loopback port field and native path/query only; all other HTTP problems, console errors and failed steps remain strict."
+  - match: "/^console: Failed to load resource: the server responded with a status of 429 \\(Too Many Requests\\) \\[source: http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/sessions\\/craft-workshop\\/send-message\\]$/"
+    reason: "Actual 8.0s scoped DEV observed this native console source URL alongside the exact staged POST429 and positive Usage limit reached/detail. Only this unit/status/message/owned-port/path; unlocated or other-source console remains strict."
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - goto: "/craft/v1?sessionId=craft-workshop"
+  - wait: {"selector": "[contenteditable=\"true\"][role=\"textbox\"]"}
+  - eval: |
+      (async () => {
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path:'/build/sessions/:id/artifacts/*',state:'loaded'})});
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path:'/build/sessions/:id/send-message',state:'limited'})});
+      })()
+  - fill: { selector: '[contenteditable="true"][role="textbox"]', value: Prepare a fictional limit-state handout. }
+  - click: { role: button, name: Send, exact: true }
+  - wait: {"text": "Usage limit reached", "exact": true}
+  - wait: {"text": "Fictional Craft usage limit reached.", "exact": true}
+  - shot: craft-native-usage-limit
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: "/craft/v1"
+  - wait: {"selector": "[contenteditable=\"true\"][role=\"textbox\"]"}
+  - shot: "craft-unit-usage-limit-reset"

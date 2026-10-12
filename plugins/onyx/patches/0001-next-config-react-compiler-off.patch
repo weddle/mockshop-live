@@ -1,0 +1,15 @@
+# Mockshop build patch for the pinned Onyx web copy.
+# Why: the React Compiler roughly doubles peak `next build` memory; turning it off has no visual effect.
+# Applied with `patch -p1` inside plugins/onyx/work/web.
+--- a/next.config.js
++++ b/next.config.js
+@@ -313,8 +313,7 @@
+     withSentryConfig(
+       {
+         ...nextConfig,
+-        reactCompiler:
+-          !isDevServer || process.env.ENABLE_REACT_COMPILER === "1",
++        reactCompiler: process.env.ENABLE_REACT_COMPILER === "1", // mockshop: off to save memory
+       },
+       sentryWebpackPluginOptions
+     )

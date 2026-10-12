@@ -1,0 +1,30 @@
+# Opt-in education/healthcare extras. Other fake user/provider engines remain unchanged.
+GET /mockshop/user-extras-options: { enabled: true }
+GET /manage/user-groups/minimal:
+  - { id: 330, name: Learning Team }
+  - { id: 331, name: Clinical Educators }
+GET /manage/admin/user-group:
+  - id: 330
+    name: Learning Team
+    users: [{ id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11", email: maya.chen@seasidecollection.example }]
+    manager_ids: ["8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"]
+    cc_pairs: []
+    document_sets: []
+    personas: []
+    is_up_to_date: true
+    is_up_for_deletion: false
+    is_default: false
+    incognito_enabled: false
+    permissions: { manage: true, manage_members: true, delete: true, edit_permissions: true, edit_token_limits: true }
+  - id: 331
+    name: Clinical Educators
+    users: [{ id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11", email: maya.chen@seasidecollection.example }]
+    manager_ids: ["8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"]
+    cc_pairs: []
+    document_sets: []
+    personas: []
+    is_up_to_date: true
+    is_up_for_deletion: false
+    is_default: false
+    incognito_enabled: false
+    permissions: { manage: true, manage_members: true, delete: true, edit_permissions: true, edit_token_limits: true }

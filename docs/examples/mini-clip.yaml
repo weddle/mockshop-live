@@ -1,0 +1,18 @@
+# Tiny clip showing mark / keyframe and `at:` alignment. Run: ./mockshop clip docs/examples/mini-clip.yaml
+# (a file outside plugins/ runs against the default plugin, onyx)
+name: mini-clip
+clip:
+  title: { title: "Timeline demo" }
+  title_ms: 800
+  end_hold_ms: 500
+  hold_ms: 600
+steps:
+  - goto: /app
+  - mark: { name: intro, note: "voiceover starts here" }
+  - click: { selector: "#onyx-chat-input-textbox" }
+  - type: { selector: "#onyx-chat-input-textbox", value: "Hello timeline", clip_ms: 800 }
+  - keyframe: typed
+  - shot: { name: typed, hold: 600 }
+    at: 6
+  - mark: outro
+    only: clip

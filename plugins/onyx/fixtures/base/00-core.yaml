@@ -1,0 +1,156 @@
+# Core: auth, current user, workspace settings.
+# Keys are "METHOD /backend/path" (no /api prefix). ":param" and "*" are wildcards.
+# Time helpers: {{now}}, {{ago:3h}}, {{ago:2d}}, {{in:10m}}
+
+x-user: &user
+  id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+  email: maya.chen@seasidecollection.example
+  is_active: true
+  is_superuser: true
+  is_verified: true
+  role: admin
+  account_type: STANDARD
+  is_admin: true
+  is_group_manager: false
+  password_configured: true
+  team_name: null
+  is_anonymous_user: false
+  is_cloud_superuser: false
+  tenant_info: null
+  effective_permissions: [admin, basic]
+  admin_capabilities: [admin]
+  craft_enabled: false
+  preferences:
+    chosen_assistants: null
+    visible_assistants: []
+    hidden_assistants: []
+    pinned_assistants: [0, 11, 12]
+    default_model: null
+    recent_assistants: [0, 11]
+    auto_scroll: false
+    shortcut_enabled: false
+    temperature_override_enabled: false
+    temperature_default: null
+    reasoning_effort_default: null
+    theme_preference: light
+    language: en
+    chat_background: null
+    default_app_mode: CHAT
+    paste_as_tile: true
+    voice_auto_send: false
+    voice_auto_playback: false
+    voice_playback_speed: 1
+  personalization:
+    name: Maya Chen
+    role: Director of Learning & Development
+    memories: []
+    use_memories: true
+    enable_memory_tool: true
+    user_preferences: ""
+  oidc_expiry: null
+
+GET /me: *user
+
+GET /auth/type:
+  auth_type: basic
+  multi_tenant: false
+  requires_verification: false
+  anonymous_user_enabled: false
+  password_min_length: 8
+  password_max_length: 64
+  password_require_uppercase: false
+  password_require_lowercase: false
+  password_require_digit: false
+  password_require_special_char: false
+  has_users: true
+  oauth_enabled: false
+  password_auth_enabled: true
+  sso_providers: []
+
+GET /settings:
+  maximum_chat_retention_days: null
+  company_name: Seaside Collection
+  company_description: Boutique coastal hotels & resorts (fictional demo company)
+  gpu_enabled: false
+  application_status: active
+  anonymous_user_enabled: false
+  invite_only_enabled: false
+  deep_research_enabled: true
+  multi_model_chat_enabled: true
+  search_ui_enabled: true
+  auto_detect_search_filters: true
+  ee_features_enabled: false
+  tier: community
+  temperature_override_enabled: true
+  reasoning_override_enabled: true
+  hide_provider_grouping: false
+  auto_scroll: false
+  query_history_type: normal
+  hide_query_history_from_admin_panel: false
+  image_extraction_and_analysis_enabled: true
+  image_analysis_max_size_mb: 20
+  user_knowledge_enabled: true
+  user_file_max_upload_size_mb: 100
+  file_token_count_threshold_k: null
+  show_extra_connectors: true
+  disable_default_assistant: false
+  craft_default_enabled: false
+  llm_gateway_enabled: true
+  craft_instructions: null
+  seat_count: null
+  used_seats: null
+  opensearch_indexing_enabled: true
+  oauth_provider_enabled: false
+  notifications: []
+  needs_reindexing: false
+  tenant_id: public
+  onyx_craft_enabled: false
+  onyx_craft_available: false
+  opencode_debugging_enabled: false
+  vector_db_enabled: true
+  hide_onyx_branding: false
+  hooks_enabled: false
+  version: v3.4.0
+  max_allowed_upload_size_mb: 250
+  default_pruning_freq: 86400
+  default_user_file_max_upload_size_mb: 100
+  default_file_token_count_threshold_k: 200
+  is_containerized: true
+  posthog_key: null
+  posthog_host: null
+
+# Community edition: the enterprise route isn't registered, so it answers 404 (Enterprise answers: fixtures/edition-enterprise/).
+GET /enterprise-settings: { __status: 404, __body: { detail: Not Found } }
+
+GET /license: { __status: 404, __body: { detail: Not Found } }
+GET /health: { success: true, message: ok }
+GET /version: { backend_version: v3.4.0 }
+GET /manage/admin/opensearch-health: { issues: [] }
+GET /notifications: []
+GET /notifications/summary: { unread_count: 0, max_severity: null }
+GET /chat/incognito-availability: { available: true }
+GET /user/files/recent: []
+GET /input_prompt: []
+GET /federated: []
+GET /tenants/anonymous-user: {}
+# UserUsageResponse at the plugin pin: the UI calls rows.some(), not usage[].
+# Fictional usage/prices/budget; these do not meter or bill any requests.
+GET /user/usage:
+  per_day_by_model:
+    - { day: "2026-10-08", model: gpt-5.2, input_tokens: 12000, output_tokens: 3000, cache_read_tokens: 4000, cache_creation_tokens: 0, cost_cents: 24 }
+    - { day: "2026-10-09", model: gpt-5-mini, input_tokens: 8000, output_tokens: 2000, cache_read_tokens: 0, cache_creation_tokens: 0, cost_cents: 18 }
+  window_cost_cents: 42
+  budget_cents: 1000
+  budget_remaining_cents: 958
+  budget_period_hours: 720
+  budget_reset_at: "{{in:7d}}"
+  selected_model_price: { model: gpt-5.2, provider: OpenAI, input_per_mtok: 1.75, output_per_mtok: 14, cache_per_mtok: 0.175 }
+  available_model_prices:
+    - { model: gpt-5.2, provider: OpenAI, input_per_mtok: 1.75, output_per_mtok: 14, cache_per_mtok: 0.175 }
+    - { model: gpt-5-mini, provider: OpenAI, input_per_mtok: 0.25, output_per_mtok: 2, cache_per_mtok: 0.025 }
+GET /voice/status: { tts_enabled: false, stt_enabled: false }
+POST /auth/refresh: {}
+GET /admin/billing/billing-information: { subscribed: false }
+# Native useBillingInformation also accepts SubscriptionStatus for a staged no-subscription Cloud tenant.
+GET /tenants/billing-information: { subscribed: false }
+GET /admin/cost-overrides: []

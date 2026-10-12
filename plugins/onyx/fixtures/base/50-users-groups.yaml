@@ -1,0 +1,21 @@
+# Users and groups (EE).
+x-ugperms: &ugPerms { manage: true, manage_members: true, delete: true, edit_permissions: true, edit_token_limits: true }
+GET /manage/admin/user-group:
+  - { id: 1, name: Training, users: [{ id: u1, email: maya.chen@seasidecollection.example }, { id: u2, email: devon.ortiz@seasidecollection.example }, { id: u3, email: priya.raman@seasidecollection.example }], manager_ids: [u1], cc_pairs: [], document_sets: [], personas: [], is_up_to_date: true, is_up_for_deletion: false, is_default: false, incognito_enabled: false, permissions: *ugPerms }
+  - { id: 2, name: Property Operations, users: [{ id: u4, email: lena.brooks@seasidecollection.example }, { id: u5, email: marco.silva@seasidecollection.example }], manager_ids: [u4], cc_pairs: [], document_sets: [], personas: [], is_up_to_date: true, is_up_for_deletion: false, is_default: false, incognito_enabled: false, permissions: *ugPerms }
+  - { id: 3, name: Front Office, users: [{ id: u6, email: sam.okafor@seasidecollection.example }], manager_ids: [u6], cc_pairs: [], document_sets: [], personas: [], is_up_to_date: true, is_up_for_deletion: false, is_default: false, incognito_enabled: false, permissions: *ugPerms }
+GET /manage/user-groups/minimal:
+  - { id: 1, name: Training }
+  - { id: 2, name: Property Operations }
+  - { id: 3, name: Front Office }
+GET /manage/connector-group-restrictions: { enabled: false }
+GET /manage/users:
+  accepted:
+    - { id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11", email: maya.chen@seasidecollection.example }
+    - { id: u2, email: devon.ortiz@seasidecollection.example }
+    - { id: u3, email: priya.raman@seasidecollection.example }
+  invited: []
+  slack_users: []
+  accepted_pages: 1
+  invited_pages: 0
+  slack_users_pages: 0

@@ -1,0 +1,28 @@
+# #65 route-sized native proof: Self-hosted Plans and Billing.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-billing
+title: Self-hosted Plans and Billing - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/billing
+  - shot: inventory-billing-manual-license
+  - goto: /admin/billing
+  - shot: billing-self-hosted-manual-license
+  - click: { role: button, name: Update Key, exact: true }
+  - fill: { placeholder: 'eyJwYXlsb2FkIjogeyJ2ZXJzaW9...', value: mock-only-not-a-license }
+  - shot: billing-fake-license-input
+  - click: { role: button, name: Update License, exact: true }
+  - wait: { text: License updated successfully!, exact: true }
+  - shot: billing-fake-license-local-receipt
+  - click: { role: button, name: View Plan Details, exact: true }
+  - wait: { selector: '[aria-label="Enterprise plan card"]:has-text("Your Current Plan")' }
+  - eval: |
+      if (document.querySelector('[aria-label="Business plan card"]')?.textContent.includes('Your Current Plan')) throw new Error('License-only Enterprise must not mark Business as current');
+  - shot: billing-self-hosted-enterprise-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+  - wait: { text: Enterprise Plan, exact: true }

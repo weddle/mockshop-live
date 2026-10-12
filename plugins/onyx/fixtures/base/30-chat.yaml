@@ -1,0 +1,15 @@
+# Sidebar chat history + chat-side endpoints. Live sessions created during a
+# run are prepended automatically by the mock server.
+GET /chat/get-user-chat-sessions:
+  has_more: false
+  sessions:
+    - { id: "11111111-0000-4000-8000-000000000001", name: "Food-safety refresher course outline", persona_id: 11, time_created: "{{ago:3h}}", time_updated: "{{ago:3h}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+    - { id: "11111111-0000-4000-8000-000000000002", name: "Late checkout policy for Gold members", persona_id: 12, time_created: "{{ago:1d}}", time_updated: "{{ago:1d}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+    - { id: "11111111-0000-4000-8000-000000000003", name: "Key West hurricane-watch runbook", persona_id: 12, time_created: "{{ago:2d}}", time_updated: "{{ago:2d}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+    - { id: "11111111-0000-4000-8000-000000000004", name: "Q3 training completion by property", persona_id: 13, time_created: "{{ago:4d}}", time_updated: "{{ago:4d}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+    - { id: "11111111-0000-4000-8000-000000000005", name: "Draft welcome email for new hires", persona_id: 0, time_created: "{{ago:6d}}", time_updated: "{{ago:6d}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+    - { id: "11111111-0000-4000-8000-000000000006", name: "Opera PMS sync errors at Carmel", persona_id: 14, time_created: "{{ago:9d}}", time_updated: "{{ago:9d}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+GET /chat/max-selected-document-tokens: { max_tokens: 128000 }
+GET /chat/available-context-tokens/:id: { available_tokens: 128000 }
+GET /query/valid-tags: { tags: [] }
+GET /user/projects/session/:id/files: []

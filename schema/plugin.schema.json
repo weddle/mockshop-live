@@ -1,0 +1,347 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Mockshop plugin manifest",
+  "description": "plugins/<name>/plugin.yaml. Derived from core/plugin.mjs, core/build.mjs, core/cli.mjs, core/captured.mjs and the README 'Plugin interface'. Unknown keys are allowed (plugins add their own).",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$",
+      "description": "Must equal the plugin directory name."
+    },
+    "title": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "description": "source-build | captured-frontend (informational, but captured-frontend switches on request routing)."
+    },
+    "upstream": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "subdir": {
+          "type": "string"
+        },
+        "local_mirror": {
+          "type": "string"
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number"
+        ]
+      }
+    },
+    "edition": {
+      "type": "string"
+    },
+    "editions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "build_env": {
+            "type": "object"
+          },
+          "fixtures": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "hooks": {
+      "type": "string",
+      "description": "Module exporting fetch(m, ctx) / build(m, ctx)."
+    },
+    "workdir": {
+      "type": "string"
+    },
+    "ports": {
+      "type": "object",
+      "properties": {
+        "web": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "mock": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        }
+      },
+      "additionalProperties": {
+        "type": [
+          "integer",
+          "string"
+        ]
+      }
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "patches": {
+          "type": "string"
+        },
+        "overlay": {
+          "type": "string"
+        },
+        "install": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object"
+        },
+        "after": {
+          "type": [
+            "string",
+            "array"
+          ]
+        },
+        "keep_work": {
+          "type": "boolean"
+        },
+        "artifact": {
+          "type": "string"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "dir": {
+          "type": "string"
+        },
+        "assemble": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "to"
+            ],
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "artifact": {
+          "type": "string"
+        },
+        "runtime_written": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "route_aliases": {
+      "type": "array",
+      "description": "Optional pinned-source static public-prefix to physical-page-prefix aliases. Validation metadata only: does not install routes or bypass native UI. Every destination requires an original built page at that prefix or a slash-boundary descendant.",
+      "items": {
+        "type": "object",
+        "required": ["source", "destination"],
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "^/(?:[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*/?)?$"
+          },
+          "destination": {
+            "type": "string",
+            "pattern": "^/(?:[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*/?)?$"
+          }
+        }
+      }
+    },
+    "start": {
+      "type": "object",
+      "required": [
+        "command"
+      ],
+      "properties": {
+        "cwd": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        },
+        "env": {
+          "type": "object"
+        },
+        "ready": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      }
+    },
+    "mock": {
+      "type": "object",
+      "properties": {
+        "handlers": {
+          "type": "string"
+        },
+        "fixtures": {
+          "type": "string"
+        },
+        "strip_prefix": {
+          "type": "string"
+        },
+        "ws": {
+          "type": "string"
+        }
+      }
+    },
+    "auth_bypass": {
+      "type": "string"
+    },
+    "runner": {
+      "type": "object",
+      "properties": {
+        "viewport": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "demo_anchor": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "base_url": {
+          "type": "string"
+        },
+        "strict": {
+          "type": "boolean"
+        },
+        "known_errors": {
+          "type": "array",
+          "description": "Plugin-wide strict allowlist [{match, reason}]; see scenario known_errors.",
+          "items": { "type": "object", "required": ["match", "reason"], "properties": { "match": { "type": "string", "minLength": 1 }, "reason": { "type": "string", "minLength": 1 } } }
+        },
+        "cookies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        },
+        "allow_hosts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "crash_text": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "origins": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "prefix",
+              "target"
+            ],
+            "properties": {
+              "prefix": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string",
+                "description": "'mock' or 'runtime:<subdir>'"
+              },
+              "spa": {
+                "type": "boolean"
+              }
+            }
+          },
+          "description": "captured-frontend request routing."
+        }
+      }
+    },
+    "localization": {
+      "type": "object",
+      "description": "Languages the plugin supports (see docs/scenario-spec.md 'Locale').",
+      "properties": {
+        "default": {
+          "type": "string"
+        },
+        "locales": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cookie": {
+          "type": "string",
+          "description": "App cookie that selects the UI language."
+        },
+        "aliases": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "app_locales": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "user_fields": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "\"METHOD /route\": [dotted.field] set to the app locale in mock responses."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,376 @@
+# Connectors (cc-pairs), indexing status, credentials.
+x-ccperms: &ccPerms { operate: true, edit: true, delete: true, publish: true }
+x-cred-conf: &credConf { id: 202, credential_json: { confluence_username: svc-onyx@seasidecollection.example, confluence_access_token: "••••••••" }, admin_public: true, source: confluence, name: "Confluence service account", user_id: null, user_email: maya.chen@seasidecollection.example, time_created: "{{ago:120d}}", time_updated: "{{ago:120d}}", groups: [] }
+x-conn-conf: &connConf
+  id: 302
+  name: Confluence – OPS space
+  source: confluence
+  input_type: poll
+  connector_specific_config: { wiki_base: "https://seaside.atlassian.example/wiki", space: OPS, is_cloud: true, page_id: "", index_recursively: true, cql_query: null }
+  refresh_freq: 1800
+  prune_freq: 86400
+  indexing_start: null
+  access_type: public
+  credential_ids: [202]
+  time_created: "{{ago:120d}}"
+  time_updated: "{{ago:3d}}"
+
+x-lite-sf: &liteSf { cc_pair_id: 101, name: Salesforce – Guest Services, source: salesforce, access_type: sync, in_progress: false, cc_pair_status: ACTIVE, last_finished_status: success, last_status: success, last_success: "{{ago:22m}}", is_editable: true, permissions: *ccPerms, docs_indexed: 48213, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 214 }
+x-lite-conf: &liteConf { cc_pair_id: 102, name: Confluence – OPS space, source: confluence, access_type: public, in_progress: true, cc_pair_status: ACTIVE, last_finished_status: success, last_status: in_progress, last_success: "{{ago:31m}}", is_editable: true, permissions: *ccPerms, docs_indexed: 6874, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 1288 }
+x-lite-conf2: &liteConf2 { cc_pair_id: 108, name: Confluence – Training space, source: confluence, access_type: sync, in_progress: false, cc_pair_status: ACTIVE, last_finished_status: success, last_status: success, last_success: "{{ago:44m}}", is_editable: true, permissions: *ccPerms, docs_indexed: 1932, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 12 }
+x-lite-gd: &liteGd { cc_pair_id: 103, name: Google Drive – Policies & Procedures, source: google_drive, access_type: sync, in_progress: false, cc_pair_status: ACTIVE, last_finished_status: success, last_status: success, last_success: "{{ago:12m}}", is_editable: true, permissions: *ccPerms, docs_indexed: 12940, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 57 }
+x-lite-slack: &liteSlack { cc_pair_id: 104, name: "Slack – #learning-*, #ops-*", source: slack, access_type: sync, in_progress: false, cc_pair_status: ACTIVE, last_finished_status: success, last_status: success, last_success: "{{ago:8m}}", is_editable: true, permissions: *ccPerms, docs_indexed: 211560, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 1840 }
+x-lite-zoom: &liteZoom { cc_pair_id: 105, name: Zoom – Meeting transcripts, source: zoom, access_type: sync, in_progress: false, cc_pair_status: ACTIVE, last_finished_status: success, last_status: success, last_success: "{{ago:1h}}", is_editable: true, permissions: *ccPerms, docs_indexed: 3318, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 41 }
+x-lite-jira: &liteJira { cc_pair_id: 106, name: Jira – IT Service Desk, source: jira, access_type: public, in_progress: false, cc_pair_status: ACTIVE, last_finished_status: completed_with_errors, last_status: completed_with_errors, last_success: "{{ago:2h}}", is_editable: true, permissions: *ccPerms, docs_indexed: 9402, in_repeated_error_state: false, latest_index_attempt_docs_indexed: 96 }
+
+POST /manage/admin/connector/indexing-status:
+  - { source: slack, summary: { total_connectors: 1, active_connectors: 1, public_connectors: 0, total_docs_indexed: 211560 }, current_page: 1, total_pages: 1, indexing_statuses: [*liteSlack] }
+  - { source: salesforce, summary: { total_connectors: 1, active_connectors: 1, public_connectors: 0, total_docs_indexed: 48213 }, current_page: 1, total_pages: 1, indexing_statuses: [*liteSf] }
+  - { source: google_drive, summary: { total_connectors: 1, active_connectors: 1, public_connectors: 0, total_docs_indexed: 12940 }, current_page: 1, total_pages: 1, indexing_statuses: [*liteGd] }
+  - { source: jira, summary: { total_connectors: 1, active_connectors: 1, public_connectors: 1, total_docs_indexed: 9402 }, current_page: 1, total_pages: 1, indexing_statuses: [*liteJira] }
+  - { source: confluence, summary: { total_connectors: 2, active_connectors: 2, public_connectors: 1, total_docs_indexed: 8806 }, current_page: 1, total_pages: 1, indexing_statuses: [*liteConf, *liteConf2] }
+  - { source: zoom, summary: { total_connectors: 1, active_connectors: 1, public_connectors: 0, total_docs_indexed: 3318 }, current_page: 1, total_pages: 1, indexing_statuses: [*liteZoom] }
+
+GET /manage/connector-status:
+  - { has_successful_run: true, source: salesforce, status: ACTIVE }
+  - { has_successful_run: true, source: confluence, status: ACTIVE }
+  - { has_successful_run: true, source: confluence, status: ACTIVE }
+  - { has_successful_run: true, source: google_drive, status: ACTIVE }
+  - { has_successful_run: true, source: slack, status: ACTIVE }
+  - { has_successful_run: true, source: zoom, status: ACTIVE }
+  - { has_successful_run: true, source: jira, status: ACTIVE }
+
+GET /manage/admin/cc-pair/102:
+  id: 102
+  name: Confluence – OPS space
+  status: ACTIVE
+  in_repeated_error_state: false
+  num_docs_indexed: 6874
+  connector: *connConf
+  credential: *credConf
+  number_of_index_attempts: 412
+  last_index_attempt_status: in_progress
+  latest_deletion_attempt: null
+  access_type: public
+  is_editable_for_current_user: true
+  permissions: *ccPerms
+  deletion_failure_message: null
+  indexing: true
+  creator: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+  creator_email: maya.chen@seasidecollection.example
+  last_indexed: "{{ago:31m}}"
+  last_pruned: "{{ago:9h}}"
+  last_full_permission_sync: null
+  overall_indexing_speed: 41.7
+  latest_checkpoint_description: "Space OPS · page 1,288 of ~1,450 · last cursor {{ago:970m}}"
+  last_permission_sync_attempt_status: null
+  permission_syncing: false
+  last_permission_sync_attempt_finished: null
+  last_permission_sync_attempt_error_message: null
+  supports_targeted_reindex: true
+
+GET /manage/admin/cc-pair/102/index-attempts:
+  total_items: 6
+  items:
+    - { id: 9412, status: in_progress, from_beginning: false, new_docs_indexed: 1288, docs_removed_from_index: 0, total_docs_indexed: 1288, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:6m}}", time_updated: "{{ago:10s}}" }
+    - { id: 9398, status: success, from_beginning: false, new_docs_indexed: 37, docs_removed_from_index: 2, total_docs_indexed: 37, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:37m}}", time_updated: "{{ago:31m}}" }
+    - { id: 9381, status: success, from_beginning: false, new_docs_indexed: 12, docs_removed_from_index: 0, total_docs_indexed: 12, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:67m}}", time_updated: "{{ago:64m}}" }
+    - { id: 9367, status: completed_with_errors, from_beginning: false, new_docs_indexed: 54, docs_removed_from_index: 0, total_docs_indexed: 54, error_msg: "2 pages could not be fetched (403 Forbidden)", error_count: 2, full_exception_trace: null, time_started: "{{ago:97m}}", time_updated: "{{ago:93m}}" }
+    - { id: 9350, status: success, from_beginning: false, new_docs_indexed: 8, docs_removed_from_index: 1, total_docs_indexed: 8, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:127m}}", time_updated: "{{ago:125m}}" }
+    - { id: 8801, status: success, from_beginning: true, new_docs_indexed: 6812, docs_removed_from_index: 0, total_docs_indexed: 6812, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:2835h}}", time_updated: "{{ago:2832h}}" }
+GET /manage/admin/cc-pair/102/errors:
+  total_items: 0
+  items: []
+GET /manage/admin/cc-pair/:id/permission-sync-attempts: { applicable: false, items: [], total_items: 0 }
+GET /manage/admin/cc-pair/:id/external-group-sync-attempts: { applicable: false, items: [], total_items: 0 }
+
+# Permission-synced connector detail pages (access_type: sync).
+# 108 = Confluence – Training space: doc-permission sync + external-group sync (the permission-sync demo).
+# 101 = Salesforce: access_type sync, but the backend runs no separate doc/group sync job for it
+#       (ACLs are pulled inline while indexing), so both tabs show the real "not applicable" message.
+x-cred-conf2: &credConf2 { <<: *credConf, id: 208, name: "Confluence service account (Training)" }
+x-conn-conf2: &connConf2
+  <<: *connConf
+  id: 308
+  name: Confluence – Training space
+  connector_specific_config: { wiki_base: "https://seaside.atlassian.example/wiki", space: TRN, is_cloud: true, page_id: "", index_recursively: true, cql_query: null }
+  access_type: sync
+  credential_ids: [208]
+x-cred-sf: &credSf { id: 201, credential_json: { sf_username: svc-onyx@seasidecollection.example, sf_password: "••••••••", sf_security_token: "••••••••" }, admin_public: true, source: salesforce, name: "Salesforce integration user", user_id: null, user_email: maya.chen@seasidecollection.example, time_created: "{{ago:150d}}", time_updated: "{{ago:150d}}", groups: [] }
+x-conn-sf: &connSf
+  <<: *connConf
+  id: 301
+  name: Salesforce – Guest Services
+  source: salesforce
+  connector_specific_config: { requested_objects: [Case, Contact] }
+  refresh_freq: 1800
+  prune_freq: 86400
+  access_type: sync
+  credential_ids: [201]
+x-ccpair-sync: &ccPairSync
+  status: ACTIVE
+  in_repeated_error_state: false
+  latest_deletion_attempt: null
+  access_type: sync
+  is_editable_for_current_user: true
+  permissions: *ccPerms
+  deletion_failure_message: null
+  indexing: false
+  creator: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+  creator_email: maya.chen@seasidecollection.example
+  last_pruned: "{{ago:9h}}"
+  overall_indexing_speed: 38.2
+  supports_targeted_reindex: false
+  groups: []
+  auto_sync_options: null
+  processing_mode: REGULAR
+  indexing_hold: null
+
+GET /manage/admin/cc-pair/108:
+  <<: *ccPairSync
+  id: 108
+  name: Confluence – Training space
+  num_docs_indexed: 1932
+  connector: *connConf2
+  credential: *credConf2
+  number_of_index_attempts: 96
+  last_index_attempt_status: success
+  last_indexed: "{{ago:44m}}"
+  latest_checkpoint_description: null
+  last_full_permission_sync: "{{ago:18m}}"
+  last_permission_sync_attempt_status: success
+  permission_syncing: false
+  last_permission_sync_attempt_finished: "{{ago:18m}}"
+  last_permission_sync_attempt_error_message: null
+GET /manage/admin/cc-pair/108/index-attempts:
+  total_items: 4
+  items:
+    - { id: 9405, status: success, from_beginning: false, new_docs_indexed: 12, docs_removed_from_index: 0, total_docs_indexed: 12, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:49m}}", time_updated: "{{ago:44m}}" }
+    - { id: 9371, status: success, from_beginning: false, new_docs_indexed: 3, docs_removed_from_index: 0, total_docs_indexed: 3, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:79m}}", time_updated: "{{ago:75m}}" }
+    - { id: 9340, status: success, from_beginning: false, new_docs_indexed: 21, docs_removed_from_index: 1, total_docs_indexed: 21, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:109m}}", time_updated: "{{ago:104m}}" }
+    - { id: 7120, status: success, from_beginning: true, new_docs_indexed: 1896, docs_removed_from_index: 0, total_docs_indexed: 1896, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:2160h}}", time_updated: "{{ago:2158h}}" }
+GET /manage/admin/cc-pair/108/errors: { total_items: 0, items: [] }
+GET /manage/admin/cc-pair/108/permission-sync-attempts:
+  applicable: true
+  total_items: 5
+  items:
+    - { id: 5530, status: success, error_message: null, full_exception_trace: null, total_docs_synced: 1932, docs_with_permission_errors: 0, time_created: "{{ago:21m}}", time_started: "{{ago:21m}}", time_finished: "{{ago:18m}}" }
+    - { id: 5511, status: success, error_message: null, full_exception_trace: null, total_docs_synced: 1929, docs_with_permission_errors: 0, time_created: "{{ago:51m}}", time_started: "{{ago:51m}}", time_finished: "{{ago:48m}}" }
+    - { id: 5490, status: completed_with_errors, error_message: "3 pages skipped: restricted in Confluence and owner account is deactivated", full_exception_trace: null, total_docs_synced: 1929, docs_with_permission_errors: 3, time_created: "{{ago:81m}}", time_started: "{{ago:81m}}", time_finished: "{{ago:77m}}" }
+    - { id: 5468, status: success, error_message: null, full_exception_trace: null, total_docs_synced: 1927, docs_with_permission_errors: 0, time_created: "{{ago:111m}}", time_started: "{{ago:111m}}", time_finished: "{{ago:108m}}" }
+    - { id: 5447, status: success, error_message: null, full_exception_trace: null, total_docs_synced: 1927, docs_with_permission_errors: 0, time_created: "{{ago:141m}}", time_started: "{{ago:141m}}", time_finished: "{{ago:138m}}" }
+GET /manage/admin/cc-pair/108/external-group-sync-attempts:
+  applicable: true
+  total_items: 4
+  items:
+    - { id: 2210, status: success, error_message: null, full_exception_trace: null, total_users_processed: 214, total_groups_processed: 17, total_group_memberships_synced: 463, time_created: "{{ago:3h}}", time_started: "{{ago:3h}}", time_finished: "{{ago:178m}}" }
+    - { id: 2198, status: success, error_message: null, full_exception_trace: null, total_users_processed: 214, total_groups_processed: 17, total_group_memberships_synced: 461, time_created: "{{ago:9h}}", time_started: "{{ago:9h}}", time_finished: "{{ago:538m}}" }
+    - { id: 2186, status: success, error_message: null, full_exception_trace: null, total_users_processed: 213, total_groups_processed: 17, total_group_memberships_synced: 459, time_created: "{{ago:15h}}", time_started: "{{ago:15h}}", time_finished: "{{ago:898m}}" }
+    - { id: 2174, status: success, error_message: null, full_exception_trace: null, total_users_processed: 213, total_groups_processed: 16, total_group_memberships_synced: 455, time_created: "{{ago:21h}}", time_started: "{{ago:21h}}", time_finished: "{{ago:1258m}}" }
+
+GET /manage/admin/cc-pair/101:
+  <<: *ccPairSync
+  id: 101
+  name: Salesforce – Guest Services
+  num_docs_indexed: 48213
+  connector: *connSf
+  credential: *credSf
+  number_of_index_attempts: 640
+  last_index_attempt_status: success
+  last_indexed: "{{ago:22m}}"
+  latest_checkpoint_description: null
+  last_full_permission_sync: null
+  last_permission_sync_attempt_status: null
+  permission_syncing: false
+  last_permission_sync_attempt_finished: null
+  last_permission_sync_attempt_error_message: null
+GET /manage/admin/cc-pair/101/index-attempts:
+  total_items: 3
+  items:
+    - { id: 9409, status: success, from_beginning: false, new_docs_indexed: 214, docs_removed_from_index: 0, total_docs_indexed: 214, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:27m}}", time_updated: "{{ago:22m}}" }
+    - { id: 9374, status: success, from_beginning: false, new_docs_indexed: 188, docs_removed_from_index: 3, total_docs_indexed: 188, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:57m}}", time_updated: "{{ago:52m}}" }
+    - { id: 6012, status: success, from_beginning: true, new_docs_indexed: 47811, docs_removed_from_index: 0, total_docs_indexed: 47811, error_msg: null, error_count: 0, full_exception_trace: null, time_started: "{{ago:3600h}}", time_updated: "{{ago:3590h}}" }
+GET /manage/admin/cc-pair/101/errors: { total_items: 0, items: [] }
+
+# Native detail leaves for the four existing indexing-status rows.
+# Credentials are masked fictional metadata only; no OAuth or connector execution.
+x-cred-gd: &credGd { <<: *credConf, id: 203, source: google_drive, name: "Policies service account (fake)", credential_json: { google_tokens: "••••••••" } }
+x-cred-slack: &credSlack { <<: *credConf, id: 204, source: slack, name: "Learning workspace bot (fake)", credential_json: { slack_bot_token: "••••••••" } }
+x-cred-zoom: &credZoom { <<: *credConf, id: 205, source: zoom, name: "Workshop transcripts account (fake)", credential_json: { zoom_account_id: "fake-workshop-account", zoom_client_id: "fake-workshop-client", zoom_client_secret: "••••••••" } }
+x-cred-jira: &credJira { <<: *credConf, id: 206, source: jira, name: "IT Service Desk account (fake)", credential_json: { jira_user_email: "svc-onyx@seasidecollection.example", jira_api_token: "••••••••" } }
+x-conn-gd: &connGd
+  <<: *connConf
+  id: 303
+  name: Google Drive – Policies & Procedures
+  source: google_drive
+  access_type: sync
+  credential_ids: [203]
+  connector_specific_config: { shared_drive_urls: ["https://drive.google.example/drive/folders/fake-policies"], include_shared_drives: true, include_my_drive: false, include_files_shared_with_me: false }
+x-conn-slack: &connSlack
+  <<: *connConf
+  id: 304
+  name: "Slack – #learning-*, #ops-*"
+  source: slack
+  access_type: sync
+  credential_ids: [204]
+  connector_specific_config: { workspace_id: "fake-learning-workspace", channel_names: ["learning-workshops", "learning-resources", "ops-helpdesk"], channel_regex: "^(learning|ops)-.*", index_private_channels: false }
+x-conn-zoom: &connZoom
+  <<: *connConf
+  id: 305
+  name: Zoom – Meeting transcripts
+  source: zoom
+  access_type: sync
+  credential_ids: [205]
+  refresh_freq: 3600
+  connector_specific_config: { account_id: "fake-workshop-account", meeting_topics: ["Accessibility workshop", "Operations handoff"], include_transcripts: true, include_recordings: false }
+x-conn-jira: &connJira
+  <<: *connConf
+  id: 306
+  name: Jira – IT Service Desk
+  source: jira
+  credential_ids: [206]
+  connector_specific_config: { jira_base: "https://seaside.atlassian.example", project_key: "ITSD", jql_query: "project = ITSD ORDER BY updated DESC", include_comments: true }
+x-detail-idle: &detailIdle
+  <<: *ccPairSync
+  latest_checkpoint_description: null
+  last_full_permission_sync: null
+  last_permission_sync_attempt_status: null
+  permission_syncing: false
+  last_permission_sync_attempt_finished: null
+  last_permission_sync_attempt_error_message: null
+
+GET /manage/admin/cc-pair/103:
+  <<: *detailIdle
+  id: 103
+  name: Google Drive – Policies & Procedures
+  connector: *connGd
+  credential: *credGd
+  num_docs_indexed: 12940
+  number_of_index_attempts: 3
+  last_index_attempt_status: success
+  last_indexed: "{{ago:12m}}"
+  last_full_permission_sync: "{{ago:10m}}"
+  last_permission_sync_attempt_status: success
+  last_permission_sync_attempt_finished: "{{ago:10m}}"
+GET /manage/admin/cc-pair/104:
+  <<: *detailIdle
+  id: 104
+  name: "Slack – #learning-*, #ops-*"
+  connector: *connSlack
+  credential: *credSlack
+  num_docs_indexed: 211560
+  number_of_index_attempts: 3
+  last_index_attempt_status: success
+  last_indexed: "{{ago:8m}}"
+  last_full_permission_sync: "{{ago:6m}}"
+  last_permission_sync_attempt_status: success
+  last_permission_sync_attempt_finished: "{{ago:6m}}"
+GET /manage/admin/cc-pair/105:
+  <<: *detailIdle
+  id: 105
+  name: Zoom – Meeting transcripts
+  connector: *connZoom
+  credential: *credZoom
+  num_docs_indexed: 3318
+  number_of_index_attempts: 3
+  last_index_attempt_status: success
+  last_indexed: "{{ago:1h}}"
+GET /manage/admin/cc-pair/106:
+  <<: *detailIdle
+  id: 106
+  name: Jira – IT Service Desk
+  connector: *connJira
+  credential: *credJira
+  access_type: public
+  num_docs_indexed: 9402
+  number_of_index_attempts: 3
+  last_index_attempt_status: completed_with_errors
+  last_indexed: "{{ago:2h}}"
+
+x-attempt-success: &attemptSuccess { status: success, from_beginning: false, docs_removed_from_index: 0, error_msg: null, error_count: 0, full_exception_trace: null }
+GET /manage/admin/cc-pair/103/index-attempts:
+  total_items: 3
+  items:
+    - { <<: *attemptSuccess, id: 10301, new_docs_indexed: 57, total_docs_indexed: 57, time_started: "{{ago:16m}}", time_updated: "{{ago:12m}}" }
+    - { <<: *attemptSuccess, id: 10302, new_docs_indexed: 23, total_docs_indexed: 23, time_started: "{{ago:46m}}", time_updated: "{{ago:42m}}" }
+    - { <<: *attemptSuccess, id: 10303, from_beginning: true, new_docs_indexed: 12860, total_docs_indexed: 12860, time_started: "{{ago:120d}}", time_updated: "{{ago:119d}}" }
+GET /manage/admin/cc-pair/104/index-attempts:
+  total_items: 3
+  items:
+    - { <<: *attemptSuccess, id: 10401, new_docs_indexed: 1840, total_docs_indexed: 1840, time_started: "{{ago:15m}}", time_updated: "{{ago:8m}}" }
+    - { <<: *attemptSuccess, id: 10402, new_docs_indexed: 620, total_docs_indexed: 620, time_started: "{{ago:45m}}", time_updated: "{{ago:38m}}" }
+    - { <<: *attemptSuccess, id: 10403, from_beginning: true, new_docs_indexed: 209100, total_docs_indexed: 209100, time_started: "{{ago:120d}}", time_updated: "{{ago:119d}}" }
+GET /manage/admin/cc-pair/105/index-attempts:
+  total_items: 3
+  items:
+    - { <<: *attemptSuccess, id: 10501, new_docs_indexed: 41, total_docs_indexed: 41, time_started: "{{ago:65m}}", time_updated: "{{ago:1h}}" }
+    - { <<: *attemptSuccess, id: 10502, new_docs_indexed: 18, total_docs_indexed: 18, time_started: "{{ago:125m}}", time_updated: "{{ago:2h}}" }
+    - { <<: *attemptSuccess, id: 10503, from_beginning: true, new_docs_indexed: 3259, total_docs_indexed: 3259, time_started: "{{ago:120d}}", time_updated: "{{ago:119d}}" }
+GET /manage/admin/cc-pair/106/index-attempts:
+  total_items: 3
+  items:
+    - { <<: *attemptSuccess, id: 10601, status: completed_with_errors, new_docs_indexed: 96, total_docs_indexed: 96, error_count: 2, error_msg: "Two fictional ITSD issues could not be indexed.", full_exception_trace: "Fake indexing diagnostic\nITSD-204: attachment text unavailable\nITSD-219: archived issue unavailable\nNo remote request was made.", time_started: "{{ago:125m}}", time_updated: "{{ago:2h}}" }
+    - { <<: *attemptSuccess, id: 10602, new_docs_indexed: 42, total_docs_indexed: 42, time_started: "{{ago:155m}}", time_updated: "{{ago:150m}}" }
+    - { <<: *attemptSuccess, id: 10603, from_beginning: true, new_docs_indexed: 9264, total_docs_indexed: 9264, time_started: "{{ago:120d}}", time_updated: "{{ago:119d}}" }
+GET /manage/admin/cc-pair/103/errors: { total_items: 0, items: [] }
+GET /manage/admin/cc-pair/104/errors: { total_items: 0, items: [] }
+GET /manage/admin/cc-pair/105/errors: { total_items: 0, items: [] }
+GET /manage/admin/cc-pair/106/errors:
+  total_items: 2
+  items:
+    - { id: 106201, connector_credential_pair_id: 106, index_attempt_id: 10601, document_id: "ITSD-204", document_link: null, entity_id: null, failed_time_range_start: null, failed_time_range_end: null, failure_message: "Fake attachment parser: accessibility workshop handout has no extractable text.", is_resolved: false, time_created: "{{ago:122m}}", error_type: document }
+    - { id: 106202, connector_credential_pair_id: 106, index_attempt_id: 10601, document_id: "ITSD-219", document_link: null, entity_id: null, failed_time_range_start: null, failed_time_range_end: null, failure_message: "Fake archived issue: operations handoff checklist is unavailable to the demo account.", is_resolved: false, time_created: "{{ago:121m}}", error_type: document }
+# Source-specific native sync history; no permission model is created.
+GET /manage/admin/cc-pair/103/permission-sync-attempts:
+  applicable: true
+  total_items: 1
+  items:
+    - { id: 10311, status: success, error_message: null, full_exception_trace: null, total_docs_synced: 12940, docs_with_permission_errors: 0, time_created: "{{ago:12m}}", time_started: "{{ago:12m}}", time_finished: "{{ago:10m}}" }
+GET /manage/admin/cc-pair/103/external-group-sync-attempts:
+  applicable: true
+  total_items: 1
+  items:
+    - { id: 10321, status: success, error_message: null, full_exception_trace: null, total_users_processed: 24, total_groups_processed: 3, total_group_memberships_synced: 36, time_created: "{{ago:14m}}", time_started: "{{ago:14m}}", time_finished: "{{ago:11m}}" }
+GET /manage/admin/cc-pair/104/permission-sync-attempts:
+  applicable: true
+  total_items: 1
+  items:
+    - { id: 10411, status: success, error_message: null, full_exception_trace: null, total_docs_synced: 211560, docs_with_permission_errors: 0, time_created: "{{ago:8m}}", time_started: "{{ago:8m}}", time_finished: "{{ago:6m}}" }
+GET /manage/admin/cc-pair/104/external-group-sync-attempts: { applicable: false, total_items: 0, items: [] }
+GET /manage/admin/cc-pair/105/permission-sync-attempts: { applicable: false, total_items: 0, items: [] }
+GET /manage/admin/cc-pair/105/external-group-sync-attempts: { applicable: false, total_items: 0, items: [] }
+GET /manage/admin/cc-pair/106/permission-sync-attempts: { applicable: false, total_items: 0, items: [] }
+GET /manage/admin/cc-pair/106/external-group-sync-attempts: { applicable: false, total_items: 0, items: [] }
+GET /manage/admin/similar-credentials/google_drive: [*credGd]
+GET /manage/admin/similar-credentials/slack: [*credSlack]
+GET /manage/admin/similar-credentials/zoom: [*credZoom]
+GET /manage/admin/similar-credentials/jira: [*credJira]
+GET /connector/oauth/details/google_drive: { oauth_enabled: false, additional_kwargs: [] }
+GET /connector/oauth/details/slack: { oauth_enabled: false, additional_kwargs: [] }
+GET /connector/oauth/details/zoom: { oauth_enabled: false, additional_kwargs: [] }
+GET /connector/oauth/details/jira: { oauth_enabled: false, additional_kwargs: [] }
+# The native history metrics control has an honest "no metrics recorded" state.
+# These fake attempts have no engine telemetry; leave the control available.
+GET /manage/admin/index-attempt/10301/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10302/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10303/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10401/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10402/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10403/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10501/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10502/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10503/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10601/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10602/stage-metrics: { stages: [] }
+GET /manage/admin/index-attempt/10603/stage-metrics: { stages: [] }
+
+# Add-connector page helpers
+GET /manage/admin/similar-credentials/confluence: [*credConf]
+GET /connector/oauth/details/confluence: { oauth_enabled: false, additional_kwargs: [] }
+POST /manage/admin/connector-checks/plan: { checks: [] }
+GET /manage/admin/credential: [*credConf]
+# Personal account fixture: no OAuth/credentials. Connect follows a local mock-only URL.
+GET /federated/oauth-status:
+  - { federated_connector_id: 901, source: gmail, name: "Learning notes (fake personal account)", has_oauth_token: true, oauth_token_expires_at: null, authorize_url: /api/mockshop/personal-connectors/901/connect }
+POST /manage/admin/opensearch-health/popup: {}
+POST /manage/admin/credential/:id/binding-check: { field_errors: {}, rejection: null }

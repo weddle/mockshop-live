@@ -1,0 +1,5 @@
+# Fallback for any later turn with no specific script: refers back to the chat's previous answer.
+follow_up_default: true
+title: "{{prev.title}}"
+answer: |
+  Building on my earlier answer about **{{prev.title}}**: I don't have more detail on that in the connected sources yet. *(Placeholder follow-up text.)*

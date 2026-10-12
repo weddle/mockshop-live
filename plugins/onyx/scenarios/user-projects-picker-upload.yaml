@@ -1,0 +1,176 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app?projectId=1 unlink prerequisite → /app?projectId=2.
+# Outcome: Empty/picker/select/unpick/association feedback/input/drop uploads; keep/fresh links.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-picker-upload
+title: Empty/picker/select/unpick/association feedback/input/drop uploads; keep/fresh links
+strict: true
+known_errors:
+  - match: '/^console: \[Toast\] Cannot delete file\. It is associated with projects: Revision Workshop \[source: http:\/\/127\.0\.0\.1:\d+\/_next\/static\/chunks\/1h15gs0jly9g_\.js\]$/'
+    reason: Required native association-delete guard intentionally logs its visible exact Toast; this unit asserts that Toast, its PNG, the protected file and unchanged project association. No other errors are allowed.
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Independent setup / outcome: Native unlink reproduces original file-unit prerequisite: reading belongs only to project2 after picking.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Native unlink reproduces original file-unit prerequisite: reading belongs only to project2 after picking.
+  - wait: { text: library-reading.txt, exact: true }
+  # Independent setup / outcome: Native unlink reproduces original file-unit prerequisite: reading belongs only to project2 after picking.
+  - hover: { text: library-reading.txt, exact: true }
+  # Independent setup / outcome: Native unlink reproduces original file-unit prerequisite: reading belongs only to project2 after picking.
+  - click: { selector: 'div.relative:has(> .min-w-0):has-text("library-reading.txt") button[aria-label="Remove"]' }
+  # Original user-projects step 83 (source line 107): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 84 (source line 108): Preserved native journey.
+  - wait: { text: No chats yet., exact: true }
+  # Original user-projects step 85 (source line 109): Preserved native journey.
+  - wait: { text: "Add documents, texts, or images to use in the project. Drag & drop supported.", exact: true }
+  # Original user-projects step 86 (source line 110): Preserved native journey.
+  - shot: { name: empty-project-direct, full_page: true }
+  # Original user-projects step 87 (source line 111): Preserved native journey.
+  - click: { role: button, name: Add Files, exact: true }
+  # Original user-projects step 88 (source line 112): Preserved native journey.
+  - shot: { name: project-add-files-picker, full_page: true }
+  # Reading is older than the native three-item recent slice; use its native full-library entry.
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+  # Original user-projects step 89 (source line 113): Preserved native journey.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+  # Original user-projects step 90 (source line 114): Preserved native journey.
+  - wait: { text: library-reading.txt, exact: true }
+  - click: { role: button, name: Done, exact: true }
+  # Original user-projects step 91 (source line 115): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 92 (source line 116): Preserved native journey.
+  - wait: { text: library-reading.txt, exact: true }
+  # Original user-projects step 93 (source line 117): Preserved native journey.
+  - shot: { name: project-recent-file-linked-reload, full_page: true }
+  # Original user-projects step 94 (source line 118): Preserved native journey.
+  - click: { role: button, name: Add Files, exact: true }
+  # Original user-projects step 95 (source line 119): Preserved native journey.
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+  # Original user-projects step 96 (source line 120): Preserved native journey.
+  - wait: { placeholder: Search files... }
+  # Original user-projects step 97 (source line 121): Preserved native journey.
+  - shot: { name: project-recent-files-selected, full_page: true }
+  # Independent setup / outcome: Source UserFilesModal 271–289 native unpick/re-pick exercises existing control, no state setter.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+  # Independent setup / outcome: Source UserFilesModal 271–289 native unpick/re-pick exercises existing control, no state setter.
+  - wait: { text: 0 files selected, exact: true }
+  # Independent setup / outcome: Source UserFilesModal 271–289 native unpick/re-pick exercises existing control, no state setter.
+  - shot: { name: project-recent-file-unpicked, full_page: true }
+  # Independent setup / outcome: Source UserFilesModal 271–289 native unpick/re-pick exercises existing control, no state setter.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+  # Independent setup / outcome: Source UserFilesModal 271–289 native unpick/re-pick exercises existing control, no state setter.
+  - wait: { text: 1 file selected, exact: true }
+  # Original user-projects step 98 (source line 122): Preserved native journey.
+  - hover: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt")' }
+  # Original user-projects step 99 (source line 123): Preserved native journey.
+  - click: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt") .opal-attachment-item-button-action button', nth: 1 }
+  # Original user-projects step 100 (source line 124): Preserved native journey.
+  - wait: { text: 'Cannot delete file. It is associated with projects: Revision Workshop', exact: false }
+  # Original user-projects step 101 (source line 125): Preserved native journey.
+  - shot: { name: associated-project-file-delete-error, full_page: true }
+  # Native blocked deletion must preserve the selected protected row and the owning association.
+  - eval: |
+      (async () => {
+        if (!document.body.textContent.includes('Cannot delete file. It is associated with projects: Revision Workshop')) throw new Error('Expected native association guard is not visible');
+        const row = [...document.querySelectorAll('[role="dialog"] .opal-attachment-item-button')].find(el => el.textContent.includes('library-reading.txt'));
+        if (!row) throw new Error('Blocked deletion removed the native protected file row');
+        const files = await (await fetch('/api/user/files/recent')).json();
+        const details = await (await fetch('/api/user/projects/2/details')).json();
+        if (!files.some(file => file.id === 'uf-demo-reading') || !details.files.some(file => file.id === 'uf-demo-reading')) throw new Error('Blocked deletion changed the protected file or project association');
+      })()
+  # Original user-projects step 102 (source line 126): Preserved native journey.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 16 12"])' }
+  # Original user-projects step 103 (source line 127): Preserved native journey.
+  - shot: { name: project-files-selected-only, full_page: true }
+  # Original user-projects step 104 (source line 128): Preserved native journey.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 15 15"])' }
+  # Original user-projects step 105 (source line 129): Preserved native journey.
+  - wait: { text: 0 files selected, exact: true }
+  # Original user-projects step 106 (source line 130): Preserved native journey.
+  - shot: { name: project-files-deselect-all, full_page: true }
+  # Original user-projects step 107 (source line 131): Preserved native journey.
+  - click: { role: button, name: Done, exact: true }
+  # Original user-projects step 108 (source line 132): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 109 (source line 133): Preserved native journey.
+  - wait: { text: "Add documents, texts, or images to use in the project. Drag & drop supported.", exact: true }
+  # Original user-projects step 110 (source line 135): Preserved native journey.
+  - click: { role: button, name: Add Files, exact: true }
+  # Original user-projects step 111 (source line 136): Preserved native journey.
+  - eval: |
+      const input = [...document.querySelectorAll('input[type="file"]')].find(el => el.accept === '*/*');
+      if (!input) throw new Error('Project upload input missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Fictional workshop notes for accessible learning.'], 'workshop-notes.txt', {type:'text/plain', lastModified:0}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles:true}));
+  # Original user-projects step 112 (source line 143): Preserved native journey.
+  - press: Escape
+  # Original user-projects step 113 (source line 144): Preserved native journey.
+  - wait: { text: workshop-notes.txt, exact: true }
+  # Original user-projects step 114 (source line 145): Preserved native journey.
+  - settle: 6500
+  # Original user-projects step 115 (source line 146): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 116 (source line 147): Preserved native journey.
+  - wait: { text: workshop-notes.txt, exact: true }
+  # Original user-projects step 117 (source line 148): Preserved native journey.
+  - eval: |
+      (async () => {
+        const details = await (await fetch('/api/user/projects/2/details')).json();
+        if (!details.files.some(f => f.id === 'uf-demo-workshop' && f.project_id === 2)) throw new Error('Upload did not associate shared file');
+      })()
+  # Original user-projects step 118 (source line 153): Preserved native journey.
+  - shot: { name: project-upload-associated-reload, full_page: true }
+  # Original user-projects step 119 (source line 155): Preserved native journey.
+  - eval: |
+      const input = document.querySelector('.pb-2 > input[type="file"][tabindex="-1"]');
+      const dropzone = input?.parentElement;
+      if (!dropzone) throw new Error('Project dropzone missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['# Fictional reflection\nWhat helped you learn today?'], 'reflection.md', {type:'text/markdown'}));
+      dropzone.dispatchEvent(new DragEvent('dragenter', {bubbles:true,cancelable:true,dataTransfer:transfer}));
+      dropzone.dispatchEvent(new DragEvent('dragover', {bubbles:true,cancelable:true,dataTransfer:transfer}));
+      dropzone.dispatchEvent(new DragEvent('drop', {bubbles:true,cancelable:true,dataTransfer:transfer}));
+  # Original user-projects step 120 (source line 164): Preserved native journey.
+  - wait: { text: reflection.md, exact: true }
+  # Original user-projects step 121 (source line 165): Preserved native journey.
+  - settle: 6500
+  # Original user-projects step 122 (source line 166): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 123 (source line 167): Preserved native journey.
+  - wait: { text: reflection.md, exact: true }
+  # Original user-projects step 124 (source line 168): Preserved native journey.
+  - shot: { name: project-dropped-file-associated-reload, full_page: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state: { overlays: [] }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (!document.body.textContent.includes('workshop-notes.txt') || !document.body.textContent.includes('reflection.md')) throw new Error('Keep lost project uploads');
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-upload-keep, full_page: true }
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[],anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (!document.body.textContent.includes('No chats yet.') || document.body.textContent.includes('workshop-notes.txt') || document.body.textContent.includes('reflection.md') || document.body.textContent.includes('library-reading.txt')) throw new Error('Reset retained dirty project2 links');
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-upload-fresh-reset, full_page: true }

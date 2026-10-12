@@ -1,0 +1,171 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app → sidebar project1; direct /app?projectId=1.
+# Outcome: Seeded loaded details, collapse/expand, instructions and both rename controls; keep/fresh title and instructions.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-home
+title: Seeded loaded details, collapse/expand, instructions and both rename controls; keep/fresh title and instructions
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Original user-projects step 1 (source line 9): Preserved native journey.
+  - goto: /app
+  # Original user-projects step 2 (source line 10): Preserved native journey.
+  - wait: { selector: '.opal-sidebar-tab button[aria-label="Accessible Learning Lab"]' }
+  # Original user-projects step 3 (source line 11): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab button[aria-label="Accessible Learning Lab"]' }
+  # Original user-projects step 4 (source line 12): Preserved native journey.
+  - wait: { text: Set Instructions, exact: true }
+  # Original user-projects step 5 (source line 13): Preserved native journey.
+  - wait: { text: View All, exact: true }
+  # Original user-projects step 6 (source line 14): Preserved native journey.
+  - wait: { text: This project exceeds the model's context limits., exact: false }
+  # Original user-projects step 7 (source line 15): Preserved native journey.
+  - eval: |
+      if (new URL(location.href).searchParams.get('projectId') !== '1') throw new Error('Sidebar opened wrong project');
+      if (!document.body.textContent.includes('Food-safety refresher course outline') || !document.body.textContent.includes('accessible learning activities')) throw new Error('Seeded chat/instructions not visible');
+      const row = document.querySelector('.opal-sidebar-tab button[aria-label="Accessible Learning Lab"]')?.closest('.opal-sidebar-tab');
+      if (!row?.querySelector('[data-interactive-state="selected"]')) throw new Error('Current project sidebar row is not selected');
+  # Original user-projects step 8 (source line 18): Preserved native journey.
+  - shot: { name: project-menu-loaded, full_page: true }
+  # Original user-projects step 9 (source line 19): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 10 (source line 20): Preserved native journey.
+  - wait: { text: View All, exact: true }
+  # Original user-projects step 11 (source line 21): Preserved native journey.
+  - eval: |
+      if (!document.body.textContent.includes('library-reading.txt') || !document.body.textContent.includes('study-guide.md')) throw new Error('Direct project lost files');
+  # Original user-projects step 12 (source line 23): Preserved native journey.
+  - shot: { name: project-direct-loaded, full_page: true }
+  # Original user-projects step 13 (source line 24): Preserved native journey.
+  - eval: |
+      const button = document.querySelector('button[aria-label="Collapse project"]');
+      if (!button) throw new Error('Native collapse control missing');
+      button.focus();
+  - press: Enter
+  # Original user-projects step 14 (source line 25): Preserved native journey.
+  - eval: |
+      const link = document.querySelector('.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]');
+      if (link) throw new Error('Collapsing project left its chat in sidebar Recents');
+      const row = document.querySelector('.opal-sidebar-tab button[aria-label="Accessible Learning Lab"]')?.closest('.opal-sidebar-tab');
+      if (!row?.querySelector('[data-interactive-state="selected"]') || new URL(location.href).searchParams.get('projectId') !== '1') throw new Error('Collapse changed native current selection');
+  # Original user-projects step 15 (source line 28): Preserved native journey.
+  - shot: { name: project-folder-collapsed, full_page: true }
+  # Original user-projects step 16 (source line 29): Preserved native journey.
+  - eval: |
+      const button = document.querySelector('button[aria-label="Expand project"]');
+      if (!button) throw new Error('Native expand control missing');
+      button.focus();
+  - press: Enter
+  # Original user-projects step 17 (source line 30): Preserved native journey.
+  - wait: { selector: '.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]' }
+  # Original user-projects step 18 (source line 31): Preserved native journey.
+  - shot: { name: project-folder-expanded, full_page: true }
+  # Original user-projects step 19 (source line 32): Preserved native journey.
+  - click: { role: button, name: Set Instructions, exact: true }
+  # Original user-projects step 20 (source line 33): Preserved native journey.
+  - wait: { selector: 'textarea[name="instructions"]' }
+  # Original user-projects step 21 (source line 34): Preserved native journey.
+  - eval: |
+      if (!document.querySelector('textarea[name="instructions"]').value.includes('accessible learning activities')) throw new Error('Instructions editor lost seeded content');
+  # Original user-projects step 22 (source line 36): Preserved native journey.
+  - fill: { selector: 'textarea[name="instructions"]', value: Discard this draft. }
+  # Original user-projects step 23 (source line 37): Preserved native journey.
+  - shot: { name: instructions-cancel-draft, full_page: true }
+  # Original user-projects step 24 (source line 38): Preserved native journey.
+  - click: { role: button, name: Cancel, exact: true }
+  # Original user-projects step 25 (source line 39): Preserved native journey.
+  - click: { role: button, name: Set Instructions, exact: true }
+  # Original user-projects step 26 (source line 40): Preserved native journey.
+  - eval: |
+      if (document.querySelector('textarea[name="instructions"]').value.includes('Discard')) throw new Error('Cancelled instruction draft persisted');
+  # Original user-projects step 27 (source line 42): Preserved native journey.
+  - fill: { selector: 'textarea[name="instructions"]', value: Plan accessible revision activities. Explain accommodations and cite supplied learning materials. }
+  # Original user-projects step 28 (source line 43): Preserved native journey.
+  - shot: { name: instructions-edit, full_page: true }
+  # Original user-projects step 29 (source line 44): Preserved native journey.
+  - click: { role: button, name: Save Instructions, exact: true }
+  # Original user-projects step 30 (source line 45): Preserved native journey.
+  - wait: { text: Plan accessible revision activities., exact: false }
+  # Original user-projects step 31 (source line 46): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 32 (source line 47): Preserved native journey.
+  - wait: { text: Plan accessible revision activities., exact: false }
+  # Original user-projects step 33 (source line 48): Preserved native journey.
+  - shot: { name: instructions-saved-reload, full_page: true }
+  # Original user-projects step 34 (source line 49): Preserved native journey.
+  - click: { role: button, name: Set Instructions, exact: true }
+  # Original user-projects step 35 (source line 50): Preserved native journey.
+  - fill: { selector: 'textarea[name="instructions"]', value: '' }
+  # Original user-projects step 36 (source line 51): Preserved native journey.
+  - click: { role: button, name: Save Instructions, exact: true }
+  # Original user-projects step 37 (source line 52): Preserved native journey.
+  - wait: { text: Add instructions to tailor the response in this project., exact: true }
+  # Original user-projects step 38 (source line 53): Preserved native journey.
+  - shot: { name: instructions-cleared, full_page: true }
+  # Original user-projects step 39 (source line 55): Preserved native journey.
+  - click: { selector: '.opal-content-xl [title="Accessible Learning Lab"]' }
+  # Original user-projects step 40 (source line 56): Preserved native journey.
+  - fill: { selector: '.opal-content-xl-input', value: Cancelled project title }
+  # Original user-projects step 41 (source line 57): Preserved native journey.
+  - press: Escape
+  # Original user-projects step 42 (source line 58): Preserved native journey.
+  - eval: |
+      if (document.body.textContent.includes('Cancelled project title')) throw new Error('Escape committed title draft');
+  # Original user-projects step 43 (source line 60): Preserved native journey.
+  - click: { selector: '.opal-content-xl [title="Accessible Learning Lab"]' }
+  # Original user-projects step 44 (source line 61): Preserved native journey.
+  - fill: { selector: '.opal-content-xl-input', value: Inclusive Learning Lab }
+  # Original user-projects step 45 (source line 62): Preserved native journey.
+  - press: Enter
+  # Original user-projects step 46 (source line 63): Preserved native journey.
+  - wait: { selector: '.opal-sidebar-tab button[aria-label="Inclusive Learning Lab"]' }
+  # Original user-projects step 47 (source line 64): Preserved native journey.
+  - shot: { name: project-title-renamed, full_page: true }
+  # Original user-projects step 48 (source line 65): Preserved native journey.
+  - hover: { selector: '.opal-sidebar-tab:has(button[aria-label="Inclusive Learning Lab"])' }
+  # Original user-projects step 49 (source line 66): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab:has(button[aria-label="Inclusive Learning Lab"]) button[aria-label="Project options"]' }
+  # Original user-projects step 50 (source line 67): Preserved native journey.
+  - shot: { name: project-options, full_page: true }
+  # Original user-projects step 51 (source line 68): Preserved native journey.
+  - click: { role: menuitem, name: Rename Project, exact: true }
+  # Original user-projects step 52 (source line 69): Preserved native journey.
+  - fill: { selector: '.opal-sidebar-tab input', value: Accessible Revision Lab }
+  # Original user-projects step 53 (source line 70): Preserved native journey.
+  - shot: { name: project-sidebar-rename, full_page: true }
+  # Original user-projects step 54 (source line 71): Preserved native journey.
+  - press: Enter
+  # Original user-projects step 55 (source line 72): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 56 (source line 73): Preserved native journey.
+  - wait: { selector: '.opal-content-xl [title="Accessible Revision Lab"]' }
+  # Original user-projects step 57 (source line 74): Preserved native journey.
+  - shot: { name: project-renamed-reload, full_page: true }
+  # Original user-projects step 254 (source line 357): Keep now follows its owning title/instructions writes, not unrelated search/deletion.
+  - state: { overlays: [] }
+  # Original user-projects step 255 (source line 358): Keep now follows its owning title/instructions writes, not unrelated search/deletion.
+  - goto: /app?projectId=1
+  # Original user-projects step 256 (source line 359): Keep now follows its owning title/instructions writes, not unrelated search/deletion.
+  - wait: { selector: '.opal-content-xl [title="Accessible Revision Lab"]' }
+  # Original user-projects step 257 (source line 360): Keep now follows its owning title/instructions writes, not unrelated search/deletion.
+  - shot: { name: project-keep-preserves-writes, full_page: true }
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[],anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (!document.body.textContent.includes('Accessible Learning Lab') || !document.body.textContent.includes('accessible learning activities') || document.body.textContent.includes('Accessible Revision Lab')) throw new Error('Fresh reset lost original title/instructions');
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-home-fresh-reset, full_page: true }

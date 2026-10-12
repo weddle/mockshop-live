@@ -1,0 +1,9 @@
+name: locale-smoke
+title: Localized Onyx chat shell
+locale: ar
+strict: true
+steps:
+  - {goto: /app}
+  - {settle: 2000}
+  - {eval: "(() => { const html = document.documentElement; if (html.lang !== 'ar' || html.dir !== 'rtl' || getComputedStyle(html).direction !== 'rtl') throw new Error('Expected native Arabic html language and RTL attribute/computed layout'); })()"}
+  - {shot: arabic-chat}

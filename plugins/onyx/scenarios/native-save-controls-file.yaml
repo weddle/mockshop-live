@@ -1,0 +1,180 @@
+# Parent matching artifact prerequisite: preserved0007 inline FileList snapshot patch; fresh handler imports.
+# Issue #3 independent native proof unit; edit-only declaration, acceptance PENDING.
+# Fresh runner start resets the same Enterprise/demo-mcp-admin fixtures and browser context.
+# No previous unit outputs; native dirty/reset prerequisites are local to this file.
+
+# Entry: Catalog /admin/connectors → File → native drop/Create → Indexing Status → generated detail.
+# Outcome: Real hidden multiple input/Add; green agenda row; enabled Save/Confirm; two persisted files/reload; notes remove/Confirm/surviving agenda/reload; own dirty reset removes created File pair. Native chooser proof separately required.
+name: native-save-controls-file
+title: "Native File create, Add/Save/Confirm/removal/reload and dirty reset"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [demo-mcp-admin]
+steps:
+  # Preserved source step 277 (line 302).
+  - goto: /admin/connectors
+  # Preserved source step 278 (line 303).
+  - click: { text: File, exact: true }
+  # Preserved source step 279 (line 304).
+  - wait: { role: button, name: Choose files, exact: true }
+  # Preserved source step 280 (line 305).
+  - shot: file-connector-upload-empty
+  # Preserved source step 281 (line 306).
+  - eval: |
+      const choose = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Choose files');
+      const dropzone = choose?.closest('div.border-dashed');
+      if (!dropzone) throw new Error('Native File drop area is missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Fictional workshop notes. No real documents.'], 'Workshop notes.txt', {type: 'text/plain'}));
+      dropzone.dispatchEvent(new DragEvent('drop', {dataTransfer: transfer, bubbles: true, cancelable: true}));
+  # Preserved source step 282 (line 313).
+  - wait: { text: Workshop notes.txt, exact: true }
+  # Preserved source step 283 (line 314).
+  - fill: { selector: 'input[name="name"]', value: "Workshop files (fake metadata)" }
+  # Preserved source step 284 (line 315).
+  - shot: file-connector-create-fields
+  # Preserved source step 285 (line 316).
+  - click: { role: button, name: Create Connector, exact: true }
+  # Preserved source step 286 (line 317).
+  - wait: { placeholder: "Search connectors..." }
+  # Preserved source step 287 (line 318).
+  - fill: { placeholder: "Search connectors...", value: "Workshop files" }
+  # Preserved source step 288 (line 319).
+  - wait: { selector: 'tr.bg-background-sidebar' }
+  # Preserved source step 289 (line 320).
+  - eval: |
+      (async () => {
+      const expand = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Expand All');
+      if (expand) expand.click();
+      else for (const group of document.querySelectorAll('tr.bg-background-sidebar')) {
+        if (!group.nextElementSibling?.querySelector('th')) {
+          group.click();
+          await new Promise(requestAnimationFrame);
+        }
+      }
+      })()
+  # Preserved source step 290 (line 331).
+  - click: { text: "Workshop files (fake metadata)", exact: true }
+  # Preserved source step 291 (line 332).
+  - wait: { text: Workshop notes.txt, exact: true }
+  # Preserved source step 292 (line 333).
+  - shot: file-connector-created
+  # Preserved source step 293 (line 334).
+  - click: { role: button, name: Edit, exact: true }
+  # Preserved source step 294 (line 335).
+  - wait: { selector: 'button:disabled:has-text("Save Changes")' }
+  # Preserved source step 295 (line 336).
+  - shot: file-connector-pristine-disabled
+  # Preserved source step 296 (line 337).
+  - click: { role: button, name: Add Files, exact: true }
+  # Preserved source step 297 (line 338).
+  - wait: { selector: 'input[type="file"][id^="file-upload-"]', state: attached, any_visibility: true }
+  # Preserved source step 298 (line 339).
+  - eval: |
+      const input = document.querySelector('input[type="file"][id^="file-upload-"]');
+      if (!input?.multiple) throw new Error('Native inline Add Files input is missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Fictional second workshop note.'], 'Workshop agenda.txt', {type: 'text/plain'}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles: true}));
+  # A staged row contains the filename plus the native New badge, not filename-only text.
+  # Preserved source step 299 (line 347).
+  - wait: { selector: 'tr.bg-green-50:has-text("Workshop agenda.txt")' }
+  # Preserved source step 300 (line 348).
+  - wait: { selector: 'button:not(:disabled):has-text("Save Changes")' }
+  # Preserved source step 301 (line 349).
+  - shot: file-connector-add-staged
+  # Preserved source step 302 (line 350).
+  - click: { role: button, name: Save Changes, exact: true }
+  # Preserved source step 303 (line 351).
+  - wait: { text: Confirm File Changes, exact: true }
+  # Preserved source step 304 (line 352).
+  - shot: file-connector-save-confirm
+  # Preserved source step 305 (line 353).
+  - click: { role: button, name: "Confirm & Save", exact: true }
+  # Preserved source step 306 (line 354).
+  - wait_gone: { selector: '[role="dialog"]' }
+  # Preserved source step 307 (line 355).
+  - wait: { role: button, name: Edit, exact: true }
+  # Preserved source step 308 (line 356).
+  - wait: { text: Workshop agenda.txt, exact: true }
+  # Preserved source step 309 (line 357).
+  - shot: file-connector-saved
+  # Preserved source step 310 (line 358).
+  - eval: "window.location.reload()"
+  # Preserved source step 311 (line 359).
+  - wait: { text: Workshop agenda.txt, exact: true }
+  # Preserved source step 312 (line 360).
+  - wait: { role: button, name: Edit, exact: true }
+  # Preserved source step 313 (line 361).
+  - wait: { text: Workshop notes.txt, exact: true }
+  # Preserved source step 314 (line 362).
+  - shot: file-connector-reloaded
+  # Preserved source step 315 (line 363).
+  - click: { role: button, name: Edit, exact: true }
+  # Preserved source step 316 (line 364).
+  - wait: { selector: 'button:disabled:has-text("Save Changes")' }
+  # Preserved source step 317 (line 365).
+  - click: { selector: 'tr:has-text("Workshop notes.txt") [role="checkbox"]' }
+  # Preserved source step 318 (line 366).
+  - wait: { selector: 'tr:has-text("Workshop notes.txt") [role="checkbox"][aria-checked="true"]' }
+  # Preserved source step 319 (line 367).
+  - shot: file-connector-remove-staged
+  # Preserved source step 320 (line 368).
+  - click: { role: button, name: Save Changes, exact: true }
+  # Preserved source step 321 (line 369).
+  - wait: { text: Confirm File Changes, exact: true }
+  # Preserved source step 322 (line 370).
+  - shot: file-connector-remove-confirm
+  # Preserved source step 323 (line 371).
+  - click: { role: button, name: "Confirm & Save", exact: true }
+  # Preserved source step 324 (line 372).
+  - wait_gone: { selector: '[role="dialog"]' }
+  # Preserved source step 325 (line 373).
+  - wait: { role: button, name: Edit, exact: true }
+  # Preserved source step 326 (line 374).
+  - wait_gone: { text: Workshop notes.txt, exact: true }
+  # Preserved source step 327 (line 375).
+  - wait: { text: Workshop agenda.txt, exact: true }
+  # Preserved source step 328 (line 376).
+  - shot: file-connector-remove-saved
+  # Preserved source step 329 (line 377).
+  - eval: "window.location.reload()"
+  # Preserved source step 330 (line 378).
+  - wait: { text: Workshop agenda.txt, exact: true }
+  # Preserved source step 331 (line 379).
+  - wait: { role: button, name: Edit, exact: true }
+  # Preserved source step 332 (line 380).
+  - wait_gone: { text: Workshop notes.txt, exact: true }
+  # Preserved source step 333 (line 381).
+  - shot: file-connector-remove-reloaded
+  # Independent native prerequisite/reset: Fresh reset after this unit native dirty writes; hard navigation clears browser caches.
+  - eval: fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-mcp-admin']})}).then(()=>window.location.assign("/admin/indexing-status"))
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit create/Add/removal writes.
+  - goto: /admin/indexing-status
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit create/Add/removal writes.
+  - wait: { placeholder: "Search connectors..." }
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit create/Add/removal writes.
+  - fill: { placeholder: "Search connectors...", value: "" }
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit create/Add/removal writes.
+  - wait: { selector: 'tr.bg-background-sidebar' }
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit create/Add/removal writes.
+  - eval: |
+      (async () => {
+      const expand = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Expand All');
+      if (expand) expand.click();
+      else for (const group of document.querySelectorAll('tr.bg-background-sidebar')) {
+        if (!group.nextElementSibling?.querySelector('th')) {
+          group.click();
+          await new Promise(requestAnimationFrame);
+        }
+      }
+      })()
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit create/Add/removal writes.
+  - wait: { text: "Confluence – OPS space", exact: true }
+  # Preserved source step 385 (line 462).
+  - wait_gone: { text: "Workshop files (fake metadata)", exact: true }
+  # Independent native prerequisite/reset: Owning File disappearance after native dirty create/Add/removal.
+  - shot: file-connector-reset

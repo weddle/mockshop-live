@@ -1,0 +1,115 @@
+# Overlay: placeholder healthcare org (fictional "Riverbend Community Health"), generic fake content.
+# Own /me, org name (EE branding via /enterprise-settings), three agents, a short history, one scripted answer (chat/).
+# Switch to it live: `./mockshop switch onyx org-healthcare` (or a scenario step `state: {overlays: [org-healthcare]}`).
+x-perms: &perms { edit: true, share: true, view_stats: true, delete: true, publish: true, feature: true, list: true, reorder: true }
+x-search: &search
+  { id: 1, name: internal_search, display_name: Internal Search, description: Search connected knowledge., definition: null, custom_headers: [],
+    in_code_tool_id: SearchTool, passthrough_auth: false, enabled: true, chat_selectable: true, agent_creation_selectable: true,
+    default_enabled: true, permissions: { edit: true, delete: false, toggle: true, authenticate: false } }
+x-agent: &agent
+  id: 0
+  name: Assistant
+  description: Everyday assistant grounded in Riverbend Community Health's policies and intranet.
+  tools: [*search]
+  starter_messages: null
+  document_sets: []
+  knowledge_sources: [confluence, sharepoint]
+  is_public: true
+  is_listed: true
+  display_priority: 0
+  is_featured: true
+  builtin_persona: true
+  labels: []
+  owner: null
+  permissions: *perms
+  owner_group: null
+  user_permission: OWNER
+  icon_name: null
+  user_file_ids: []
+  users: []
+  groups: []
+  system_prompt: null
+  replace_base_system_prompt: false
+  task_prompt: null
+  datetime_aware: true
+x-a21: &a21
+  <<: *agent
+  id: 21
+  name: Clinical Policy Finder
+  description: Finds the current version of a clinical policy or procedure.
+  starter_messages:
+    - { name: Hand hygiene, message: What is the current hand hygiene policy for inpatient units? }
+  display_priority: 1
+  builtin_persona: false
+  icon_name: BooksStack
+x-a22: &a22
+  <<: *agent
+  id: 22
+  name: Patient Access Desk
+  description: Scheduling, registration and referral procedures for front-desk staff.
+  starter_messages:
+    - { name: New referral, message: How do I register a new specialist referral? }
+  display_priority: 2
+  builtin_persona: false
+  icon_name: Activity
+x-a23: &a23
+  <<: *agent
+  id: 23
+  name: IT Service Desk
+  description: Badge, workstation and EHR login troubleshooting.
+  display_priority: 3
+  is_featured: false
+  builtin_persona: false
+  icon_name: Terminal
+x-full: &full
+  { search_start_date: null, user_shares: [], group_shares: [], public_permission: VIEWER, sharing_status: SHARED, admin_count: 1,
+    ownership_vacant: false, hierarchy_nodes: [], attached_documents: [] }
+
+GET /me:
+  id: hc-u1
+  email: sam.rivera@riverbend-health.example
+  is_active: true
+  is_superuser: false
+  is_verified: true
+  role: basic
+  account_type: STANDARD
+  is_admin: false
+  is_group_manager: false
+  password_configured: true
+  team_name: null
+  is_anonymous_user: false
+  is_cloud_superuser: false
+  tenant_info: null
+  effective_permissions: [basic]
+  admin_capabilities: []
+  craft_enabled: false
+  preferences:
+    { chosen_assistants: null, visible_assistants: [], hidden_assistants: [], pinned_assistants: [0, 21, 22], default_model: null,
+      recent_assistants: [0, 21], auto_scroll: false, shortcut_enabled: false, temperature_override_enabled: false, temperature_default: null,
+      reasoning_effort_default: null, theme_preference: light, language: en, chat_background: null, default_app_mode: CHAT,
+      paste_as_tile: true, voice_auto_send: false, voice_auto_playback: false, voice_playback_speed: 1 }
+  personalization: { name: Sam Rivera, role: Nurse Educator, memories: [], use_memories: true, enable_memory_tool: true, user_preferences: "" }
+  oidc_expiry: null
+
+GET /enterprise-settings:
+  { application_name: Riverbend Health Assistant, use_custom_logo: false, use_custom_logotype: false, logo_display_style: null,
+    custom_nav_items: [], custom_lower_disclaimer_content: "Riverbend Community Health — placeholder demo org (fictional).",
+    custom_header_content: null, two_lines_for_chat_header: null, custom_popup_header: null, custom_popup_content: null,
+    enable_consent_screen: null, consent_screen_prompt: null, show_first_visit_notice: null,
+    custom_greeting_message: "Good morning, Sam. What can I find for you?" }
+
+GET /persona: [*agent, *a21, *a22, *a23]
+GET /persona/0: { <<: [*full, *agent] }
+GET /persona/21: { <<: [*full, *a21] }
+GET /persona/22: { <<: [*full, *a22] }
+GET /persona/23: { <<: [*full, *a23] }
+GET /persona/labels: []
+GET /user/pinned-assistants: [0, 21, 22]
+GET /tool: [*search]
+GET /manage/document-set: []
+GET /mcp/servers: { mcp_servers: [] }
+GET /chat/get-user-chat-sessions:
+  has_more: false
+  sessions:
+    - { id: "33333333-0000-4000-8000-000000000001", name: "Hand hygiene policy update", persona_id: 21, time_created: "{{ago:5h}}", time_updated: "{{ago:5h}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }
+    - { id: "33333333-0000-4000-8000-000000000002", name: "Badge reader not working on 4 West", persona_id: 23, time_created: "{{ago:2d}}", time_updated: "{{ago:2d}}", shared_status: private, current_alternate_model: null, current_temperature_override: null, current_reasoning_effort_override: null }

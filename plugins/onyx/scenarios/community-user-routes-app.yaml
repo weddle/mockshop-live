@@ -1,0 +1,177 @@
+# #34 true-Community per-user-route witness. EDITONLY authored; UNEXECUTED/UNACCEPTED.
+# Parent owns matching physical CE artifact selection, schema validation and complete strict native/image proof.
+# Independent native runner prelude resets unit overlays/clock/locale. Keep uses existing state DSL;
+# fresh tails use existing /api/__mockshop/state keep:false plus native full navigation.
+# No continue_on_error, fixed-settle-only success, private React, clips or acceptance/closure claim.
+# Original route rows 1-7, 15 and 29: app/agents, shared chat and cited source viewer.
+# EE Stats is source-native Community license Toast -> /app, not an invented CE Stats screen.
+# Single-model shared/history smoke does NOT certify Source14 multi-model attribution.
+name: community-user-routes-app
+title: True Community app, agent editors, Stats license guard and original shared/source routes
+requires: community
+strict: true
+locale: en
+viewport:
+- 1440
+- 1000
+overlays: []
+known_errors:
+- match: '/^console: \[Toast\] This\ feature\ requires\ a\ license\.\ Please\ upgrade\ your\ plan\ to\ access\.(?:
+    \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/[^\s\]]+\.js\])?$/'
+  reason: Exact source EEFeatureRedirect11–14 license guard only. Required visible same Toast, actual /app redirect
+    and unchanged saved agent accompany it; no unknown console/page/HTTP error is waived.
+steps:
+- goto: /app
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- eval: (async()=>{const r=await fetch('/api/settings'); if(!r.ok) throw new Error('Community settings prerequisite
+    missing'); const v=await r.json(); if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active')
+    throw new Error('Not a Community fixture/licensing state');})()
+- shot:
+    name: ce-app-home
+    full_page: true
+- goto: /app?agentId=11
+- wait:
+    testid: agent-name-display
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- eval: if(new URL(location.href).searchParams.get('agentId')!=='11') throw new Error('Wrong native agent entry');
+- shot:
+    name: ce-app-agent
+    full_page: true
+- goto: /app?chatId=11111111-0000-4000-8000-000000000001
+- wait:
+    testid: AgentMessage/toolbar
+- shot:
+    name: ce-app-history-chat
+    full_page: true
+- click:
+    testid: AppSidebar/more-agents
+- wait:
+    testid: AgentsPage/container
+- shot:
+    name: ce-agents-gallery-menu
+    full_page: true
+- goto: /app/agents
+- wait:
+    placeholder: Search agents...
+- shot:
+    name: ce-agents-gallery-direct
+    full_page: true
+- click:
+    selector: a[href="/app/agents/create"]
+- wait:
+    selector: input[name="name"]
+- shot:
+    name: ce-agents-create-menu
+    full_page: true
+- goto: /app/agents/create
+- wait:
+    selector: input[name="name"]
+- eval: if(document.querySelector('input[name="name"]').value!=='') throw new Error('New agent editor retained a
+    prior draft');
+- shot:
+    name: ce-agents-create-direct-pristine
+    full_page: true
+- goto: /app/agents/edit/11
+- wait:
+    selector: input[name="name"][value="Training & Onboarding Desk"]
+- eval: (async()=>{const a=await (await fetch('/api/persona/11')).json(); sessionStorage.setItem('ce-agent-seed-name',a.name);})()
+- shot:
+    name: ce-agents-edit-seed
+    full_page: true
+- fill:
+    selector: input[name="name"]
+    value: Community training guide
+- click:
+    role: button
+    name: Save
+    exact: true
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- goto: /app/agents/edit/11
+- wait:
+    selector: input[name="name"][value="Community training guide"]
+- eval: (async()=>{const a=await (await fetch('/api/persona/11')).json(); if(a.name!=='Community training guide')
+    throw new Error('Native Community agent edit did not persist'); sessionStorage.setItem('ce-agent-committed',JSON.stringify(a));})()
+- shot:
+    name: ce-agents-edit-saved-reopen
+    full_page: true
+- goto: /ee/agents/stats/11
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- wait:
+    text: This feature requires a license. Please upgrade your plan to access.
+    exact: true
+- eval: if(location.pathname!=="/app") throw new Error('Native route/guard reached the wrong canonical URL');
+- eval: (async()=>{if(JSON.stringify(await (await fetch('/api/persona/11')).json())!==sessionStorage.getItem('ce-agent-committed'))
+    throw new Error('CE Stats license guard changed the saved agent');})()
+- shot:
+    name: ce-agent-stats-community-license-guard
+    full_page: true
+- goto: /app?chatId=11111111-0000-4000-8000-000000000001
+- wait:
+    testid: AgentMessage/toolbar
+- click:
+    selector: '[aria-label="share-chat-button"]'
+- wait:
+    text: Share this chat
+    exact: true
+- click:
+    selector: '[aria-label="share-modal-option-public"]'
+- click:
+    selector: '[aria-label="share-modal-submit"]'
+- wait:
+    text: Chat shared
+    exact: true
+- eval: const i=document.querySelector('[aria-label="share-modal-link-input"]'); if(!i?.readOnly||i.value!==location.origin+'/app/shared/11111111-0000-4000-8000-000000000001')
+    throw new Error('Original history native shared link missing');
+- shot:
+    name: ce-original-history-native-share
+    full_page: true
+- press: Escape
+- goto: /app/shared/11111111-0000-4000-8000-000000000001
+- wait:
+    role: link
+    name: Start New Session
+    exact: true
+- eval: if(document.querySelector('#onyx-chat-input-textbox')) throw new Error('Shared read-only route incorrectly
+    contains the live composer');
+- shot:
+    name: ce-shared-chat
+    full_page: true
+- click:
+    role: link
+    name: Start New Session
+    exact: true
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- state:
+    overlays: []
+- goto: /app/agents/edit/11
+- wait:
+    selector: input[name="name"][value="Community training guide"]
+- shot:
+    name: ce-app-dirty-agent-kept
+    full_page: true
+- eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:[],anchor:current.demo_anchor,locale:'en',keep:false})});
+    if(!response.ok) throw new Error('Independent Community dirty-state reset failed');})()
+- goto: /app/agents/edit/11
+- wait:
+    selector: input[name="name"][value="Training & Onboarding Desk"]
+- eval: (async()=>{const a=await (await fetch('/api/persona/11')).json(),c=await (await fetch('/api/chat/get-chat-session/11111111-0000-4000-8000-000000000001')).json();
+    if(a.name!==sessionStorage.getItem('ce-agent-seed-name')||c.shared_status!=='private') throw new Error('Fresh
+    Community reset retained dirty name/public share');})()
+- shot:
+    name: ce-app-fresh-agent-share-restored
+    full_page: true
+- eval: location.assign('/api/mockshop/source/CONF-HR-TP-4412')
+- wait:
+    testid: mockshop-source
+- wait:
+    text: 'Training Policy: Required certifications by role'
+    exact: true
+- shot:
+    name: ce-cited-source-viewer
+    full_page: true
+demo_anchor: '2026-10-09T10:00:00-04:00'

@@ -1,0 +1,34 @@
+# Fictional common-write metadata. No credentials or external integrations.
+GET /mockshop/save-controls:
+  oauth_sources: [google_drive, slack, zoom]
+  provider_models:
+    - { name: learning-notes-demo, display_name: Learning Notes (local fake), is_visible: true, max_input_tokens: 32768, supports_image_input: false, supports_reasoning: false }
+    - { name: workshop-summary-demo, display_name: Workshop Summary (local fake), is_visible: true, max_input_tokens: 32768, supports_image_input: false, supports_reasoning: false }
+  pair:
+    status: ACTIVE
+    in_repeated_error_state: false
+    num_docs_indexed: 0
+    number_of_index_attempts: 0
+    last_index_attempt_status: null
+    latest_deletion_attempt: null
+    is_editable_for_current_user: true
+    permissions: { operate: true, edit: true, delete: true, publish: true }
+    deletion_failure_message: null
+    indexing: false
+    creator: 8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11
+    last_indexed: null
+    last_pruned: null
+    last_full_permission_sync: null
+    overall_indexing_speed: null
+    latest_checkpoint_description: null
+    last_permission_sync_attempt_status: null
+    permission_syncing: false
+    last_permission_sync_attempt_finished: null
+    last_permission_sync_attempt_error_message: null
+    supports_targeted_reindex: false
+    groups: []
+    auto_sync_options: null
+    processing_mode: REGULAR
+    indexing_hold: null
+GET /manage/admin/cc-pair/:id/index-attempts: { items: [], total_items: 0 }
+GET /manage/admin/cc-pair/:id/errors: { items: [], total_items: 0 }

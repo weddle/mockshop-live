@@ -1,0 +1,22 @@
+# Same fictional user with native basic-role visibility; no role administration/auth behavior.
+GET /me:
+  id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+  email: learning.coordinator@workshop.example
+  is_active: true
+  is_superuser: false
+  is_verified: true
+  role: basic
+  account_type: STANDARD
+  is_admin: false
+  is_group_manager: false
+  password_configured: true
+  team_name: null
+  is_anonymous_user: false
+  is_cloud_superuser: false
+  tenant_info: null
+  effective_permissions: [basic]
+  admin_capabilities: []
+  craft_enabled: true
+  preferences: { chosen_assistants: null, visible_assistants: [], hidden_assistants: [], pinned_assistants: [0, 11, 12], default_model: null, recent_assistants: [0, 11], auto_scroll: false, shortcut_enabled: false, temperature_override_enabled: false, temperature_default: null, reasoning_effort_default: null, theme_preference: light, language: en, chat_background: null, default_app_mode: CHAT, paste_as_tile: true, voice_auto_send: false, voice_auto_playback: false, voice_playback_speed: 1 }
+  personalization: { name: Maya Learning, role: Fictional education coordinator, memories: [], use_memories: true, enable_memory_tool: true, user_preferences: "" }
+  oidc_expiry: null

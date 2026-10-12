@@ -1,0 +1,67 @@
+# Scripted answer. "match" is a case-insensitive regex on the user's message.
+# Write citations as [1], [2] in the answer; they map to documents by
+# position (or explicitly via `citations:`) and are converted to Onyx's
+# [[n]](link) form + citation_info packets.
+match: "training|new.hire|onboarding|first.aid|certification"
+title: New-hire front desk training & overdue certifications
+chunk_delay_ms: 70
+reasoning: |
+  The user wants the 30-day training plan for new front desk hires and who is behind on it. I should check the onboarding path for the required modules, the training-records export for completion, the train-the-trainer session and Slack for scheduling problems, and the training policy for deadlines.
+queries:
+  - New-hire front desk training first 30 days
+  - Overdue CPR first aid certification new hires
+  - First aid class schedule Key West Carmel
+documents:
+  - id: GDRIVE-1xFDONBOARDING2026
+    title: Front Desk Onboarding Path 2026.pdf
+    source: google_drive
+    link: https://docs.google.example/document/d/1xFDONBOARDING2026/edit
+    blurb: "Days 1–5: orientation, brand standards, guest privacy. By day 14: check-in/check-out systems and accessibility requests. By day 30: food-safety awareness and CPR/First Aid with AED."
+    updated: "{{ago:12d}}"
+    owners: [maya.chen@seasidecollection.example]
+  - id: GDRIVE-1xTRAININGRECORDSQ4
+    title: Training records export — new hires since Aug 1.xlsx
+    source: google_drive
+    link: https://docs.google.example/spreadsheets/d/1xTRAININGRECORDSQ4/edit
+    blurb: "14 front desk hires since Aug 1. 11 on track. 3 overdue on CPR/First Aid: Key West (2), Carmel (1). All 14 have completed guest-privacy training."
+    updated: "{{ago:2d}}"
+    owners: [maya.chen@seasidecollection.example, devon.ortiz@seasidecollection.example]
+  - id: ZOOM-REC-88123
+    title: "Zoom meeting: First aid & AED train-the-trainer (Sep 18)"
+    source: zoom
+    link: https://zoom.example/rec/share/first-aid-train-the-trainer
+    blurb: "Instructor (Coastal Health Training): “Every shift needs at least one certified first-aider on site, and the AED check belongs on the opening checklist.”"
+    updated: "{{ago:20d}}"
+  - id: SLACK-C04LEARNKW-1727712000
+    title: "#learning-keywest — CPR class rescheduled"
+    source: slack
+    link: https://seasidecollection.slack.example/archives/C04LEARNKW/p1727712000
+    blurb: "Devon: the Oct 2 CPR/First Aid class at Key West was cancelled (instructor out sick). Two new hires still need it; next open date is Oct 23."
+    updated: "{{ago:9d}}"
+  - id: CONF-HR-TP-4412
+    title: "Training Policy: Required certifications by role"
+    source: confluence
+    link: https://seaside.atlassian.example/wiki/spaces/HR/pages/4412/Required+certifications+by+role
+    blurb: "Front desk: CPR/First Aid within 30 days of hire, valid for 2 years. A property may extend the deadline once, by 14 days, if a class is cancelled."
+    updated: "{{ago:45d}}"
+  # source "file": opens in Onyx's preview modal (text from fixtures/base/sources/FILE__aed-opening-checklist.md)
+  - id: FILE__aed-opening-checklist
+    title: AED & first-aid kit opening checklist.md
+    source: file
+    blurb: "Before the lobby opens: AED status light green, pads in date, first-aid kit sealed and stocked, certified first-aider named on the shift board."
+    updated: "{{ago:30d}}"
+answer: |
+  Here's the **30-day training plan** for new front desk hires, and where the current group stands [1][2].
+
+  **What new hires complete in their first 30 days** [1]
+  1. Days 1–5: orientation, brand standards and guest privacy.
+  2. By day 14: check-in/check-out systems and accessibility requests.
+  3. By day 30: food-safety awareness and **CPR/First Aid with AED**.
+
+  **Who is behind**
+  - **3 of 14 hires are overdue on CPR/First Aid**: two at Key West and one at Carmel [2]. Everyone has finished guest-privacy training.
+  - **Key West's class was cancelled.** The Oct 2 session was dropped when the instructor was out sick; the next open date is **Oct 23** [4]. The policy allows a one-time 14-day extension when a class is cancelled [5].
+
+  **Suggested next steps**
+  - Log the 14-day extension for the two Key West hires and book them into the Oct 23 class [4][5].
+  - Until they're certified, make sure every Key West shift still has a certified first-aider on site, as the trainer asked [3], and keep the AED check on the opening checklist [6].

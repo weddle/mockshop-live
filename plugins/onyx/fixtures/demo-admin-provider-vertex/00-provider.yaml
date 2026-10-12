@@ -1,0 +1,57 @@
+# #34 EDITONLY: fictional saved Vertex ADMIN editor prerequisite; no provider calls.
+# Sole handlers-save-controls catalog/discovery/reset, not a second provider store.
+# The JSON string is intentionally nonfunctional editable fixture data. The scenario
+# reads it from its original seed snapshot into the actual native single-file input.
+# Saves retain the existing owner's mock-only secret redaction, not this JSON payload.
+x-model: &model
+  id: 3401
+  name: learning-notes-demo
+  display_name: Learning Notes (local fake)
+  is_visible: true
+  max_input_tokens: 32768
+  supports_image_input: false
+  supports_reasoning: false
+x-default: &default { provider_id: 34, model_name: learning-notes-demo }
+x-provider: &provider
+  id: 34
+  name: Campus Vertex (local fake)
+  provider: vertex_ai
+  api_key: null
+  api_base: null
+  api_version: null
+  custom_config:
+    vertex_auth_method: service_account_json
+    vertex_location: us-central1
+    vertex_credentials: |-
+      {"type":"service_account","project_id":"mock-campus-seed-project","client_email":"fictional-vertex@example.invalid","private_key":"mock-only-not-a-secret"}
+  is_public: true
+  is_auto_mode: false
+  groups: []
+  personas: []
+  deployment_name: null
+  model_configurations: [*model]
+  next_model_configuration_offset: null
+GET /admin/llm/provider:
+  providers: [*provider]
+  default_text: *default
+  default_vision: null
+  default_chat_naming: *default
+  default_craft: null
+x-public: &public
+  providers:
+    - id: 34
+      name: Campus Vertex (local fake)
+      provider: vertex_ai
+      provider_display_name: Gemini
+      model_configurations: [*model]
+      next_model_configuration_offset: null
+  default_text: *default
+  default_vision: null
+  default_chat_naming: *default
+  default_craft: null
+GET /llm/provider: *public
+GET /llm/persona/:id/providers: *public
+GET /admin/llm/built-in/options/vertex_ai:
+  name: vertex_ai
+  known_models: [*model]
+  recommended_default_model: { name: learning-notes-demo, display_name: Learning Notes (local fake) }

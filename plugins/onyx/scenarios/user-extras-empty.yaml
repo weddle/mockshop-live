@@ -1,0 +1,38 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-empty
+title: Native Extras - empty
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras-empty]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-user-extras-empty'],anchor:current.demo_anchor,locale:'en',keep:false})});
+      })()
+  - goto: /app
+  - wait: { testid: chat-intro }
+  - eval: |
+      (async () => {
+        const chats = await (await fetch('/api/chat/get-user-chat-sessions')).json();
+        const pins = await (await fetch('/api/user/pinned-assistants')).json();
+        if (chats.sessions.length || pins.length) throw new Error('Empty sidebar has chats or pins');
+      })()
+  - shot: {name: extras-24-empty-home-sidebar, full_page: true}
+  - click: { selector: '#onyx-user-dropdown' }
+  - click: { text: Notifications, exact: true }
+  - wait: { text: No notifications, exact: true }
+  - shot: {name: extras-25-empty-notifications, full_page: true}
+  - press: Escape
+  - click: { testid: AppSidebar/more-agents }
+  - wait: { text: No Agents found, exact: true }
+  - shot: {name: extras-26-empty-gallery-menu, full_page: true}
+  - goto: /app/agents
+  - wait: { text: No Agents found, exact: true }
+  - shot: {name: extras-27-empty-gallery-direct, full_page: true}

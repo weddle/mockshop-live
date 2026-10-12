@@ -1,0 +1,219 @@
+# #34 true-Community per-user-route witness. EDITONLY authored; UNEXECUTED/UNACCEPTED.
+# Parent owns matching physical CE artifact selection, schema validation and complete strict native/image proof.
+# Independent native runner prelude resets unit overlays/clock/locale. Keep uses existing state DSL;
+# fresh tails use existing /api/__mockshop/state keep:false plus native full navigation.
+# No continue_on_error, fixed-settle-only success, private React, clips or acceptance/closure claim.
+# Original route rows 16,18,19: /anonymous/demo and both NRF surfaces.
+# HTTP-only native settings/reading controls; no postMessage or fabricated trusted parent.
+# Source15 CE lacks required NRF13 no-provider footer pointer and NRF14 regeneration/branch
+# and shared multi-model attribution consumer patches. These controls plus genuine
+# chrome-extension:// parent-origin interactions remain explicitly UNVERIFIED here.
+# Backend fresh reset deliberately does not clear NRF's browser-local preference; restore natively.
+name: community-user-routes-extras
+title: True Community NRF HTTP routes and original anonymous demo entry
+requires: community
+strict: true
+locale: en
+viewport:
+- 1440
+- 1000
+overlays:
+- demo-community-user-routes
+- demo-community-user-route-shell
+known_errors:
+- match: /^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/
+  reason: Required source-native logged-out /me; sole fake stage clears cookie and unit positively asserts 401/login
+    UI. No unrelated endpoint/status is allowed.
+- match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source:
+    http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?\]$/'
+  reason: Exact same required logged-out /me diagnostic, paired with positive native logged-out boundary.
+- match: /^http 404 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/enterprise-settings$/
+  reason: Native CE auth-path branding probe (settings/hooks.ts70-90), with absent route404 mapped to default Onyx/no-error (37-39,116-120). Final native logged-out login shot asserts default branding, exact404 DTO and protected Community flags; no other URI/status is allowed.
+- match: '/^console: Failed to load resource: the server responded with a status of 404 \(Not Found\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/enterprise-settings\]$/'
+  reason: Exact resource diagnostic of that native CE branding absence, paired with default Onyx login,404 DTO and unchanged Community flags assertion.
+steps:
+- goto: /nrf
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- eval: (async()=>{const r=await fetch('/api/settings'); if(!r.ok) throw new Error('Community settings prerequisite
+    missing'); const v=await r.json(); if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active')
+    throw new Error('Not a Community fixture/licensing state');})()
+- eval: if([...document.querySelectorAll('#onyx-chat-input button')].some(b=>b.textContent.trim()==='Read this tab'))
+    throw new Error('New-tab route exposed side-panel-only context control');
+- shot:
+    name: ce-nrf-new-tab
+    full_page: true
+- click:
+    selector: .absolute.top-0.end-0.p-4 button
+- wait:
+    text: Use Onyx as new tab page
+- wait:
+    selector: '[role="switch"][aria-checked="true"]'
+- shot:
+    name: ce-nrf-native-settings
+    full_page: true
+- click:
+    role: switch
+- wait:
+    role: button
+    name: Turn off
+    exact: true
+- shot:
+    name: ce-nrf-turn-off-native-confirm
+    full_page: true
+- click:
+    role: button
+    name: Cancel
+    exact: true
+- wait:
+    selector: '[role="switch"][aria-checked="true"]'
+- eval: if(localStorage.getItem('useOnyxAsDefaultNewTab')==='false') throw new Error('Native Cancel changed new-tab
+    preference');
+- shot:
+    name: ce-nrf-turn-off-cancel-protected
+    full_page: true
+- click:
+    role: switch
+- click:
+    role: button
+    name: Turn off
+    exact: true
+- wait:
+    selector: '[role="switch"][aria-checked="false"]'
+- eval: if(localStorage.getItem('useOnyxAsDefaultNewTab')!=='false') throw new Error('Native Turn off did not persist
+    browser-local preference');
+- shot:
+    name: ce-nrf-browser-preference-off
+    full_page: true
+- eval: location.reload()
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- click:
+    selector: .absolute.top-0.end-0.p-4 button
+- wait:
+    selector: '[role="switch"][aria-checked="false"]'
+- shot:
+    name: ce-nrf-off-after-real-reload
+    full_page: true
+- eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:["demo-community-user-routes","demo-community-user-route-shell"],anchor:current.demo_anchor,locale:'en',keep:false})});
+    if(!response.ok) throw new Error('Independent Community dirty-state reset failed');})()
+- goto: /nrf
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- click:
+    selector: .absolute.top-0.end-0.p-4 button
+- wait:
+    selector: '[role="switch"][aria-checked="false"]'
+- shot:
+    name: ce-nrf-backend-reset-retains-browser-preference
+    full_page: true
+- click:
+    role: switch
+- wait:
+    selector: '[role="switch"][aria-checked="true"]'
+- eval: if(localStorage.getItem('useOnyxAsDefaultNewTab')!=='true') throw new Error('Native preference restoration
+    failed');
+- shot:
+    name: ce-nrf-browser-preference-restored-natively
+    full_page: true
+- click:
+    selector: .fixed.top-0.end-0 button
+    nth: 1
+- goto: /nrf/side-panel
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- wait:
+    text: Read this tab
+    exact: true
+- eval: if(document.querySelector('.absolute.top-0.end-0.p-4 button')) throw new Error('Side panel incorrectly exposed
+    new-tab-only Settings');
+- shot:
+    name: ce-nrf-side-panel
+    full_page: true
+- click:
+    role: button
+    name: Read this tab
+    exact: true
+- wait:
+    text: Reading tab...
+    exact: true
+- shot:
+    name: ce-nrf-side-panel-native-reading-without-parent
+    full_page: true
+- click:
+    role: button
+    name: Reading tab...
+    exact: true
+- wait:
+    text: Read this tab
+    exact: true
+- shot:
+    name: ce-nrf-side-panel-native-reading-canceled
+    full_page: true
+- eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:["demo-auth-anonymous",
+    "demo-community-user-routes","demo-community-user-route-shell"],anchor:current.demo_anchor,locale:'en',keep:false})}); if(!response.ok) throw
+    new Error('Independent Community dirty-state reset failed');})()
+- goto: /auth/login
+- eval: '(async()=>{const r=await fetch(''/api/mockshop/auth-anonymous/stage'',{method:''POST'',headers:{''Content-Type'':''application/json''},body:JSON.stringify({"mode":
+    "logged-out"})}); if(!r.ok) throw new Error(''Existing sole fake Auth stage failed'');const me=await fetch(''/api/me'');
+    if(me.status!==401||document.cookie.includes(''fastapiusersauth='')) throw new Error(''Required fake logged-out
+    cookie/401 boundary missing'');})()'
+- goto: /anonymous/demo
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- eval: if(location.pathname!=="/app") throw new Error('Native route/guard reached the wrong canonical URL');
+- eval: (async()=>{const m=await (await fetch('/api/me')).json(); if(!m.is_anonymous_user||m.role!=='basic'||m.is_admin||m.admin_capabilities.length)
+    throw new Error('Original anonymous/demo did not enter the genuine unprivileged fake guest consumer');})()
+- shot:
+    name: ce-anonymous-original-demo-native-chat
+    full_page: true
+- click:
+    selector: '#onyx-user-dropdown'
+- wait:
+    text: Log in
+    exact: true
+- click:
+    text: Log in
+    exact: true
+- wait:
+    role: link
+    name: or continue as guest
+    exact: true
+- shot:
+    name: ce-anonymous-native-login-guest-return
+    full_page: true
+- click:
+    role: link
+    name: or continue as guest
+    exact: true
+- wait:
+    selector: '#onyx-chat-input-textbox'
+- shot:
+    name: ce-anonymous-native-continue-guest
+    full_page: true
+- eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:["demo-auth-anonymous",
+    "demo-community-user-routes","demo-community-user-route-shell"],anchor:current.demo_anchor,locale:'en',keep:false})}); if(!response.ok) throw
+    new Error('Independent Community dirty-state reset failed');})()
+- goto: /auth/login
+- eval: '(async()=>{const r=await fetch(''/api/mockshop/auth-anonymous/stage'',{method:''POST'',headers:{''Content-Type'':''application/json''},body:JSON.stringify({"mode":
+    "logged-out"})}); if(!r.ok) throw new Error(''Existing sole fake Auth stage failed'');const me=await fetch(''/api/me'');
+    if(me.status!==401||document.cookie.includes(''fastapiusersauth='')) throw new Error(''Required fake logged-out
+    cookie/401 boundary missing'');})()'
+- goto: /auth/login
+- wait:
+    testid: email
+- eval: |
+    (async()=>{
+      const branding=await fetch('/api/enterprise-settings');
+      if(branding.status!==404||(await branding.json()).detail!=='Not Found'||!document.body.innerText.includes('Welcome to Onyx')) throw new Error('Native CE absent-branding/default Onyx login boundary missing');
+      const r=await fetch('/api/settings');
+      if(!r.ok) throw new Error('Community settings prerequisite missing');
+      const v=await r.json();
+      if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active') throw new Error('Auth fallback changed protected Community flags');
+      const analytics=await fetch('/api/enterprise-settings/custom-analytics-script');
+      if(!analytics.ok||await analytics.json()!==null) throw new Error('Native empty analytics configuration prerequisite missing');
+    })()
+- shot:
+    name: ce-anonymous-fresh-no-guest-cookie-login
+    full_page: true
+demo_anchor: '2026-10-09T10:00:00-04:00'

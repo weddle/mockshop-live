@@ -1,0 +1,15 @@
+# #65 route-sized native proof: Federated detail.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-federated-detail
+title: Federated detail - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/federated/6501
+  - shot: inventory-federated-detail
+  - goto: /admin/federated/6501
+  - shot: federated-detail-fake

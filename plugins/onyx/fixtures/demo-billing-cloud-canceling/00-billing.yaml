@@ -1,0 +1,2 @@
+# Native annual cancellation/expiration warning snapshot only.
+GET /mockshop/admin-pages/billing-case: canceling

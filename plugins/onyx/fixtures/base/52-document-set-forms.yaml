@@ -1,0 +1,54 @@
+# AUD-24 / #63: fictional document sets and connector-picker options.
+# Keep these IDs aligned with existing agent knowledge and connector detail fixtures.
+GET /manage/admin/connector/status:
+  - cc_pair_id: 102
+    name: Confluence – OPS space
+    connector: { id: 302, name: Confluence – OPS space, source: confluence, input_type: poll, connector_specific_config: {}, refresh_freq: 1800, prune_freq: null, indexing_start: null }
+    access_type: public
+    groups: []
+    status: ACTIVE
+    has_successful_run: true
+  - cc_pair_id: 103
+    name: Google Drive – Policies & Procedures
+    connector: { id: 303, name: Google Drive – Policies & Procedures, source: google_drive, input_type: poll, connector_specific_config: {}, refresh_freq: 1800, prune_freq: null, indexing_start: null }
+    access_type: sync
+    groups: []
+    status: ACTIVE
+    has_successful_run: true
+  - cc_pair_id: 105
+    name: Zoom – Meeting transcripts
+    connector: { id: 305, name: Zoom – Meeting transcripts, source: zoom, input_type: poll, connector_specific_config: {}, refresh_freq: 1800, prune_freq: null, indexing_start: null }
+    access_type: sync
+    groups: []
+    status: ACTIVE
+    has_successful_run: true
+  - cc_pair_id: 108
+    name: Confluence – Training space
+    connector: { id: 308, name: Confluence – Training space, source: confluence, input_type: poll, connector_specific_config: {}, refresh_freq: 1800, prune_freq: null, indexing_start: null }
+    access_type: sync
+    groups: [1]
+    status: ACTIVE
+    has_successful_run: true
+GET /manage/document-set:
+  - id: 21
+    name: Learning & Development
+    description: Onboarding paths, training records and recorded training sessions
+    cc_pair_summaries:
+      - { id: 105, name: Zoom – Meeting transcripts, source: zoom, access_type: sync }
+    is_up_to_date: true
+    is_public: true
+    users: []
+    groups: []
+    permissions: { edit: true, manage_access: true, delete: true, publish: true }
+    federated_connector_summaries: []
+  - id: 22
+    name: Property Operations
+    description: SOPs, runbooks and brand standards for every Seaside property
+    cc_pair_summaries:
+      - { id: 102, name: Confluence – OPS space, source: confluence, access_type: public }
+    is_up_to_date: true
+    is_public: true
+    users: []
+    groups: []
+    permissions: { edit: true, manage_access: true, delete: true, publish: true }
+    federated_connector_summaries: []

@@ -1,0 +1,29 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-no-agent-admin
+title: Native Extras - no agent admin
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras-no-agent]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-user-extras-no-agent'],anchor:state.demo_anchor,locale:'en',keep:false})});
+      })()
+  - goto: /app
+  - wait: { text: No Agent Available, exact: true }
+  - shot: {name: extras-27a-empty-home-no-agent-admin, full_page: true}
+  - click: { role: link, name: Re-enable Default Chat, exact: true }
+  - eval: "if(location.pathname !== '/admin/chat-preferences') throw new Error('Native re-enable default chat link did not reach its settings owner')"
+  - shot: {name: extras-27b-no-agent-default-chat-target, full_page: true}
+  - goto: /app
+  - wait: { text: No Agent Available, exact: true }
+  - click: { role: link, name: Configure a New Agent, exact: true }
+  - eval: "if(location.pathname !== '/admin/agents') throw new Error('Native configure-agent link did not reach its catalog owner')"
+  - shot: {name: extras-27c-no-agent-configure-agent-target, full_page: true}

@@ -1,0 +1,56 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-gallery
+title: Native Extras - gallery
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+  - click: { label: Consent checkbox }
+  - click: { role: button, name: Start, exact: true }
+  - wait_gone: { selector: '[role="dialog"]' }
+  # Lossless primary operations from the former monolithic proof.
+  - click: { testid: AppSidebar/more-agents }
+  - wait: { text: Campus Learning Guide, exact: true }
+  - shot: {name: extras-35-group-agents-gallery-menu, full_page: true}
+  - goto: /app/agents
+  - wait: { text: Clinical Education Guide, exact: true }
+  - click: { role: tab, name: Your Agents, exact: true }
+  - shot: {name: extras-36-gallery-your-agents, full_page: true}
+  - click: { role: tab, name: All Agents, exact: true }
+  - fill: { placeholder: Search agents..., value: no-such-education-agent }
+  - wait: { text: No Agents found, exact: true }
+  - shot: {name: extras-37-gallery-search-empty, full_page: true}
+  - fill: { placeholder: Search agents..., value: "" }
+  - click: { role: button, name: Everyone, exact: true }
+  - click: { text: devon.ortiz@seasidecollection.example, exact: true }
+  - press: Escape
+  - wait: { text: No Agents found, exact: true }
+  - shot: {name: extras-37a-gallery-created-by-empty, full_page: true}
+  - click: { selector: '.relative:has(> button:has-text("By devon.ortiz@seasidecollection.example")) > .absolute button' }
+  - click: { role: button, name: All Actions, exact: true }
+  - click: { text: Image Generation, exact: true }
+  - press: Escape
+  - wait: { text: No Agents found, exact: true }
+  - shot: {name: extras-37b-gallery-actions-empty, full_page: true}
+  - click: { selector: '.relative:has(> button:has-text("Image Generation")) > .absolute button' }
+  - fill: { placeholder: Search agents..., value: Campus Learning Guide }
+  - click: { selector: '.radial-00:has-text("Campus Learning Guide") .h-24' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-38-shared-agent-viewer, full_page: true}
+  - click: { label: Fold Actions & Tools }
+  - click: { label: Fold More Info }
+  - shot: {name: extras-38a-viewer-sections-collapsed, full_page: true}
+  - click: { label: Expand Actions & Tools }
+  - click: { label: Expand More Info }
+  - shot: {name: extras-39-shared-agent-viewer-more-info, full_page: true}
+  - press: Escape
+  - click: { role: button, name: Start Chat, exact: true }
+  - wait: { testid: agent-name-display }
+  - eval: "if(new URL(location.href).searchParams.get('agentId') !== '11') throw new Error('Native shared-agent picker selected wrong agent')"
+  - shot: {name: extras-39a-group-shared-agent-picker, full_page: true}

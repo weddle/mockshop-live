@@ -1,0 +1,39 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-skills-empty
+title: "Craft native empty Skills"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path:'/skills',state:'empty'})});
+        if (!response.ok) throw new Error('Skill empty staging failed');
+      })()
+  - goto: /craft/v1/skills
+  - wait: { text: No skills available, exact: true }
+  - shot: craft-skills-empty
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: "/craft/v1/skills"
+  - wait: {"text": "campus-study-plan", "exact": true}
+  - shot: "craft-unit-skills-empty-reset"

@@ -1,0 +1,73 @@
+# License scope: Onyx Enterprise License, NOT Mockshop's MIT License.
+# This patch includes source excerpts/modifications from Onyx Enterprise code.
+# Copyright (c) 2023-present DanswerAI, Inc.; upstream rights are retained.
+# Source: Onyx f858083d6cbe37c4146834d379e39511260a9879, web/src/app/ee/.
+# See ONYX-ENTERPRISE-LICENSE.txt in this directory for the exact upstream terms.
+# Production use and distribution remain subject to those terms.
+#
+--- a/src/app/ee/admin/performance/custom-analytics/CustomAnalyticsUpdateForm.tsx
++++ b/src/app/ee/admin/performance/custom-analytics/CustomAnalyticsUpdateForm.tsx
+@@ -6,9 +6,11 @@
+ import { useCustomAnalyticsScript } from "@/lib/analytics/hooks";
+ import { Button, InputTextArea, Text } from "@opal/components";
+ import { markdown } from "@opal/utils";
+-import { useState } from "react";
++import { useEffect, useRef, useState } from "react";
+ import { Spacer } from "@opal/components";
+ import { useSettings } from "@/lib/settings/hooks";
++import { mutate } from "swr";
++import { SWR_KEYS } from "@/lib/swr-keys";
+ 
+ export default function CustomAnalyticsUpdateForm() {
+   const t = useTranslations("admin.customAnalytics");
+@@ -18,12 +20,20 @@
+   const [newCustomAnalyticsScript, setNewCustomAnalyticsScript] =
+     useState<string>(customAnalyticsScript || "");
+   const [secretKey, setSecretKey] = useState<string>("");
++  const scriptEdited = useRef(false);
++
++  useEffect(() => {
++    if (!scriptEdited.current) {
++      setNewCustomAnalyticsScript(customAnalyticsScript || "");
++    }
++  }, [customAnalyticsScript]);
+ 
+   return (
+     <div>
+       <form
+         onSubmit={async (e) => {
+           e.preventDefault();
++          const script = newCustomAnalyticsScript.trim();
+ 
+           const response = await fetch(
+             "/api/admin/enterprise-settings/custom-analytics-script",
+@@ -33,12 +43,15 @@
+                 "Content-Type": "application/json",
+               },
+               body: JSON.stringify({
+-                script: newCustomAnalyticsScript.trim(),
++                script,
+                 secret_key: secretKey,
+               }),
+             }
+           );
+           if (response.ok) {
++            await mutate(SWR_KEYS.customAnalyticsScript, script, {
++              revalidate: false,
++            });
+             toast.success(t("updateSuccess.message"));
+           } else {
+             const errorMsg = (await response.json()).detail;
+@@ -55,8 +68,9 @@
+           <Spacer rem={0.5} />
+           <InputTextArea
+             value={newCustomAnalyticsScript}
+-            onChange={(event) =>
+-              setNewCustomAnalyticsScript(event.target.value)
+-            }
++            onChange={(event) => {
++              scriptEdited.current = true;
++              setNewCustomAnalyticsScript(event.target.value);
++            }}
+           />
+         </div>

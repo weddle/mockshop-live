@@ -1,0 +1,54 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-models-actions
+title: Independent native model picker, multi-model selection and source action controls
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 1000]
+overlays: []
+steps:
+  - goto: /nrf
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-5.2")' }
+  - wait: { placeholder: Search models... }
+  - shot: { name: nrf-model-menu, full_page: true }
+  - fill: { placeholder: Search models..., value: No fictional matching model }
+  - wait: { text: No models found, exact: true }
+  - shot: { name: nrf-model-search-empty, full_page: true }
+  - fill: { placeholder: Search models..., value: GPT-5 mini }
+  - click: { text: GPT-5 mini, exact: true }
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5 mini")' }
+  - shot: { name: nrf-model-selected, full_page: true }
+  - click: { role: button, name: Add Model, exact: true }
+  - fill: { placeholder: Search models..., value: GPT-4.1 }
+  - click: { text: GPT-4.1, exact: true }
+  - press: Escape
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+  - shot: { name: nrf-multiple-models-selected, full_page: true }
+  - click: { role: button, name: Add Model, exact: true }
+  - fill: { placeholder: Search models..., value: GPT-4.1 }
+  - press: Escape
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1") .interactive-foreground-icon', last: true }
+  - wait_gone: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+  - shot: { name: nrf-extra-model-removed, full_page: true }
+  - click: { testid: action-management-toggle }
+  - wait: { testid: tool-options }
+  - shot: { name: nrf-actions-menu, full_page: true }
+  - click: { text: Internal Search, exact: true }
+  - wait: { placeholder: Search Filters }
+  - fill: { placeholder: Search Filters, value: Drive }
+  - wait: { role: switch, name: Toggle Google Drive, exact: true }
+  - shot: { name: nrf-actions-source-search, full_page: true }
+  - fill: { placeholder: Search Filters, value: '' }
+  - click: { text: Disable All Sources, exact: true }
+  - wait: { text: Enable All Sources, exact: true }
+  - shot: { name: nrf-actions-sources-disabled, full_page: true }
+  - click: { role: switch, name: Toggle Google Drive, exact: true }
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="true"]' }
+  - shot: { name: nrf-actions-source-selected, full_page: true }
+  - click: { text: Disable All Sources, exact: true }
+  - click: { text: Enable All Sources, exact: true }
+  - press: Escape

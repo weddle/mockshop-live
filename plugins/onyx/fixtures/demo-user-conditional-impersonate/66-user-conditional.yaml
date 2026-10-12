@@ -1,0 +1,9 @@
+# #34 native impersonation layout requires requireAuth + is_cloud_superuser.
+# Stack ONLY after demo-user-conditional in the impersonation witness.
+# Fictional frontend DTO staging, not real privileges/account/authentication.
+# Sole Auth69 owner grants this read-only flag only to its fixture email member;
+# stageMember(join_email) and logged-out/anonymous states project false again.
+GET /mockshop/auth-anonymous/staging:
+  enabled: true
+  mode: member
+  impersonation_superuser: true

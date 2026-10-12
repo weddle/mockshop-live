@@ -1,0 +1,36 @@
+# Fictional Users & Requests content. Native filters/search/pagination run in the frontend.
+x-user: &user
+  account_type: STANDARD
+  is_admin: false
+  is_active: true
+  password_configured: true
+  personal_name: null
+  created_at: "2026-09-01T14:00:00Z"
+  updated_at: "2026-10-08T14:00:00Z"
+  last_active: "2026-10-09T13:30:00Z"
+  groups: []
+  is_scim_synced: false
+  craft_enabled: null
+GET /manage/users/accepted/all:
+  - { <<: *user, id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11", email: maya.chen@seasidecollection.example, personal_name: Maya Chen, is_admin: true, groups: [{ id: 1, name: Training }] }
+  - { <<: *user, id: u2, email: devon.ortiz@seasidecollection.example, personal_name: Devon Ortiz, groups: [{ id: 1, name: Training }] }
+  - { <<: *user, id: u3, email: priya.raman@seasidecollection.example, personal_name: Priya Raman, groups: [{ id: 1, name: Training }] }
+  - { <<: *user, id: u4, email: lena.brooks@seasidecollection.example, personal_name: Lena Brooks, groups: [{ id: 2, name: Property Operations }] }
+  - { <<: *user, id: u5, email: marco.silva@seasidecollection.example, personal_name: Marco Silva, groups: [{ id: 2, name: Property Operations }] }
+  - { <<: *user, id: u6, email: sam.okafor@seasidecollection.example, personal_name: Sam Okafor, groups: [{ id: 3, name: Front Office }] }
+  - { <<: *user, id: u7, email: noa.patel@learning-lab.example, personal_name: Noa Patel, is_active: false, last_active: null }
+  - { <<: *user, id: u8, email: workshop.bot@learning-lab.example, personal_name: Workshop Bot, account_type: BOT }
+  - { <<: *user, id: u9, email: visiting.educator@learning-lab.example, personal_name: Visiting Educator, account_type: EXT_PERM_USER }
+  - { <<: *user, id: u10, email: resource.indexer@learning-lab.example, personal_name: Resource Indexer, account_type: SERVICE_ACCOUNT }
+GET /manage/users/invited:
+  - { email: iris.ward@learning-lab.example }
+  - { email: ellis.reed@learning-lab.example }
+GET /tenants/users/pending:
+  - { email: robin.lee@learning-lab.example }
+GET /manage/users/counts:
+  account_type_counts: { STANDARD: 7, BOT: 1, EXT_PERM_USER: 1, SERVICE_ACCOUNT: 1 }
+  status_counts: { active: 9, inactive: 1 }
+GET /manage/users/mock-feedback:
+  simulated: true
+  invite_message: "Simulated invitation only; no email is sent and no account is created."
+  reset_password: "DEMO-ONLY-NOT-A-CREDENTIAL"

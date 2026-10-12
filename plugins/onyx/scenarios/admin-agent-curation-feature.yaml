@@ -1,0 +1,77 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset of base + demo-mcp-admin; original native menu/direct entry and seed read.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+
+name: admin-agent-curation-feature
+title: Native Feature cancellation, confirmation, unfeature and gallery persistence
+requires: enterprise
+strict: true
+locale: en
+overlays: [demo-mcp-admin]
+viewport: [1440, 900]
+steps:
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/agents"]' }
+  - wait: { testid: agent-row-actions-14 }
+  - eval: |
+      (async () => {
+        const get = async path => {
+          const r = await fetch('/api' + path);
+          if (!r.ok) throw new Error('Missing native read: ' + path);
+          return r.json();
+        };
+        const seeds = await Promise.all([11,12,13,14].map(id => get('/persona/' + id)));
+        sessionStorage.setItem('admin-curation-seeds', JSON.stringify(seeds));
+        sessionStorage.setItem('admin-curation-pins', JSON.stringify((await get('/me')).preferences.pinned_assistants));
+        const ids = [...document.querySelectorAll('tbody [data-testid^="agent-row-actions-"]')].map(e => e.dataset.testid);
+        if (ids.join(',') !== 'agent-row-actions-11,agent-row-actions-12,agent-row-actions-13,agent-row-actions-14')
+          throw new Error('Seeded native admin order is incorrect');
+      })()
+  - shot: curation-menu-seeded
+  - goto: /admin/agents
+  - wait: { testid: agent-row-actions-13 }
+  - hover: { testid: agent-row-actions-13 }
+  - click: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+  - wait: { role: dialog, has_text: Feature Training Analyst }
+  - shot: feature-confirmation
+  - press: Escape
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+  - eval: |
+      (async () => {
+        if ((await (await fetch('/api/persona/13')).json()).is_featured) throw new Error('Cancel changed featured state');
+      })()
+  - hover: { testid: agent-row-actions-13 }
+  - click: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+  - click: { selector: '[role="dialog"] button:has-text("Feature")' }
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Remove Featured"]' }
+  - shot: featured-admin
+  - goto: /app/agents
+  - wait: { selector: '.radial-00:has-text("Training Analyst")' }
+  - eval: |
+      (async () => {
+        const card = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')].find(e => e.textContent.includes('Training Analyst'));
+        if (!card?.closest('.grid')?.parentElement?.textContent.includes('Featured')) throw new Error('Featured agent not in native Featured section');
+        const a = await (await fetch('/api/persona/13')).json();
+        if (!a.is_featured || !a.is_listed) throw new Error('Feature not persisted in detail');
+      })()
+  - shot: featured-gallery-reload
+  - goto: /admin/agents
+  - wait: { testid: agent-row-actions-13 }
+  - hover: { testid: agent-row-actions-13 }
+  - click: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Remove Featured"]' }
+  - wait: { role: dialog, has_text: Remove Training Analyst from Featured }
+  - shot: unfeature-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Unfeature")' }
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+  - goto: /app/agents
+  - wait: { selector: '.radial-00:has-text("Training Analyst")' }
+  - eval: |
+      (async () => {
+        const card = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')].find(e => e.textContent.includes('Training Analyst'));
+        if (card?.closest('.grid')?.parentElement?.textContent.includes('Featured')) throw new Error('Unfeature left agent in native Featured section');
+        if ((await (await fetch('/api/persona/13')).json()).is_featured) throw new Error('Unfeature lost on navigation');
+      })()
+  - shot: unfeatured-gallery

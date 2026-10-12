@@ -1,0 +1,73 @@
+# Enterprise edition overlay (plugin.yaml editions.enterprise.fixtures): layered on base while the Enterprise build runs.
+# /settings repeats the base object (a route is replaced whole): keep the two in sync apart from ee_features_enabled and tier.
+
+GET /settings:
+  maximum_chat_retention_days: null
+  company_name: Seaside Collection
+  company_description: Boutique coastal hotels & resorts (fictional demo company)
+  gpu_enabled: false
+  application_status: active
+  anonymous_user_enabled: false
+  invite_only_enabled: false
+  deep_research_enabled: true
+  multi_model_chat_enabled: true
+  search_ui_enabled: true
+  auto_detect_search_filters: true
+  ee_features_enabled: true
+  tier: enterprise
+  temperature_override_enabled: true
+  reasoning_override_enabled: true
+  hide_provider_grouping: false
+  auto_scroll: false
+  query_history_type: normal
+  hide_query_history_from_admin_panel: false
+  image_extraction_and_analysis_enabled: true
+  image_analysis_max_size_mb: 20
+  user_knowledge_enabled: true
+  user_file_max_upload_size_mb: 100
+  file_token_count_threshold_k: null
+  show_extra_connectors: true
+  disable_default_assistant: false
+  craft_default_enabled: false
+  llm_gateway_enabled: true
+  craft_instructions: null
+  seat_count: null
+  used_seats: null
+  opensearch_indexing_enabled: true
+  oauth_provider_enabled: false
+  notifications: []
+  needs_reindexing: false
+  tenant_id: public
+  onyx_craft_enabled: false
+  onyx_craft_available: false
+  opencode_debugging_enabled: false
+  vector_db_enabled: true
+  hide_onyx_branding: false
+  hooks_enabled: false
+  version: v3.4.0
+  max_allowed_upload_size_mb: 250
+  default_pruning_freq: 86400
+  default_user_file_max_upload_size_mb: 100
+  default_file_token_count_threshold_k: 200
+  is_containerized: true
+  posthog_key: null
+  posthog_host: null
+
+GET /enterprise-settings:
+  application_name: null
+  use_custom_logo: false
+  use_custom_logotype: false
+  logo_display_style: null
+  custom_nav_items: []
+  custom_lower_disclaimer_content: null
+  custom_header_content: null
+  two_lines_for_chat_header: null
+  custom_popup_header: null
+  custom_popup_content: null
+  enable_consent_screen: null
+  consent_screen_prompt: null
+  show_first_visit_notice: null
+  custom_greeting_message: null
+
+GET /enterprise-settings/custom-analytics-script: null
+GET /license: { status: active, tier: enterprise, seats: 500, used_seats: 212, expires_at: "{{in:180d}}", source: manual_upload }

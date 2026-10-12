@@ -1,0 +1,43 @@
+# #65 route-sized native proof: SCIM.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-scim
+title: SCIM - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/scim
+  - shot: inventory-scim
+  - goto: /admin/hooks
+  - click: { selector: 'a[href="/admin/scim"]' }
+  - wait: { text: Generate SCIM Token, exact: true }
+  - shot: scim-menu-empty
+  - goto: /admin/scim
+  - click: { role: button, name: Generate SCIM Token, exact: true }
+  - wait: { text: SCIM Token, exact: true }
+  - shot: scim-created-token-dialog
+  - press: Escape
+  - goto: /admin/voice
+  - goto: /admin/scim
+  - wait: { text: Waiting for Connection, exact: true }
+  - shot: scim-persisted
+  - click: { role: button, name: Regenerate Token, exact: true }
+  - wait: { role: dialog }
+  - shot: scim-regenerate-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Regenerate Token")' }
+  - wait: { text: SCIM Token, exact: true }
+  - shot: scim-regenerated-token-dialog
+  - press: Escape
+  - goto: /admin/voice
+  - goto: /admin/scim
+  - shot: scim-regenerated-persisted
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+      })()
+  - goto: /admin/scim
+  - wait: { text: Generate SCIM Token, exact: true }
+  - shot: reset-scim-seed

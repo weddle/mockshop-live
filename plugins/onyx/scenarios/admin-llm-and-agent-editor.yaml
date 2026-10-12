@@ -1,0 +1,29 @@
+# Admin: LLM provider config (incl. on-prem model) + anatomy of an agent
+# (instructions, starters, knowledge/document set, actions/tools incl. an MCP server, sharing, pinned model).
+name: admin-llm-and-agent-editor
+requires: enterprise            # the Share Agent modal lists user groups only when the enterprise settings route answers
+title: Admin reviews LLM providers and edits an agent
+viewport: [1440, 900]
+continue_on_error: true
+steps:
+  - goto: /admin/language-models
+  - shot: language-models
+  - goto: /app/agents/edit/11
+  - settle: 1000
+  - shot: agent-editor
+  - scroll: 520
+  - shot: agent-editor-knowledge
+  - scroll: { text: Share Agent }
+  - click: { role: button, name: Share }
+  - wait: { text: Training, exact: true }
+  - settle: 600
+  - shot: agent-editor-sharing
+  - press: Escape
+  - settle: 400
+  # Actions and Advanced Options are open by default; scroll their headers to the top
+  - eval: "(e=>{e.style.scrollMarginTop='170px';e.scrollIntoView({block:'start'})})(document.querySelectorAll('.opal-collapsible')[0])"
+  - settle: 500
+  - shot: agent-editor-actions
+  - eval: "(e=>{e.style.scrollMarginTop='170px';e.scrollIntoView({block:'start'})})(document.querySelectorAll('.opal-collapsible')[1])"
+  - settle: 500
+  - shot: agent-editor-advanced

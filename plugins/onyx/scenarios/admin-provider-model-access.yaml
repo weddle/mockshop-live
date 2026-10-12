@@ -1,0 +1,157 @@
+# #58 EDITONLY prepared; unexecuted/unaccepted. 100 operations / 18 named images.
+# Source15 shared.tsx205–435: native All Users & Agents / Named Groups & Agents,
+# business-tier group + agent search/select/exclusion, real chip removal, Admin count.
+# Public clears both arrays. The source notice is No agents added in restricted-empty
+# state; Public hides that entire card, not an invented Public banner.
+# Existing Portkey messages editor only: no API-mode/credential-family replay.
+# All product writes use native Update; supplementary GETs only assert saved/protected
+# metadata. Existing Groups/Agents/Users provide truthful picker IDs/counts; no new ACL.
+# Existing edition-enterprise supplies the source-required business-tier group gate.
+# Only existing reset controls receive direct writes. sessionStorage holds witness
+# snapshots, not a second product store. Public DOM scrolls keep access controls readable.
+name: admin-provider-model-access
+title: Native saved provider Models Access groups, agents, chips and protected reset
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [edition-enterprise, demo-mcp-admin, demo-admin-provider-model-access]
+steps:
+  # 1–10: menu/direct entry, public configured provider and actual picker prerequisites.
+  - goto: /admin/agents
+  - click: { selector: 'a[href="/admin/language-models"]' }
+  - wait: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - eval: >-
+      (async () => { const paths = ['/api/admin/llm/provider','/api/manage/admin/user-group','/api/persona','/api/manage/users?include_api_keys=false','/api/settings']; const values = await Promise.all(paths.map(async path => { const r = await fetch(path); if (!r.ok) throw new Error(`Models Access prerequisite read failed: ${path}`); return r.json(); })); const [c,groups,agents,users,settings] = values, p = c.providers.find(p => p.id === 61), group = groups.find(g => g.id === 1), agent = agents.find(a => a.id === 11);
+      if (c.providers.length !== 1 || p?.provider !== 'portkey' || p.name !== 'Campus Model Access (local fake)' || p.is_public !== true || p.groups.length || p.personas.length || p.custom_config?.portkey_api_mode !== 'messages' || p.api_base !== 'https://campus-model-access.invalid/messages' || p.api_key !== 'mock-only-not-a-secret') throw new Error('Public configured-provider seed prerequisite missing');
+      if (settings.tier !== 'enterprise' || group?.name !== 'Training' || group.users.length !== 3 || agent?.name !== 'Training & Onboarding Desk' || users.accepted.filter(u => u.is_admin).length !== 1) throw new Error('Existing enterprise/Training1/agent11/Admin-count picker prerequisite missing'); sessionStorage.setItem('mockshop-model-access-seed',JSON.stringify(c)); })()
+  - shot: { name: model-access-menu-public-seed, full_page: true }
+  - goto: /admin/language-models
+  - click: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[placeholder="Select access level"][value="All Users & Agents"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[placeholder="Add groups and agents"]') || d.textContent.includes('Always shared') || d.textContent.includes('No agents added') || d.querySelector('input[name="name"]').value !== 'Campus Model Access (local fake)' || d.querySelector('input[name="api_base"]').value !== 'https://campus-model-access.invalid/messages' || d.querySelector('input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Public baseline or protected native editor fields mismatch'); d.querySelector('input[placeholder="Select access level"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-public-baseline-editor, full_page: true }
+  # 11–18: source-native access menu, Admin count/always-shared card and empty-agent notice.
+  - click: { selector: '[role="dialog"] input[placeholder="Select access level"]' }
+  - wait: { selector: '[role="option"]:has(:text-is("Named Groups & Agents"))' }
+  - shot: { name: model-access-native-access-level-menu, full_page: true }
+  - click: { selector: '[role="option"]:has(:text-is("Named Groups & Agents"))' }
+  - wait: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]' }
+  - wait: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Admin")):has-text("1 member")' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[placeholder="Select access level"]').value !== 'Named Groups & Agents' || !d.textContent.includes('Always shared') || !d.textContent.includes('No agents added') || !d.textContent.includes('This provider will not be used by any agents.')) throw new Error('Restricted Admin/empty-agent source state missing'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-restricted-empty-admin-count, full_page: true }
+  # 19–28: real searchable Group/Agent options, select both existing IDs and readable chips.
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training }
+  - wait: { selector: '[role="option"]:has(:text-is("Training"))' }
+  - eval: >-
+      const options = [...document.querySelectorAll('[role="option"]')]; if (!options.some(o => o.textContent.includes('Training') && !o.textContent.includes('Training & Onboarding Desk') && o.textContent.includes('Group')) || !options.some(o => o.textContent.includes('Training & Onboarding Desk') && o.textContent.includes('Agent')) || options.some(o => o.textContent.includes('Property Operations') || o.textContent.includes('Front Office'))) throw new Error('Native search did not distinguish/filter existing group and agent options');
+  - shot: { name: model-access-search-existing-group-and-agent, full_page: true }
+  - click: { selector: '[role="option"]:has(:text-is("Training"))' }
+  - wait: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training")) .opal-content-action-right button' }
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training & Onboarding Desk }
+  - click: { selector: '[role="option"]:has(:text-is("Training & Onboarding Desk"))' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'), cards = [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button')), group = cards.find(c => c.textContent.includes('Training') && !c.textContent.includes('Training & Onboarding Desk')), agent = cards.find(c => c.textContent.includes('Training & Onboarding Desk')), admin = [...d.querySelectorAll('.opal-content-action')].find(c => c.textContent.includes('Always shared'));
+      if (!group?.textContent.includes('3 members') || !agent?.textContent.includes('Agent') || !admin?.textContent.includes('1 member') || d.textContent.includes('No agents added')) throw new Error('Native selected group/agent chips or truthful member/Admin count mismatch'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-group-agent-selected-chips, full_page: true }
+  # 29–39: selected options excluded from an OPEN search; both real chip removals.
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training }
+  - wait_gone: { selector: '[role="option"]:has(:text-is("Training")), [role="option"]:has(:text-is("Training & Onboarding Desk"))' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'), input = d.querySelector('input[placeholder="Add groups and agents"]'), options = [...document.querySelectorAll('[role="option"]')], chips = [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button'));
+      const hasExactTitle = (element,title) => [element,...element.querySelectorAll('*')].some(node => node.textContent.trim() === title), selectedTitles = ['Training','Training & Onboarding Desk'];
+      if (input.value !== 'Training' || input.getAttribute('aria-expanded') !== 'true' || selectedTitles.some(title => options.some(option => hasExactTitle(option,title))) || !options.some(option => hasExactTitle(option,'Training Analyst') && option.textContent.includes('Agent')) || selectedTitles.some(title => !chips.some(chip => hasExactTitle(chip,title)))) throw new Error('Open search must exclude exact selected group/agent, preserve unselected Training Analyst, and retain both selected chips');
+  - shot: { name: model-access-selected-options-excluded-search, full_page: true }
+  - click: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training")) .opal-content-action-right button' }
+  - wait_gone: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training")) .opal-content-action-right button' }
+  - shot: { name: model-access-group-chip-removed-agent-retained, full_page: true }
+  - click: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training & Onboarding Desk")) .opal-content-action-right button' }
+  - wait_gone: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training & Onboarding Desk")) .opal-content-action-right button' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (!d.textContent.includes('No agents added') || !d.textContent.includes('Always shared') || [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button')).some(c => c.textContent.includes('Training'))) throw new Error('Chip removal did not return restricted empty source state'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-both-chips-removed-empty-notice, full_page: true }
+  # 40–51: removed options return; real Update persists groups/personas and saved native reopen.
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training }
+  - click: { selector: '[role="option"]:has(:text-is("Training"))' }
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training & Onboarding Desk }
+  - click: { selector: '[role="option"]:has(:text-is("Training & Onboarding Desk"))' }
+  - shot: { name: model-access-reselected-ready-native-update, full_page: true }
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Restricted saved catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 61), seed = JSON.parse(sessionStorage.getItem('mockshop-model-access-seed')), before = seed.providers[0], models = list => list.map(m => [m.name,m.display_name,m.is_visible,m.max_input_tokens,m.supports_image_input,m.supports_reasoning]);
+      if (c.providers.length !== 1 || p?.is_public !== false || JSON.stringify(p.groups) !== '[1]' || JSON.stringify(p.personas) !== '[11]' || p.name !== before.name || p.provider !== before.provider || p.api_key !== before.api_key || p.api_base !== before.api_base || p.is_auto_mode !== before.is_auto_mode || JSON.stringify(p.custom_config) !== JSON.stringify(before.custom_config) || JSON.stringify(models(p.model_configurations)) !== JSON.stringify(models(before.model_configurations)) || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft])) throw new Error('Native restricted Update failed saved IDs or protected provider/model/default fields'); sessionStorage.setItem('mockshop-model-access-restricted',JSON.stringify(c)); })()
+  - click: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'), cards = [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button'));
+      if (d.querySelector('input[placeholder="Select access level"]').value !== 'Named Groups & Agents' || !cards.some(c => c.textContent.includes('Training') && !c.textContent.includes('Training & Onboarding Desk') && c.textContent.includes('3 members')) || !cards.some(c => c.textContent.includes('Training & Onboarding Desk')) || d.querySelector('input[name="name"]').value !== 'Campus Model Access (local fake)' || d.querySelector('input[name="api_base"]').value !== 'https://campus-model-access.invalid/messages' || d.querySelector('input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Saved restricted native choice/chips/protected fields did not genuinely reopen'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-restricted-saved-native-reopen, full_page: true }
+  # 52–61: canceled removal draft protects the whole committed catalog and visible chips.
+  - click: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training")) .opal-content-action-right button' }
+  - click: { selector: '[role="dialog"] .opal-content-action:has(:text-is("Training & Onboarding Desk")) .opal-content-action-right button' }
+  - shot: { name: model-access-canceled-chip-removal-draft, full_page: true }
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Canceled restricted catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-access-restricted')) throw new Error('Canceled chip removal changed committed access/provider/model/default catalog'); })()
+  - click: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'), cards = [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button')); if (d.querySelector('input[placeholder="Select access level"]').value !== 'Named Groups & Agents' || !cards.some(c => c.textContent.includes('Training') && !c.textContent.includes('Training & Onboarding Desk')) || !cards.some(c => c.textContent.includes('Training & Onboarding Desk'))) throw new Error('Canceled removals leaked into genuine committed restricted reopen'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-cancel-protected-native-reopen, full_page: true }
+  # 62–70: Public hides restricted controls; returning to Restricted proves BOTH arrays cleared.
+  - click: { selector: '[role="dialog"] input[placeholder="Select access level"]' }
+  - click: { selector: '[role="option"]:has(:text-is("All Users & Agents"))' }
+  - wait_gone: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[placeholder="Select access level"]').value !== 'All Users & Agents' || d.textContent.includes('Always shared') || d.textContent.includes('No agents added') || [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button')).some(c => c.textContent.includes('Training'))) throw new Error('Public did not hide restricted picker/chips/Admin/source notice'); d.querySelector('input[placeholder="Select access level"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-public-draft-hides-restricted-card, full_page: true }
+  - click: { selector: '[role="dialog"] input[placeholder="Select access level"]' }
+  - click: { selector: '[role="option"]:has(:text-is("Named Groups & Agents"))' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (!d.querySelector('input[placeholder="Add groups and agents"]') || !d.textContent.includes('No agents added') || !d.textContent.includes('This provider will not be used by any agents.') || !d.textContent.includes('Always shared') || [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button')).some(c => c.textContent.includes('Training'))) throw new Error('Public did not clear both selected arrays: restricted draft retained chips or lost source empty notice'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'});
+  - shot: { name: model-access-public-cleared-arrays-source-empty-notice, full_page: true }
+  # 71–78: genuine Public Update, empty saved arrays and actual native Public reopen.
+  - click: { selector: '[role="dialog"] input[placeholder="Select access level"]' }
+  - click: { selector: '[role="option"]:has(:text-is("All Users & Agents"))' }
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Public saved catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 61), seed = JSON.parse(sessionStorage.getItem('mockshop-model-access-seed')), before = seed.providers[0], models = list => list.map(m => [m.name,m.display_name,m.is_visible,m.max_input_tokens,m.supports_image_input,m.supports_reasoning]);
+      if (c.providers.length !== 1 || p?.is_public !== true || p.groups.length || p.personas.length || p.name !== before.name || p.provider !== before.provider || p.api_key !== before.api_key || p.api_base !== before.api_base || p.is_auto_mode !== before.is_auto_mode || JSON.stringify(p.custom_config) !== JSON.stringify(before.custom_config) || JSON.stringify(models(p.model_configurations)) !== JSON.stringify(models(before.model_configurations)) || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft])) throw new Error('Public Update did not persist cleared arrays or preserved provider/model/default fields'); })()
+  - click: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[placeholder="Select access level"][value="All Users & Agents"]' }
+  - shot: { name: model-access-public-saved-native-reopen, full_page: true }
+  # 79–87: dirty saved Restricted state is REQUIRED before meaningful original-Public reset.
+  - click: { selector: '[role="dialog"] input[placeholder="Select access level"]' }
+  - click: { selector: '[role="option"]:has(:text-is("Named Groups & Agents"))' }
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training }
+  - click: { selector: '[role="option"]:has(:text-is("Training"))' }
+  - fill: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]', value: Training & Onboarding Desk }
+  - click: { selector: '[role="option"]:has(:text-is("Training & Onboarding Desk"))' }
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Dirty restricted catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 61); if (p?.is_public !== false || JSON.stringify(p.groups) !== '[1]' || JSON.stringify(p.personas) !== '[11]') throw new Error('Meaningful dirty restricted reset prerequisite was not saved natively'); sessionStorage.setItem('mockshop-model-access-dirty',JSON.stringify(c)); })()
+  # 88–94: keep and hard navigation/reload, genuine dirty restricted choice/chips still visible.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['edition-enterprise','demo-mcp-admin','demo-admin-provider-model-access'],keep:true})}); if (!r.ok) throw new Error('Existing Models Access keep control failed'); })()
+  - goto: /admin/language-models
+  - click: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[placeholder="Add groups and agents"]' }
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'), cards = [...d.querySelectorAll('.opal-content-action')].filter(c => c.querySelector('.opal-content-action-right button')); if (d.querySelector('input[placeholder="Select access level"]').value !== 'Named Groups & Agents' || !cards.some(c => c.textContent.includes('Training') && !c.textContent.includes('Training & Onboarding Desk') && c.textContent.includes('3 members')) || !cards.some(c => c.textContent.includes('Training & Onboarding Desk')) || !d.textContent.includes('Always shared')) throw new Error('Keep/hard navigation lost genuine restricted choice/chips/Admin'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Kept Models Access catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-access-dirty')) throw new Error('Keep/hard navigation changed dirty committed catalog'); d.querySelector('input[placeholder="Add groups and agents"]').scrollIntoView({block:'center'}); })()
+  - shot: { name: model-access-restricted-dirty-keep-reload-reopen, full_page: true }
+  - press: Escape
+  # 95–100: fresh reset restores original PUBLIC and exact original catalog/model IDs/defaults.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['edition-enterprise','demo-mcp-admin','demo-admin-provider-model-access'],keep:false,resetChats:true})}); if (!r.ok) throw new Error('Existing Models Access fresh-reset control failed'); })()
+  - goto: /admin/language-models
+  - click: { role: button, name: Edit Campus Model Access (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[placeholder="Select access level"][value="All Users & Agents"]' }
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[placeholder="Add groups and agents"]') || d.textContent.includes('Always shared') || d.textContent.includes('No agents added') || d.querySelector('input[name="name"]').value !== 'Campus Model Access (local fake)' || d.querySelector('input[name="api_base"]').value !== 'https://campus-model-access.invalid/messages' || d.querySelector('input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Fresh reset did not visibly restore original Public/protected editor fields'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Fresh Models Access seed read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-access-seed')) throw new Error('Fresh reset retained dirty access metadata or failed exact original catalog/model/default restoration'); d.querySelector('input[placeholder="Select access level"]').scrollIntoView({block:'center'}); })()
+  - shot: { name: model-access-fresh-original-public-restored, full_page: true }

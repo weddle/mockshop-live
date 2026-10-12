@@ -1,0 +1,46 @@
+# Native condition only: oauth_provider_enabled=true, fake authenticated user; no authorize/login flow.
+name: user-settings-controls-connected-apps
+title: Native authorized-app list, cancel, disconnect, keep and reset
+requires: enterprise
+strict: true
+locale: en
+overlays: [demo-user-settings-connected-apps]
+steps:
+  - goto: /app/settings/general
+  - click: { selector: 'a[href="/app/settings/accounts-access"]' }
+  - wait: { text: Connected apps, exact: true }
+  - wait: { text: Workshop Reader (fictional), exact: true }
+  - shot: { name: authorized-app-native-loaded, full_page: true }
+  - click: { role: button, name: Disconnect Workshop Reader (fictional), exact: true }
+  - wait: { text: Disconnect Workshop Reader (fictional)?, exact: true }
+  - shot: { name: authorized-app-disconnect-confirm, full_page: true }
+  - click: { role: button, name: Cancel, exact: true }
+  - wait_gone: { role: dialog }
+  - goto: /app/settings/accounts-access
+  - wait: { text: Workshop Reader (fictional), exact: true }
+  - shot: { name: authorized-app-cancel-protected, full_page: true }
+  - click: { role: button, name: Disconnect Workshop Reader (fictional), exact: true }
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+  - wait: { text: No connected apps., exact: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:['demo-user-settings-connected-apps'], keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+  - goto: /app/settings/accounts-access
+  - wait: { text: No connected apps., exact: true }
+  - eval: |
+      (async () => {
+        const grants = await (await fetch('/api/oauth-provider/grants')).json();
+        if (grants.length !== 0 || document.body.innerText.includes('Workshop Reader (fictional)')) throw new Error('Disconnected app reappeared after keep/reload');
+      })()
+  - shot: { name: authorized-app-disconnected-kept-empty, full_page: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:['demo-user-settings-connected-apps'], locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+  - goto: /app/settings/accounts-access
+  - wait: { text: Workshop Reader (fictional), exact: true }
+  - wait: { role: button, name: Disconnect Workshop Reader (fictional), exact: true }
+  - shot: { name: authorized-app-reset-restored, full_page: true }

@@ -1,0 +1,56 @@
+# #65 route-sized native proof: Document Feedback.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-documents-feedback
+title: Document Feedback - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/documents/feedback
+  - shot: inventory-documents-feedback
+  - goto: /admin/documents/feedback
+  - shot: documents-feedback-empty
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00', admin_documents_fixture: 'loaded' }) });
+        window.location.href = '/admin/documents/feedback';
+      })()
+  - wait: { role: link, name: Workshop reading guide (fake), exact: true }
+  - wait: { role: link, name: Workshop summaries workbook (fake), exact: true }
+  - shot: documents-feedback-liked-disliked-loaded
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") button[aria-label="Edit"]' }
+  - fill: { selector: 'tr:has-text("Workshop reading guide (fake)") input:not([type="checkbox"])', value: '5' }
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") button[aria-label="Save"]' }
+  - wait: { text: Updated score!, exact: true }
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Hide document"]' }
+  - wait: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Unhide document"]' }
+  - shot: documents-feedback-liked-boost-hidden
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") button[aria-label="Edit"]' }
+  - fill: { selector: 'tr:has-text("Workshop summaries workbook (fake)") input:not([type="checkbox"])', value: '3' }
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") button[aria-label="Save"]' }
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Hide document"]' }
+  - wait: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Unhide document"]' }
+  - shot: documents-feedback-disliked-boost-hidden
+  - goto: /admin/security
+  - goto: /admin/documents/feedback
+  - wait: { selector: 'tr:has-text("Workshop reading guide (fake)") button:has-text("5")' }
+  - wait: { selector: 'tr:has-text("Workshop summaries workbook (fake)") button:has-text("3")' }
+  - wait: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Unhide document"]' }
+  - wait: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Unhide document"]' }
+  - shot: documents-feedback-navigation-readback
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Unhide document"]' }
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Unhide document"]' }
+  - shot: documents-feedback-visible-again
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/documents/feedback';
+      })()
+  - wait_gone: { role: link, name: Workshop reading guide (fake), exact: true }
+  - wait_gone: { role: link, name: Workshop summaries workbook (fake), exact: true }
+  - wait: { text: Most Liked Documents, exact: true }
+  - wait_gone: { selector: 'svg[role="status"]' }
+  - shot: reset-documents-feedback-empty

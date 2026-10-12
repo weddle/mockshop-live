@@ -1,0 +1,325 @@
+# #70 fictional education/healthcare content. Parent composition and visual proof pending.
+# These are staging DTOs, not real provider, job, scheduling, storage or integration results.
+GET /mockshop/user-craft:
+  fake_credential: mock-craft-fictional-not-a-secret
+  next_run_at: "{{in:1d}}"
+  oauth_delay_ms: 25000
+  packet_delay_ms: 600
+  generated_name: Accessible workshop plan
+  answer: "Fictional Craft output: prepare accessible workshop notes, give learners quiet reflection time, and publish the synthetic handout. No integrations or jobs were executed."
+  task_output: "Fictional scheduled result: the clinic education checklist is ready. Confirm plain-language instructions and accessible formats. No real task was scheduled or executed."
+  upload_text: "Synthetic educational attachment; caller bytes were discarded."
+  skill_defaults: &skillDefaults
+    source: custom
+    is_available: true
+    unavailable_reason: null
+    is_valid: true
+    is_personal: true
+    enabled: true
+    can_toggle: true
+    author_user_id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+    author_email: learning.coordinator@workshop.example
+    owner: { id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11", email: learning.coordinator@workshop.example }
+    ownership_vacant: false
+    created_at: "{{ago:2d}}"
+    updated_at: "{{ago:1d}}"
+    user_shares: []
+    group_shares: []
+    public_permission: null
+    user_permission: OWNER
+    external_app: null
+    files: []
+  skills:
+    builtins:
+      - <<: *skillDefaults
+        source: builtin
+        id: builtin-learning
+        name: accessible-notes
+        description: Built-in fictional plain-language education guidance.
+        user_permission: null
+        instructions_markdown: "# Accessible notes\nUse clear headings and offer large-print material."
+      - <<: *skillDefaults
+        source: builtin
+        id: builtin-unavailable
+        name: clinical-reference
+        description: Shows the native unavailable skill callout.
+        is_available: false
+        unavailable_reason: The fictional reference app is not configured.
+        enabled: false
+        can_toggle: false
+        user_permission: null
+        instructions_markdown: "# Clinical reference\nUse only supplied fictional teaching material."
+    customs:
+      - <<: *skillDefaults
+        id: skill-campus
+        name: campus-study-plan
+        description: Create inclusive revision checklists for a fictional campus.
+        instructions_markdown: "# Campus study plan\n\nUse short sections, accessible formats, and a reflection question."
+        files: [{ path: references/learning-checklist.txt, size: 96 }]
+      - <<: *skillDefaults
+        id: skill-clinic
+        name: clinic-education
+        description: Draft fictional patient education handouts without personal health data.
+        public_permission: VIEWER
+        enabled: false
+        is_personal: false
+        instructions_markdown: "# Clinic education\n\nUse plain language. Never request patient names or records."
+      - <<: *skillDefaults
+        id: skill-conflict
+        name: accessible-notes
+        description: Personal alternative to the enabled built-in; native switch confirmation.
+        enabled: false
+        instructions_markdown: "# Accessible notes\nGive written and spoken instructions."
+      - <<: *skillDefaults
+        id: skill-invalid
+        name: draft-teaching-guide
+        description: Fictional invalid bundle for the native warning and association-disabled state.
+        is_valid: false
+        enabled: false
+        instructions_markdown: "# Draft\nThis fictional guide needs review."
+      - <<: *skillDefaults
+        id: skill-viewer
+        name: shared-reading-guide
+        description: Organization-visible fictional guide with native read-only editor controls.
+        public_permission: VIEWER
+        is_personal: false
+        user_permission: VIEWER
+        owner: { id: fictional-other-owner, email: teaching.lead@workshop.example }
+        instructions_markdown: "# Shared reading guide\nOffer large-print copies and quiet reading time."
+      - <<: *skillDefaults
+        id: skill-vacant
+        name: unclaimed-learning-guide
+        description: Fictional vacant-ownership transfer notice.
+        public_permission: VIEWER
+        is_personal: false
+        owner: null
+        ownership_vacant: true
+        instructions_markdown: "# Unclaimed guide\nReview the fictional teaching guidance before sharing."
+  upload_bundle:
+    name: campus-study-plan
+    description: Imported fictional study plan bundle; no caller scripts retained or executed.
+    instructions_markdown: "# Imported study plan\n\nOffer readable notes, paired discussion and quiet reflection."
+    files: [{ path: SKILL.md, size: 160 }, { path: references/learning-checklist.txt, size: 96 }]
+  github:
+    repository: fictional-learning/teaching-skills
+    revision: fictional-offline-revision
+    subpath: null
+    skills:
+      - { path: study-circle/SKILL.md, name: study-circle, description: Fictional learning circle instructions., unavailable_reason: null }
+      - { path: accessible-notes/SKILL.md, name: accessible-notes, description: Imported duplicate is created disabled., unavailable_reason: null }
+      - { path: invalid-guide/SKILL.md, name: invalid-guide, description: Fictional invalid guide., unavailable_reason: Missing fictional instructions. }
+  credentials:
+    7001: { authenticated: false, values: {} }
+    7002: { authenticated: true, supports_oauth: true, values: {} }
+    7003: { authenticated: false, supports_oauth: true, values: {} }
+  session_defaults: &sessionDefaults
+    name: Fresh Craft
+    status: active
+    nextjs_port: null
+    sandbox: { id: fake-craft-sandbox, status: running, container_id: null, created_at: "{{ago:1d}}", last_heartbeat: "{{now}}" }
+    sharing_scope: private
+    origin: INTERACTIVE
+    agent_provider: openai
+    agent_model: gpt-5.2
+    skills_stale: false
+    artifacts: []
+  sessions:
+    - <<: *sessionDefaults
+      id: craft-workshop
+      user_id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+      name: Accessible workshop handout
+      created_at: "{{ago:1d}}"
+      last_activity_at: "{{ago:1h}}"
+      artifacts:
+        - { id: craft-preview, session_id: craft-workshop, type: web_app, path: web, name: Fictional learning preview, preview_url: /api/build/mockshop-preview, created_at: "{{ago:1d}}", updated_at: "{{ago:1h}}" }
+      messages:
+        - { id: craft-message-user, session_id: craft-workshop, turn_index: 0, type: user, content: Prepare an accessible workshop handout., created_at: "{{ago:1d}}", message_metadata: { type: user_message, content: { type: text, text: Prepare an accessible workshop handout. } } }
+        - id: craft-message-answer
+          session_id: craft-workshop
+          turn_index: 0
+          type: assistant
+          content: Fictional workshop handout ready. No real services were used.
+          created_at: "{{ago:1h}}"
+          message_metadata: { type: agent_message, content: { type: text, text: Fictional workshop handout ready. No real services were used. } }
+        - { id: craft-setup-pending, session_id: craft-workshop, turn_index: 0, type: assistant, content: "", created_at: "{{ago:1h}}", message_metadata: { type: connect_app_request, request_id: setup-clinic, external_app_id: 7001, reason: Connect the fictional clinic learning app to read its teaching guide., streamItems: [{ type: connect_app_request, id: craft-setup-pending, requestId: setup-clinic, externalAppId: 7001, reason: Connect the fictional clinic learning app to read its teaching guide. }] } }
+        - { id: craft-tool-diff, session_id: craft-workshop, turn_index: 0, type: assistant, content: "", created_at: "{{ago:1h}}", message_metadata: { type: tool_call_progress, tool_call_id: saved-handout, tool_name: write, status: completed, kind: edit, raw_input: { filePath: outputs/handout.md }, content: [{ type: diff, path: outputs/handout.md, oldText: "", newText: "# Fictional learning handout\nOffer quiet reflection time." }] } }
+    - <<: *sessionDefaults
+      id: craft-asleep
+      user_id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+      name: Sleeping fictional sandbox
+      created_at: "{{ago:2d}}"
+      last_activity_at: "{{ago:1d}}"
+      sandbox: { id: fake-asleep, status: sleeping, container_id: null, created_at: "{{ago:2d}}", last_heartbeat: "{{ago:1d}}" }
+      messages: []
+    - <<: *sessionDefaults
+      id: craft-helper
+      user_id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11"
+      name: Fictional accessibility reviewer
+      created_at: "{{ago:1d}}"
+      last_activity_at: "{{ago:1h}}"
+      messages:
+        - { id: craft-helper-message, session_id: craft-helper, turn_index: 0, type: assistant, content: Fictional accessibility review recommends clear headings and large-print formats., created_at: "{{ago:1h}}", message_metadata: { type: agent_message, content: { type: text, text: Fictional accessibility review recommends clear headings and large-print formats. }, _meta: { sessionId: craft-helper, parentSessionId: craft-workshop } } }
+  tasks:
+    - &taskSeed
+      id: task-clinic
+      name: Clinic teaching checklist
+      prompt: /clinic-education Prepare a fictional accessible clinic education checklist.
+      human_readable_schedule: Every day at 09:00
+      cron_expression: "0 9 * * 1,2,3,4,5"
+      editor_mode: daily_weekly
+      status: ACTIVE
+      next_run_at: "{{in:1d}}"
+      next_runs: ["{{in:1d}}", "{{in:2d}}"]
+      last_run: &runSeed
+        id: run-clinic-success
+        status: SUCCEEDED
+        trigger_source: SCHEDULED
+        started_at: "{{ago:1h}}"
+        finished_at: "{{ago:59m}}"
+        session_id: craft-workshop
+        summary: Fictional clinic education handout created with accessible formats.
+        skip_reason: null
+        error_class: null
+      pre_approved_app_ids: [7001]
+      pre_approved_mcp_server_ids: []
+      created_at: "{{ago:2d}}"
+      updated_at: "{{ago:1d}}"
+    - <<: *taskSeed
+      id: task-campus
+      name: Campus reflection reminder
+      prompt: Offer a fictional reflection question for students.
+      cron_expression: "0 */2 * * *"
+      editor_mode: interval
+      status: PAUSED
+      next_run_at: null
+      next_runs: []
+      last_run: null
+      pre_approved_app_ids: []
+    - <<: *taskSeed
+      id: task-advanced
+      name: Legacy advanced schedule
+      prompt: Read the fictional learning guide.
+      cron_expression: "15 9 1 * *"
+      editor_mode: advanced
+      last_run: null
+      pre_approved_app_ids: []
+    - { <<: *taskSeed, id: task-workshop-01, name: Workshop check-in 01, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-02, name: Workshop check-in 02, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-03, name: Workshop check-in 03, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-04, name: Workshop check-in 04, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-05, name: Workshop check-in 05, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-06, name: Workshop check-in 06, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-07, name: Workshop check-in 07, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-08, name: Workshop check-in 08, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-09, name: Workshop check-in 09, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-10, name: Workshop check-in 10, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-11, name: Workshop check-in 11, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-12, name: Workshop check-in 12, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-13, name: Workshop check-in 13, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-14, name: Workshop check-in 14, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-15, name: Workshop check-in 15, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-16, name: Workshop check-in 16, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-17, name: Workshop check-in 17, last_run: null, pre_approved_app_ids: [] }
+    - { <<: *taskSeed, id: task-workshop-18, name: Workshop check-in 18, last_run: null, pre_approved_app_ids: [] }
+  runs:
+    task-clinic:
+      - *runSeed
+      - { <<: *runSeed, id: run-clinic-failed, status: FAILED, summary: null, error_class: FictionalTeachingInputError }
+      - { <<: *runSeed, id: run-clinic-skipped, status: SKIPPED, session_id: null, summary: null, skip_reason: Fictional prior run still in flight. }
+      - { <<: *runSeed, id: run-clinic-queued, status: QUEUED, session_id: null, finished_at: null, summary: null }
+      - { <<: *runSeed, id: run-clinic-running, status: RUNNING, session_id: null, finished_at: null, summary: Fictional run with no session yet. }
+      - { <<: *runSeed, id: run-clinic-approval, status: AWAITING_APPROVAL, session_id: null, finished_at: null, summary: Fictional approval pending. }
+      - { <<: *runSeed, id: run-clinic-archive-01 }
+      - { <<: *runSeed, id: run-clinic-archive-02 }
+      - { <<: *runSeed, id: run-clinic-archive-03 }
+      - { <<: *runSeed, id: run-clinic-archive-04 }
+      - { <<: *runSeed, id: run-clinic-archive-05 }
+      - { <<: *runSeed, id: run-clinic-archive-06 }
+      - { <<: *runSeed, id: run-clinic-archive-07 }
+      - { <<: *runSeed, id: run-clinic-archive-08 }
+      - { <<: *runSeed, id: run-clinic-archive-09 }
+      - { <<: *runSeed, id: run-clinic-archive-10 }
+      - { <<: *runSeed, id: run-clinic-archive-11 }
+      - { <<: *runSeed, id: run-clinic-archive-12 }
+      - { <<: *runSeed, id: run-clinic-archive-13 }
+      - { <<: *runSeed, id: run-clinic-archive-14 }
+      - { <<: *runSeed, id: run-clinic-archive-15 }
+      - { <<: *runSeed, id: run-clinic-archive-16 }
+      - { <<: *runSeed, id: run-clinic-archive-17 }
+      - { <<: *runSeed, id: run-clinic-archive-18 }
+      - { <<: *runSeed, id: run-clinic-archive-19 }
+      - { <<: *runSeed, id: run-clinic-archive-20 }
+      - { <<: *runSeed, id: run-clinic-archive-21 }
+      - { <<: *runSeed, id: run-clinic-archive-22 }
+      - { <<: *runSeed, id: run-clinic-archive-23 }
+      - { <<: *runSeed, id: run-clinic-archive-24 }
+      - { <<: *runSeed, id: run-clinic-archive-25 }
+      - { <<: *runSeed, id: run-clinic-archive-26 }
+      - { <<: *runSeed, id: run-clinic-archive-27 }
+      - { <<: *runSeed, id: run-clinic-archive-28 }
+      - { <<: *runSeed, id: run-clinic-archive-29 }
+      - { <<: *runSeed, id: run-clinic-archive-30 }
+      - { <<: *runSeed, id: run-clinic-archive-31 }
+      - { <<: *runSeed, id: run-clinic-archive-32 }
+      - { <<: *runSeed, id: run-clinic-archive-33 }
+      - { <<: *runSeed, id: run-clinic-archive-34 }
+      - { <<: *runSeed, id: run-clinic-archive-35 }
+      - { <<: *runSeed, id: run-clinic-archive-36 }
+      - { <<: *runSeed, id: run-clinic-archive-37 }
+      - { <<: *runSeed, id: run-clinic-archive-38 }
+      - { <<: *runSeed, id: run-clinic-archive-39 }
+      - { <<: *runSeed, id: run-clinic-archive-40 }
+      - { <<: *runSeed, id: run-clinic-archive-41 }
+      - { <<: *runSeed, id: run-clinic-archive-42 }
+      - { <<: *runSeed, id: run-clinic-archive-43 }
+      - { <<: *runSeed, id: run-clinic-archive-44 }
+      - { <<: *runSeed, id: run-clinic-archive-45 }
+    task-campus: []
+    task-advanced: []
+  library:
+    - { id: library-teaching, name: Teaching, path: user_library/Teaching, is_directory: true, file_size: null, mime_type: null, sync_enabled: true, created_at: "{{ago:1d}}" }
+    - { id: library-handout, name: accessible-handout.txt, path: user_library/Teaching/accessible-handout.txt, is_directory: false, file_size: 96, mime_type: text/plain, sync_enabled: true, created_at: "{{ago:1d}}" }
+  approvals:
+    - { approval_id: approval-once, session_id: craft-workshop, actions: [{ action_type: teaching.read, display_name: Read fictional teaching notes, description: Simulated local action., policy: ASK }], app_name: Clinic Learning API, payload: { topic: accessible education }, display_payload: { topic: accessible education }, created_at: "{{now}}", decision: null, decided_at: null, is_live: true }
+    - { approval_id: approval-session, session_id: craft-workshop, actions: [{ action_type: teaching.review, display_name: Review fictional notes, description: Simulated local action., policy: ASK }], app_name: Clinic Learning API, payload: {}, display_payload: {}, created_at: "{{now}}", decision: null, decided_at: null, is_live: true }
+    - { approval_id: approval-reject, session_id: craft-workshop, actions: [{ action_type: teaching.publish, display_name: Publish fictional notes, description: Simulated local action., policy: ASK }], app_name: Clinic Learning API, payload: { synthetic: true }, display_payload: { synthetic: true }, created_at: "{{now}}", decision: null, decided_at: null, is_live: true }
+  turn_packets:
+    - { type: agent_thought_chunk, content: { type: text, text: I am arranging the fictional education handout. } }
+    - { type: tool_call_start, tool_call_id: craft-write-handout, tool_name: write, title: Write fictional handout, kind: edit, raw_input: { filePath: outputs/handout.md }, content: [{ type: diff, path: outputs/handout.md, oldText: "", newText: "# Fictional learning handout\nOffer plain-language notes and reflection time." }] }
+    - { type: tool_call_progress, tool_call_id: craft-write-handout, tool_name: write, status: completed, kind: edit, raw_input: { filePath: outputs/handout.md }, raw_output: { output: Fictional file ready. }, content: [{ type: diff, path: outputs/handout.md, oldText: "", newText: "# Fictional learning handout\nOffer plain-language notes and reflection time." }] }
+    - { type: tool_call_progress, tool_call_id: craft-todos, tool_name: todowrite, status: completed, kind: other, raw_input: { todos: [{ content: Draft accessible handout, status: completed, priority: high }, { content: Review plain-language headings, status: completed, priority: medium }] }, raw_output: { output: Fictional checklist complete. } }
+    - { type: subagent_started, subagent_session_id: craft-helper, parent_session_id: "$session" }
+    - { type: tool_call_progress, tool_call_id: craft-review, tool_name: task, kind: task, status: completed, raw_input: { description: Review accessibility, subagent_type: explore, prompt: Review the fictional learning handout. }, raw_output: { output: Fictional accessibility review recommends clear headings and large-print formats. }, _meta: { subagentSessionId: craft-helper } }
+    - { type: agent_message_chunk, content: { type: text, text: Fictional accessibility review recommends clear headings and large-print formats. }, _meta: { sessionId: craft-helper, parentSessionId: "$session" } }
+    - { type: connect_app_request, request_id: setup-turn-clinic, external_app_id: 7001, reason: Fictional app credentials are local demo metadata only. }
+    - { type: approval_requested, approval_id: approval-once }
+    - { type: approval_requested, approval_id: approval-session }
+    - { type: approval_requested, approval_id: approval-reject }
+    - { type: compaction, summary: Fictional learning guide summarized; no provider was called. }
+    - { type: artifact_created, artifact: { id: craft-handout, type: markdown, name: Fictional learning handout, path: outputs/handout.md }, timestamp: "{{now}}" }
+    - { type: agent_message_chunk, content: { type: text, text: "Fictional Craft output: prepare accessible workshop notes, give learners quiet reflection time, and publish the synthetic handout. No integrations or jobs were executed." } }
+    - { type: context_usage, used_tokens: 1200 }
+  output_artifacts:
+    - { id: craft-handout, type: markdown, path: outputs/handout.md, name: Fictional learning handout, preview_url: null }
+    - { id: craft-preview, type: web_app, path: web, name: Fictional learning preview, preview_url: /api/build/mockshop-preview }
+  webapp_info: { has_webapp: true, webapp_url: /api/build/mockshop-preview, status: running, ready: true }
+  preview_html: '<!doctype html><html lang="en"><meta charset="utf-8"><title>Fictional learning preview</title><style>html{color-scheme:light;background:#fff;color:#111}body{margin:0;padding:24px;min-height:100vh;box-sizing:border-box;background:#fff;color:#111;font-family:system-ui,sans-serif}</style><body><h1>Accessible learning workshop</h1><p>Fictional Craft output, not a deployed app.</p><label>Reflection <input name="reflection" placeholder="One learning idea"></label><button onclick="document.getElementById(''receipt'').textContent=''Fictional reflection noted locally.''">Reflect</button><p id="receipt"></p></body></html>'
+  output_files:
+    - { path: outputs/handout.md, size: 112, mime_type: text/markdown, content: "# Fictional learning handout\n\nUse readable headings, plain-language notes and quiet reflection time.\n" }
+    - { path: outputs/attendance.csv, size: 42, mime_type: text/csv, content: "Activity,Participants\nReading circle,6\n" }
+    - { path: outputs/references/teaching-notes.txt, size: 80, mime_type: text/plain, content: "Synthetic teaching reference. No patient or student records.\n" }
+    - { path: outputs/learning.pdf, size: 720, mime_type: application/pdf, shared_file_id: demo-pdf }
+    - { path: outputs/activity-diagram.svg, size: 640, mime_type: image/svg+xml, shared_file_id: demo-diagram }
+    - { path: outputs/learning.xlsx, size: 1300, mime_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, shared_file_id: demo-xlsx }
+    - { path: outputs/workshop.pptx, size: 1993, mime_type: application/vnd.openxmlformats-officedocument.presentationml.presentation, fixture_bytes: presentation_base64 }
+    - { path: outputs/slides/slide-1.svg, size: 330, mime_type: image/svg+xml, content: '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540"><rect width="960" height="540" fill="#e8f4f2"/><text x="70" y="150" font-size="42">Accessible learning workshop</text><text x="70" y="225" font-size="25">Fictional teaching presentation • 1 of 2</text></svg>' }
+    - { path: outputs/slides/slide-2.svg, size: 350, mime_type: image/svg+xml, content: '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540"><rect width="960" height="540" fill="#eef0f9"/><text x="70" y="150" font-size="42">Quiet reflection time</text><text x="70" y="225" font-size="25">Fictional teaching presentation • 2 of 2</text></svg>' }
+    - { path: outputs/raw-resource.bin, size: 72, mime_type: application/octet-stream, content: Synthetic resource rendered by the native raw-text fallback. }
+  # Source-native format buttons use these existing #28 fictional bytes through parent callbacks.
+  downloads: { docx_file_id: demo-docx, pdf_file_id: demo-pdf, image_file_id: demo-diagram }
+  library_zip_entries:
+    - { name: Workshop, path: Workshop, is_directory: true, file_size: null, mime_type: null }
+    - { name: reflection.txt, path: Workshop/reflection.txt, is_directory: false, file_size: 72, mime_type: text/plain }
+  pptx_preview: { slide_count: 2, slide_paths: [outputs/slides/slide-1.svg, outputs/slides/slide-2.svg], cached: true }
+  presentation_base64: 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
+  archive_base64: UEsDBBQAAAAIAJuZSl0/SCe4SAAAAE8AAAASAAAAb3V0cHV0cy9oYW5kb3V0Lm1kHcvBCYAwDEbhe6b4wbtjuIEDRBttIKbYpvsbvD34eAs2PUObs8GEu6vfqOylzSDah6ALFz5MUDNSB1LxTpVIu0z+HaGPrPQBUEsDBBQAAAAIAJuZSl3/L/qDZgAAAIQAAAAOAAAAd2ViL2luZGV4Lmh0bWxNzFEKwjAMANCrxAtY/A8FGXiP2mU2GJuQZm7eXsEP/X88PMxa42UELR6SMTiE8oVrsPYiIFS8c7+BOT2ZNkxfge2Uz7XSGHwV+rFN/T6aGqYPQPubaDf1oBkmL0uArmFrHDFZfgNQSwECFAMUAAAACACbmUpdP0gnuEgAAABPAAAAEgAAAAAAAAAAAAAAgAEAAAAAb3V0cHV0cy9oYW5kb3V0Lm1kUEsBAhQDFAAAAAgAm5lKXf8v+oNmAAAAhAAAAA4AAAAAAAAAAAAAAIABeAAAAHdlYi9pbmRleC5odG1sUEsFBgAAAAACAAIAfAAAAAoBAAAAAA==

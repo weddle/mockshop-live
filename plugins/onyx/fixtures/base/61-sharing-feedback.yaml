@@ -1,0 +1,68 @@
+# Neutral fictional education content. Session materialization and packets remain owned by the existing chat engine.
+# The parent appends these metadata rows to fixtureSessions and uses seedTurns only when no history file exists.
+# Attached descriptors reuse #28's fake file registry; no duplicate upload, raw-file or thumbnail endpoints.
+GET /mockshop/sharing-feedback/seeds:
+  errors:
+    share: Fictional share-link creation failed for this attempt.
+    private: Fictional privacy change failed for this attempt.
+    feedback: Fictional feedback submission failed for this attempt.
+    remove: Fictional feedback removal failed for this attempt.
+  sessions:
+    - id: "61616161-0000-4000-8000-000000000001"
+      name: Accessible library workshop
+      persona_id: 0
+      owner_name: Alex Learning
+      time_created: "{{ago:2h}}"
+      time_updated: "{{ago:1h}}"
+      shared_status: private
+      current_alternate_model: null
+      current_temperature_override: null
+      current_reasoning_effort_override: null
+      folder_id: null
+      project_id: null
+      turns:
+        - message: Outline a fictional library workshop with accessible reading activities.
+          files:
+            - { id: demo-reading, type: plain_text, name: library-reading.txt, user_file_id: uf-demo-reading }
+            - { id: demo-diagram, type: image, name: learning-diagram.svg, user_file_id: uf-demo-diagram }
+            - { id: demo-attendance, type: tabular, name: attendance-demo.csv, user_file_id: uf-demo-attendance }
+          script:
+            title: Accessible library workshop
+            chunk_delay_ms: 15
+            reasoning: Compare the fictional reading activity and attendance notes, then propose an accessible workshop.
+            queries: [Accessible library reading activity]
+            documents:
+              - { id: FILE__demo-reading, title: library-reading.txt, source: file, blurb: Fictional reading-circle notes supplied by the local demo file registry. }
+              - { id: FILE__demo-attendance, title: attendance-demo.csv, source: file, blurb: Fictional attendance notes supplied by the local demo file registry. }
+            answer: |
+              **Accessible library workshop**
+
+              Start with a short reading circle. Offer large-print notes, a quiet seating option, and time for each learner to respond [1].
+
+              | Activity | Minutes |
+              | --- | --- |
+              | Welcome and reading | 10 |
+              | Paired discussion | 15 |
+
+              Keep the fictional attendance sheet available to the facilitator, without requiring anyone to disclose personal health information.
+        - message: Add a closing reflection for the same fictional workshop.
+          script:
+            title: Accessible library workshop
+            chunk_delay_ms: 15
+            answer: |
+              **Closing reflection**
+
+              Invite each learner to name one useful idea, or write it privately. Finish with a two-minute quiet reflection. All names, files, and activities in this conversation are fictional.
+    - id: "61616161-0000-4000-8000-000000000002"
+      name: Empty shared library conversation
+      persona_id: 0
+      owner_name: Alex Learning
+      time_created: "{{ago:1h}}"
+      time_updated: "{{ago:1h}}"
+      shared_status: public
+      current_alternate_model: null
+      current_temperature_override: null
+      current_reasoning_effort_override: null
+      folder_id: null
+      project_id: null
+      turns: []

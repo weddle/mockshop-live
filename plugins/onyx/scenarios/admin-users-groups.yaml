@@ -1,0 +1,69 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-groups
+title: Native Users membership add, combined removal, inline editor and reset
+strict: true
+requires: enterprise
+locale: en
+overlays: []
+steps:
+  - goto: /admin/users
+  - wait: { text: Users & Requests, exact: true }
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+  - click: { role: button, name: User actions, exact: true }
+  - click: { text: Groups & Roles, exact: true }
+  - wait: { text: "Edit User's Groups", exact: true }
+  - shot: users-groups-dialog
+  - fill: { selector: 'input[placeholder="Search groups to join..."]', value: Front Office }
+  - click: { text: Front Office, exact: true }
+  - press: Escape
+  - click: { role: button, name: Save Changes, exact: true }
+  - wait: { text: User updated, exact: true }
+  - shot: users-groups-saved
+  - goto: /admin/users
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+  - wait: { text: Front Office, exact: true }
+  - shot: users-groups-persisted
+  - click: { selector: '[aria-label="Edit groups"]' }
+  - wait: { text: "Edit User's Groups", exact: true }
+  - shot: users-inline-groups
+  - click: { role: button, name: Cancel, exact: true }
+  - click: { role: button, name: User actions, exact: true }
+  - click: { text: Groups & Roles, exact: true }
+  - click: { selector: '[role="dialog"] [role="button"]:has-text("Front Office")' }
+  - shot: users-groups-remove-controls
+  - click: { role: button, name: Save Changes, exact: true }
+  - wait: { text: User updated, exact: true }
+  - shot: users-group-removed
+  - goto: /admin/users
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+  - wait_gone: { text: Front Office, exact: true }
+  - wait: { text: Training, exact: true }
+  - shot: users-group-removal-persisted
+  # Training has the real seeded connector108. Removing its member must retain that connector.
+  - click: { role: button, name: User actions, exact: true }
+  - click: { text: Groups & Roles, exact: true }
+  - click: { selector: '[role="dialog"] [role="button"]:has-text("Training")' }
+  - click: { role: button, name: Save Changes, exact: true }
+  - wait: { text: User updated, exact: true }
+  - goto: /admin/users
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+  - wait_gone: { text: Training, exact: true }
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/manage/admin/user-group');
+        if (!res.ok) throw new Error('Training group read failed');
+        const group = (await res.json()).find(({id}) => id === 1);
+        if (!(group?.cc_pairs || []).some(pair => pair.id === 108)) throw new Error('Native member removal lost the Training connector');
+      })()
+  - shot: users-training-removed-connectors-retained
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({strict:true,locale:'en'})});
+        if (!res.ok) throw new Error('Mock reset failed');
+        location.reload();
+      })()
+  - wait: { text: Users & Requests, exact: true }
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+  - wait: { text: Training, exact: true }
+  - wait_gone: { text: Front Office, exact: true }
+  - shot: users-membership-reset

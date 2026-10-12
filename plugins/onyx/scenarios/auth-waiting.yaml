@@ -1,0 +1,55 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-waiting
+title: "Independent native #69 unit: auth-waiting"
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 900]
+overlays: [demo-auth-anonymous]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/request-verify-token$/'
+    reason: Only this unit’s deliberately staged native endpoint400; the visible error and recovery are required.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/request\-verify\-token\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^console: \[Toast\] Failed to send a new verification email \- LOCAL FAKE DEMO — staged email\-link failure; no email sent\. \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/0se759_ajj\-mw\.js\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+# Independent prerequisites: Native independent Robin signup issues first unsent verification link; resend creates second, required mailbox count2, then staged failure/recovery.
+steps:
+  - state: { overlays: [demo-auth-anonymous] }
+  - goto: /auth/login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+  - goto: /auth/signup?email=robin.guest%40workshop.example
+  - wait: { testid: email }
+  - eval: |
+      if (document.querySelector('[data-testid="email"]')?.value !== 'robin.guest@workshop.example') throw new Error('Signup direct email was not prefilled');
+  - fill: { testid: password, value: MockOnly-Workshop1! }
+  - click: { role: button, name: Create Account, exact: true }
+  - wait: { text: "it looks like you haven't verified your email yet.", exact: false }
+  - goto: /auth/waiting-on-verification
+  - wait: { role: button, name: here, exact: true }
+  - shot: auth-waiting-direct
+  - click: { role: button, name: here, exact: true }
+  - wait: { text: A new verification email has been sent! }
+  - shot: auth-waiting-resend-success
+  - eval: |
+      (async () => {
+        const box = await (await fetch('/api/mockshop/auth-anonymous/messages')).json();
+        if (box.messages.filter(m => m.kind === 'verify').length !== 2 || !box.simulated) throw new Error('Signup/resend fake mailbox did not persist');
+        await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email_failure:true})});
+      })()
+  - click: { role: button, name: here, exact: true }
+  - wait: { text: 'Failed to send a new verification email - LOCAL FAKE DEMO — staged email-link failure; no email sent.' }
+  - shot: auth-waiting-resend-error
+  - eval: |
+      fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email_failure:false})})

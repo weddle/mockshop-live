@@ -1,0 +1,5 @@
+# Overlay example: a brand-new user with no chat history.
+# Use from a scenario with `overlays: [demo-empty-sidebar]`.
+GET /chat/get-user-chat-sessions:
+  sessions: []
+  has_more: false

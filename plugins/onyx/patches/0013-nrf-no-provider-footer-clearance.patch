@@ -1,0 +1,10 @@
+--- a/src/app/nrf/NRFPage.tsx
++++ b/src/app/nrf/NRFPage.tsx
+@@ -709,6 +709,7 @@
+         <Button
+           width="full"
+           prominence="secondary"
++          className="shrink-0 mb-[var(--nrf-footer-height,0px)]"
+           onClick={() => {
+             window.location.href = ADMIN_ROUTES.LLM_MODELS.path;
+           }}

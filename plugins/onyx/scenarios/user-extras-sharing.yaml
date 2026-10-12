@@ -1,0 +1,65 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-sharing
+title: Native Extras - sharing
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+  - click: { label: Consent checkbox }
+  - click: { role: button, name: Start, exact: true }
+  - wait_gone: { selector: '[role="dialog"]' }
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app/agents/edit/11
+  - wait: { selector: 'input[name="name"]' }
+  - click: { role: button, name: Share, exact: true }
+  - wait: { text: Learning Team, exact: true }
+  - shot: {name: extras-40-share-group-editor-indicator, full_page: true}
+  - click: { role: button, name: Copy Link, exact: true }
+  - wait: { text: Copied link., exact: true }
+  - shot: { name: extras-40a-share-native-copy-link, full_page: true }
+  - click: { label: Update access for Learning Team }
+  - click: { selector: '[role="listbox"][aria-label="Update access for Learning Team"] [role="option"]:has(:text-is("View & Chat"))' }
+  - fill: { placeholder: 'Add users, groups, and accounts', value: Clinical }
+  - click: { text: Clinical Educators, exact: true }
+  - click: { label: Select staged permission }
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+  - shot: {name: extras-41-share-staged-group-choice, full_page: true}
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+  - goto: /app/agents/edit/11
+  - click: { role: button, name: Share, exact: true }
+  - wait: { text: Clinical Educators, exact: true }
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.group_shares.some(s=>s.group_id===330&&s.permission==='VIEWER') || !a.group_shares.some(s=>s.group_id===331&&s.permission==='EDITOR')) throw new Error('Native group choices did not persist');
+      })()
+  - shot: {name: extras-42-share-group-saved-reload, full_page: true}
+  - fill: { placeholder: 'Add users, groups, and accounts', value: DEVON }
+  - click: { text: devon.ortiz@seasidecollection.example, exact: true }
+  - click: { label: Select staged permission }
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+  - shot: {name: extras-42a-share-user-editor-draft, full_page: true}
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+  - goto: /app/agents/edit/11
+  - click: { role: button, name: Share, exact: true }
+  - wait: { text: devon.ortiz@seasidecollection.example, exact: true }
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.user_shares.some(s=>s.user.id==='u2'&&s.permission==='EDITOR')) throw new Error('Native user sharing choice did not persist');
+      })()
+  - shot: {name: extras-42b-share-user-saved-reload, full_page: true}
+  - click: { role: button, name: Copy Link, exact: true }
+  - wait: { text: Copied link., exact: true }
+  - click: { label: Change sharing scope }
+  - click: { text: Anyone in your organization, exact: true }
+  - click: { label: Change public permission }
+  - click: { selector: '[role="listbox"][aria-label="Change public permission"] [role="option"]:has(:text-is("Edit"))' }
+  - shot: {name: extras-43-share-public-edit-choice, full_page: true}
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }

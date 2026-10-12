@@ -1,0 +1,45 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-branding
+title: Native Extras - branding
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-user-extras'],anchor:current.demo_anchor,locale:'en',keep:false})});
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+      })()
+  - goto: /app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+  - shot: {name: extras-28-branding-first-visit, full_page: true}
+  - click: { role: button, name: Start, exact: true }
+  - wait: { text: You need to agree to the terms to access the application., exact: true }
+  - shot: {name: extras-29-consent-required, full_page: true}
+  - click: { label: Consent checkbox }
+  - click: { role: button, name: Start, exact: true }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - shot: {name: extras-30-branding-home-banner, full_page: true}
+  - click: { label: Next banner }
+  - wait: { text: Clinical education workshop reminder, exact: true }
+  - shot: {name: extras-30a-banner-next, full_page: true}
+  - click: { label: Previous banner }
+  - wait: { text: Learning workshop announcement, exact: true }
+  - shot: {name: extras-30b-banner-previous, full_page: true}
+  - click: { label: Next banner }
+  - click: { role: button, name: View, exact: true }
+  - wait: { testid: agent-name-display }
+  - shot: {name: extras-30c-banner-open-native-target, full_page: true}
+  - click: { label: Dismiss }
+  - wait: { text: Learning workshop announcement, exact: true }
+  - shot: {name: extras-30d-banner-dismiss-persisted, full_page: true}
+  - goto: /app
+  - eval: "if(localStorage.getItem('allUsersInitialPopupFlowCompleted') !== 'true' || document.querySelector('[role=\"dialog\"]')) throw new Error('Consent dismissal did not survive reload')"
+  - shot: {name: extras-31-branding-notice-dismissed-reload, full_page: true}

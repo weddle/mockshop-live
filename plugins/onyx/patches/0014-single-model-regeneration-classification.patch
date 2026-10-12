@@ -1,0 +1,33 @@
+--- a/src/app/app/message/multiModel.ts
++++ b/src/app/app/message/multiModel.ts
+@@ -26,7 +26,15 @@
+         (msg.type === "assistant" || msg.type === "error") &&
+         Boolean(msg.modelDisplayName || msg.overridden_model)
+     );
+-  return multiModelChildren.length >= 2 ? multiModelChildren : null;
++  if (multiModelChildren.length < 2) return null;
++  // Multiple generations from one model are alternatives, not parallel models.
++  const firstModel = messageModelName(multiModelChildren[0]!);
++  for (let i = 1; i < multiModelChildren.length; i++) {
++    if (messageModelName(multiModelChildren[i]!) !== firstModel) {
++      return multiModelChildren;
++    }
++  }
++  return null;
+ }
+ 
+ // Group a user message's sibling responses into multi-model panels.
+--- a/src/app/app/message/__tests__/multiModel.test.ts
++++ b/src/app/app/message/__tests__/multiModel.test.ts
+@@ -92,6 +92,11 @@
+     regenerated.forEach((r) => tree.set(r.nodeId, r));
+     expect(getMultiModelChildren(userMessage, tree)).toBeNull();
+   });
++  it("keeps model-tagged same-model generations as ordinary alternatives", () => {
++    const tree = new Map<number, Message>();
++    const { userMessage } = buildTurn(tree, ["gpt-5", "gpt-5"]);
++    expect(getMultiModelChildren(userMessage, tree)).toBeNull();
++  });
+ });
+ 
+ describe("getUnresolvedMultiModelTurn", () => {

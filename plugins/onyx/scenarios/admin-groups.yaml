@@ -1,0 +1,264 @@
+name: admin-groups
+title: Fictional groups - native routes, members, resources, permissions and reset
+requires: enterprise
+strict: true
+locale: en
+overlays: [edition-enterprise, demo-mcp-admin]
+steps:
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/groups"]' }
+  - wait: { text: Training, exact: true }
+  - shot: groups-menu
+  - goto: /admin/groups
+  - wait: { text: Front Office, exact: true }
+  - shot: groups-direct
+  - fill: { placeholder: Search groups..., value: Property }
+  - wait_gone: { text: Training, exact: true }
+  - shot: groups-search
+  - fill: { placeholder: Search groups..., value: nonexistent-workshop }
+  - wait: { text: No groups found, exact: true }
+  - shot: groups-no-results
+  - fill: { placeholder: Search groups..., value: "" }
+  - click: { role: button, name: View group, exact: true, nth: 0 }
+  - wait: { placeholder: Search members... }
+  - shot: groups-detail-members
+  - fill: { placeholder: Search members..., value: nobody-found }
+  - wait: { text: No members, exact: true }
+  - shot: groups-members-no-results
+  - fill: { placeholder: Search members..., value: "" }
+  - click: { role: button, name: Add, exact: true }
+  - fill: { placeholder: Search users and accounts..., value: lena.brooks }
+  - wait: { text: Lena Brooks, exact: true }
+  - click: { selector: 'tbody [role="checkbox"]' }
+  - shot: groups-member-selection
+  - click: { role: button, name: Done, exact: true }
+  - scroll: { text: Group Permissions, exact: true }
+  - wait: { text: Create Agents, exact: true }
+  - shot: groups-permissions-loaded
+  - eval: |
+      (() => {
+        const label = [...document.querySelectorAll('*')].find(e => e.textContent === 'Manage Groups' && e.children.length === 0);
+        let row = label;
+        while (row && !row.querySelector('[role="switch"]')) row = row.parentElement;
+        const control = row?.querySelector('[role="switch"]');
+        if (!control) throw new Error('Native Manage Groups permission toggle not found');
+        control.click();
+      })()
+  - scroll: { text: Shared with This Group, exact: true }
+  - wait: { placeholder: "Add connectors, document sets" }
+  - shot: groups-resources-loaded
+  - fill: { placeholder: "Add connectors, document sets", value: nonexistent-resource }
+  - wait: { text: No results found, exact: true }
+  - shot: groups-resources-no-results
+  - fill: { placeholder: "Add connectors, document sets", value: OPS }
+  - click: { selector: '[aria-label="Confluence – OPS space"]' }
+  - press: Escape
+  - fill: { placeholder: "Add connectors, document sets", value: Property Operations }
+  - click: { selector: '[aria-label="Property Operations"]' }
+  - press: Escape
+  - fill: { placeholder: Add agents, value: Guest Ops }
+  - click: { selector: '[aria-label="Guest Ops Copilot"]' }
+  - press: Escape
+  - shot: groups-resource-selection
+  - scroll: { text: Token Rate Limit, exact: true }
+  - fill: { placeholder: Token limit (thousands), value: "120" }
+  - click: { role: button, name: Add Limit, exact: true }
+  - shot: groups-token-limit-add
+  - eval: |
+      (() => {
+        const fields = [...document.querySelectorAll('input[placeholder="Token limit (thousands)"]')];
+        let row = fields[fields.length - 1]?.parentElement;
+        while (row && row.querySelectorAll('input').length < 3) row = row.parentElement;
+        if (!row) throw new Error('Native token limit removal control not found');
+        [...row.querySelectorAll('button')].at(-1).click();
+      })()
+  - scroll: { text: Incognito Chats, exact: true }
+  - eval: |
+      (() => {
+        const label = [...document.querySelectorAll('*')].find(e => e.textContent === 'Incognito Chats' && e.children.length === 0);
+        let row = label;
+        while (row && !row.querySelector('[role="switch"]')) row = row.parentElement;
+        if (!row) throw new Error('Native incognito toggle not found');
+        row.querySelector('[role="switch"]').click();
+      })()
+  - fill: { placeholder: Name your group, value: Training Workshop }
+  - click: { role: button, name: Save Changes, exact: true }
+  - wait: { text: Training Workshop, exact: true }
+  - goto: /admin/groups/1
+  - wait: { text: Lena Brooks, exact: true }
+  - shot: groups-saved-members
+  - click: { selector: 'tr:has-text("Lena Brooks") button[aria-label="Make manager"]' }
+  - wait: { selector: 'tr:has-text("Lena Brooks") button[aria-label="Revoke manager"]' }
+  - shot: groups-manager-assigned
+  - scroll: { text: Group Permissions, exact: true }
+  - wait: { text: Manage Groups, exact: true }
+  - shot: groups-saved-permissions
+  - scroll: { text: Shared with This Group, exact: true }
+  - shot: groups-saved-resources
+  - scroll: { text: Token Rate Limit, exact: true }
+  - shot: groups-saved-token-limit
+  - eval: |
+      (async () => {
+        const groups = await (await fetch('/api/manage/admin/user-group?include_default=true')).json();
+        const g = groups.find(g => g.id === 1);
+        const perms = await (await fetch('/api/manage/admin/user-group/1/permissions')).json();
+        const limits = await (await fetch('/api/admin/token-rate-limits/user-group/1')).json();
+        if (g.name !== 'Training Workshop' || !g.users.some(u => u.id === 'u4') ||
+            !g.cc_pairs.some(c => c.id === 102) || !g.document_sets.some(d => d.id === 22) ||
+            !g.personas.some(a => a.id === 12) || !perms.includes('manage:user_groups') ||
+            limits.length !== 1 || limits[0].token_budget !== 120 || !g.incognito_enabled)
+          throw new Error('Saved fictional group fields were not retained');
+      })()
+  - click: { selector: 'tr:has-text("Lena Brooks") button[aria-label="Revoke manager"]' }
+  - wait: { selector: 'tr:has-text("Lena Brooks") button[aria-label="Make manager"]' }
+  - click: { selector: 'tr:has-text("Lena Brooks") button[aria-label="Remove member"]' }
+  - eval: |
+      (() => {
+        let row = document.querySelector('input[placeholder="Token limit (thousands)"]')?.parentElement;
+        while (row && row.querySelectorAll('input').length < 3) row = row.parentElement;
+        if (!row) throw new Error('Saved token limit removal control not found');
+        [...row.querySelectorAll('button')].at(-1).click();
+      })()
+  - scroll: { text: Shared with This Group, exact: true }
+  - eval: |
+      (() => {
+        for (const title of ['Confluence – OPS space', 'Property Operations', 'Guest Ops Copilot']) {
+          const label = [...document.querySelectorAll('*')].find(e => e.textContent === title && e.children.length === 0);
+          let card = label;
+          while (card && !card.classList.contains('min-w-[240px]')) card = card.parentElement;
+          const button = card?.querySelector('button');
+          if (!button) throw new Error(`Native resource remove control not found: ${title}`);
+          button.click();
+        }
+      })()
+  - shot: groups-resource-removal
+  - click: { role: button, name: Save Changes, exact: true }
+  - goto: /admin/groups/1
+  - wait_gone: { text: Lena Brooks, exact: true }
+  - shot: groups-member-and-limit-removed
+  - scroll: { text: Shared with This Group, exact: true }
+  - shot: groups-resources-removed-saved
+  - eval: |
+      (async () => {
+        const groups = await (await fetch('/api/manage/admin/user-group?include_default=true')).json();
+        const g = groups.find(g => g.id === 1);
+        const limits = await (await fetch('/api/admin/token-rate-limits/user-group/1')).json();
+        if (g.cc_pairs.some(c => c.id === 102) || g.document_sets.some(d => d.id === 22) ||
+            g.personas.some(a => a.id === 12) || limits.length !== 0)
+          throw new Error('Removed fictional resources/token limit returned after reopen');
+      })()
+  - goto: /admin/groups/3
+  - wait: { text: Sam Okafor, exact: true }
+  - scroll: { text: Group Permissions, exact: true }
+  - shot: groups-empty-permissions
+  - scroll: { text: Shared with This Group, exact: true }
+  - wait: { text: No connectors or document sets added, exact: true }
+  - shot: groups-empty-resources
+  - goto: /admin/groups
+  - click: { role: button, name: New Group, exact: true }
+  - wait: { text: Create Group, exact: true }
+  - shot: groups-create-menu
+  - eval: |
+      (() => {
+        const create = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Create');
+        if (!create?.disabled) throw new Error('Native Create must require a nonblank group name');
+      })()
+  - fill: { placeholder: Name your group, value: Learning Lab }
+  - fill: { placeholder: Search users and accounts..., value: priya.raman }
+  - click: { selector: 'tbody [role="checkbox"]' }
+  - shot: groups-create-selected
+  - scroll: { text: Shared with This Group, exact: true }
+  - fill: { placeholder: "Add connectors, document sets", value: OPS }
+  - click: { selector: '[aria-label="Confluence – OPS space"]' }
+  - press: Escape
+  - fill: { placeholder: "Add connectors, document sets", value: Property Operations }
+  - click: { selector: '[aria-label="Property Operations"]' }
+  - press: Escape
+  - fill: { placeholder: Add agents, value: Guest Ops }
+  - click: { selector: '[aria-label="Guest Ops Copilot"]' }
+  - press: Escape
+  - shot: groups-create-resources
+  - click: { role: button, name: Create, exact: true }
+  - wait: { text: Learning Lab, exact: true }
+  - shot: groups-created-list
+  - goto: /admin/groups/4
+  - wait: { text: Priya Raman, exact: true }
+  - shot: groups-created-detail
+  - scroll: { text: Shared with This Group, exact: true }
+  - shot: groups-created-resources
+  - eval: |
+      (async () => {
+        const groups = await (await fetch('/api/manage/admin/user-group?include_default=true')).json();
+        const g = groups.find(g => g.id === 4);
+        if (!g.users.some(u => u.id === 'u3') || !g.cc_pairs.some(c => c.id === 102) ||
+            !g.document_sets.some(d => d.id === 22) || !g.personas.some(a => a.id === 12))
+          throw new Error('Native created group did not retain selected members/resources');
+      })()
+  - click: { role: button, name: Delete Group, exact: true }
+  - wait: { role: button, name: Delete, exact: true }
+  - shot: groups-delete-dialog
+  - click: { role: button, name: Delete, exact: true }
+  - wait_gone: { text: Learning Lab, exact: true }
+  - shot: groups-deleted-list
+  - goto: /admin/groups/4
+  - wait: { text: Group not found, exact: true }
+  - shot: groups-deleted-detail
+  # All nine pages exist at the pin. Parent must correct the /admin/groups EE
+  # prefix collision in src/proxy.ts before acceptance: groups2 otherwise rewrites
+  # to nonexistent /ee/admin/groups2. Keep these real frontend routes in scope.
+  - goto: /admin/groups/create
+  - wait: { text: Create Group, exact: true }
+  - shot: groups-create-direct
+  - goto: /admin/groups2
+  - wait: { text: Training Workshop, exact: true }
+  - shot: groups2-list
+  - goto: /admin/groups2/2
+  - wait: { text: Lena Brooks, exact: true }
+  - shot: groups2-detail
+  - goto: /admin/groups2/create
+  - wait: { text: Create Group, exact: true }
+  - shot: groups2-create
+  - goto: /ee/admin/groups
+  - wait: { text: Training Workshop, exact: true }
+  - shot: ee-groups-list
+  - goto: /ee/admin/groups/2
+  - wait: { text: Marco Silva, exact: true }
+  - shot: ee-groups-detail
+  - goto: /ee/admin/groups/create
+  - wait: { text: Create Group, exact: true }
+  - shot: ee-groups-create
+  # Stage the native empty list using native delete confirmations, not fixture-only screenshots.
+  - goto: /admin/groups/1
+  - click: { role: button, name: Delete Group, exact: true }
+  - click: { role: button, name: Delete, exact: true }
+  - goto: /admin/groups/2
+  - click: { role: button, name: Delete Group, exact: true }
+  - click: { role: button, name: Delete, exact: true }
+  - goto: /admin/groups/3
+  - click: { role: button, name: Delete Group, exact: true }
+  - click: { role: button, name: Delete, exact: true }
+  - wait: { text: Create groups to organize users and manage access., exact: true }
+  - shot: groups-empty-list
+  - click: { role: button, name: New Group, exact: true }
+  - fill: { placeholder: Name your group, value: Empty Workshop }
+  - click: { role: button, name: Create, exact: true }
+  - wait: { text: Empty Workshop, exact: true }
+  - goto: /admin/groups/5
+  - wait: { text: No members, exact: true }
+  - shot: groups-empty-members
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({overlays: ['edition-enterprise', 'demo-mcp-admin'], locale: state.locale, anchor: state.demo_anchor})
+        });
+        if (!response.ok) throw new Error('Cannot reset fictional group state');
+        window.location.href = '/admin/groups';
+      })()
+  - wait: { text: Training, exact: true }
+  - wait_gone: { text: Training Workshop, exact: true }
+  - shot: groups-reset-list
+  - goto: /admin/groups/1
+  - wait_gone: { text: Lena Brooks, exact: true }
+  - shot: groups-reset-detail

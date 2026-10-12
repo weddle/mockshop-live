@@ -1,0 +1,14 @@
+# Scripted follow-up: a fixed second prompt whose answer references the first turn.
+# `after` requires an earlier turn in the same chat, and the answer pulls in that turn via {{first.*}} / {{prev.*}}.
+# Example prompt: "Follow-up: summarize that in one sentence".
+after: "."
+match: "^follow-up: summari[sz]e that"
+title: "{{first.title}}"
+chunk_delay_ms: 30
+answer: |
+  Follow-up to your first question in this chat, "{{first.message}}":
+
+  In one sentence: my earlier answer on **{{prev.title}}** is the summary of record, and nothing new has been added since. *(Placeholder follow-up text; final wording to come.)*
+regenerate:
+  - |
+    Regenerated follow-up to "{{first.message}}": the earlier answer on **{{prev.title}}** still stands. *(Placeholder regenerate text.)*

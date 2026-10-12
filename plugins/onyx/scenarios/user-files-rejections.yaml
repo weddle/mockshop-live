@@ -1,0 +1,109 @@
+# Issue #28 independent native proof unit; no acceptance claim.
+# Fresh runner start resets base fixtures, chats and browser; never chain unit outputs.
+
+# Source/core/artifacts frozen; native file inputs only; no generic error allowances.
+name: user-files-rejections
+title: Native oversized, rejected, failed and unsupported file states
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+known_errors:
+  - match: '/^console: \[Toast\] File failed and was removed: failed-demo\.txt \[source: http:\/\/127\.0\.0\.1:\d+\/_next\/static\/chunks\/1h15gs0jly9g_\.js\]$/'
+    reason: 'Required fixture58 FAILED upload state; the scenario asserts this exact native toast and removal of the failed/rejected optimistic composer attachments. Other upload errors and failed steps remain strict.'
+steps:
+  # Original user-files step 234, source line 302.
+  - goto: /app
+  # Original user-files step 235, source line 303.
+  - eval: location.reload()
+  # Original user-files step 236, source line 304.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  # Original user-files step 237, source line 305.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Original user-files step 238, source line 306.
+  - click: { text: Upload Files, exact: true }
+  # Original user-files step 239, source line 307.
+  - eval: |
+      const input = document.querySelector('input[type="file"][accept="*/*"]');
+      const transfer = new DataTransfer();
+      // The native 100 MB guard runs before FormData construction: this file never reaches the mock.
+      transfer.items.add(new File([new Uint8Array(101 * 1024 * 1024)], 'oversized-demo.txt', {type: 'text/plain'}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles: true}));
+  # Original user-files step 240, source line 314.
+  - wait: { text: 'Skipped 1 oversized file (>100 MB): oversized-demo.txt' }
+  # Original user-files step 241, source line 315.
+  - eval: |
+      if (document.querySelector('#onyx-chat-input').textContent.includes('oversized-demo.txt')) throw new Error('Oversized file entered the composer despite the native guard');
+  # Original user-files step 242, source line 317.
+  - shot: oversized-file-warning
+  # Original user-files step 243, source line 318.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Original user-files step 244, source line 319.
+  - click: { text: All Recent Files, exact: true }
+  # Original user-files step 245, source line 321.
+  - click: { role: button, name: Add Files, exact: true }
+  # Original user-files step 246, source line 322.
+  - eval: |
+      const input = document.querySelector('input[type="file"]:not([accept])');
+      if (!input?.multiple) throw new Error('Native library multiple-file input is missing');
+      const transfer = new DataTransfer();
+      for (const name of ['failed-demo.txt', 'rejected-demo.exe', 'demo-resource.bin', 'learning-example.py', 'learning-demo.json', 'learning-handout.pdf', 'learning-handout.docx', 'learning-workbook.xlsx', 'legacy-handout.doc', 'broken-demo.docx', 'unavailable-demo.txt']) transfer.items.add(new File(['Discarded synthetic caller bytes.'], name));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles: true}));
+  # Original user-files step 247, source line 329.
+  - wait: { text: Some files were not uploaded. }
+  # Original user-files step 248, source line 330.
+  - shot: upload-format-rejected
+  # Original user-files step 249, source line 331.
+  - click: { role: button, name: Done, exact: true }
+  # Original user-files step 250, source line 332.
+  - wait: { text: 'File failed and was removed: failed-demo.txt', timeout: 20000 }
+  # Original user-files step 251, source line 333.
+  - eval: |
+      if (document.querySelector('#onyx-chat-input').textContent.includes('failed-demo.txt') || document.querySelector('#onyx-chat-input').textContent.includes('rejected-demo.exe')) throw new Error('Failed/rejected optimistic attachments were not removed');
+  # Original user-files step 252, source line 335.
+  - shot: failed-upload-removed
+  # Original user-files step 253, source line 336.
+  - wait: { selector: '#onyx-chat-input-send-button', timeout: 20000 }
+  # Original user-files step 254, source line 337.
+  - settle: 4000
+  # Original user-files step 255, source line 338.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Original user-files step 256, source line 339.
+  - click: { text: All Recent Files, exact: true }
+  # Original user-files step 257, source line 340.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("demo-resource.bin")' }
+  # Original user-files step 258, source line 341.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("demo-resource.bin") button:has(svg path[d^="M12 8.66667"])' }
+  # Original user-files step 259, source line 342.
+  - wait: { text: This file format is not supported for preview., exact: true }
+  # Original user-files step 260, source line 343.
+  - wait: { role: button, name: Download File, exact: true }
+  # Original user-files step 261, source line 344.
+  - shot: unsupported-preview-download
+  # Original user-files step 262, source line 345.
+  - press: Escape
+  # Owning dirty/reset outcome discards native upload batch.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const result = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: [], anchor: current.demo_anchor, locale: 'en', keep: false, resetChats: true})});
+        if (!result.ok) throw new Error('File state control failed');
+      })()
+  # Owning dirty/reset outcome discards native upload batch.
+  - goto: /app
+  # Owning dirty/reset outcome discards native upload batch.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  # Owning dirty/reset outcome discards native upload batch.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Owning dirty/reset outcome discards native upload batch.
+  - click: { text: All Recent Files, exact: true }
+  # Owning dirty/reset outcome discards native upload batch.
+  - wait: { placeholder: Search files... }
+  # Owning dirty/reset outcome discards native upload batch.
+  - wait: { text: library-reading.txt, exact: true }
+  # Owning dirty/reset outcome discards native upload batch.
+  - eval: |
+      const library = document.querySelector('[role="dialog"]');
+      if (['failed-demo.txt', 'demo-resource.bin', 'learning-handout.docx'].some(name => library.textContent.includes(name)) || !library.textContent.includes('attendance-demo.csv') || !library.textContent.includes('protected-reading.txt')) throw new Error('Fresh reset did not discard native uploads and restore the fictional seed library');

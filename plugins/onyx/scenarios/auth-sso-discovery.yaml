@@ -1,0 +1,63 @@
+# #69 conditional native controls; declared/unverified, same minimal Auth artifact.
+name: auth-sso-discovery
+title: "Independent native conditional #69 unit: auth-sso-discovery"
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 900]
+overlays: [demo-auth-anonymous]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required fake logged-out identity; independently cleared cookie.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/sso\/discover\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/sso\/discover$/'
+    reason: Deliberate local lookup400; native inline error asserted before recovery.
+# Fresh multi_tenant metadata in the non-cloud artifact, native lookup validation/empty/error/found providers and local Google/IdP navigation; no Cloud flag claim.
+steps:
+  - state: {"overlays": ["demo-auth-anonymous"]}
+  - goto: "/auth/login"
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"mode": "logged-out", "auth_profile": "multitenant"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+  - eval: |
+      (async () => { if ((await fetch('/api/me')).status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Expected fresh fake logged-out cookie and /me401'); })()
+  - goto: "/auth/login"
+  - click: {"role": "button", "name": "Sign in with SSO", "exact": true}
+  - wait: {"testid": "sso-email"}
+  - eval: |
+      if (!document.querySelector('button[type="submit"]')?.disabled) throw new Error('Empty lookup must not submit');
+  - shot: "auth-sso-lookup-empty"
+  - fill: {"testid": "sso-email", "value": "not-an-email"}
+  - press: "Tab"
+  - wait: {"text": "Enter a valid email address", "exact": true}
+  - shot: "auth-sso-lookup-invalid"
+  - fill: {"testid": "sso-email", "value": "staged.failure@workshop.example"}
+  - click: {"role": "button", "name": "Continue", "exact": true}
+  - wait: {"text": "No SSO sign-in is set up for that address. Try Google or your password below.", "exact": true}
+  - shot: "auth-sso-lookup-no-providers"
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"discovery_outcome": "failure"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+  - fill: {"testid": "sso-email", "value": "alex.learner@workshop.example"}
+  - click: {"role": "button", "name": "Continue", "exact": true}
+  - wait: {"text": "LOCAL FAKE DEMO — staged SSO lookup failure; no workspace queried.", "exact": true}
+  - shot: "auth-sso-lookup-error"
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"discovery_outcome": "providers", "authorize_outcome": "missing"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+  - click: {"role": "button", "name": "Continue", "exact": true}
+  - wait: {"text": "Workshop OIDC (fake)", "exact": true}
+  - shot: "auth-sso-lookup-providers"
+  - click: {"role": "button", "name": "Workshop OIDC (fake)", "exact": true}
+  - wait: {"text": "Sign-in response was missing the authorization URL", "exact": true}
+  - shot: "auth-sso-discovered-provider-error"
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"authorize_outcome": "redirect"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+  - click: {"role": "button", "name": "Workshop OIDC (fake)", "exact": true}
+  - wait: {"text": "Access was denied by your identity provider.", "exact": true}
+  - shot: "auth-sso-discovered-provider-local-redirect"
+  - click: {"role": "link", "name": "Return to Login Page", "exact": true}
+  - wait: {"testid": "email"}
+  - click: {"role": "link", "name": "Continue with Google", "exact": true}
+  - wait: {"text": "Access was denied by your identity provider.", "exact": true}
+  - shot: "auth-google-local-redirect"

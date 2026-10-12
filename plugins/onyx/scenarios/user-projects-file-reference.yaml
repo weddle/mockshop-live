@@ -1,0 +1,149 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app?projectId=2 → native input/drop → composer file picker.
+# Outcome: Actual project-uploaded files selected into sole native chat; cited answer/Sources/preview/history/membership; keep/fresh.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-file-reference
+title: Actual project-uploaded files selected into sole native chat; cited answer/Sources/preview/history/membership; keep/fresh
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Independent setup / outcome: Independent empty seeded project.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - click: { role: button, name: Add Files, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - eval: |
+      const input = [...document.querySelectorAll('input[type="file"]')].find(el => el.accept === '*/*');
+      if (!input) throw new Error('Project upload input missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Fictional workshop notes for accessible learning.'], 'workshop-notes.txt', {type:'text/plain', lastModified:0}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles:true}));
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - press: Escape
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - wait: { text: workshop-notes.txt, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - settle: 6500
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - wait: { text: workshop-notes.txt, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: project input upload.
+  - eval: |
+      (async () => {
+        const details = await (await fetch('/api/user/projects/2/details')).json();
+        if (!details.files.some(f => f.id === 'uf-demo-workshop' && f.project_id === 2)) throw new Error('Upload did not associate shared file');
+      })()
+  # Independent setup / outcome: Native prerequisite replay: project drop upload.
+  - eval: |
+      const input = document.querySelector('.pb-2 > input[type="file"][tabindex="-1"]');
+      const dropzone = input?.parentElement;
+      if (!dropzone) throw new Error('Project dropzone missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['# Fictional reflection\nWhat helped you learn today?'], 'reflection.md', {type:'text/markdown'}));
+      dropzone.dispatchEvent(new DragEvent('dragenter', {bubbles:true,cancelable:true,dataTransfer:transfer}));
+      dropzone.dispatchEvent(new DragEvent('dragover', {bubbles:true,cancelable:true,dataTransfer:transfer}));
+      dropzone.dispatchEvent(new DragEvent('drop', {bubbles:true,cancelable:true,dataTransfer:transfer}));
+  # Independent setup / outcome: Native prerequisite replay: project drop upload.
+  - wait: { text: reflection.md, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: project drop upload.
+  - settle: 6500
+  # Independent setup / outcome: Native prerequisite replay: project drop upload.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Native prerequisite replay: project drop upload.
+  - wait: { text: reflection.md, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: project drop upload.
+  - shot: { name: project-dropped-file-associated-reload, full_page: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("workshop-notes.txt")' }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("reflection.md")' }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - wait: { text: 2 files selected, exact: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { role: button, name: Done, exact: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - fill: { selector: '#onyx-chat-input-textbox', value: Summarize the fictional workshop notes and reflection exercise. }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { selector: '#onyx-chat-input-send-button' }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - wait: { testid: 'AgentMessage/toolbar', timeout: 30000 }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - eval: |
+      const id = new URL(location.href).searchParams.get('chatId');
+      if (!id) throw new Error('Project file reference did not create chat');
+      sessionStorage.setItem('project-reference-chat', id);
+      const human = document.querySelector('#onyx-human-message');
+      const answer = document.querySelector('[data-testid="onyx-ai-message"]');
+      if (!human?.textContent.includes('workshop-notes.txt') || !human.textContent.includes('reflection.md')) throw new Error('Project reference lost native human attachments');
+      if (!answer?.textContent.includes('five-minute welcome circle') || !answer.textContent.includes('one new idea and one next step')) throw new Error('Project answer did not reference both synthetic files');
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - shot: { name: project-file-referenced-answer, full_page: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { role: button, name: Sources }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - wait: { selector: '#onyx-chat-sidebar:has-text("workshop-notes.txt"):has-text("reflection.md"):has-text("User Files")' }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - shot: { name: project-file-reference-sources, full_page: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - click: { selector: '#onyx-chat-sidebar button:has-text("workshop-notes.txt")' }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - wait: { text: Synthetic workshop notes }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - shot: { name: project-file-reference-preview, full_page: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - press: Escape
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - eval: location.reload()
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - wait: { testid: 'AgentMessage/toolbar', timeout: 30000 }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - eval: |
+      const human = document.querySelector('#onyx-human-message');
+      if (!human?.textContent.includes('workshop-notes.txt') || !human.textContent.includes('reflection.md')) throw new Error('Reload lost project reference attachments');
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - shot: { name: project-file-reference-history-reload, full_page: true }
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - eval: |
+      const id = sessionStorage.getItem('project-reference-chat');
+      if (!document.querySelector(`a[href="/app?chatId=${id}"]:not(.opal-sidebar-tab a)`)) throw new Error('File reference chat lost project membership');
+  # Independent setup / outcome: Existing #28 source-supported native file selection, citations/preview/replay joins; no handler/script changes.
+  - shot: { name: project-file-reference-membership, full_page: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state: { overlays: [] }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (!document.body.textContent.includes('workshop-notes.txt') || !document.querySelector(`a[href="/app?chatId=${sessionStorage.getItem('project-reference-chat')}"]:not(.opal-sidebar-tab a)`)) throw new Error('Keep lost file reference membership');
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-file-reference-keep, full_page: true }
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[],anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (!document.body.textContent.includes('No chats yet.') || document.body.textContent.includes('workshop-notes.txt') || document.body.textContent.includes('reflection.md')) throw new Error('Reset retained project file reference/chat');
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-file-reference-fresh-reset, full_page: true }

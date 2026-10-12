@@ -1,0 +1,10 @@
+# Native NRFPage708–717 missing-provider state. #3 remains provider write owner.
+x-empty-providers: &emptyProviders
+  providers: []
+  default_text: null
+  default_vision: null
+  default_chat_naming: null
+  default_craft: null
+GET /llm/provider: *emptyProviders
+GET /llm/persona/:id/providers: *emptyProviders
+GET /admin/llm/provider: *emptyProviders

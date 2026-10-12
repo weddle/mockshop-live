@@ -1,0 +1,2226 @@
+plugin: onyx
+version: 1
+summary: >
+  The Onyx web UI (chat, agents, model picker, admin pages) built from a pinned upstream commit, running against fixture
+  and scripted responses for a fictional company, Seaside Collection. Chat answers are scripted and matched by regex;
+  admin demo edits are run-local, and unsupported real integrations or build-gated screens are identified per surface.
+locales: [en, es, pt, fr, de, ja, zh, ko, ar]
+default_locale: en
+
+surfaces:
+  - id: chat-home
+    title: Chat home
+    routes: [/app]
+    status: works
+    description: Chat input, agent and model picker, sidebar with pinned agents and Recents (six fixture sessions).
+    notes: On Community the chat header has no Search/Chat mode dropdown. Auto has no native selectable option at this pin in either edition.
+    group: Chat
+  - id: chat-answer
+    title: Chat answer with citations
+    routes: [/app]
+    status: works
+    description: Streamed scripted answer with a "Thought for Ns" step, citation chips, a Sources panel and a hover preview on a cited source.
+    notes: Regex/layer matching chooses the base script; branch history supplies context, and optional canonical-model overrides select response fields before context expansion. Cited sources open locally through the existing source viewer.
+    group: Chat
+  - id: model-answer-variants
+    title: Selected-model workshop answers
+    routes: [/app]
+    status: works
+    description: Editable canonical model_variants select distinct planning and facilitation answers while omitted response fields inherit common defaults.
+    notes: GPT-5.2 and GPT-4.1 same-prompt scenarios cover regenerate, edit, reopen, reload and source previews, with an unmapped-model fallback and reset. Fixture content is English; other locale rendering is not guaranteed.
+    group: Chat
+  - id: cited-source
+    title: Opened cited source
+    routes: [/app]
+    status: works
+    description: Clicking a citation chip or a Sources panel entry opens the document. File sources open in Onyx's own preview modal; link sources open a local viewer page (title, source, owners, blurb and text) in a new tab.
+    notes: The viewer is a mock page at /api/mockshop/source/<document id>, not an Onyx screen. Document text comes from fixtures/<layer>/sources/<id>.md; without it the viewer shows the blurb only.
+    group: Chat
+  - id: share-chat
+    title: Share a fake chat with Your Organization
+    routes: ["/app?chatId=61616161-0000-4000-8000-000000000001"]
+    status: works
+    description: Native header and sidebar Share entries, Private and Your Organization drafts, disabled private submit, create/copy link, make private, cancel and reopen.
+    notes: Simple in-run sharing flags and reset only; no real public publishing or production authorization.
+    group: Chat
+  - id: shared-chat
+    title: Exact shared fake conversation
+    routes: ["/app/shared/[chatId]", /app/shared/61616161-0000-4000-8000-000000000001, /app/shared/61616161-0000-4000-8000-000000000002, /app/shared/61616161-0000-4000-8000-000000000099]
+    status: works
+    description: Native saved/future engine turns, owner/date/model, text-file preview, image thumbnail/zoom/download, CSV controls, citation previews, copy and Start New Session.
+    notes: Saved conversations, file previews and missing/revoked/empty states use fictional local data. Shared feedback icons and sidebar controls are not wired at the pinned frontend; use live-chat feedback.
+    group: Chat
+  - id: chat-feedback
+    title: Native feedback and copy
+    routes: [/app, "/app/shared/[chatId]"]
+    status: works
+    description: Live-chat like/dislike text-only modal, optional positive details, required trimmed negative details, cancel/reopen/submit/replace/toggle, rollback, reload/reopen after shared navigation and reset; native live Sources and shared copy controls.
+    notes: Browser clipboard denial can show the native alert without modifying the conversation. No reason picker or whole-chat-copy control is added; locale and edition coverage is limited.
+    group: Chat
+  - id: user-search
+    title: Native document search and mode filters
+    routes: [/app, /app/settings/chat-preferences]
+    status: works
+    edition: enterprise
+    group: Chat
+    description: Search and Chat menu, source switches, paginated fictional results, time and tag filters, native preview, empty and failure states.
+    notes: "Fictional results, filters, previews, errors, citations and saved default modes use the existing frontend. Auto selection and a separate search/history route are absent at the pin. No real retrieval or authentication engine."
+  - id: agent-gallery
+    title: Agent gallery
+    routes: [/app/agents]
+    status: works
+    description: Opened from More Agents or direct link; native gallery cards offer edit, pin and Start Chat picker selection.
+    notes: Seeded and run-created cards, ordered pins, reload and picker selection use fictional content. Additional controls retain their own limits.
+    group: Chat
+  - id: agent-editor
+    title: Agent editor
+    routes: [/app/agents/edit/11, "/app/agents/edit/[id]"]
+    status: partial
+    description: Native editor saves agent name, description, instructions, starters and fixture-backed configuration in-run.
+    notes: Native configuration and supported sharing, labels, avatar and deletion interactions use local fixture-backed state. No production agent execution, ownership or permission enforcement.
+    edition: enterprise
+    group: Agents
+  - id: share-agent-users
+    title: Share Agent fictional user picker
+    routes: [/app/agents/edit/11]
+    status: works
+    description: Native Share modal email suggestions, case-insensitive search, staged user chip selection/removal and close/reopen.
+    notes: Editable fixture51 reuses three fictional users from fixture50. Suggestions require a nonempty query. Parent strict share-agent-users17.4s9 PNGs inspected, zero problems/known errors; no invite or sharing-save claim.
+    group: Agents
+  - id: agent-create
+    title: Create a user agent
+    routes: [/app/agents/create]
+    status: works
+    description: Native New Agent form creates an owned assistant in-run and opens its chat.
+    notes: Parent strict user-agents11 PNGs inspected, zero problems; configuration, pin/reload/picker/reset accepted. No durable database or live accounts; other interface controls retain explicit coverage gaps.
+    group: Agents
+  - id: browser-extension-new-tab
+    title: Native extension new tab
+    routes: [/nrf]
+    status: partial
+    description: Native sidebar, welcome/composer/models/actions/files/chat and Settings with theme, six backgrounds and new-tab confirmation; existing owners supply history/search/sharing/personalization.
+    notes: Fixture65 and shared script08 are editable fiction. Approved0006 connects native branch selection. Central callbacks, exact artifact and parent PNG proof pending; no invented Onyx extension menu or Web Store action.
+    group: Chat
+  - id: browser-extension-side-panel
+    title: Native extension side panel
+    routes: [/nrf/side-panel]
+    status: partial
+    description: Native compact header, New chat and Open in Onyx, shared composer/answer/file/error controls, and Read this tab off/waiting/hostname/disable/reset states.
+    notes: Real chrome-extension parent origin plus window.parent source are required for URL context. Direct HTTP shows waiting/no-context only; parent-owned disposable LOCAL extension proof remains prerequisite, never fabricated MessageEvents or live-profile install.
+    group: Chat
+  - id: user-first-run
+    title: First-run and name-only onboarding
+    routes: [/app]
+    status: works
+    description: Native admin Welcome/name/provider choices/Complete/Finish Setup plus the member name-save/edit/confirmation branch.
+    notes: Accepted Main33 English Enterprise17 independent strict units/94 inspected PNGs, with actual provider3 and sole settings/Agent/Users/Groups callbacks; not new70 root proof. No native onboarding route, role wizard, dismissal menu or reopen button exists. Completion is browser-local; name writes reuse settings31 and saved writes override Extras seeds.
+    edition: enterprise
+    group: Chat
+  - id: user-empty-extras
+    title: Empty home, sidebar, gallery and notifications
+    routes: [/app, /app/agents]
+    status: works
+    description: Opt-in empty seeds render native home/sidebar/gallery/notifications and admin/member NoAgentModal branches with native settings/catalog links; loaded tabs, search and Created By/Actions filters respond locally. Settings writes remain existing owner65.
+    notes: Main33 accepted native empty/NoAgent branches within17 units/94 inspected PNGs. demo-user-extras-empty keeps Assistant available but removes chats/pins/non-builtin agents/notifications. No hidden DOM/invented empty control; settings writes remain actual65. Distinct accepted65 proof does not certify58 curation or the new70 joined root.
+    group: Chat
+  - id: user-notifications-branding
+    title: Native notifications and Enterprise branding
+    routes: [/app]
+    status: works
+    description: Native profile Notifications new/older/pinned/empty states, individual and all read actions, open target; warning banner previous/next/View/dismiss; organization name/logo/header/greeting/disclaimer/help and required first-visit consent.
+    notes: Accepted Main33 English17 units/94 inspected PNGs, including final seven notification images on historical patches1/2/5/7/8. Native SWR header may remain stale before reload while account badge/read grouping/banner update; genuine reload reconciles2/0. No instant-refresh claim or0011 patch. Editable neutral62 branding and browser-local notice dismissal; no notification page/popup renderer/custom-nav consumer invented. New70 root remains unaccepted.
+    edition: enterprise
+    group: Chat
+  - id: user-agent-extras
+    title: Group-shared agents, sharing, labels, avatar and deletion
+    routes: [/app/agents, /app/agents/edit/11, /app/agents/edit/12, /app/agents/edit/14, "/app?agentId=11", "/app?agentId=12"]
+    status: works
+    description: Native gallery/viewer/picker and sharing access indicators; user/group editor or viewer shares, public scope/permission, save/cancel/copy/transfer/self-remove; labels, icon/default or fake image, delete confirmation.
+    notes: Accepted Main33 English native sharing/ownership/labels/avatar/delete/loaded group-shared states within17 units/94 inspected PNGs. Sole existing Agent callback store, no duplicate engine/group-specific gallery badge/tab/direct viewer URL or permission matrix. Uploaded bytes discarded for fictional artwork. Admin management curation remains open58; new70 root proof separate.
+    edition: enterprise
+    group: Agents
+  - id: user-agent-analytics
+    title: Agent analytics and native date controls
+    routes: [/ee/agents/stats/11, /ee/agents/stats/12, "/ee/agents/stats/[id]"]
+    status: works
+    description: Gallery stats entry/direct route/Back, agent profile, summaries and two-series chart; native 1D/7D/1M/3M/custom calendar filters and empty/populated results.
+    notes: Accepted Main33 English stats/date/custom-calendar/empty-loaded chart and native hover within17 units/94 inspected PNGs. Editable date-only fake metrics/minimal inclusive filter; no export/server group filter/live telemetry/backend. New70 composition and other locales remain unaccepted.
+    edition: enterprise
+    group: Agents
+  - id: admin-language-models
+    title: Language Models
+    routes: [/admin/language-models]
+    status: works
+    description: Configured providers (OpenAI, Anthropic, On-prem GPU cluster) and available provider groups, including Self-hosted & Custom; provider edit modal.
+    notes: Actual accepted Main #3 provider-configure/forms strict units and every76 total common-write PNGs preserved; current live catalog/discovery/default store registered once. This #65 join needs its own fresh imports/affected proof, not certification from old screenshots; no real providers.
+    group: Admin
+  - id: admin-connectors
+    title: Connector catalog
+    routes: [/admin/connectors]
+    status: works
+    description: Connector types grouped by category; clicking a type opens its add form (the Confluence form is fixtured).
+    notes: Main #3 five connector/account/File/Sites units passed independent strict and every76 total common-write PNGs plus seven native chooser witnesses inspected on actual0007 artifact. Their sole store/readers are joined, not rerun/certified here; parent must reconcile current artifact/inputs and fresh imports before affected #65 proof.
+    group: Admin
+  - id: indexing-status
+    title: Existing connectors (indexing status)
+    routes: [/admin/indexing-status]
+    status: works
+    description: Connectors grouped by source with status, search box and Expand All; permission-synced rows show Public / Permission Syncing columns on the enterprise edition.
+    notes: Existing connector-details30-PNG proof and Main #3 accepted native creates/rename/reset preserved. Current names/new rows read actual Save-controls pair store; this join does not certify new runtime inputs or perform real indexing.
+    group: Admin
+  - id: connector-detail
+    title: Connector detail
+    routes: [/admin/connector/101, /admin/connector/102, /admin/connector/103, /admin/connector/104, /admin/connector/105, /admin/connector/106, /admin/connector/108]
+    status: partial
+    description: Own connector configuration and fake credential summary, Advanced index history and existing document/group sync tabs. Jira 106 has populated native Indexing Errors and attempt-trace interfaces.
+    notes: Read interfaces103–106 accepted30 PNGs; Main #3 independently accepted name/account/frequency/File Save-Confirm metadata writes. Both inventories remain distinct; this #65 join retains their actual state/readers without broadening acceptance. General connector configuration remains native read-only; no real indexing/auth.
+    group: Admin
+  - id: admin-document-sets
+    title: Document sets
+    routes: [/admin/documents/sets, /admin/documents/sets/new, /admin/documents/sets/21, /admin/documents/sets/23, /admin/documents/sets/9999]
+    status: works
+    description: Editable fictional document sets with named connector picker, selection/removal, native create/edit/save and immediate delete.
+    notes: Parent strict33.4s20 PNGs inspected, zero problems/known errors. Native private/group/connector selection, required-name/create/save/reopen, Cancel/back, missing-ID/delete/reset observed. Local fake records only; no ingestion/storage/permission matrix.
+    group: Admin
+  - id: admin-mcp-actions
+    title: MCP Actions
+    routes: [/admin/mcp-actions]
+    status: works
+    description: Native Seaside PMS tools, Add Server, created fake educational server, Manage and authentication configuration dialogs.
+    notes: Opt-in demo-mcp-admin. Parent strict mcp-actions23 inspected PNGs, zero problems; creation, toggles, metadata/access/config, refresh, disconnect/reconnect, delete and reset observed. All authentication simulated with fictional placeholders; no real discovery/execution/keys/OAuth. Optional pass-through not separately demo-certified.
+    group: Admin
+  - id: admin-users
+    title: Users & Requests
+    routes: [/admin/users]
+    status: works
+    description: Native combined accepted, inactive and invited table with counts, search, filters, pagination, invite and status-aware row dialogs.
+    notes: >-
+      Accepted Main59: all nine strict list/filters/invitations/roles/groups/password/account-status/Craft-access/compiled-Cloud units passed, EVERY75 PNG parent-inspected. Real accepted/getUser/group readers share one mutable User store; #60 owns combined group removal/add and #65 alone sets Craft. Native Craft switches live on /admin/craft/access and preserve true/false/null in accepted/current-user readback; no Users Craft dropdown or invite CSV upload exists. Genuine Pending/Approve was proved on the matching Cloud artifact, not a fake flag/no-op. English native leaf evidence does not certify the new70 joined root or real accounts/mail/auth.
+    group: Admin
+  - id: admin-groups
+    title: Groups
+    routes: [/admin/groups, /admin/groups/create, "/admin/groups/{id}", /admin/groups2, /admin/groups2/create, "/admin/groups2/{id}", /ee/admin/groups, /ee/admin/groups/create, "/ee/admin/groups/{id}"]
+    status: works
+    description: Native editable fictional groups, members, permission display, shared connectors/document sets/agents, token-limit rows, incognito and delete confirmations.
+    notes: Parent strict83.4s passed all nine routes with all42 PNGs inspected and zero problems/known problems on the accepted scoped0005/0008 artifact. Group resources/permissions in54, initial memberships in50, actual accepted/invited/pending users in53 through Users59. Shared adminGroupMembers snapshots canonicalize Maya legacy u1 to UUID/email; mutable Users active state and real Groups list feed root Agent readers. Groups owns member-only/combined PATCH and add-users; Users composes ownsGroupWrites:true and listGroups. Accepted connector/document-set/agent/model/preferences/chat/MCP/search inventory retained. Native locale catalogs declared, English Groups proof only; no real permission enforcement or certification of Users59/Craft/other admin leaves.
+    group: Admin
+  - id: admin-other
+    title: Other admin pages (users, analytics, bots, SSO)
+    routes: [/admin/users]
+    status: partial
+    description: Remaining-admin umbrella retained. Published Users59/EVERY75, Groups60/EVERY42 and mapped remaining-admin65/39 route proofs retain separate native leaf acceptance; none certifies newly composed Craft70 or other unowned admin/auth inventory.
+    group: Admin
+  - id: user-settings-general
+    title: General settings
+    routes: [/app/settings, /app/settings/general]
+    status: works
+    description: Fake profile, theme, language and chat background writes persist through navigation within a run.
+    notes: Locale controls are declared, not visually verified. Fresh-run reset clears backend state.
+    group: Settings
+  - id: user-settings-chat
+    title: Chat preferences and memories
+    routes: [/app/settings/chat-preferences]
+    status: works
+    description: Default model, chat and voice preferences, personal instructions, memory and prompt-shortcut edits persist within a run.
+    notes: Smooth Streaming uses the pinned browser cookie, not backend state. Remaining shortcut/temperature/reasoning/playback controls in issue21 units are declared, not parent-accepted; no actual voice generation/model calls.
+    group: Settings
+  - id: user-settings-tokens
+    title: Personal access tokens
+    routes: [/app/settings/accounts-access]
+    status: works
+    description: Create and revoke fictional personal tokens; metadata survives navigation, token text is shown only when created.
+    notes: Token text cannot authenticate anywhere. Password changes are outside this journey. Issue21 scope/expiry/copy and source-gated fictional Connected apps units require parent acceptance.
+    group: Settings
+  - id: user-conditional-password
+    title: Conditional native fictional password form
+    routes: [/app/settings/accounts-access]
+    status: partial
+    description: Native password_configured modal, close/cancel, required/minimum/mismatch submit guards, pending/error/success and source-hidden unconfigured state.
+    notes: Opt-in editable fixture66; one finite changed boolean/reset, no password storage. Native inputs receive validation error booleans, not visible validation sentences. Prepared Enterprise/en unit only; parent strict/every-PNG required, CE/other locales unverified.
+    group: Settings
+  - id: user-conditional-federated-callback
+    title: Native federated fictional callback
+    routes: [/federated/oauth/callback]
+    status: partial
+    description: Missing/cancelled, mapped validation/client-secret/OAuth and generic errors, processing, fictional source receipt, native Back and countdown LOCAL return/reset.
+    notes: Fixture66 callback query markers only; no provider/token operation. Source OAuthCallbackPage logs exact caught errors; parent must anchor observed compiled source diagnostics and inspect every PNG. Prepared, unexecuted.
+    group: Auth
+  - id: user-conditional-mcp-callback
+    title: Native MCP fictional callback
+    routes: [/mcp/oauth/callback]
+    status: partial
+    description: Missing/cancelled, expired/timeout/exchange/server/generic errors, processing, fictional server receipt, native Back/Continue/automatic LOCAL return/reset.
+    notes: Exact source response success/server_id/server_name/message/redirect_url; no token or tool obtained. Prepared Enterprise/en unit, not accepted or edition/locale certification.
+    group: Auth
+  - id: user-conditional-oauth-config-callback
+    title: Native OAuth configuration fictional callback
+    routes: [/oauth-config/callback]
+    status: partial
+    description: Missing/cancelled/body error, native processing/success service receipt, Back and countdown LOCAL return/reset.
+    notes: Fixture66 editable fictional service name and query markers; same-origin only, no credentials/provider operation. Parent source-error anchoring/strict/every-PNG required.
+    group: Auth
+  - id: user-conditional-consent
+    title: Native fictional OAuth consent
+    routes: [/oauth-provider/authorize]
+    status: partial
+    description: Native valid-request disclosure/loading/Allow/Deny/pending/failure, Sign in/forbidden/unavailable/Retry, same-origin decision return and reset.
+    notes: Finite fixture66 requests and exact native DTO; existing Auth69 owns current user. Independent protected unit retains logged-out next-login and source notFound login redirect for missing/invalid request. No provider/security/authentication approval. Prepared, unexecuted.
+    group: Auth
+  - id: user-conditional-impersonate
+    title: Native fictional admin impersonation form
+    routes: [/auth/impersonate]
+    status: partial
+    description: Source admin-use notice, required/invalid email and fake-key inputs, disabled submitting/error/protected identity, app return and existing settings email reload/reset.
+    notes: Fixed nonfunctional marker; exact email/Bearer request calls Auth69's narrow supported member/email setter and cookie. No second identity store, real key/account/tenant action, or security claims. Parent affected Auth proof required.
+    group: Auth
+  - id: user-settings-connectors
+    title: Personal connectors
+    routes: [/app/settings/connectors]
+    status: works
+    description: Disconnect or locally reconnect a fake personal Gmail account; state survives navigation.
+    notes: Connect opens a read-only local simulation page; only its explicit form POST changes fake state. Never OAuth or a live account. Organization connectors are read-only.
+    group: Settings
+  - id: user-settings-usage
+    title: User usage
+    routes: [/app/settings/usage]
+    status: works
+    description: Fictional model token totals, costs, budget and model prices using the pinned UserUsageResponse shape.
+    notes: Date-range filtering and saved-model price selection are local, not real billing/metering. Page-local calendar/expansion and >3 model seed in user-settings-controls-usage are declared, not accepted.
+    group: Settings
+  - id: user-settings-gateway
+    title: LLM gateway settings
+    routes: [/app/settings/llm-gateway]
+    status: works
+    description: Business and Enterprise show gateway URL and model IDs plus fake scoped-token creation.
+    notes: Community redirects to General by upstream policy; no actual gateway requests. Remaining native URL/model/token copy and scoped mint unit is declared, not parent-accepted.
+    group: Settings
+  - id: admin65-providers
+    title: Native web search, image, voice, tracing and code configuration
+    routes: [/admin/web-search, /admin/image-generation, /admin/voice, /admin/tracing, /admin/code-interpreter]
+    status: partial
+    description: Native configured and meaningful unconfigured-provider states with fictional editable settings and local connect/test/default/disconnect controls.
+    notes: Native lower crawler/default restoration and TTS model/voice/default/disconnect witnesses appended to existing units; EDITONLY/unverified. Tracing remains cloud-hidden. No actual search, image, speech, telemetry or code execution.
+    group: Admin
+  - id: admin65-workspace
+    title: Remaining workspace and fake integration settings
+    routes: [/admin/chat-preferences, /admin/llm-gateway, /admin/craft/access, /admin/craft/apps, /admin/craft/preferences, /admin/openapi-actions, /admin/index-settings, /admin/document-processing, /admin/service-accounts, /admin/scim, /admin/security, /admin/sso-providers, /admin/hooks]
+    status: partial
+    description: Exact native DTOs, run-local configuration, fake service-key/SCIM/SSO metadata, hook specs/validation, Craft policies and native dialogs.
+    notes: Shared Users, Groups and MCP handlers compose once. Native forms stage fictional configuration, not real authentication, accounts, providers or enforcement. Consult the individual scenarios and plugin documentation for current limits.
+    group: Admin
+  - id: admin65-bots
+    title: Fictional Slack bots/channels and Discord guilds
+    routes: [/admin/bots, /admin/bots/new, /admin/bots/6501, /admin/bots/6501/channels/new, /admin/bots/6501/channels/6501, /admin/discord-bot, /admin/discord-bot/6501]
+    status: partial
+    description: Native create/edit/delete bot and channel forms, registration-key/pending-guild dialog and per-channel/bulk configuration.
+    notes: Fictional metadata/tokens only; no Slack/Discord registration, messages, external accounts or secrets.
+    group: Admin
+  - id: admin65-documents
+    title: Native document empty and loaded rows plus fictional federated detail
+    routes: [/admin/documents/explorer, /admin/documents/feedback, /admin/federated/6501]
+    status: partial
+    description: Original empty search and liked/disliked tables retained; opt-in two-row fictional OnyxDocument corpus and projected DocumentBoostStatus with native score/visibility/navigation/reset witnesses.
+    notes: ONE Pages-owned corpus; default fresh reset restores empties. Reserved fake document links not contacted. No production search/reaction/permission engine, invented detail route or competing connector/document-set store; unverified EDITONLY.
+    group: Admin
+  - id: admin65-enterprise
+    title: Remaining EE analytics, history, usage, appearance and diagnostics
+    routes: [/admin/performance/analytics, /ee/admin/performance/analytics, /admin/performance/custom-analytics, /ee/admin/performance/custom-analytics, /admin/performance/query-history, /ee/admin/performance/query-history, /admin/performance/query-history/6501, /ee/admin/performance/query-history/6501, /admin/performance/usage, /ee/admin/performance/usage, /admin/standard-answer, /ee/admin/standard-answer, /admin/standard-answer/new, /ee/admin/standard-answer/new, /admin/standard-answer/6501, /ee/admin/standard-answer/6501, /admin/theme, /ee/admin/theme, /admin/export-logs, /ee/admin/export-logs, /admin/billing, /admin/oauth-test, /admin/systeminfo]
+    status: partial
+    description: Native fictional analytics/usage/history DTOs and filters, report/export CSV, spending-limit panel, Standard Answers forms, theme/banner/logo settings and native empty-log ZIP receipt.
+    notes: Enabled Analytics/genuine Cloud remain REQUIRED matching compiled variants. Original Cloud132/37 and handoff166/46 preserved; current180/48 plus selfhost16/5 append native Business subscription and Enterprise license-only current-card/back witnesses, source-correct tier only four subscribed cases. Native Checkout error/local fake portal disclosure retained, never Stripe success/UI/payment data. Actual GET200 JSON saved script still leaves native textarea blank; unapplied script-only0012 async/cache draft requires parent build/reload/proof, no API-only certification. Theme137/25 notice/consent/Start/error/acknowledgment/banner/Dismiss/readback/reset retained; source hooks13–17 absent one-time popup not invented. Changed witnesses unverified; complete map/evidence retained.
+    group: Admin
+  - id: project-home
+    title: Educational project home
+    routes: ["/app?projectId=1", "/app?projectId=2"]
+    status: works
+    description: Editable educational project title, instructions, shared files and recent chat list with native loaded and empty states.
+    notes: Parent nine strict units and all92 final PNGs accepted English native loaded/empty query states, context warning and reload/reset. No separate project page or hierarchy; fictional token metadata only.
+    group: Projects
+  - id: project-folders
+    title: Project folders and project search
+    routes: [/app]
+    status: works
+    description: Expanded folders and menus, folded Projects tree and project/chat search, Search Chats project filter and native create or prefilled-create entry.
+    notes: Parent accepted required-name feedback, cancel/reopen, detail/sidebar rename, delete confirmation, folded search and command filter. Keyboard disclosure proved; mouse disclosure not certified.
+    group: Projects
+  - id: project-instructions
+    title: Project instructions editor
+    routes: ["/app?projectId=1", "/app?projectId=2"]
+    status: works
+    description: Native Set Instructions modal loads seeded text, saves edits, clears empty content and cancels drafts.
+    notes: Parent inspected nullable instruction edit/cancel/save/clear, reload/keep and fresh seed restoration in user-projects-home.
+    group: Projects
+  - id: project-files
+    title: Shared project files
+    routes: ["/app?projectId=1", "/app?projectId=2"]
+    status: works
+    description: Native file cards, Add Files picker and View All modal with shared previews, search and empty results, link/unpick/unlink, selection controls, upload/drop and associated-project deletion feedback.
+    notes: Parent accepted associations, native input/drop, shared text preview, selection and protected-state association error. Exact native Toast is explicitly known; independent issue28 image/PDF/table coverage is not certified.
+    group: Projects
+  - id: project-chat-membership
+    title: Chat organization within projects
+    routes: ["/app?projectId=1", "/app?projectId=2", "/app?chatId=11111111-0000-4000-8000-000000000001"]
+    status: works
+    description: Shared chat rename, move, create-and-move, custom-agent warning, drag into folder or Recents, remove/delete and new project chat/reopen.
+    notes: Sole chat engine retained; parent inspected native menus/warning, actual pointer drag into Project/out to Recents, saved-default answer, GPT-4.1 follow-up/history and reload/keep/reset.
+    group: Projects
+  - id: user-file-picker
+    title: Composer upload and file picker
+    routes: [/app]
+    status: works
+    description: Native paperclip, multiple Upload Files input, three recent rows, paste/drop, uploading/processing/send gating and attachment Remove.
+    notes: Parent accepted nine independent strict units/all61 PNGs on actual Main32/native315 artifact; native uploads, paste/drop, progress/send gating, Remove and rejection feedback. Fictional catalog58 only; caller bytes discarded. English proof; native catalogs declared, not locale-tested.
+    group: Chat
+  - id: user-file-library
+    title: Recent user file library
+    routes: [/app]
+    status: works
+    description: All Recent Files modal with five fictional seeds, filename/type/access-time rows, search/no-results, multi-select, selected-only, deselect-all, Add Files, Done, view and delete.
+    notes: Parent inspected independent search/empty, selection/selected-only, immediate Delete/spinner/exact association Toast with protected state, reload/keep/reset. No standalone route or delete-confirm/Cancel dialog exists; All Recent Files requires more than three rows.
+    group: Files
+  - id: user-file-preview
+    title: Synthetic uploaded file preview
+    routes: [/app]
+    status: works
+    description: Native text, Markdown, CSV, image, PDF, Word, code, structured-data and workbook templates with loading/copy/download/zoom/sheet controls, saved full-image and table expand/hide/reopen, and empty/unsupported/legacy/error states.
+    notes: Parent inspected readable native PDF, decoded640x360 image, Word/workbook and every required error/template/control. Five completed native downloads have fixture-matching saved bytes and ten inspected PNGs; saved image's native .png filename carries disclosed SVG bytes. No real parsing; three deliberate unavailable-file events are exact scenario-known errors.
+    group: Files
+  - id: user-file-answer
+    title: Answer referencing uploaded fictional files
+    routes: [/app]
+    status: works
+    description: Sole chat engine stores normalized ready user attachments and post-model scripted cited answers; saved user_files descriptors preserve empty-composer regeneration and replay with Sources/User Files.
+    notes: Parent strict upload-answer/saved-visuals accepted native two-file references, Sources/User Files/Open, GPT-4.1 regeneration/reload, saved image/table controls and historical citation content. Sole stream ID packet and resolved scripts/models stay together; fictional fresh/keep outcomes inspected.
+    group: Chat
+  - id: admin-agents
+    title: Admin Agents list and labels
+    routes: [/admin/agents]
+    status: works
+    description: Native menu/direct existing-agent list with search, Created By and Actions filters, empty results, Name sort, single-page footer and existing row Edit entry.
+    notes: "Parent strict28.3s12 PNGs inspected, zero problems/known errors. Editable labels agree across catalog/list/detail, Training visible in editor. No native table label column/filter or Start Chat/detail link. Other curation/stats remain open parent scope."
+    group: Admin
+
+  - id: auth-login
+    title: Native local fake login
+    routes: [/auth/login]
+    status: partial
+    description: Logged-out empty/validation/ready/fake error/success, conditional forgot link, signup footer, verified banner and native member redirect.
+    notes: Demo overlay clears synthetic cookie and returns /me401. Parent composition/artifact/strict PNG inspection pending; no real credentials or authentication.
+    group: Auth
+  - id: auth-signup
+    title: Native local fake signup
+    routes: [/auth/signup]
+    status: partial
+    description: Email prefill, one staged password input, native requirements, fake duplicate/error and success to verification waiting, Sign In footer.
+    notes: No name or confirm-password field. Non-cloud has no referral/provider controls. No real account creation; parent proof pending.
+    group: Auth
+  - id: auth-forgot
+    title: Native local fake forgot input
+    routes: [/auth/forgot-password]
+    status: partial
+    description: Required/invalid/ready email input, fake local email success/error toast and Back to Login.
+    notes: Requires approved existing forgot-password build flag on a matching non-cloud Enterprise artifact; otherwise native login redirect. No email sent; parent proof pending.
+    group: Auth
+  - id: auth-reset
+    title: Native local fake reset input
+    routes: [/auth/reset-password]
+    status: partial
+    description: Required/mismatched/ready staged inputs, missing/invalid demo token, staged input rejection, success toast and native login navigation.
+    notes: Local fake email link only; same approved non-cloud build gate. No password stored or changed; parent proof pending.
+    group: Auth
+  - id: auth-verify
+    title: Native local fake email verification
+    routes: [/auth/verify-email]
+    status: partial
+    description: Missing/invalid demo token, pending-user resend, local fake link success to verified-login banner and native verified-member redirect.
+    notes: Verifying is transient native source behavior; no email/token security engine. Parent proof pending.
+    group: Auth
+  - id: auth-waiting
+    title: Native local fake verification waiting
+    routes: [/auth/waiting-on-verification]
+    status: partial
+    description: Fictional pending-user greeting and native resend working/success/error; logged-out and verified-member redirects.
+    notes: No Cancel/back controls exist. Fake in-run mode and mailbox only; parent proof pending.
+    group: Auth
+  - id: auth-join
+    title: Native local fake Join form
+    routes: [/auth/join]
+    status: partial
+    description: Direct and local fake join-link entry, email prefill, native signup requirements/error/ready/success to waiting and authenticated redirect.
+    notes: Team query is not rendered; no invitation/backend membership/team selector/cancel/footer control. Parent proof pending.
+    group: Auth
+  - id: auth-create-account
+    title: Native Account Not Found
+    routes: [/auth/create-account]
+    status: partial
+    description: Explanatory invitation/create-team bullets, existing Create New Organization button through approved local-register patch, Sign in link.
+    notes: No signup/invite form on this page. NEW0004 routes only the native CTA through the existing proxy to fake signup; matching artifact/proof pending.
+    group: Auth
+  - id: auth-error
+    title: Native auth error states
+    routes: [/auth/error]
+    status: partial
+    description: Generic issues, raw fictional query copy, translated known code, first stale-state login restart, second stale error and Return to Login Page.
+    notes: Native browser sessionStorage restart only; no OAuth/provider calls. Parent proof pending.
+    group: Auth
+  - id: anonymous-entry
+    title: Native anonymous entry and current chat
+    routes: ["/anonymous/[id]", /anonymous/workshop-demo, /app]
+    status: partial
+    description: Native valid/invalid fake-path redirect, guest login/continue, current-engine composer/agents/models/files/actions/Sources/copy/feedback/stop/regenerate/edit/reload/reset.
+    notes: No separate anonymous chat frontend or session engine. #28 files, #32 actual-message feedback and #33 decoration compose through parent hooks. Basic voice hidden while disabled. English proof/artifact pending.
+    group: Chat
+  - id: user-craft-main
+    title: Native Craft composer and output
+    routes: [/craft, /craft/v1]
+    status: works
+    description: Native tour, model and input picker, fictional finite turns, subagent/approval/setup states, library, session history and output previews/downloads/sharing.
+    notes: "Parent frozen376234e/actualMain2df: all28 strict PASS638.30s; EVERY221 final PNG inspected, all675 original operations/192states retained→998ops221states. Loaded Library/uploads/deletion, persisted session/output previews/downloads, native approvals/subagent/provider/limit/queue/interrupt/sharing/reset complete on exact315/uoC1h/c17fc3508/fresh3370/8870. Exact nine staged source-authored native errors have positive UI/protected-state proofs, no unknowns. USER-CRAFT-PROOF-MAP final acceptance and full archive preserve all prior failures/DEV; finite fake backend only."
+    group: Craft
+  - id: user-craft-apps
+    title: Native Craft apps and connection receipt
+    routes: [/craft/v1/apps, /craft/v1/apps/oauth/callback]
+    status: works
+    description: Native search/tabs, fake per-user credentials, connection status and skill review; local-only native callback states; current MCP metadata delegated to its owner.
+    notes: "Parent final strict Apps/builtin-MCP/custom/callback/empty/error units and every named image inspected. Current sole Pages store/MCP metadata, source-labelled sidebar/redirects, per-user fake credentials/connect/disconnect/review and native missing/error/exchanging/target receipts complete. Nonadmin Manage absence and GET-app empty fallback remain native. No real OAuth/auth/provider effects."
+    group: Craft
+  - id: admin-craft-apps
+    title: Native shared Craft app configuration
+    routes: [/craft/v1/apps/manage, /craft/v1/apps/admin, /admin/craft/apps]
+    status: works
+    description: Native redirect aliases and admin target, built-in/custom/managed configuration, availability, policies and associated skills.
+    notes: "Parent final builtin-MCP10/custom19 PNGs inspected: sole #65 Apps and #5 MCP owners; builtin/custom/managed credentials and policies, correct filled Organization key, header/credential add/remove/save/readback, association promotion/unlink/deletion-retained skill and capability Reload. Stock Custom bulk-dropdown native validation callout remains visibly disclosed, not hidden or claimed pristine."
+    group: Admin
+  - id: user-craft-skills
+    title: Native Craft skills and sharing
+    routes: [/craft/v1/skills, /craft/v1/skills/new, '/craft/v1/skills/edit/[id]']
+    status: works
+    description: Grouped/searchable skill catalog, per-user toggles, previews, create/edit/import/files, sharing/user-only ownership transfer and delete.
+    notes: "Parent final Skills editor/sharing/upload-GitHub/import-ownership/loading/empty/error units passed; every PNG inspected. Native editor/import/replacement/supporting files/user+Group shares/user-only ownership transfer/save/readback/delete/reset complete. Builtins lack Edit, viewers read-only; no /skills/[id] page or real GitHub transport. Source pre-transfer combobox validation callout disclosed; actual ownership transfer completes and reopens."
+    group: Craft
+  - id: user-craft-tasks
+    title: Native Craft scheduled tasks
+    routes: [/craft/v1/tasks, /craft/v1/tasks/new, '/craft/v1/tasks/[id]', '/craft/v1/tasks/[id]/edit']
+    status: works
+    description: Paginated tasks, native required fields and schedule/preapproval controls, edit/pause/resume/delete and deterministic fictional manual runs/history/banner.
+    notes: "Parent final lifecycle25/empty4/read-error3/history-error3 PNGs all inspected: pagination/validation/minutes-hours/Daily-Weekly/preapprovals/create-and-run/pause/actual Active after native Resume/edit-readback/manual result/real scheduled banner/six statuses/openability/Load more/delete/recovery/reset. All original actions/states retained; no native search/filter/sort/Days-Advanced editor, scheduler/jobs or status override. Exact staged500 errors require positive native UI and protected recovery."
+    group: Craft
+
+entities:
+  - id: company
+    title: Company and user
+    description: The fictional company Seaside Collection (14 boutique coastal hotels). The signed-in user is an admin; an overlay swaps in a basic-role user.
+    examples: ["Seaside Collection", "Maya Chen", "Lena Brooks"]
+    surfaces: [chat-home]
+  - id: agent
+    title: Agent
+    description: Configured assistant shown in the sidebar, gallery and picker.
+    examples: ["Assistant", "Training & Onboarding Desk", "Guest Ops Copilot", "Training Analyst", "IT Helpdesk", "Campus Learning Guide", "Accessible Learning Guide"]
+    surfaces: [chat-home, agent-gallery, agent-editor, agent-create, admin-agents]
+  - id: agent-label
+    title: Agent label
+    description: Shared editable label DTOs and associations for existing agents11–14; not a native admin label filter.
+    examples: [Training, Operations, IT Support]
+    surfaces: [admin-agents, agent-editor]
+  - id: llm-provider
+    title: LLM provider and model
+    description: Providers with their models in the picker.
+    examples: ["OpenAI", "Anthropic", "On-prem GPU cluster", "GPT-5.2", "Claude Sonnet 4.5", "Llama 3.3 70B", "Qwen3 32B"]
+    surfaces: [admin-language-models, chat-home]
+  - id: connector
+    title: Connector
+    description: A configured data source with status, document count and access type (public or sync).
+    examples: ["Salesforce – Guest Services", "Confluence – OPS space", "Confluence – Training space", "Google Drive – Policies & Procedures", "Slack – #learning-*, #ops-*", "Jira – IT Service Desk", "Zoom – Meeting transcripts"]
+    surfaces: [admin-connectors, indexing-status, connector-detail]
+  - id: document-set
+    title: Document set
+    description: A named group of connectors used as agent knowledge.
+    examples: ["Learning & Development", "Property Operations"]
+    surfaces: [admin-document-sets, agent-editor]
+  - id: user-group
+    title: User group
+    description: Editable fictional group in admin list/create/edit and Share Agent; base50 seed IDs and names remain unchanged until an explicit in-run edit.
+    examples: ["Training", "Property Operations", "Front Office", "Learning Lab", "Empty Workshop"]
+    surfaces: [agent-editor, admin-groups]
+  - id: shareable-user
+    title: Fictional shareable user
+    description: Accepted fake user offered by the pinned MinimalUserSnapshot array; ID and email only, with no API keys.
+    examples: ["maya.chen@seasidecollection.example", "devon.ortiz@seasidecollection.example", "priya.raman@seasidecollection.example"]
+    surfaces: [share-agent-users]
+  - id: mcp-server
+    title: Configured fake MCP server and tools
+    description: Existing server id 1 with NONE auth and tools 31/32; created Learning Lab has fake educational tools and locally simulated auth. No outside server or provider is contacted.
+    examples: ["Seaside PMS (internal MCP)", "Group block status", "Rooming list status", "Learning Lab (fake MCP)", "Workshop resources (fake)", "mock-only-not-a-secret"]
+    surfaces: [admin-mcp-actions, agent-editor]
+  - id: chat-script
+    title: Scripted question
+    description: A question with a prepared answer and sources.
+    examples: ["What training do new front desk hires need in their first 30 days, and who is behind on it?"]
+    surfaces: [chat-answer]
+  - id: personal-setting
+    title: Fake personal settings
+    description: In-run preferences, educational memories and explicitly nonfunctional access tokens.
+    examples: ["Maya Learning", "Education coordinator", "Keep workshop examples accessible.", "Workshop notes demo"]
+    surfaces: [user-settings-general, user-settings-chat, user-settings-tokens]
+  - id: personal-connector
+    title: Fake personal connector
+    description: A local simulated personal Gmail account, separate from read-only organization connectors.
+    examples: ["Gmail", "Learning notes (fake personal account)"]
+    surfaces: [user-settings-connectors]
+  - id: educational-project
+    title: Fictional educational project
+    description: Editable project name and nullable instructions plus existing shared chat and file IDs; no duplicate uploads or chat engine.
+    examples: [Accessible Learning Lab, Revision Workshop, Study Circle, Literacy Circle]
+    surfaces: [project-home, project-folders, project-instructions, project-files, project-chat-membership]
+  - id: synthetic-user-file
+    title: Fictional educational user file
+    description: Editable catalog58 public metadata, synthetic text/artwork/document previews and answers; stable record/preview IDs, run-local lifecycle and no retained caller bytes.
+    examples: ["library-reading.txt", "study-guide.md", "learning-diagram.svg", "workshop-notes.txt", "reflection.md", "attendance-demo.csv", "learning-handout.docx"]
+    surfaces: [user-file-picker, user-file-library, user-file-preview, user-file-answer]
+
+  - id: craft-content
+    title: Fictional teaching Craft content
+    description: Editable education/healthcare apps, skills, instructions, tasks, finite messages, library and output descriptors in new fixture64; no real records/secrets/integrations.
+    examples: ["Clinic Learning API", "campus-study-plan", "Accessible workshop handout", "Fictional learning preview"]
+    surfaces: [user-craft-main, user-craft-apps, admin-craft-apps, user-craft-skills, user-craft-tasks]
+  - id: fictional-admin-config
+    title: Fictional native admin configuration
+    description: Editable neutral educational/operations settings, fake integration and key metadata, analytics rows and native accepted empty lists in fixture56. No production account/provider/billing/auth/security state.
+    examples: ["Learning web search (fake)", "Workshop notes (fake app)", "Learning Desk (fake Slack bot)", "Learning archive (fake service)"]
+    surfaces: [admin65-providers, admin65-workspace, admin65-bots, admin65-documents, admin65-enterprise]
+  - id: search-document
+    title: Fictional learning search document
+    description: Editable education and healthcare titles, tags, dates, owners, blurbs and text in fixture60; no real index or patient data.
+    examples: [Accessible workshop checklist.md, Community workshop facilitator guide, Community health learning handout, Accessibility, Healthcare]
+    surfaces: [user-search]
+  - id: local-auth-demo
+    title: Local fake learner and unsent email links
+    description: Editable neutral fictional names/emails/demo inputs/tokens/messages from NEW63; these cannot authenticate anywhere and no email is sent.
+    examples: ["Alex Learner (fake demo)", "Workshop Visitor (fake demo)", "alex.learner@workshop.example", "robin.guest@workshop.example", "Community Learning (fake demo)", "LOCAL FAKE DEMO"]
+    surfaces: [auth-login, auth-signup, auth-forgot, auth-reset, auth-verify, auth-waiting, auth-join, auth-create-account, auth-error, anonymous-entry]
+
+
+  - id: shared-conversation
+    title: Fictional shared library conversation
+    description: Educational seed history and future activity replayed by the existing engine; attached text, image and CSV reuse the user-file owner's neutral registry.
+    examples: [Accessible library workshop, Alex Learning, library-reading.txt, learning-diagram.svg, attendance-demo.csv]
+    surfaces: [share-chat, shared-chat]
+  - id: feedback-details
+    title: Fictional accessibility feedback
+    description: Editable text-only feedback about a neutral library activity, never actual patient or student records.
+    examples: ["Please include a large-print reflection option.", "Helpful quiet reflection option.", "Please offer a written reflection as well."]
+    surfaces: [chat-feedback]
+
+actions:
+  - id: complete-fictional-federated-callback
+    title: Read native federated fictional callback states
+    surface: user-conditional-federated-callback
+    entities: [local-auth-demo]
+    steps: Independently reset; use missing/cancelled links and named fixture query outcomes, inspect native mapped errors/processing/receipt and Back/countdown return; reset dirty receipt.
+    outcome: Prepared native controls and finite fictional receipt only; no provider or token contacted.
+    persists: true
+    status: partial
+    scenario: user-conditional-federated-callback
+  - id: complete-fictional-mcp-callback
+    title: Read native MCP fictional callback states
+    surface: user-conditional-mcp-callback
+    entities: [local-auth-demo]
+    steps: Independently reset; retain five classified errors, missing/cancelled/processing/receipt, Back/Continue and a separate automatic LOCAL return; reset.
+    outcome: Exact source DTO and same-origin return with finite receipt, unexecuted.
+    persists: true
+    status: partial
+    scenario: user-conditional-mcp-callback
+  - id: complete-fictional-oauth-config-callback
+    title: Read native OAuth configuration fictional callback states
+    surface: user-conditional-oauth-config-callback
+    entities: [local-auth-demo]
+    steps: Independently reset; missing/cancelled/body error and native Back, delayed processing/service receipt/countdown LOCAL return, dirty reset.
+    outcome: Editable fictional service receipt only; no credential/provider operation, parent proof pending.
+    persists: true
+    status: partial
+    scenario: user-conditional-oauth-config-callback
+  - id: decide-fictional-native-consent
+    title: Allow and deny fictional native consent
+    surface: user-conditional-consent
+    entities: [local-auth-demo]
+    steps: Independently reset; disclose client/account/workspace/LOCAL origin/access, observe loading/pending/failure, Allow/Deny return,401 Sign in,403/404 no-retry and503 Retry; reset.
+    outcome: Finite fictional decisions and safe same-origin return, no real consent/security approval.
+    persists: true
+    status: partial
+    scenario: user-conditional-consent
+  - id: read-fictional-consent-protection
+    title: Read native consent login guards
+    surface: user-conditional-consent
+    entities: [local-auth-demo]
+    steps: Independently reset; existing Auth owner clears fake cookie/current user; valid request preserves next-login, missing/invalid request follows pinned notFound login fallback; restore seed.
+    outcome: Required protected entry and source-native fallback retained, no invented404/auth bypass. Prepared only.
+    persists: true
+    status: partial
+    scenario: user-conditional-consent-protected
+  - id: submit-fictional-impersonation-form
+    title: Submit native fictional impersonation inputs
+    surface: user-conditional-impersonate
+    entities: [local-auth-demo]
+    steps: Independently reset; empty/required/invalid validation, fake-key rejection/submitting/protected identity, native success app return and sole Auth settings email/navigation/reload/reset.
+    outcome: Auth69's sole supported fake member/email changes in-run; never a real account/session/key operation.
+    persists: true
+    status: partial
+    scenario: user-conditional-impersonate
+  - id: change-fictional-native-password
+    title: Use conditional native fictional password form
+    surface: user-conditional-password
+    entities: [local-auth-demo]
+    steps: Independently reset; native settings menu/direct entry, modal/close/required/minimum/mismatch, rejected/pending/success/protected state, navigation/reload, existing anonymous owner's unconfigured flag and fresh reset.
+    outcome: One deterministic finite fictional changed boolean; no password stored. Native input validation booleans, not invented error sentences. Unexecuted.
+    persists: true
+    status: partial
+    scenario: user-conditional-password
+  - id: manage-fictional-groups
+    title: Create, edit and delete fictional groups
+    surface: admin-groups
+    entities: [user-group, connector, document-set, agent]
+    steps: Open Groups from the native sidebar or a direct link; search/select members and resources, toggle displayed permissions, save, reopen, assign/revoke manager, remove member, delete with confirmation, reset.
+    outcome: Minimal fake Groups records and canonical Users59 ID/email memberships persist within the run; Users reads the actual Groups catalog, both factories reset to seeds. Native nine routes and all42 images inspected in focused strict proof; no live permissions/account changes or Users frontend certification.
+    persists: true
+    status: works
+    scenario: admin-groups
+  - id: filter-user-search
+    title: Search and refine fictional learning resources
+    surface: user-search
+    entities: [search-document]
+    preconditions: [Enterprise runtime, Existing parent chat callback composition]
+    steps: Change app mode to Search, find learning resources, page and toggle sources, choose time and tags, clear filters, open results and inspect the selected loaded body; Chat Actions selects sources and reopens the cited conversation.
+    outcome: "Native filtered results/tags/source states, selected loaded bodies, Chat citation/Sources/replay, matching/empty direct handoffs and saved default/reload/reset observed in101.2s strict pass with all49 PNGs inspected. Readonly OAuth-status array stages existing NONE-auth tools; only exact required Search-error Toast is known, all other errors strict. Fake corpus and in-run preference only."
+    persists: true
+    status: works
+    scenario: user-search
+  - id: stage-local-auth-forms
+    title: Use native forms with fictional local inputs
+    surface: auth-login
+    entities: [local-auth-demo]
+    preconditions: [Actual accepted Main Files-Projects-Users-Groups-Search-provider-Sharing readers plus local Auth join, demo-auth-anonymous overlay, Minimal non-cloud Enterprise forgot-enabled Auth artifact with signup4 and accepted Main1/2/native3/5/7/8/9/12 excluding NRF6, Parent import reload and independent strict unit PNG proof]
+    steps: Use independent auth-login, auth-signup, auth-join, auth-forgot, auth-reset-password and auth-member-redirects units; each expires the fake cookie through local stage before native form/direct-link controls.
+    outcome: Native validation/disabled/working/error/success/navigation responds to run-local fake mode and unsent links; no password stored, no real account/email/authentication.
+    persists: true
+    status: partial
+    scenario: auth-login
+  - id: resend-local-verification
+    title: Resend and follow fictional verification links
+    surface: auth-waiting
+    entities: [local-auth-demo]
+    steps: Independent auth-waiting and auth-verification units use native signup to issue their own unsent link; click here, stage local resend failure and clear it; retain direct missing/invalid tokens and verified-login navigation.
+    outcome: Native greeting/toasts/resend and verified-login banner render; completion and mailbox persist in-run and reset restores seeds.
+    persists: true
+    status: partial
+    scenario: auth-waiting
+  - id: native-local-account-error
+    title: Follow existing Account Not Found and error controls
+    surface: auth-create-account
+    entities: [local-auth-demo]
+    steps: Independent auth-create-account and auth-error units retain direct Account Not Found/local CTA/Sign in plus generic/raw/known/stale native errors and Return to Login Page.
+    outcome: Existing proxy reaches fake signup; source-native first stale restart and second error render without any real org/provider authentication.
+    persists: false
+    status: partial
+    scenario: auth-create-account
+  - id: stage-native-provider-choices
+    title: Use native fictional provider choices and retry states
+    surface: auth-login
+    entities: [local-auth-demo]
+    preconditions: [Same minimal non-cloud forgot-enabled Auth artifact, Fresh fake logged-out cookie and named metadata profile, Parent fresh-import ACK and strict PNG acceptance pending]
+    steps: Use auth-provider-choices for mixed Google OIDC SAML buttons, working start400 missing-URL retry, local redirect, password kill switch, sole-provider automatic start and held Return, first-user signup and bypass.
+    outcome: Source-authored native conditional states respond only to editable fictional metadata and local responses; no IdP contacted or authenticated account fabricated.
+    persists: true
+    status: partial
+    scenario: auth-provider-choices
+  - id: discover-fictional-sso
+    title: Expand and submit the native SSO Work Email form
+    surface: auth-login
+    entities: [local-auth-demo]
+    steps: Use independently seeded auth-sso-discovery for empty invalid no-provider error recovery found-provider retry and local Google navigation. multi_tenant metadata renders this UI with CLOUD=false by svcSS42-44 and LoginPage56-76.
+    outcome: Actual native lookup feedback and provider choices render; fictional responses never query a workspace or IdP.
+    persists: true
+    status: partial
+    scenario: auth-sso-discovery
+  - id: choose-native-referral
+    title: Choose all native signup referral options
+    surface: auth-signup
+    entities: [local-auth-demo]
+    steps: Use independently seeded auth-referral-signup, clear the fake referral cookie, open each native option, select and observe real browser referral_source cookie, then submit fictional Robin signup.
+    outcome: All eleven source-authored choices and menus are declared with native cookie writes and pending verification; multi-tenant metadata does not certify compile-time Cloud support.
+    persists: true
+    status: partial
+    scenario: auth-referral-signup
+  - id: read-native-auth-error-codes
+    title: Read each translated authentication error and restart state
+    surface: auth-error
+    entities: [local-auth-demo]
+    steps: Use auth-error-codes for all nine native translated codes and Return, independently clear native restart storage for each of three first-restart second-held stale codes, and read actual self-hosted support copy.
+    outcome: All distinct source-authored error states remain required and unverified; cloud support mailto needs a separate CLOUD=true artifact.
+    persists: false
+    status: partial
+    scenario: auth-error-codes
+  - id: enter-anonymous-demo
+    title: Enter native anonymous chat with current scripted engine
+    surface: anonymous-entry
+    entities: [local-auth-demo, chat-script, agent]
+    steps: Independent auth-anonymous-entry, auth-anonymous-composer, auth-anonymous-feedback, auth-anonymous-branches, auth-anonymous-reset and auth-anonymous-reset-fresh retain every original guest operation. Each has its real scenario-start reset and native prerequisites; dirty reset proves live keep, fresh reset owns complete clearing checks and both original login/empty-chat images. Parent additionally proves dirty→fresh on the same fake server.
+    outcome: Actual native redirects and current live controls respond; fake identity wraps existing engine state rather than duplicating sessions/files/feedback. Parent PNG proof pending.
+    persists: true
+    status: partial
+    scenario: auth-anonymous-entry
+  - id: ask-question
+    title: Ask a question and read the cited answer
+    surface: chat-answer
+    entities: [chat-script, agent]
+    steps: Type the question in the chat input and send; expand "2 steps"; open Sources.
+    outcome: The answer streams in, shows "Thought for Ns" and citation chips; expanding steps lists the search queries; the Sources panel lists the cited documents.
+    persists: false
+    scenario: user-ask-with-citations
+  - id: review-admin-agents
+    title: Review the native admin Agents list
+    surface: admin-agents
+    entities: [agent, agent-label]
+    steps: Open admin Agents by menu and direct URL; search and clear; choose Actions and Created By filters; sort Name; open row menu and existing Edit entry.
+    outcome: Matching rows and empty results respond locally; Name sort/footer observed, record11 opens its own editor with Training label. Shared label DTOs agree across catalog/list/detail. Parent12 PNGs inspected; no curation writes certified.
+    persists: false
+    scenario: admin-agents
+  - id: complete-user-onboarding
+    title: Inspect native first-run provider forms
+    surface: user-first-run
+    entities: [company]
+    steps: Open first-run app; Let's Go; enter name; Next; open and close Anthropic through Vercel provider forms.
+    outcome: Required Welcome/name/provider-choice controls and all first-group forms render natively. Partial until parent proof.
+    persists: true
+    scenario: user-extras-onboarding-forms
+  - id: finish-user-onboarding
+    title: Save and finish native first-run setup
+    surface: user-first-run
+    entities: [company]
+    steps: Independently repeat name setup; open remaining provider forms; save a fake OpenAI provider through owner3; Next; inspect optional links; Finish Setup and reload.
+    outcome: Remaining native forms and saved name/provider/browser completion persist; no live provider or credentials.
+    persists: true
+    scenario: user-extras-onboarding-complete
+  - id: save-member-display-name
+    title: Save the native member display name
+    surface: user-first-run
+    entities: [company]
+    steps: Open member overlay; enter required name with Enter; inspect confirmation; edit and Save; dismiss and reload.
+    outcome: Member name edits persist through settings31 and the native prompt stays dismissed.
+    persists: true
+    scenario: user-extras-member
+  - id: inspect-empty-user-states
+    title: Inspect native empty user states
+    surface: user-empty-extras
+    entities: [agent]
+    steps: Open empty home/sidebar; profile Notifications; More Agents and direct gallery.
+    outcome: Native empty states render from fixture absences, with Assistant retained.
+    persists: false
+    scenario: user-extras-empty
+  - id: inspect-no-agent-admin
+    title: Follow native no-agent administrator links
+    surface: user-empty-extras
+    entities: [agent]
+    steps: Open admin NoAgentModal; follow Re-enable Default Chat; re-enter home; follow Configure a New Agent.
+    outcome: Links reach existing settings and catalog owners; no new setting write is invented.
+    persists: false
+    scenario: user-extras-no-agent-admin
+  - id: inspect-no-agent-member
+    title: Inspect the native no-agent member notice
+    surface: user-empty-extras
+    entities: [agent]
+    steps: Open member overlay with default chat disabled and no visible non-builtin agents.
+    outcome: Native contact-administrator branch renders without an invented footer or dismiss control.
+    persists: false
+    scenario: user-extras-no-agent-member
+  - id: read-notifications-and-consent
+    title: Inspect branding, consent and native banners
+    surface: user-notifications-branding
+    entities: [company]
+    steps: Try Start without consent; select Consent checkbox and Start; use banner Next/Previous/View/Dismiss; reload.
+    outcome: Fictional branding, native consent error and browser-local dismissal persist; banner target and queue respond.
+    persists: true
+    scenario: user-extras-branding
+  - id: dismiss-native-notifications
+    title: Read and dismiss native notifications
+    surface: user-notifications-branding
+    entities: [company]
+    steps: Independently replay consent/banner setup; inspect New/Older/pinned feed; mark one read; open agent target; mark all read; native Back.
+    outcome: Read counts and selected target persist through existing Extras state; no other unit run is required.
+    persists: true
+    scenario: user-extras-notifications
+  - id: inspect-extra-agent-gallery
+    title: Inspect the complete native Extras gallery
+    surface: user-empty-extras
+    entities: [agent]
+    steps: Enter by menu and direct route; Your/All tabs; search/Created By/Actions empty results and clear; viewer fold/expand; Start Chat.
+    outcome: Native filters, viewer sections and group-shared agent selection respond locally.
+    persists: false
+    scenario: user-extras-gallery
+  - id: save-user-agent-extras
+    title: Save native agent sharing choices
+    surface: user-agent-extras
+    entities: [agent]
+    steps: Share agent11; Copy Link; stage group/user permissions; Save/reload; set organization scope and public Edit permission.
+    outcome: Sharing rows and chosen permissions persist through the sole persona store.
+    persists: true
+    scenario: user-extras-sharing
+  - id: transfer-extra-agent-ownership
+    title: Transfer native agent ownership
+    surface: user-agent-extras
+    entities: [agent]
+    steps: Independently replay sharing writes; stage group removal/Cancel/reopen; choose group and user owners; Back/Cancel; Transfer and reload.
+    outcome: Saved sharing rows remain after Cancel; group owner and public Edit state persist. Same-route native setup explains69 steps.
+    persists: true
+    scenario: user-extras-ownership
+  - id: edit-extra-agent-avatar-labels
+    title: Edit native agent labels and avatar
+    surface: user-agent-extras
+    entities: [agent, agent-label]
+    steps: Create label; Save/reload; open avatar menu; choose icon; fake upload preview/Save/reload; gallery label search; View Agent Stats and Back.
+    outcome: New label and fictional avatar writes persist through existing state; native gallery/stats entry responds.
+    persists: true
+    scenario: user-extras-avatar-labels
+  - id: filter-agent-analytics
+    title: Filter fictional agent analytics
+    surface: user-agent-analytics
+    entities: [agent]
+    steps: Independently set the native fake avatar; direct stats11/12; 7D/1D/1M/3M; chart hover; custom calendar/month arrows/day choices.
+    outcome: Native summary changes9 to0 to95, chart plots both series and agent12 is empty; all92-proof images remain mapped.
+    persists: false
+    scenario: user-extras-analytics
+  - id: remove-extra-agent-label-avatar
+    title: Remove a native label and restore default avatar
+    surface: user-agent-extras
+    entities: [agent, agent-label]
+    steps: Independently replay native label/icon/fake-upload writes; remove label; choose default avatar; Save/reload.
+    outcome: Association removal and default avatar persist without fixture/backend setup substitutes.
+    persists: true
+    scenario: user-extras-remove-label-avatar
+  - id: remove-extra-agent-self-access
+    title: Remove explicit native own-agent access
+    surface: user-agent-extras
+    entities: [agent]
+    steps: Select group-owned agent12 directly; add current user share; Save; inspect own-access menu; Remove Access.
+    outcome: Explicit user share disappears; group/admin access may remain, with no isolation-backend claim.
+    persists: true
+    scenario: user-extras-self-access
+  - id: delete-extra-agent
+    title: Confirm and cancel native agent deletion
+    surface: user-agent-extras
+    entities: [agent]
+    steps: Direct editor14; Delete Agent confirmation; Cancel; reopen and Delete; gallery reload.
+    outcome: Cancel preserves the record and confirmed deletion removes it through the sole Agent tombstone.
+    persists: true
+    scenario: user-extras-delete
+  - id: reset-extra-agent-state
+    title: Restore all original Extras seeds
+    surface: user-agent-extras
+    entities: [agent, agent-label]
+    steps: Independently make native owner/public/label/avatar/notification/delete writes; execute original fresh reset; first-visit consent; gallery.
+    outcome: First-visit/deleted agent/sharing/labels/avatar/notification seeds return; all assertions remain nonvacuous.
+    persists: false
+    scenario: user-extras-reset
+  - id: pick-agent
+    title: Pick an agent from the gallery
+    surface: agent-gallery
+    entities: [agent]
+    steps: Click More Agents, then Start Chat on a card.
+    outcome: The chat opens with that agent selected and its conversation starters shown.
+    persists: false
+    scenario: user-agent-and-model
+  - id: create-user-agent
+    title: Create a fictional education agent
+    surface: agent-create
+    entities: [agent]
+    preconditions: ["add:agents permission", Enterprise runtime for the focused acceptance scenario]
+    steps: More Agents, New Agent, fill name, description, instructions and a conversation starter, then Create.
+    outcome: Private owned agent opens with its starter and appears alongside seeded agents after reload; in-run only, reset restores fixtures. Parent strict11 PNGs inspected, zero problems.
+    persists: true
+    status: works
+    scenario: user-agents
+  - id: save-user-agent
+    title: Edit and reload a user agent
+    surface: agent-editor
+    entities: [agent]
+    preconditions: [Owned or editor-shared agent]
+    steps: Open Edit from the gallery card, change name, description, instructions and starter, Save, then reload.
+    outcome: Saved name, description, instructions and starter appear in editor, gallery and selected-agent view after reload; seeded agents remain. Parent strict accepted.
+    persists: true
+    status: works
+    scenario: user-agents
+  - id: pin-user-agent
+    title: Pin, unpin and select a user agent
+    surface: agent-gallery
+    entities: [agent]
+    steps: Toggle the card pin, reload, unpin and reload again, then select its Start Chat button.
+    outcome: Correct named sidebar link and its own visible title persist after reload; unpin removes that row after reload. Start Chat selects and auto-pins the saved agent; explicit new-run reset restores seeds. Parent strict accepted; no org/isolation matrix.
+    persists: true
+    status: works
+    scenario: user-agents
+  - id: switch-model
+    title: Switch the chat model
+    surface: chat-home
+    entities: [llm-provider]
+    steps: Set Default Model in Chat Preferences; return to Chat, click the composer model button, expand the provider button, choose a model and send; reopen each chat and switch one again.
+    outcome: Each chat retains its own model and answer snapshots; new chats inherit saved default (null means Global Default), changing default preserves existing chats. Parent strict15 inspected PNGs66.9s, zero problems; native earlier-answer labels observed after switch. Scripted text, no provider/billing calls.
+    persists: true
+    scenario: chat-model-persistence
+  - id: compare-model-answers
+    title: Compare canonical-model workshop answers
+    surface: model-answer-variants
+    entities: [chat-script, llm-provider]
+    steps: Send the same community learning workshop prompt under GPT-5.2 and GPT-4.1; choose GPT-5.2 inside the native regenerate dialog, edit under composer GPT-4.1, reopen/reload the edited branch, view the variant source, return by direct chat link, send under unmapped GPT-5 mini, reset/hard reload and resend.
+    outcome: Distinct planning/facilitation content, frozen model snapshots, selected-model context-expanded alternates, common fallback and restored seeds observed in parent strict43.2s11 inspected PNGs, zero problems/known problems; no provider or durable backend.
+    persists: true
+    status: works
+    scenario: model-answer-variants
+  - id: review-providers
+    title: Review LLM providers and the on-prem provider
+    surface: admin-language-models
+    entities: [llm-provider]
+    steps: Scroll to Self-hosted & Custom; click Edit On-prem GPU cluster.
+    outcome: A modal opens with the Self-hosted Ollama tab, an internal API base and two models.
+    persists: false
+    scenario: byo-model-on-prem
+  - id: single-provider-deployment
+    title: Review a single-provider healthcare or education deployment
+    surface: chat-home
+    entities: [llm-provider]
+    preconditions: [Enterprise edition, Org overlay followed by demo-single-provider-healthcare]
+    steps: Open the Llama 3.3 70B picker, choose Qwen3 32B directly, then review the one On-prem GPU cluster card and its Edit modal in Language Models.
+    outcome: Observed flat two-model list without a provider header, updated selected-model button and matching Self-hosted Ollama modal; parent strict pass8 inspected shots, no fallback provider needed.
+    persists: false
+    status: works
+    scenario: single-provider
+  - id: add-confluence-form
+    title: Fill the add-Confluence form
+    surface: admin-connectors
+    entities: [connector]
+    preconditions: [Enterprise edition]
+    steps: Click Confluence, fill URL, pick the credential, fill Space Key and name.
+    outcome: The form shows the filled values with Connector Content visible. Submitting does not add a connector to the list.
+    persists: false
+    status: partial
+    scenario: admin-connectors
+  - id: filter-indexing-status
+    title: Search and expand indexing status
+    surface: indexing-status
+    entities: [connector]
+    steps: Type in Search connectors..., click Expand All.
+    outcome: Only matching connectors remain, grouped by source and expanded.
+    persists: false
+    scenario: admin-connectors
+  - id: inspect-index-attempts
+    title: Open a connector and read index-attempt history
+    surface: connector-detail
+    entities: [connector]
+    steps: Click a connector name, click Advanced, scroll to the table.
+    outcome: Attempt table with status and document counts.
+    persists: false
+    scenario: admin-connectors
+  - id: inspect-permission-sync
+    title: Inspect permission sync on a connector
+    surface: connector-detail
+    entities: [connector]
+    preconditions: [Enterprise edition]
+    steps: Open Confluence – Training space, click Advanced, open the Document Permission Sync and Group Membership Sync tabs.
+    outcome: Permission Syncing and Last Synced on the status card, and attempt tables on both tabs.
+    persists: false
+    scenario: admin-permission-sync
+  - id: inspect-source-connector-details
+    title: Inspect four connector details and Jira errors
+    surface: connector-detail
+    entities: [connector]
+    preconditions: [Enterprise edition]
+    steps: Open Indexing Status from its menu, follow rows 103–106 and direct routes; read each fake account/configuration, expand Advanced and switch sync tabs; open Jira View details. and View full trace.
+    outcome: Each native row/direct detail shows its own configuration/fake Credential/history; Jira ITSD-204/219 Unresolved rows and fake trace, stage metrics empty and applicable/not-applicable sync states inspected. Parent strict30 PNGs/zero problems.
+    persists: false
+    status: works
+    scenario: connector-details
+  - id: edit-agent
+    title: Review an agent definition and sharing
+    surface: agent-editor
+    entities: [agent, user-group, document-set]
+    preconditions: [Enterprise edition]
+    steps: Scroll the editor, click Share.
+    outcome: Instructions, starters, knowledge, actions including the Seaside PMS (internal MCP) tools, and Advanced Options appear; the Share modal lists Training as invited.
+    persists: false
+    scenario: admin-llm-and-agent-editor
+  - id: select-share-agent-user
+    title: Search and stage a fictional user in Share Agent
+    surface: share-agent-users
+    entities: [agent, shareable-user]
+    preconditions: [Exact pinned Enterprise runtime, Base fictional Maya admin]
+    steps: Open editor11 from the gallery Edit control and direct link; open Share, type an email query, select a suggestion, remove its chip and close/reopen.
+    outcome: Three fictional native suggestions populate; case-insensitive filtering narrows them; selection adds a removable chip and clears query; cancel/reopen and direct entry work. Parent9 PNGs inspected, zero problems.
+    persists: false
+    status: works
+    scenario: share-agent-users
+  - id: view-document-sets
+    title: View document sets
+    surface: admin-document-sets
+    entities: [document-set]
+    steps: Open Document Sets from admin navigation or direct link; create with name/description and selected connectors; reopen; edit seeded row or direct ID; save; delete; reset.
+    outcome: Native forms prepopulate and list/detail reflect fake writes; reset restores seed. Missing-ID route displays the native error. No ingestion or durable storage.
+    persists: true
+    scenario: document-set-forms
+  - id: ask-as-ops-user
+    title: Ask the same question as a basic-role user
+    surface: chat-answer
+    entities: [chat-script, company]
+    preconditions: [Scenario overlay demo-property-ops-user]
+    outcome: A shorter scripted answer citing only operations sources. This is a fixture script, not enforced access control.
+    persists: false
+    scenario: user-permission-aware
+  - id: open-cited-source
+    title: Open a cited source
+    surface: cited-source
+    entities: [chat-script]
+    steps: Ask the scripted question; click the File citation chip; close it; click a Confluence chip or a Sources panel entry.
+    outcome: The checklist opens in the preview modal; link sources open the local viewer with the document text.
+    persists: false
+    scenario: user-open-cited-source
+  - id: manage-configured-mcp
+    title: Inspect and manage the configured fake MCP server
+    surface: admin-mcp-actions
+    entities: [mcp-server]
+    preconditions: [Scenario overlay demo-mcp-admin]
+    steps: Open via native sidebar or direct route, toggle tools, refresh, Manage and Save Changes, disconnect/reconnect or delete; Add Server, Connect with simulated OAuth or API Key/None, revisit Manage and Edit Configs, then fresh reset.
+    outcome: Seeded and created fake servers render coherently; metadata and auth configuration survive navigation, deletion removes catalogs/tools and reset restores seeds. Authentication is simulated only, no real discovery or execution.
+    persists: true
+    status: works
+    scenario: mcp-actions
+  - id: save-user-preferences
+    title: Save profile and theme
+    surface: user-settings-general
+    entities: [personal-setting]
+    steps: Edit profile fields and blur; choose Dark; navigate away and return.
+    outcome: Saved fields and dark theme remain; fresh-run reset restores fixture defaults.
+    persists: true
+    scenario: user-settings
+  - id: edit-user-memories
+    title: Save chat preferences and memories
+    surface: user-settings-chat
+    entities: [personal-setting, llm-provider]
+    steps: Select a default model, change switches, enter instructions, and add, edit or remove a memory.
+    outcome: Consumer-visible values and memories survive navigation; reset removes in-run edits.
+    persists: true
+    scenario: user-settings
+  - id: manage-fake-tokens
+    title: Create and revoke a fake token
+    surface: user-settings-tokens
+    entities: [personal-setting]
+    steps: New Access Token, name it, Create Token; return to the list; delete a disposable token and confirm Revoke.
+    outcome: Only fake metadata persists; revoked tokens stay removed after navigation.
+    persists: true
+    scenario: user-settings
+  - id: manage-personal-connector
+    title: Disconnect and locally reconnect
+    surface: user-settings-connectors
+    entities: [personal-connector]
+    steps: Disconnect Gmail and confirm; navigate back; follow the local Connect link, then submit Connect fake Gmail account on its labelled simulation page.
+    outcome: Not connected and Connected states persist within the run without OAuth or live account writes.
+    persists: true
+    scenario: user-settings
+  - id: inspect-user-usage
+    title: Read fictional usage and budget
+    surface: user-settings-usage
+    steps: Open Usage from settings or by direct route.
+    outcome: Model rows, 0.42 USD spent, 9.58 USD remaining and model prices render rather than crashing.
+    persists: false
+    scenario: user-settings
+  - id: manage-native-prompt-shortcuts
+    title: Save and remove educational prompt shortcuts
+    surface: user-settings-chat
+    entities: [personal-setting]
+    steps: Enable native shortcuts; enter incomplete/valid/invalid draft, blur to create/update, remove, navigate and keep/fresh reset.
+    outcome: Native rows and error guard reflect saved content; discarded invalid draft cannot erase saved content; fresh reset restores empty rows.
+    persists: true
+    status: partial
+    scenario: user-settings-controls-shortcuts
+  - id: save-native-playback-defaults
+    title: Save conditional chat and playback defaults
+    surface: user-settings-chat
+    entities: [personal-setting]
+    steps: Through source-enabled native sliders/switches change temperature, reasoning, voice speed/auto-playback and Smooth Streaming; reload and reset.
+    outcome: Backend defaults survive navigation/keep and reset independently of the source-authored Smooth Streaming cookie.
+    persists: true
+    status: partial
+    scenario: user-settings-controls-defaults
+  - id: select-native-token-scopes
+    title: Mint and copy a scoped fictional token
+    surface: user-settings-tokens
+    entities: [personal-setting]
+    steps: Cancel draft, choose native expiry, exercise scope implication/disabled empty scopes, create/copy and navigate to metadata; keep/fresh reset.
+    outcome: Source check icon proves native copy success; exact scopes/UTC expiry persist without returning token again; fresh reset removes tokens.
+    persists: true
+    status: partial
+    scenario: user-settings-controls-tokens
+  - id: disconnect-native-authorized-app
+    title: Disconnect a fictional Connected app
+    surface: user-settings-tokens
+    entities: [personal-setting]
+    steps: Source-enabled Connected apps list; cancel confirmation, disconnect, navigate/keep and fresh reset.
+    outcome: Native row persists after cancel, disappears after confirmed disconnect and is restored by fresh reset; no authorization occurs.
+    persists: true
+    status: partial
+    scenario: user-settings-controls-connected-apps
+  - id: mint-native-gateway-token
+    title: Copy gateway identifiers and mint a fake scoped token
+    surface: user-settings-gateway
+    entities: [personal-setting]
+    steps: Copy native URL/model ID, mint/copy limited gateway token, read saved Accounts metadata, keep/fresh reset.
+    outcome: Native check icons confirm clipboard writes; use:llm_gateway metadata shares the sole PAT store; no gateway requests.
+    persists: true
+    status: partial
+    scenario: user-settings-controls-gateway
+  - id: filter-native-user-usage
+    title: Filter and expand fictional model usage
+    surface: user-settings-usage
+    steps: Independently open seven-model seed; native presets/custom pending/reversed range, usage expansion, provider disclosure and reset.
+    outcome: Visible costs/model rows/empty window/prices match selected range; hard navigation restores source-local 1M/collapsed defaults.
+    persists: false
+    status: partial
+    scenario: user-settings-controls-usage
+  - id: use-native-craft
+    title: Submit fictional Craft turns and inspect native approvals
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently enter the native composer, use slash/attachment controls, send/queue/edit/discard/interrupt finite turns, inspect approvals/subagent/reopen and delete the session created in this unit."
+    outcome: Native run-local messages and decisions retain original readbacks; own composed reset restores a usable composer. No provider or tool runs.
+    persists: true
+    status: partial
+    scenario: user-craft-turns-approvals
+  - id: configure-native-craft-app
+    title: Configure and delete a fake shared custom app
+    surface: admin-craft-apps
+    entities: [craft-content]
+    steps: "Independently create/configure Campus Reflection API through native controls, associate/promote/unlink current skills, reopen fields, delete its own row and inspect retained skills/stale Reload."
+    outcome: Sole real #65 row/body callbacks reconcile actual #70 skills; reset restores seeded Apps. No second app store.
+    persists: true
+    status: partial
+    scenario: user-craft-apps-custom
+  - id: manage-native-craft-skill
+    title: Edit a fictional Craft skill and delete its own record
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Use native catalog/menu/search/preview/switch and scratch/editor controls, save/reopen markdown/description, upload/remove supporting files, delete the skill created in this unit and read back."
+    outcome: Actual builtin/custom lists reflect native edits and own reset restores seeded skills; separate sharing/import/ownership actions retain their full inventories.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-editor
+  - id: manage-native-craft-task
+    title: Schedule and manually run a fictional task
+    surface: user-craft-tasks
+    entities: [craft-content]
+    steps: "Independently enable current MCP, retain minutes/hours/Daily/Weekly/preapprovals; create/save/run, genuinely open page2 created row, pause/resume/edit/reopen, inspect every native status/banner/history and delete its own task. Unchanged seed-only empty-history/legacy reads live beside actual tasks-empty reset."
+    outcome: Task fields and finite status/output retain original readbacks; own reset positively restores Clinic teaching checklist. No scheduler executes.
+    persists: true
+    status: partial
+    scenario: user-craft-tasks-lifecycle
+  - id: inspect-craft-entry-library
+    title: Inspect native Craft entry, tour, model and Library
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Reset independently; retain native tour, expand Anthropic and select unchanged Claude Sonnet 4.5; Open add menu then Library then unchanged Manage library…; retain every upload/folder/ZIP/search/delete control, expose actual Library flyout for existing file inventory witness and Teaching reset."
+    outcome: "All original entry/library states retained plus provider-expanded witness. Prior27.7s/nine-PNG and28.9s/ten-PNG DEV failures archived/inspected; after parent release final39.6s/22-PNG DEV passed with empty problems/known_problems and every PNG inspected, observing complete native tour/model/plus/Library/upload/delete/dirty-reset states. All five matching components' callers/maps updated, companion four units EDITONLY/unrun. Full parent strict/EVERY-PNG acceptance pending, no waiver or handler/fixture/source change."
+    persists: true
+    status: partial
+    scenario: user-craft-entry-library
+  - id: inspect-craft-session-output
+    title: Inspect native saved-session sharing and complete output
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Open the independently seeded saved session, rename/reopen/share, inspect every original Files/Artifacts/Preview/download/refresh/history/transient-tab control and real catalog-byte preview, then reset its title."
+    outcome: All original output checkpoints and actual #28 byte serving remain; parent strict/PNG acceptance pending.
+    persists: true
+    status: partial
+    scenario: user-craft-session-output
+  - id: inspect-craft-apps-connections
+    title: Connect fake native Apps and review current skills
+    surface: user-craft-apps
+    entities: [craft-content]
+    steps: "Use actual sidebar/direct entry, search, required credential controls, local connection/disconnection, skill Review/Show all, MCP tab and management redirects from independent seeds."
+    outcome: Current sole-owner metadata and native reset Apps are shown; no real credentials/OAuth action.
+    persists: true
+    status: partial
+    scenario: user-craft-apps-connections
+  - id: inspect-craft-apps-builtin-mcp
+    title: Configure builtin/managed Apps and current MCP availability
+    surface: admin-craft-apps
+    entities: [craft-content]
+    steps: "Independently add/configure/delete Slack, inspect managed hidden configuration and policies, enable the actual MCP owner and inspect current user metadata, then reset its native availability control."
+    outcome: All builtin/managed/MCP controls and original shots retained; no duplicated management engine.
+    persists: true
+    status: partial
+    scenario: user-craft-apps-builtin-mcp
+  - id: inspect-craft-skills-sharing
+    title: Share a native skill with organization, users and groups
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Independently create the edited skill using native scratch/editor controls, then retain organization scope/permission, user/group search/staged chips, Save/reopen and access removal controls."
+    outcome: Actual #59/#60 directories and real #70 share fields are used; own reset restores seeded skills.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-sharing
+  - id: inspect-craft-skills-import-ownership
+    title: Inspect skill replacement, import, viewer and owner transfer
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Use independent seeded skills for supporting-bundle replacement, editor import/unsaved discard, viewer read-only and vacant/current owner user-only transfer controls, then reset."
+    outcome: All original native conditions/readbacks remain; no copied directory or permission engine.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-import-ownership
+  - id: inspect-craft-skills-upload-github
+    title: Review a skill upload and offline GitHub import
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Independently use native upload/review/editor duplicate confirmation/retry and GitHub repo/search/per-row/select-all/result controls, then reset."
+    outcome: Only exact native editor400 is expected after its positive duplicate confirmation; no real GitHub/provider action.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-upload-github
+  - id: inspect-craft-library-empty
+    title: Inspect the native empty Library affordance
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently stage only the declared Library empty DTO, open the actual modal, positively inspect upload affordance and reset to Teaching."
+    outcome: Original empty PNG and native reset PNG retained; no expected-error allowance.
+    persists: true
+    status: partial
+    scenario: user-craft-library-empty
+  - id: inspect-craft-library-read-error
+    title: Inspect the native Library read error
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently stage the declared read500, assert actual Failed to load files, retain its shot/Done and reset to seeded native Library."
+    outcome: Only exact Library GET500 is classified expected in this positive-asserted error unit; all other problems remain strict.
+    persists: true
+    status: partial
+    scenario: user-craft-library-read-error
+  - id: inspect-craft-library-write-error
+    title: Inspect a native rejected Library folder action
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently stage the declared directory write500, submit through native New folder/Create, assert the exact fictional action-error text and reset."
+    outcome: Exact directory POST500 only; loaded business-write units have no such exception.
+    persists: true
+    status: partial
+    scenario: user-craft-library-write-error
+  - id: inspect-craft-output-states
+    title: Inspect native starting and empty output states
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently stage original starting/empty output DTOs; retain original Starting the dev server, No files yet, No artifacts and aria-disabled Preview assertions/stems. Existing no-provider fake seed prevents native auto-preprovision before new-composer Files; restore recorded ordinary provider overlays and the same empty DTOs, then capture saved No files in this directory separately; reset."
+    outcome: Full original output proof plus real saved-empty API branch retained; no expected-error allowance, wording re-pin or invented tabs.
+    persists: true
+    status: partial
+    scenario: user-craft-output-states
+  - id: inspect-craft-skills-empty
+    title: Inspect the native empty Skills list
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Independently stage only the original empty DTO, assert No skills available, retain its shot and reset to campus-study-plan."
+    outcome: Native empty and reset content shown; no error suppression.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-empty
+  - id: inspect-craft-skills-read-error
+    title: Inspect the native Skills read error
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Independently stage original Skills read500, assert actual Failed to load skills before its shot and reset to seeded content."
+    outcome: Only exact Skills GET500 expected in this separate positive-asserted unit; no invented Try again.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-read-error
+  - id: inspect-craft-skills-loading
+    title: Inspect native delayed Skills loading
+    surface: user-craft-skills
+    entities: [craft-content]
+    steps: "Independently retain the original delayed loaded DTO, native loading shot and completion wait, then reset."
+    outcome: Actual source loader/completion remains; no expected-error allowance.
+    persists: true
+    status: partial
+    scenario: user-craft-skills-loading
+  - id: inspect-craft-apps-empty
+    title: Inspect native empty Apps and MCP
+    surface: user-craft-apps
+    entities: [craft-content]
+    steps: "Independently retain original empty prerequisite staging, render Apps only, assert Nothing to connect yet and reset to seeded Apps."
+    outcome: Native empty-state content, not a missing-fetch fallback; no expected errors.
+    persists: true
+    status: partial
+    scenario: user-craft-apps-empty
+  - id: inspect-craft-apps-read-error
+    title: Inspect the actual Apps read-error fallback
+    surface: user-craft-apps
+    entities: [craft-content]
+    steps: "Independently stage original Apps error with empty MCP prerequisite, positively assert actual Nothing to connect yet fallback before its original shot and reset."
+    outcome: Exact Apps GET500 only in this error unit; no phantom native error panel or task-error allowance.
+    persists: true
+    status: partial
+    scenario: user-craft-apps-read-error
+  - id: inspect-craft-tasks-empty
+    title: Inspect native empty scheduled tasks
+    surface: user-craft-tasks
+    entities: [craft-content]
+    steps: "Independently copy original empty prerequisite staging, render Tasks only, assert No scheduled tasks found and reset to Clinic teaching checklist."
+    outcome: Native empty/reset list proof retained without expected errors.
+    persists: true
+    status: partial
+    scenario: user-craft-tasks-empty
+  - id: inspect-craft-tasks-read-error
+    title: Inspect native task read error and retry
+    surface: user-craft-tasks
+    entities: [craft-content]
+    steps: "Independently stage original Tasks read500, positively assert Failed to load scheduled tasks, retain actual Try again and prove Clinic teaching checklist returns, then reset."
+    outcome: Exact task-list GET500 only; no generic console/HTTP error suppression.
+    persists: true
+    status: partial
+    scenario: user-craft-tasks-read-error
+  - id: inspect-craft-task-history-error
+    title: Inspect native run-history error and retry
+    surface: user-craft-tasks
+    entities: [craft-content]
+    steps: "Independently open seeded task-clinic with original run-history error DTO, assert Failed to load run history, retry and inspect retained FAILED row, then reset."
+    outcome: Exact history GET500 with native limit50 query only; other reads remain strict.
+    persists: true
+    status: partial
+    scenario: user-craft-task-history-error
+  - id: inspect-craft-output-file-error
+    title: Inspect the native handout file-preview error
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently stage original artifact-file error, use actual Files/outputs/handout controls, assert Error loading file and reset."
+    outcome: Only exact seeded handout GET500 expected; all other output problems remain strict.
+    persists: true
+    status: partial
+    scenario: user-craft-output-file-error
+  - id: inspect-craft-usage-limit
+    title: Inspect the native recoverable Craft usage limit
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently open the seeded session, retain original limited send, assert actual Usage limit reached title and exact fixture detail, then reset to usable composer."
+    outcome: Exact seeded send-message POST429 and native ErrorBanner only; no actual metering/provider engine.
+    persists: true
+    status: partial
+    scenario: user-craft-usage-limit
+  - id: inspect-craft-reset
+    title: Prove a non-vacuous native composed Craft reset
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently create a skill, custom app, task and library upload through actual native controls; positively read all four before the retained original reset/readbacks/three reset shots."
+    outcome: Actual composed owners discard all four real unit-created records and show seeded skills/tasks/apps; no proof-only resource injection.
+    persists: true
+    status: partial
+    scenario: user-craft-reset
+  - id: inspect-craft-connection-callback
+    title: Inspect exact fictional native callback conditions
+    surface: user-craft-apps
+    entities: [craft-content]
+    steps: "Independently disconnect the seeded fictional Campus GitHub through its native control, retain error/missing/exchanging/target callbacks with positive native labels and reset."
+    outcome: Explicit fictional marker receipt only; no real OAuth/auth/provider action or bypass.
+    persists: true
+    status: partial
+    scenario: user-craft-connection-callback
+  - id: inspect-craft-provider-conditions
+    title: Inspect native provider-required and nonadmin conditions
+    surface: user-craft-main
+    entities: [craft-content]
+    steps: "Independently retain actual no-provider/admin/basic overlays, native provider-required labels and nonadmin Manage absence, then restore the base composer."
+    outcome: All original conditional UI retained; no fixture impersonation of a compiled gate or auth changes.
+    persists: true
+    status: partial
+    scenario: user-craft-provider-conditions
+
+  - id: manage-educational-projects
+    title: Rename and inspect educational projects
+    surface: project-folders
+    entities: [educational-project]
+    steps: Open sidebar and direct project1; inspect current selection; collapse or expand; cancel detail title draft, rename from detail and sidebar, reload.
+    outcome: Parent inspected native loaded content/selection, keyboard fold, changed title after keep and original seeds after fresh reset; mouse fold not certified.
+    persists: true
+    scenario: user-projects-home
+  - id: edit-project-instructions
+    title: Save, cancel or clear project instructions
+    surface: project-instructions
+    entities: [educational-project]
+    steps: Open Set Instructions; cancel a draft, reopen, save edited text, reload, then save blank text.
+    outcome: Parent inspected saved text after reload, cancelled draft exclusion, blank clear and original instructions after fresh reset.
+    persists: true
+    scenario: user-projects-home
+  - id: associate-project-files
+    title: Link, unpick and upload shared project files
+    surface: project-files
+    entities: [educational-project]
+    steps: Independently unlink reading from project1; enter empty project2; link from recents, unpick and re-pick in All Recent Files; exercise selected-only, deselect-all, association feedback and native input/drop uploads.
+    outcome: Parent inspected native links/uploads after reload/keep, exact association Toast and unchanged protected file/link, then empty project2 after fresh reset.
+    persists: true
+    scenario: user-projects-picker-upload
+  - id: organize-project-chats
+    title: Move, remove, drag and reopen a project chat
+    surface: project-chat-membership
+    entities: [educational-project]
+    steps: From independent seed1 use detail Move and custom-agent warning close/reopen/checkbox/confirm; replay in project2; Remove; drag into project1 and out to Recents.
+    outcome: The same sole chat moves between folder, detail list and Recents; keep retains drag-out and fresh reset restores seed1 placement. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-chat-membership
+  - id: create-project-chat
+    title: Create projects and a chat with native model preferences
+    surface: project-chat-membership
+    entities: [educational-project]
+    steps: Set existing Settings default; exercise required name, cancel and create; rename and move seed5 with search/back; prove first project answer under saved default, choose GPT-4.1 through the actual opened-chat selector, send follow-up and reopen attributed history; Create-and-move an unmatched project.
+    outcome: Actual new chat retains project membership, selected model and replay after reload/keep; fresh reset restores projects, chats and original saved default. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-create-chat
+  - id: search-educational-projects
+    title: Search and navigate folded projects and command results
+    surface: project-folders
+    entities: [educational-project]
+    steps: Independently create-and-move renamed seed5 and link project2 reading; folded project/chat search, empty, create/cancel and native chat/project navigation; command project filter/search/empty/prefilled create/cancel.
+    outcome: Native search entries open the same project/chat state; keep retains independent setup and fresh reset restores originals. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-search
+  - id: unlink-project-files
+    title: Preview and unlink files without global deletion
+    surface: project-files
+    entities: [educational-project]
+    steps: Open independently seeded project1 View All; list/search/empty/preview; modal-unlink reading and card-unlink guide; reload, keep and open shared library; fresh reset.
+    outcome: Both project links disappear while native global library retains both file records; fresh reset restores original links. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-files
+  - id: delete-project-chat
+    title: Cancel or confirm deletion of a project chat
+    surface: project-chat-membership
+    entities: [educational-project]
+    steps: Independently rename project2 and move renamed seed5 there; Delete Chat, cancel, inspect survivor, reopen and confirm; reload/keep/fresh reset.
+    outcome: Cancel retains visible chat; confirmed deletion removes detail/sidebar chat after reload/keep; fresh reset restores seed5 in Recents. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-chat-delete
+  - id: delete-educational-projects
+    title: Delete projects while preserving shared chats and files
+    surface: project-folders
+    entities: [educational-project]
+    steps: Independently rename seed1, upload into project2, create Study Circle with actual new chat and empty Literacy Circle; cancel/reopen/confirm Delete Project; delete all four and fresh reset.
+    outcome: Empty Projects sidebar releases actual new chat to Recents and native shared library keeps uploaded file; reset restores original names, instructions, file links and chat1. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-delete-reset
+  - id: reference-project-files
+    title: Reference uploaded project resources in a real native chat
+    surface: project-files
+    entities: [educational-project]
+    steps: Independently upload workshop and reflection into project2; select both from native composer library; send, inspect referenced answer/Sources/preview; reload history, inspect project membership, keep and reset.
+    outcome: Native human attachments and answer reference both synthetic resources; shared previews and sole replay persist, and fresh reset restores empty project2. Parent acceptance pending.
+    persists: true
+    scenario: user-projects-file-reference
+  - id: upload-and-reference-file
+    title: Upload and cite fictional workshop files
+    surface: user-file-answer
+    entities: [synthetic-user-file]
+    preconditions: ["Matching pinned native preview/table-download artifact", "Fictional catalog filenames only"]
+    steps: Independently upload workshop/reflection through native multiple input, observe gating, remove/reselect reflection, Send, open human/Sources previews, reload and regenerate GPT-4.1; natively upload DOCX before original keep/fresh reset.
+    outcome: Saved file descriptors and synthetic references persist with chosen model; keep preserves native uploads, fresh discards reflection/DOCX and restores five seeds. No real ingestion/model call.
+    persists: true
+    status: partial
+    scenario: user-files-upload-answer
+  - id: manage-user-file-library
+    title: Select and preview the seeded user file library
+    surface: user-file-library
+    entities: [synthetic-user-file]
+    steps: Independently open picker/recent-row preview/library, search empty, select two, selected-only, deselect-all, then text loading/metadata/copy/download, Markdown and CSV.
+    outcome: Native selected counts/empty state and synthetic content/copy checkmark are meaningful. Download completion/bytes remain parent observer prerequisites, not implied by the click.
+    persists: false
+    status: partial
+    scenario: user-files-library
+  - id: view-user-file-images
+    title: Image controls, association guard and decoded composer thumbnail
+    surface: user-file-preview
+    entities: [synthetic-user-file]
+    steps: Independently unlink protected-reading from Project1 through native View All, stage selection/deselect-all, preview image/zoom/download, assert assistant-only protected-delete Toast, attach and decode the diagram, remove it and fresh-reset the Project link.
+    outcome: Decoded640x360 image and visible thumbnail precede capture; protected file stays; fresh reset restores the native Project association. Browser download completion/bytes require parent evidence.
+    persists: true
+    status: partial
+    scenario: user-files-images
+  - id: remove-user-file-with-history
+    title: Selected-file deletion with historic citation replay
+    surface: user-file-library
+    entities: [synthetic-user-file]
+    steps: Independently upload workshop/reflection and Send; delete selected workshop in library, reload, reopen this own chat citation, then fresh reset.
+    outcome: Spinner/removal/zero selection and reload are native; tombstoned synthetic historic preview survives deletion; fresh reset removes uploaded records.
+    persists: true
+    status: partial
+    scenario: user-files-delete-history
+  - id: paste-drop-user-files
+    title: Paste and drop fictional user files
+    surface: user-file-picker
+    entities: [synthetic-user-file]
+    steps: Independently use native clipboard/drop events, observe processing/ready, remove attachments, positively revisit both catalog rows, then fresh reset.
+    outcome: Each file creates one attachment without duplicate paste; removal is composer-only and fresh reset discards both native uploads.
+    persists: true
+    status: partial
+    scenario: user-files-paste-drop
+  - id: view-user-file-saved-visuals
+    title: Saved image and table controls
+    surface: user-file-preview
+    entities: [synthetic-user-file]
+    steps: Independently select seeded image/CSV and Send; inspect own saved content/full-image/downloads/table expand/hide/reopen/reload, then fresh reset this chat.
+    outcome: Actual native saved descriptors drive content and controls; fresh reset removes the chat. Completed browser downloads and actual bytes require bounded parent observation.
+    persists: true
+    status: partial
+    scenario: user-files-saved-visuals
+  - id: reject-user-file-uploads
+    title: Oversized, rejected, failed and unsupported files
+    surface: user-file-picker
+    entities: [synthetic-user-file]
+    steps: Independently preserve original oversized guard and eleven-name native batch, inspect rejected/failed removal and unsupported preview, then fresh reset.
+    outcome: Native guard/error/absence assertions remain; only the exact failed-demo Toast is known, other failures remain strict; uploaded records reset.
+    persists: true
+    status: partial
+    scenario: user-files-rejections
+  - id: preview-user-file-text-data-pdf
+    title: Code, structured data and native PDF
+    surface: user-file-preview
+    entities: [synthetic-user-file]
+    steps: Independently upload code/JSON/PDF through native library input, inspect real previews, read back the current native PDF download href and click its unchanged control, then fresh reset.
+    outcome: Scoped development inspected actual rendered PDF handout text and passed native download content readback/click; browser completion and parent independent final proof remain pending. Native uploaded records reset; no iframe-only acceptance.
+    persists: true
+    status: partial
+    scenario: user-files-text-data-pdf
+  - id: preview-user-file-documents
+    title: Word, workbook and document errors
+    surface: user-file-preview
+    entities: [synthetic-user-file]
+    steps: Independently upload DOCX/workbook/legacy/invalid/unavailable records, inspect content/sheets/empty/truncated/error/download fallback, then fresh reset.
+    outcome: All original native formats/error states remain; only the named unavailable-preview404 companions are known here; uploaded records reset.
+    persists: true
+    status: partial
+    scenario: user-files-documents
+
+  - id: share-saved-chat
+    title: Create, copy and revoke a local fake chat link
+    surface: share-chat
+    entities: [shared-conversation]
+    preconditions: [Matching opt-in Enterprise runtime, Fictional saved conversation and file fixtures]
+    steps: Header/sidebar Share, private/public/cancel/create/copy/error/reopen in sharing-feedback; saved and future shared turns and file/citation/copy controls in sharing-feedback-shared-files; native revoke/missing/empty in sharing-feedback-privacy; dirty reset in sharing-feedback-reset. Each scenario fresh-seeds independently.
+    outcome: The fake shared conversation exposes supported turns, files, citations and metadata; revoke, unavailable, empty and reset states are staged locally.
+    persists: true
+    status: works
+    scenario: sharing-feedback
+  - id: vote-and-copy-answer
+    title: Submit, cancel, replace and remove answer feedback
+    surface: chat-feedback
+    entities: [feedback-details, shared-conversation]
+    steps: In sharing-feedback-votes use live optional/required text-only modals, cancel/reopen, submit/opposite-vote/toggle, staged retention/rollback and reload; sharing-feedback-navigation covers typed feedback and persistence across native shared navigation; sharing-feedback-sources covers live Sources/row previews; sharing-feedback-reset covers dirty reset. No shared feedback/sidebar is invented.
+    outcome: Parent observed native modal validity, retained failed draft/vote, saved-vote protection, persistence/reset and copy-success outcomes; genuine browser-denied copy alert retains exact saved conversation. Only exact source-authored staged/permission errors disclosed.
+    persists: true
+    status: works
+    scenario: sharing-feedback-votes
+  - id: configure-admin65-native-setting
+    title: Save native fictional admin configuration and navigate back
+    surface: admin65-workspace
+    entities: [fictional-admin-config]
+    preconditions: [Enterprise edition, demo-mcp-admin overlay, parent module65 registration and shared state composition]
+    steps: Use the independent Chat Preferences route unit; edit Team Name and the native prompt modal, save and navigate back. The other required native-setting units are listed in README's route-unit table and step ledger.
+    outcome: Native dialogs and saved config respond locally; each route unit requires independent matching-artifact strict and PNG acceptance.
+    persists: true
+    status: partial
+    scenario: admin-chat-preferences
+  - id: inspect-admin65-enterprise
+    title: Inspect native EE rows, filters and meaningful empty state
+    surface: admin65-enterprise
+    entities: [fictional-admin-config]
+    preconditions: [Enterprise edition]
+    steps: Use the independent Usage unit for alias/direct views and spending Global/Users/Groups tabs. Analytics, Query History and Export Logs retain their own required route units in README's table.
+    outcome: Exact consumed DTOs replace default fallbacks; every derived route unit and required control retains separate parent acceptance.
+    persists: true
+    status: partial
+    scenario: admin-usage-spending-limits
+  - id: configure-admin65-enabled-custom-analytics
+    title: Save harmless script through enabled native Custom Analytics form
+    surface: admin65-enterprise
+    entities: [fictional-admin-config]
+    preconditions: [matching approved enterprise-cloud source12 artifact with0009 Header and0012 native async readback, explicit fictional parent server launch CUSTOM_ANALYTICS_SECRET_KEY=mockshop-admin-pages-demo, demo-mcp-admin, fresh parent imports]
+    steps: Enter actual direct and EE aliases; use Script textarea, Secret Key password field and Update; native navigation readback and reset. Historical menu expectation is source-unreachable and recorded in route map, never fabricated.
+    outcome: Parent strict32 operations/nine inspected PNGs prove native form edit/Update/navigation textarea readback/reset on both aliases. Script synchronization preserves typing and updates existing SWR cache. No real provider/public-menu flag/client-secret exposure.
+    persists: true
+    status: partial
+    scenario: admin-custom-analytics-enabled
+  - id: inspect-admin65-cloud-billing-plans
+    title: Native Cloud Plans and Checkout choices
+    surface: admin65-enterprise
+    entities: [fictional-admin-config]
+    preconditions: [genuine enterprise-cloud artifact, demo-mcp-admin, demo-billing-cloud-none]
+    steps: Native menu/direct Plans and choices; actual Continue to Payment POST/loading/inline invalid-response feedback; protected choices/subscription, native Adjust Plan and fresh handoff metadata reset.
+    outcome: Source-native choices and required error feedback; only exact source console event declared, no external payment success or generic waiver.
+    persists: false
+    status: partial
+    scenario: admin-billing-cloud-plans
+  - id: configure-admin65-cloud-billing-seats
+    title: Native Cloud displayed seat save and reset
+    surface: admin65-enterprise
+    entities: [fictional-admin-config]
+    preconditions: [genuine enterprise-cloud artifact, demo-mcp-admin, demo-billing-cloud-active]
+    steps: Existing menu/direct/seats/minimum/error/cancel/save/navigation/View Users/dirty reset preserved; append native Business header/current-card/not-Enterprise and Cancel back.
+    outcome: Parent strict59 operations/15 inspected PNGs prove fake seat save/reset, actual Users count, preserved Settings/saved overrides and Business header/current-card/Back; license-only Enterprise is separately proven selfhost16/5.
+    persists: true
+    status: partial
+    scenario: admin-billing-cloud-details
+  - id: inspect-admin65-cloud-billing-statuses
+    title: Native Cloud trial cancellation and expired display
+    surface: admin65-enterprise
+    entities: [fictional-admin-config]
+    preconditions: [genuine enterprise-cloud artifact, demo-mcp-admin, demo-billing-cloud-trialing]
+    steps: Existing Upgrade/trial/readback/reset/annual-cancel/expired/current-plan/back/unsubscribed/native portal disclosure retained; append source-correct trial Business title/current-card/Cancel back.
+    outcome: Parent strict67 operations/18 inspected PNGs prove native trial/cancellation/expired/current-plan/Back/local fake portal/reset. No charge/provider/deletion/license processing or source Billing patch.
+    persists: true
+    status: partial
+    scenario: admin-billing-cloud-statuses
+
+  - id: extension-settings
+    title: Personalize native new tab
+    surface: browser-extension-new-tab
+    steps: Open Settings, choose background/theme, cancel or confirm disabling the new-tab preference, then re-enable and replay.
+    preconditions: [Parent composition and matching exact-pin runtime]
+    outcome: Native controls change browser and saved preferences; actual parent proof pending.
+    status: partial
+    scenario: browser-extension-settings
+  - id: extension-read-tab
+    title: Read a fictional tab in native side panel
+    surface: browser-extension-side-panel
+    steps: Enable Read this tab, receive an actual trusted LOCAL extension-parent URL, submit fictional context, change URL, disable and reset.
+    preconditions: [Genuine parent-owned disposable extension fixture specified in README]
+    outcome: Only genuine trusted URL messages become next-submission context; actual parent proof pending.
+    status: partial
+  - id: extension-branches
+    title: Edit, regenerate and switch native NRF branches
+    surface: browser-extension-new-tab
+    steps: Use existing question/answer branch controls and replay the selected actual engine conversation through Onyx.
+    preconditions: [Approved0006 artifact and parent markMessageLatest callback retaining selected chain]
+    outcome: Native edits and regenerated answers switch through real engine message IDs and replay; actual parent proof pending.
+    status: partial
+    scenario: browser-extension-chat
+moments:
+  - id: settings-preferences-persisted
+    title: Saved chat preferences
+    surface: user-settings-chat
+    shows: Default model, switches and instructions retained after navigation.
+    scenario: user-settings
+    shot: chat-preferences-persisted
+  - id: settings-token-persisted
+    title: Fake token metadata
+    surface: user-settings-tokens
+    shows: Workshop notes demo remains in the token list without revealing usable credentials.
+    scenario: user-settings
+    shot: fake-token-persisted
+  - id: settings-personal-connector
+    title: Disconnected fake account
+    surface: user-settings-connectors
+    shows: Gmail is Not connected after navigation, with a local-only Connect link.
+    scenario: user-settings
+    shot: personal-connector-disconnected-persisted
+  - id: settings-usage
+    title: Fictional usage and budget
+    surface: user-settings-usage
+    shows: Model usage, spent and remaining budget, and model prices.
+    scenario: user-settings
+    shot: usage-models-budget-prices
+  - id: answer-with-citations
+    title: Cited answer
+    surface: chat-answer
+    shows: Answer text with citation chips and a "Thought for Ns" line.
+    scenario: user-ask-with-citations
+    shot: answer-with-citations
+  - id: synthetic-file-cited-answer
+    title: Two uploaded-file references
+    surface: user-file-answer
+    shows: Native human message has workshop and reflection attachments; scripted answer references both resources with actual citation packets.
+    scenario: user-files-upload-answer
+    shot: uploaded-file-cited-answer
+  - id: synthetic-file-library
+    title: Selected uploaded library files
+    surface: user-file-library
+    shows: Two files selected in the real native library, backed by run-local upload records.
+    scenario: user-files-upload-answer
+    shot: uploaded-library-selected
+  - id: synthetic-file-preview
+    title: Uploaded source preview
+    surface: user-file-preview
+    shows: Editable synthetic workshop note with explicit disclosure that it is not uploaded content.
+    scenario: user-files-upload-answer
+    shot: uploaded-citation-preview
+  - id: sources-panel
+    title: Sources panel
+    surface: chat-answer
+    shows: Side panel listing the cited documents.
+    scenario: user-ask-with-citations
+    shot: sources-panel
+  - id: citation-preview
+    title: Hover preview of a source
+    surface: chat-answer
+    shows: Tooltip card for the cited Zoom source.
+    scenario: user-ask-with-citations
+    shot: citation-preview
+  - id: model-picker-onprem
+    title: Self-hosted models in the picker
+    surface: chat-home
+    shows: On-prem GPU cluster group with Llama 3.3 70B and Qwen3 32B.
+    scenario: byo-model-on-prem
+    shot: model-picker-onprem
+  - id: onprem-provider-modal
+    title: On-prem provider modal
+    surface: admin-language-models
+    shows: Self-hosted Ollama tab with API base and models.
+    scenario: byo-model-on-prem
+    shot: onprem-provider-modal
+  - id: connector-index-attempts
+    title: Connector mid-reindex with attempt history
+    surface: connector-detail
+    shows: Attempt table for Confluence – OPS space.
+    scenario: admin-connectors
+    shot: connector-index-attempts
+  - id: doc-permission-sync
+    title: Document permission sync tab
+    surface: connector-detail
+    shows: Permission-sync attempt table for Confluence – Training space.
+    scenario: admin-permission-sync
+    shot: doc-permission-sync
+  - id: agent-editor-sharing
+    title: Share Agent modal
+    surface: agent-editor
+    shows: Training listed under "Only those invited".
+    scenario: admin-llm-and-agent-editor
+    shot: agent-editor-sharing
+  - id: answer-ops-sources
+    title: Same question, basic-role user
+    surface: chat-answer
+    shows: Shorter answer citing only Confluence and Slack operations sources.
+    scenario: user-permission-aware
+    shot: answer-ops-sources
+  - id: file-preview-from-chip
+    title: File source in the preview modal
+    surface: cited-source
+    shows: AED & first-aid kit opening checklist.md rendered as markdown in Onyx's preview modal.
+    scenario: user-open-cited-source
+    shot: file-preview-from-chip
+  - id: source-viewer-from-chip
+    title: Cited Confluence page in the local viewer
+    surface: cited-source
+    shows: Training Policy page with source, date, blurb and text.
+    scenario: user-open-cited-source
+    shot: source-viewer-from-chip
+  - id: arabic-chat
+    title: Arabic right-to-left chat shell
+    surface: chat-home
+    shows: Chat home in Arabic with the sidebar on the right.
+    scenario: locale-smoke
+    shot: arabic-chat
+  - id: user-agent-picker
+    title: Edited education agent selected in the native picker
+    surface: chat-home
+    shows: Accessible Learning Guide with its saved revision-checklist starter and sidebar pin. Parent inspected in the accepted11-shot user-agents run.
+    scenario: user-agents
+    shot: picker-selected-edited-agent
+  - id: user-agent-reset
+    title: New run restores seeded agents
+    surface: agent-gallery
+    shows: Original seeded gallery after explicit new-run reset removes the created agent and restores original pins. Parent inspected in the accepted11-shot run.
+    scenario: user-agents
+    shot: new-run-restores-seeds
+  - id: mcp-configured-tools
+    title: Configured fake MCP tools
+    surface: admin-mcp-actions
+    shows: Existing Seaside PMS server and exactly Group block status and Rooming list status in the native tool list; inspected in accepted23-shot mcp-actions.
+    scenario: mcp-actions
+    shot: mcp-direct-tools
+  - id: mcp-manage
+    title: Native MCP Manage view
+    surface: admin-mcp-actions
+    shows: Native Manage MCP Server modal with name, description, URL and connected state; inspected in accepted23-shot mcp-actions.
+    scenario: mcp-actions
+    shot: mcp-manage
+  - id: mcp-add-server
+    title: Native MCP Add Server
+    surface: admin-mcp-actions
+    shows: Native creation form with fictional educational name, description and URL; inspected in accepted23-shot mcp-actions.
+    scenario: mcp-actions
+    shot: mcp-add-server
+  - id: mcp-auth-shared-key
+    title: Simulated MCP authentication configuration
+    surface: admin-mcp-actions
+    shows: Native API Key shared-admin tab with nonfunctional fictional placeholder; OAuth automatic/known-provider and None dialogs also inspected in accepted23-shot mcp-actions.
+    scenario: mcp-actions
+    shot: mcp-auth-shared-key
+  - id: extension-native-settings
+    title: Native new-tab Settings
+    surface: browser-extension-new-tab
+    shows: Theme/background and browser-owned new-tab preference controls; declared, not inspected.
+    scenario: browser-extension-settings
+    shot: nrf-settings-open
+  - id: extension-native-reading-wait
+    title: Trusted extension context is not fabricated
+    surface: browser-extension-side-panel
+    shows: Real HTTP-origin URL update rejected by unchanged origin/source guard; genuine extension-parent context proof is separate and pending.
+    scenario: browser-extension-side-panel
+    shot: nrf-side-panel-untrusted-url-rejected
+  - id: extension-native-error
+    title: Native extension response error
+    surface: browser-extension-side-panel
+    shows: Editable local retryable StreamingError rendered by existing shared ChatUI; declared, not inspected.
+    scenario: browser-extension-side-panel
+    shot: nrf-side-panel-answer-error
+
+  - id: project-loaded
+    title: Loaded educational project from menu
+    surface: project-home
+    shows: Seeded educational instructions, five shared files, context warning and existing chat. Actual parent inspection pending.
+    scenario: user-projects-home
+    shot: project-menu-loaded
+  - id: project-empty
+    title: Empty educational project
+    surface: project-home
+    shows: Native instruction, file and Recent Chats empty descriptions on direct project2. Actual parent inspection pending.
+    scenario: user-projects-picker-upload
+    shot: empty-project-direct
+  - id: project-instructions-persisted
+    title: Project instructions after reload
+    surface: project-instructions
+    shows: Edited accessible revision instructions retained in project detail. Actual parent inspection pending.
+    scenario: user-projects-home
+    shot: instructions-saved-reload
+  - id: project-files-modal
+    title: Project View All shared files
+    surface: project-files
+    shows: Native Project Files modal with all five shared file names. Actual parent inspection pending.
+    scenario: user-projects-files
+    shot: project-files-view-all
+  - id: project-custom-chat-warning
+    title: Native custom-agent move warning
+    surface: project-chat-membership
+    shows: Organization-only warning with Confirm Move and Do not show this again. Actual parent inspection pending.
+    scenario: user-projects-chat-membership
+    shot: custom-agent-move-warning
+  - id: project-folded-search
+    title: Folded project chat search
+    surface: project-folders
+    shows: A chat-name match reveals its project chat in the folded popover. Actual parent inspection pending.
+    scenario: user-projects-search
+    shot: folded-project-chat-search
+  - id: project-reset
+    title: Fresh reset restores project seeds
+    surface: project-home
+    shows: Original seed names, nullable instructions, file links and seed chat membership; created and renamed projects gone. Actual parent inspection pending.
+    scenario: user-projects-delete-reset
+    shot: projects-fresh-reset-seeds
+  - id: project-model-history
+    title: Project chat retains the selected model and history
+    surface: project-chat-membership
+    shows: First actual project answer honors saved GPT-5 mini; actual opened-chat selector chooses GPT-4.1 for a native follow-up, and reopened attribution/history retains both models. Native ProjectUI has no selector. Parent acceptance pending.
+    scenario: user-projects-create-chat
+    shot: project-chat-model-history-reopened
+  - id: project-file-reference
+    title: Project resources referenced by the sole chat
+    surface: project-files
+    shows: Native human attachments and scripted answer reference both independently uploaded synthetic resources. Parent acceptance pending.
+    scenario: user-projects-file-reference
+    shot: project-file-referenced-answer
+  - id: project-chat-delete-cancelled
+    title: Project chat survives cancelled deletion
+    surface: project-chat-membership
+    shows: Native project-list chat remains visible after closing Delete Chat; subsequent confirmed deletion is separate. Parent acceptance pending.
+    scenario: user-projects-chat-delete
+    shot: project-chat-delete-cancelled
+  - id: project-delete-cancelled
+    title: Selected project survives cancelled deletion
+    surface: project-folders
+    shows: Native project title and sidebar row remain after closing Delete Project; subsequent confirmed deletion is separate. Parent acceptance pending.
+    scenario: user-projects-delete-reset
+    shot: project-delete-cancelled
+  - id: user-file-regenerated
+    title: Saved files ground a regenerated answer
+    surface: user-file-answer
+    shows: Both workshop/reflection attachment names and their synthetic cited summaries under GPT-4.1 after empty-composer regeneration; declared, parent PNG inspection pending.
+    scenario: user-files-upload-answer
+    shot: regenerated-file-grounding
+  - id: user-file-saved-visuals
+    title: Saved image and tabular attachments
+    surface: user-file-preview
+    shows: Synthetic saved image and attendance CSV, with native full-image/table controls and reload; declared, matching artifact and parent PNG inspection pending.
+    scenario: user-files-saved-visuals
+    shot: saved-visual-attachments-reloaded
+
+  - id: admin-users-invite
+    title: Fictional user invitation
+    surface: admin-users
+    shows: Native Invite Users dialog with invalid-tag warning and valid-email readiness; saves only a local invited row, sends no mail.
+    scenario: admin-users-invitations
+    shot: users-invite-ready
+  - id: admin-users-group-save
+    title: User group membership save
+    surface: admin-users
+    shows: Native Groups & Roles editor saves/removes through actual joined Groups with connector retention and independent dirty reset.
+    scenario: admin-users-groups
+    shot: users-groups-persisted
+  - id: admin-users-cloud-pending
+    title: Native Cloud pending request
+    surface: admin-users
+    shows: Required native requests-to-join filter, fictional pending row and Approve menu. Separate Cloud-compiled pinned variant required; unverified, not certified on the common self-hosted build.
+    scenario: admin-users-cloud
+    shot: users-cloud-pending-menu
+  - id: admin-users-cloud-approved
+    title: Native Cloud request approval persistence
+    surface: admin-users
+    shows: Native Approve moves the fictional request to an invitation, survives navigation and restores pending on reset. Explicit strict Cloud-only inventory; parent proof pending.
+    scenario: admin-users-cloud
+    shot: users-cloud-approved-invitation-persisted
+  - id: admin-users-craft-false
+    title: Native Craft explicit false User readback
+    surface: admin-users
+    shows: Real Craft Access switch and native default confirmation write explicit false through the sole actual setter; accepted Users and current-user readback preserve it after native navigation. Unverified.
+    scenario: admin-users-craft-access
+    shot: users-craft-disabled-users-readback
+  - id: admin-users-craft-null
+    title: Native Craft follow-default null
+    surface: admin-users
+    shows: Matching the workspace default clears the User override to null through the real native switch, not an invented Users dropdown or direct setter test.
+    scenario: admin-users-craft-access
+    shot: users-craft-default-null
+  - id: admin-users-deleted-reset
+    title: Deleted fictional inactive User reset
+    surface: admin-users
+    shows: Native Noa deletion dirties the actual accepted catalog before checked fresh reset restores the inactive row and Activate action.
+    scenario: admin-users-account-status
+    shot: users-deleted-inactive-reset
+  - id: groups-permission-panel
+    title: Editable native Group Permissions
+    surface: admin-groups
+    shows: Distinct seeded permission switches and saved display strings persist; observed in accepted Groups strict42-PNG proof.
+    scenario: admin-groups
+    shot: groups-saved-permissions
+  - id: groups-empty-list
+    title: Native empty group list
+    surface: admin-groups
+    shows: Native list after deleting all fictional groups through confirmations; reset restores original records. Observed in accepted Groups strict42-PNG proof.
+    scenario: admin-groups
+    shot: groups-empty-list
+  - id: groups-created-resources
+    title: Created group retains selected resources
+    surface: admin-groups
+    shows: Learning Lab reopened with its selected fictional connector, document set and agent after native Create; required-name disabled Create asserted. Observed in accepted Groups strict42-PNG proof.
+    scenario: admin-groups
+    shot: groups-created-resources
+  - id: groups-resources-removed-saved
+    title: Removed group resources stay removed
+    surface: admin-groups
+    shows: Native resource-card removal followed by Save/reopen preserves connector/document-set/agent and token-limit removals. Observed in accepted Groups strict42-PNG proof.
+    scenario: admin-groups
+    shot: groups-resources-removed-saved
+
+  - id: auth-login-native-empty
+    title: Logged-out native login
+    surface: auth-login
+    shows: Actual empty disabled native form after synthetic cookie expiry and /me401; declared, unobserved.
+    scenario: auth-login
+    shot: auth-login-empty
+  - id: auth-signup-native-ready
+    title: Fictional native signup ready state
+    surface: auth-signup
+    shows: One staged password input and real native requirements/ready submit; declared, unobserved.
+    scenario: auth-signup
+    shot: auth-signup-ready
+  - id: auth-forgot-native-error
+    title: Fictional forgot input failure
+    surface: auth-forgot
+    shows: Native error toast with editable LOCAL FAKE DEMO message; no email service.
+    scenario: auth-forgot
+    shot: auth-forgot-error
+  - id: auth-reset-native-mismatch
+    title: Native reset mismatch
+    surface: auth-reset
+    shows: Real confirmation validation and staged inputs, not real credentials.
+    scenario: auth-reset-password
+    shot: auth-reset-mismatch
+  - id: auth-verify-native-error
+    title: Native verification link error
+    surface: auth-verify
+    shows: Invalid demo token with editable fake detail and native resend; declared, unobserved.
+    scenario: auth-verification
+    shot: auth-verify-invalid-token
+  - id: auth-waiting-native-resend
+    title: Native pending email resend
+    surface: auth-waiting
+    shows: Fictional pending greeting and resend success toast; no email sent.
+    scenario: auth-waiting
+    shot: auth-waiting-resend-success
+  - id: auth-join-native-prefill
+    title: Native fictional Join form
+    surface: auth-join
+    shows: Direct prefilled email and one staged password input; no invitation backend.
+    scenario: auth-join
+    shot: auth-join-direct-empty
+  - id: auth-create-account-native
+    title: Native Account Not Found
+    surface: auth-create-account
+    shows: Original explanatory bullets and actual native CTA, whose approved local href uses existing proxy.
+    scenario: auth-create-account
+    shot: auth-create-account-direct
+  - id: auth-error-native
+    title: Native raw fake auth error
+    surface: auth-error
+    shows: Editable fictional query copy and original Return to Login Page; no provider request.
+    scenario: auth-error
+    shot: auth-error-editable-message
+  - id: anonymous-native-chat
+    title: Anonymous native redirect to current chat
+    surface: anonymous-entry
+    shows: Existing empty chat after native anonymous POST redirect; no reconstructed anonymous screen.
+    scenario: auth-anonymous-entry
+    shot: anonymous-native-redirect-chat
+  - id: auth-native-provider-mixed
+    title: Native mixed password and provider choices
+    surface: auth-login
+    shows: Fictional Google OIDC SAML choices alongside actual password form; declared not observed.
+    scenario: auth-provider-choices
+    shot: auth-providers-mixed
+  - id: auth-native-sso-discovered
+    title: Native Work Email discovered providers
+    surface: auth-login
+    shows: Native SSO lookup recovery displays editable fake provider buttons; declared not observed.
+    scenario: auth-sso-discovery
+    shot: auth-sso-lookup-providers
+  - id: auth-native-referral-menu
+    title: Native signup referral choices
+    surface: auth-signup
+    shows: Actual source-authored referral menu and native browser cookie selections; all eleven choices independently mapped.
+    scenario: auth-referral-signup
+    shot: auth-referral-menu-search
+  - id: auth-native-consent-error
+    title: Native translated consent-required error
+    surface: auth-error
+    shows: Source-authored consent-required message and Return to Login control; all nine translated codes are mapped.
+    scenario: auth-error-codes
+    shot: auth-error-code-consent_required
+  - id: shared-saved-content
+    title: Exact shared content and native file thumbnail
+    surface: shared-chat
+    shows: Parent inspected saved reading/reflection and future activity, owner/date/model/decoded image/text/table/citations; shared-files strict33.8s14 PNGs accepted.
+    scenario: sharing-feedback-shared-files
+    shot: shared-saved-content-files-thumbnail
+  - id: share-created-link
+    title: Native created link success
+    surface: share-chat
+    shows: Parent links strict22.2s/all10 PNG inspected including native created/copy success, staged creation error and protected private readback.
+    scenario: sharing-feedback
+    shot: share-created-link-success
+  - id: live-native-sources
+    title: Native live-chat Sources panel
+    surface: chat-answer
+    shows: Parent Sources strict13.2s/all4 final PNG inspected; native Cited Sources/More/User Files, text and decoded CSV previews, actual desktop collapse. Shared view has no wired sidebar.
+    scenario: sharing-feedback-sources
+    shot: live-native-sources-sidebar
+  - id: feedback-negative-required
+    title: Native required negative feedback
+    surface: chat-feedback
+    shows: Parent votes strict25.1s/all15 PNG inspected; disabled empty/whitespace Submit, optional positive/required negative, source-located error/draft/vote protection.
+    scenario: sharing-feedback-votes
+    shot: dislike-required-empty
+  - id: sharing-reset
+    title: Fresh reset restores private chat
+    surface: share-chat
+    shows: Parent reset strict22.9s/all4 PNG inspected; genuine future-turn/public-link/selected-vote setup then two-turn/private/revoked-link restoration.
+    scenario: sharing-feedback-reset
+    shot: reset-restores-private-modal
+
+not_supported:
+  - what: Real authentication, signup, reset, invitations, email, OAuth and providers
+    why: Auth leaf is LOCAL fake frontend staging only; no real credentials account email provider access or durable session engine. Native provider discovery and referral controls are declared through source-authored metadata; compile-time Cloud support remains a separate required artifact.
+    surface: auth-login
+  - what: Browser clipboard-denial and additional auth locales
+    why: Native controls are retained; clipboard permission denial is not fabricated by backend mocks. All nine catalogs stay declared, only English scoped proof is planned and unverified.
+    surface: anonymous-entry
+  - what: Live browser extension installation, user-tab capture and trusted context spoofing
+    why: Only fictional LOCAL metadata and native pinned routes are staged. Real extension-origin parent proof uses one disposable parent-owned fixture/profile with localhost-only permissions; direct HTTP cannot certify tab URL callbacks.
+    surface: browser-extension-side-panel
+  - what: Real shared-chat publishing, permissions, database, durable storage and model backend
+    why: Editable fictional content and minimal run-local share/feedback flags over the existing engine; no public internet publishing, account writes, permission matrix or second engine.
+    surface: share-chat
+  - what: Predefined feedback reason picker, whole-chat-copy control and editable shared composer
+    why: Native Feedback has one textarea, chat menu no whole-chat-copy, shared composer disabled with Start New Session. Shared display has no feedback/sidebar; use native live-chat controls, original0003 excluded.
+    surface: chat-feedback
+  - what: Production provider, billing, authentication, account or security-state changes
+    why: Supported native demo writes persist only within the run using fictional metadata; provider execution, real keys/login/accounts, durable DB, spend enforcement and production effects are excluded.
+  - what: Additional admin agent curation
+    why: Feature/list/unlist/re-list/drag reorder remains open58 beyond accepted64 list/labels reads. Native user upload/labels/sharing/delete/analytics belong accepted33's94 inspected PNGs, not an unimplemented surface or additional admin curation.
+    surface: agent-editor
+  - what: Real connector/provider integrations beyond accepted native demo saves
+    why: Actual scoped3 owns fictional provider/connector writes and current catalogs; accepted63 owns document-set writes/reset20 inspected PNGs. No real integration, provider execution, live credentials or durable backend; the new composed root remains unverified.
+  - what: Real remote historic-chat backend or durable conversation storage
+    why: Editable fixture histories, Sharing61 saved/future turns and run-created sessions replay through the sole existing engine; no production history service or durable database is added.
+    surface: chat-home
+  - what: Unscripted provider reasoning or real context-aware model execution
+    why: Answers use existing regex/context/after and file/script joins on the sole engine, not a live model or understanding backend.
+    surface: chat-answer
+  - what: Transfer of accepted compiled Custom Analytics and Cloud Billing proof to the new Craft70 root
+    why: Main65 source9/12 strict Analytics32 operations/nine inspected PNGs and genuine Cloud Billing180 operations/48 inspected PNGs retain accepted leaf proof. New70 requires matching parent artifact/input reconciliation and fresh imports before independent strict/every-PNG acceptance; no compiled-out/hidden/crashed-state/API-only certification or public-menu flag.
+    surface: admin65-enterprise
+  - what: Cloud-only request-to-join interface on the self-hosted pin
+    why: NEXT_PUBLIC_CLOUD_ENABLED is a compile-time gate. Published Users59 admin-users-cloud passed genuine Cloud strict proof with EVERY7 PNG inspected; the native request-to-join interface remains compiled out on self-hosted builds. No invented tab, conditional no-op or fixture gate bypass; new70 requires matching parent artifact/fresh imports for its own proof.
+    surface: admin-users
+  - what: Other admin pages (users, analytics, bots, SSO)
+    why: Remain assigned to corresponding coverage leaves; accepted Users59, Groups60 and mapped65 native proof certifies neither unowned frontend/auth inventory nor the newly joined Craft70 runtime.
+    surface: admin-other
+  - what: Real group authorization, RBAC or token-limit enforcement
+    why: Groups uses run-local display records, selected resource rows and permission strings only; no external accounts, durable storage or authorization engine.
+    surface: admin-groups
+  - what: Real MCP discovery, OAuth authorization, keys and execution
+    why: Creation and authentication configuration are simulated in-run; OAuth returns locally, secret values become fictional placeholders, refresh reuses editable fixture tools and reset restores seeds. No provider/account requests or durable storage. MCP locale rendering is unverified.
+    surface: admin-mcp-actions
+  - what: Translated fake data
+    why: Agent names, chat history and scripted answers stay English in every locale.
+
+snippets:
+  - id: ask-new-hire-training-question
+    title: Ask the scripted new-hire training question
+    action: ask-question
+    steps:
+      - goto: /app
+      - click: { selector: "#onyx-chat-input-textbox" }
+      - type: { selector: "#onyx-chat-input-textbox", value: "What training do new front desk hires need in their first 30 days, and who is behind on it?" }
+      - click: { selector: "#onyx-chat-input-send-button" }
+      - wait: { testid: onyx-ai-message, timeout: 30000 }
+      - settle: 1500
+      - shot: answer-with-citations
+  - id: open-sources-panel
+    title: Open the Sources panel
+    action: ask-question
+    steps:
+      - click: { role: button, name: Sources }
+      - settle: 800
+      - shot: sources-panel
+  - id: switch-to-onprem-model
+    title: Pick the on-prem Llama model
+    action: switch-model
+    steps:
+      - click: { role: button, name: GPT-5.2 }
+      - click: { text: On-prem GPU cluster }
+      - click: { text: Llama 3.3 70B }
+      - shot: model-switched
+  - id: open-connector-detail
+    title: Search indexing status and open a connector
+    action: inspect-index-attempts
+    steps:
+      - goto: /admin/indexing-status
+      - type: { placeholder: Search connectors..., value: Confluence }
+      - settle: 800
+      - click: { text: Expand All }
+      - click: { text: "Confluence – OPS space" }
+      - wait: { text: Connector Configuration }
+      - shot: connector-detail
+  - id: open-educational-project
+    title: Open a seeded educational project
+    action: manage-educational-projects
+    steps:
+      - goto: /app?projectId=1
+      - wait: { text: Set Instructions, exact: true }
+      - shot: { name: project-direct-loaded, full_page: true }

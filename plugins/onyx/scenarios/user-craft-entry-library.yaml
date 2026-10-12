@@ -1,0 +1,127 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-entry-library
+title: "Craft menu, tour, model and native library inventory"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - goto: /app
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(state.overlays));
+        const me = await (await fetch('/api/me')).json();
+        localStorage.removeItem('onyx:craftOnboardingSeen:' + me.id);
+        const skills = await (await fetch('/api/skills')).json();
+        if (!Array.isArray(skills.builtins) || !Array.isArray(skills.customs)) throw new Error('Skills must be {builtins,customs}, not a flat array');
+      })()
+  - click: { selector: 'a[href="/craft/v1"]' }
+  - wait: { text: Meet Craft, exact: true }
+  - shot: craft-menu-entry-tour-prompt
+  - click: { role: button, name: Next, exact: true }
+  - shot: craft-tour-machine
+  - click: { role: button, name: Next, exact: true }
+  - shot: craft-tour-output
+  - click: { role: button, name: Back, exact: true }
+  - click: { role: button, name: Next, exact: true }
+  - click: { role: button, name: Next, exact: true }
+  - shot: craft-tour-constellation
+  - click: { role: button, name: Put Craft to work, exact: true }
+  - wait: { selector: '[contenteditable="true"][role="textbox"]' }
+  - shot: craft-welcome-pristine
+  - click: { role: button, name: GPT-5.2, exact: true }
+  - shot: craft-model-picker
+  - click: { text: Anthropic, exact: true }
+  - wait: { text: Claude Sonnet 4.5, exact: true }
+  - shot: craft-model-provider-expanded
+  - click: { text: Claude Sonnet 4.5, exact: true }
+  - shot: craft-model-selected
+  - goto: /craft
+  - wait: { selector: '[contenteditable="true"][role="textbox"]' }
+  - eval: if (location.pathname !== '/craft/v1') throw new Error('/craft must redirect to /craft/v1');
+  - shot: craft-route-alias
+  - goto: /craft/v1
+  - click: { role: button, name: Open add menu, exact: true }
+  - shot: craft-entry-menu
+  - click: { text: Library, exact: true }
+  - click: { text: Manage library…, exact: true }
+  - wait: { text: Library, exact: true }
+  - shot: craft-library-loaded
+  - click: { role: button, name: Toggle Teaching, exact: true }
+  - shot: craft-library-expanded
+  - fill: { placeholder: Search files..., value: not-a-teaching-file }
+  - wait: { text: No files match your search, exact: true }
+  - shot: craft-library-search-empty
+  - fill: { placeholder: Search files..., value: "" }
+  - click: { role: button, name: New folder, exact: true }
+  - shot: craft-library-folder-required
+  - fill: { placeholder: Enter folder name, value: Learning reflections }
+  - click: { role: button, name: Create, exact: true }
+  - wait: { text: Learning reflections, exact: true }
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      if (!input) throw new Error('Native library upload input missing');
+      const files = new DataTransfer();
+      files.items.add(new File(['Synthetic workshop notes.'], 'workshop-notes.txt', {type:'text/plain'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+  - wait: { text: workshop-notes.txt, exact: true }
+  - shot: craft-library-uploaded
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      const files = new DataTransfer(); files.items.add(new File(['Synthetic ZIP marker; server uses the editable fictional bundle.'], 'workshop.zip', {type:'application/zip'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+  - wait: { text: Workshop, exact: true }
+  - click: { selector: '[aria-label="Toggle Workshop"]' }
+  - shot: craft-library-zip-extracted
+  - click: { selector: '[aria-label="Toggle Learning reflections"] button[aria-label="Upload to this folder"]' }
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      const files = new DataTransfer(); files.items.add(new File(['Synthetic nested learning notes.'], 'nested-handout.txt', {type:'text/plain'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+  - click: { selector: '[aria-label="Toggle Learning reflections"]' }
+  - wait: { text: nested-handout.txt, exact: true }
+  - shot: craft-library-folder-upload
+  - click: { selector: '[aria-label="Toggle Learning reflections"] button[aria-label="Delete"]' }
+  - shot: craft-library-folder-delete-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+  - fill: { placeholder: Search files..., value: workshop-notes.txt }
+  - click: { role: button, name: Delete, exact: true }
+  - shot: craft-library-file-delete-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+  - fill: { placeholder: Search files..., value: "" }
+  - shot: craft-library-deletions
+  - click: { role: button, name: Done, exact: true }
+  - click: { role: button, name: Open add menu, exact: true }
+  - click: { text: Library, exact: true }
+  - wait: { text: Manage library…, exact: true }
+  - shot: craft-entry-library-files
+  - press: Escape
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: "/craft/v1"
+  - wait: {"selector": "[contenteditable=\"true\"][role=\"textbox\"]"}
+  - click: { role: button, name: Open add menu, exact: true }
+  - click: { text: Library, exact: true }
+  - click: { text: Manage library…, exact: true }
+  - wait: { text: Library, exact: true }
+  - wait: {"text": "Teaching", "exact": true}
+  - shot: "craft-unit-entry-library-reset"

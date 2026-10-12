@@ -1,0 +1,19 @@
+--- a/src/app/auth/create-account/page.tsx
++++ b/src/app/auth/create-account/page.tsx
+@@ -1,7 +1,6 @@
+ "use client";
+ 
+ import AuthFlowContainer from "@/components/auth/AuthFlowContainer";
+-import { REGISTRATION_URL } from "@/lib/constants";
+ import { Button } from "@opal/components";
+ import Link from "next/link";
+ import { SvgImport } from "@opal/icons";
+@@ -25,7 +24,7 @@
+         </ul>
+         <div className="flex justify-center">
+           <Button
+-            href={`${REGISTRATION_URL}/register`}
++            href="/api/register"
+             width="full"
+             icon={SvgImport}
+           >

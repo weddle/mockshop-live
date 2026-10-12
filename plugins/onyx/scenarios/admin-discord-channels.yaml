@@ -1,0 +1,25 @@
+# #65 route-sized native proof: Discord guild channel configuration.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-discord-channels
+title: Discord guild channel configuration - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/discord-bot/6501
+  - shot: inventory-discord-guild
+  - goto: /admin/discord-bot/6501
+  - wait: { text: workshop-notes, exact: true }
+  - shot: discord-guild-channels
+  - click: { role: button, name: Disable All, exact: true }
+  - shot: discord-bulk-channel-dirty
+  - click: { role: button, name: Update Configuration, exact: true }
+  - goto: /admin/voice
+  - goto: /admin/discord-bot/6501
+  - shot: discord-bulk-channel-saved
+  - click: { role: button, name: Enable All, exact: true }
+  - click: { role: button, name: Update Configuration, exact: true }
+  - shot: discord-bulk-channel-restored

@@ -1,0 +1,35 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-filters
+title: Native Users account, group and status filters
+strict: true
+requires: enterprise
+locale: en
+overlays: []
+steps:
+  - goto: /admin/users
+  - wait: { text: Users & Requests, exact: true }
+  - fill: { selector: 'input[placeholder="Search users..."]', value: '' }
+  - click: { role: button, name: Filter by account type, exact: true }
+  - shot: users-account-filter-menu
+  - click: { text: Slack Bot, exact: true }
+  - press: Escape
+  - wait: { text: Workshop Bot, exact: true }
+  - shot: users-account-filter
+  - goto: /admin/users
+  - click: { role: button, name: Filter by group, exact: true }
+  - shot: users-group-filter-menu
+  - click: { text: Training, exact: true }
+  - press: Escape
+  - shot: users-group-filter
+  - goto: /admin/users
+  - click: { role: button, name: Filter by status, exact: true }
+  - click: { text: Inactive, exact: true }
+  - press: Escape
+  - wait: { text: Noa Patel, exact: true }
+  - shot: users-inactive-filter
+  - goto: /admin/users
+  - click: { role: button, name: Filter by status, exact: true }
+  - shot: users-status-menu
+  - click: { text: Invite Pending, exact: true }
+  - press: Escape
+  - shot: users-invited

@@ -1,0 +1,80 @@
+# #21: named scope/expiry/copy controls, not a replay of #31's basic create/revoke path.
+name: user-settings-controls-tokens
+title: Native PAT scope implication, expiration draft, cancel and copy
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+  - click: { selector: 'a[href="/app/settings/accounts-access"]' }
+  - wait: { text: No access tokens created., exact: true }
+  - click: { role: button, name: New Access Token, exact: true }
+  - wait: { role: button, name: Create Token, exact: true }
+  - eval: |
+      if (![...document.querySelectorAll('[role="dialog"] button')].find(el => el.textContent.trim() === 'Create Token')?.matches('[aria-disabled="true"],:disabled')) throw new Error('Empty token name must disable Create');
+  - fill: { placeholder: Name your token, value: Cancelled educational draft }
+  - click: { placeholder: Select permissions }
+  - click: { text: Limited access, exact: true }
+  - eval: |
+      if (![...document.querySelectorAll('[role="dialog"] button')].find(el => el.textContent.trim() === 'Create Token')?.matches('[aria-disabled="true"],:disabled')) throw new Error('Empty limited scopes must disable Create');
+  - shot: { name: token-native-required-scopes-disabled, full_page: true }
+  - click: { role: button, name: Cancel, exact: true }
+  - wait_gone: { role: dialog }
+  - wait: { text: No access tokens created., exact: true }
+  - click: { role: button, name: New Access Token, exact: true }
+  - fill: { placeholder: Name your token, value: Scoped workshop token }
+  - click: { placeholder: Select expiration }
+  - click: { text: 365 days, exact: true }
+  - wait: { selector: 'input[placeholder="Select expiration"][value="365 days"]' }
+  - shot: { name: token-year-expiration-draft, full_page: true }
+  - click: { placeholder: Select expiration }
+  - click: { text: 7 days, exact: true }
+  - click: { placeholder: Select permissions }
+  - click: { text: Limited access, exact: true }
+  - click: { role: checkbox, name: Search Read, exact: true }
+  - click: { role: checkbox, name: Chat Write, exact: true }
+  - wait: { selector: '[role="checkbox"][aria-label="Chat Read"][aria-checked="true"][data-disabled="true"]' }
+  - shot: { name: token-native-implied-read-locked, full_page: true }
+  - click: { role: checkbox, name: Chat Write, exact: true }
+  - wait: { selector: '[role="checkbox"][aria-label="Chat Read"][aria-checked="false"]:not([data-disabled])' }
+  - click: { role: checkbox, name: Chat Write, exact: true }
+  - click: { role: button, name: Create Token, exact: true }
+  - wait: { text: mockshop-not-a-real-token-0001, exact: true }
+  - click: { role: button, name: Copy Token, exact: true, settle: 0 }
+  # CopyButton keeps its label; the source-authored SvgCheck only appears after copyText resolves.
+  - wait: { selector: 'button:has-text("Copy Token") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+  - shot: { name: token-copy-native-success, delay: 0 }
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+  - goto: /app/settings/accounts-access
+  - wait: { text: Scoped workshop token, exact: true }
+  - wait: { text: 'Created today - Expires in 8 days - Read search, Write chat', exact: true }
+  - eval: |
+      (async () => {
+        const rows = await (await fetch('/api/user/pats')).json();
+        const row = rows.find(el => el.name === 'Scoped workshop token');
+        if (row?.expires_at !== '2026-10-16T23:59:59.999Z' || row.scopes.join(',') !== 'read:search,write:chat' || 'token' in row) throw new Error('Scoped/expiry metadata or one-time token boundary incorrect');
+      })()
+  - shot: { name: token-scope-expiry-reloaded, full_page: true }
+  - click: { role: button, name: New Access Token, exact: true }
+  - fill: { placeholder: Name your token, value: Nonexpiring workshop token }
+  - click: { placeholder: Select expiration }
+  - click: { text: No expiration, exact: true }
+  - click: { role: button, name: Create Token, exact: true }
+  - wait: { text: mockshop-not-a-real-token-0002, exact: true }
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+  - goto: /app/settings/accounts-access
+  - wait: { text: Nonexpiring workshop token, exact: true }
+  - wait: { text: 'Created today - Never expires - Full access', exact: true }
+  - shot: { name: token-no-expiry-full-access-kept, full_page: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+  - goto: /app/settings/accounts-access
+  - wait: { text: No access tokens created., exact: true }
+  - shot: { name: token-controls-reset-isolated, full_page: true }

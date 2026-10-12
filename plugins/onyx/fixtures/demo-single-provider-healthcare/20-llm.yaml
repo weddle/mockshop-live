@@ -1,0 +1,20 @@
+# Opt-in model-only overlay; layer after org-healthcare (or org-university).
+# No provider/vendor field on models: Ollama's two models remain one picker group.
+x-models: &models
+  - { id: 21, name: "llama3.3:70b", display_name: "Llama 3.3 70B", is_visible: true, max_input_tokens: 128000, supports_image_input: false, supports_reasoning: false }
+  - { id: 22, name: "qwen3:32b", display_name: "Qwen3 32B", is_visible: true, max_input_tokens: 128000, supports_image_input: false, supports_reasoning: true, supported_reasoning_efforts: [low, medium, high] }
+x-response: &response
+  providers:
+    - { id: 3, name: "On-prem GPU cluster", provider: ollama_chat, provider_display_name: Ollama, model_configurations: *models, next_model_configuration_offset: null }
+  default_text: { provider_id: 3, model_name: "llama3.3:70b" }
+  default_vision: { provider_id: 3, model_name: "llama3.3:70b" }
+  default_chat_naming: { provider_id: 3, model_name: "qwen3:32b" }
+  default_craft: null
+GET /llm/provider: *response
+GET /llm/persona/:id/providers: *response
+GET /admin/llm/provider:
+  <<: *response
+  providers:
+    - { id: 3, name: "On-prem GPU cluster", provider: ollama_chat, api_key: null, api_base: "http://gpu-01.riverbend-health.example:11434", api_version: null, custom_config: null, is_public: true, is_auto_mode: false, groups: [], personas: [], deployment_name: null, model_configurations: *models, next_model_configuration_offset: null }
+# default_vision references an existing model; neither model supports image input.
+# This is a text-only deployment, not a claim of vision capability.

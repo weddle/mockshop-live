@@ -1,0 +1,193 @@
+# #58 Admin Create packet, prepared EDITONLY; parent strict/image acceptance required.
+# Source f858: AgentsPage.tsx:25–30 links to ?admin=true; create/page.tsx re-exports
+# AgentEditorPage. No query-specific form/DTO exists: permission-gated Feature and
+# group sharing are manager controls, not invented admin-only fields.
+# Native create-mode Share Save stages locally, then POST /persona followed by
+# PATCH /persona/{createdId}/share applies the leveled draft. Success opens agent chat.
+name: admin-agent-create
+title: Native admin Create entry, validation/cancel, featured group draft and persisted creation
+requires: enterprise
+strict: true
+locale: en
+overlays: [demo-mcp-admin]
+viewport: [1440, 1000]
+steps:
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/agents"]' }
+  - wait: { testid: agent-row-actions-14 }
+  - eval: |
+      (async () => {
+        const get = async path => {
+          const r = await fetch('/api' + path);
+          if (!r.ok) throw new Error('Missing native Agent read: ' + path);
+          return r.json();
+        };
+        const catalog = await get('/persona');
+        sessionStorage.setItem('admin-create-catalog-seeds', JSON.stringify(catalog));
+        sessionStorage.setItem('admin-create-detail-seeds', JSON.stringify(await Promise.all(catalog.map(a => get('/persona/' + a.id)))));
+        sessionStorage.setItem('admin-create-admin-seeds', JSON.stringify(await get('/admin/persona?include_deleted=false&get_editable=false')));
+        sessionStorage.setItem('admin-create-pin-seeds', JSON.stringify((await get('/me')).preferences.pinned_assistants));
+      })()
+  - shot: admin-create-list-entry
+  - click: { selector: 'a[href="/app/agents/create?admin=true"]' }
+  - wait: { selector: 'input[name="name"]' }
+  - eval: |
+      if (location.pathname !== '/app/agents/create' || new URLSearchParams(location.search).get('admin') !== 'true') throw new Error('Native admin New Agent entry lost its query');
+      const create = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Create');
+      if (!create || (!create.disabled && create.getAttribute('aria-disabled') !== 'true')) throw new Error('Pristine unnamed Create must be disabled');
+      for (const selector of ['input[name="name"]','textarea[name="description"]','textarea[name="instructions"]','input[name="starter_messages.0"]']) {
+        if (document.querySelector(selector)?.value !== '') throw new Error('New Agent seed field is not empty: ' + selector);
+      }
+      if (document.querySelector('button#is_featured')?.getAttribute('aria-checked') !== 'false') throw new Error('New manager agent must default to unfeatured');
+  - shot: admin-create-required-defaults
+  - fill: { selector: 'input[name="name"]', value: Cancelled Learning Draft }
+  - eval: |
+      const create = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Create');
+      if (!create || create.disabled || create.getAttribute('aria-disabled') === 'true') throw new Error('Name alone must satisfy required fields; optional content must not block Create');
+  - fill: { selector: 'input[name="name"]', value: '' }
+  - press: Tab
+  - wait: { text: Agent name is required., exact: true }
+  - eval: |
+      const create = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Create');
+      if (!create || (!create.disabled && create.getAttribute('aria-disabled') !== 'true')) throw new Error('Invalid empty name did not disable Create');
+  - shot: admin-create-required-name-validation
+  - fill: { selector: 'input[name="name"]', value: Cancelled Learning Draft }
+  - click: { role: button, name: Cancel, exact: true }
+  - wait: { testid: agent-row-actions-14 }
+  - eval: |
+      (async () => {
+        if (location.pathname !== '/admin/agents') throw new Error('Native Cancel did not return to its admin history entry');
+        for (const [path,key] of [['/persona','admin-create-catalog-seeds'],['/admin/persona?include_deleted=false&get_editable=false','admin-create-admin-seeds']]) {
+          const r = await fetch('/api' + path);
+          if (!r.ok || JSON.stringify(await r.json()) !== sessionStorage.getItem(key)) throw new Error('Cancel mutated the sole catalog: ' + path);
+        }
+        const me = await (await fetch('/api/me')).json();
+        if (JSON.stringify(me.preferences.pinned_assistants) !== sessionStorage.getItem('admin-create-pin-seeds')) throw new Error('Cancel changed existing pins');
+      })()
+  - shot: admin-create-cancel-protected-list
+  # Cancel leaves any browser-local draft intact by design; overwrite through real form fields.
+  - goto: /app/agents/create?admin=true
+  - wait: { selector: 'input[name="name"]' }
+  - fill: { selector: 'input[name="name"]', value: Community Learning Coordinator }
+  - fill: { selector: 'textarea[name="description"]', value: A fictional coordinator for inclusive community learning workshops. }
+  - fill: { selector: 'textarea[name="instructions"]', value: Plan accessible community learning workshops using plain language and supplied resources. }
+  - fill: { selector: 'input[name="starter_messages.0"]', value: Plan an inclusive community workshop. }
+  - scroll: { text: Feature This Agent, exact: true }
+  - click: { selector: 'button#is_featured' }
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+  - wait: { text: This agent is private to you and will only be featured for yourself., exact: true }
+  - shot: admin-create-featured-private-notice
+  - click: { role: button, name: Share, exact: true }
+  - wait: { placeholder: 'Add users, groups, and accounts' }
+  - eval: |
+      const dialog = document.querySelector('[role="dialog"]');
+      if (!dialog || [...dialog.querySelectorAll('button')].some(b => b.textContent.trim() === 'Copy Link')) throw new Error('Unsaved agent must not offer a saved-agent Copy Link');
+  - fill: { placeholder: 'Add users, groups, and accounts', value: Training }
+  - click: { text: Training, exact: true }
+  - click: { label: Select staged permission }
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+  - click: { label: Change sharing scope }
+  - click: { text: Anyone in your organization, exact: true }
+  - click: { label: Change public permission }
+  - click: { selector: '[role="listbox"][aria-label="Change public permission"] [role="option"]:has(:text-is("Edit"))' }
+  - shot: admin-create-unsaved-group-and-public-editor-draft
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+  - wait_gone: { role: dialog }
+  - wait_gone: { text: This agent is private to you and will only be featured for yourself., exact: true }
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/persona');
+        if (!r.ok || JSON.stringify(await r.json()) !== sessionStorage.getItem('admin-create-catalog-seeds')) throw new Error('Unsaved Share draft prematurely wrote an Agent');
+        if (document.querySelector('button#is_featured')?.getAttribute('aria-checked') !== 'true') throw new Error('Saving Share draft lost Feature selection');
+      })()
+  - shot: admin-create-ready-featured-organization-draft
+  - click: { role: button, name: Create, exact: true }
+  - wait: { text: Plan an inclusive community workshop., exact: true }
+  - eval: |
+      (async () => {
+        const id = Number(new URLSearchParams(location.search).get('agentId'));
+        if (location.pathname !== '/app' || !id) throw new Error('Native create success must open the created agent, not an invented admin redirect');
+        sessionStorage.setItem('admin-create-id', String(id));
+        const r = await fetch('/api/persona/' + id);
+        if (!r.ok) throw new Error('Created detail missing');
+        const a = await r.json(), me = await (await fetch('/api/me')).json();
+        if (a.name !== 'Community Learning Coordinator' || a.description !== 'A fictional coordinator for inclusive community learning workshops.' || a.system_prompt !== 'Plan accessible community learning workshops using plain language and supplied resources.' || a.starter_messages?.[0]?.message !== 'Plan an inclusive community workshop.') throw new Error('Native Create lost entered educational fields');
+        if (!a.is_featured || !a.is_public || !a.is_listed || a.builtin_persona || a.datetime_aware || a.default_model_configuration_id !== null || a.display_priority !== null || a.owner?.id !== me.id || a.user_permission !== 'OWNER') throw new Error('Created flags/defaults/ownership incorrect');
+        if (a.public_permission !== 'EDITOR' || !a.group_shares?.some(s => s.group_id === 1 && s.permission === 'EDITOR') || !a.groups.includes(1)) throw new Error('Create-mode leveled group/public draft was not applied after create');
+        const seeds = JSON.parse(sessionStorage.getItem('admin-create-catalog-seeds'));
+        for (const path of ['/persona','/admin/persona','/admin/agents']) {
+          const response = await fetch('/api' + path);
+          if (!response.ok) throw new Error('Created catalog read failed: ' + path);
+          const body = await response.json(), rows = Array.isArray(body) ? body : body.items;
+          const saved = rows.find(row => row.id === id);
+          if (rows.length !== seeds.length + 1 || !seeds.every(seed => rows.some(row => row.id === seed.id && row.name === seed.name)) || saved?.name !== a.name || !saved.is_featured || !saved.is_public || saved.display_priority !== null) throw new Error('Sole create catalog projection mismatch: ' + path);
+        }
+        for (const seed of JSON.parse(sessionStorage.getItem('admin-create-detail-seeds'))) {
+          const response = await fetch('/api/persona/' + seed.id);
+          if (!response.ok || JSON.stringify(await response.json()) !== JSON.stringify(seed)) throw new Error('Native Create changed protected seed configuration ' + seed.id);
+        }
+        sessionStorage.setItem('admin-create-saved-detail', JSON.stringify(a));
+      })()
+  - shot: admin-create-selected-native-success
+  - goto: /admin/agents
+  - wait: { selector: 'tbody tr:has-text("Community Learning Coordinator")' }
+  - shot: admin-create-persisted-admin-row
+  - hover: { selector: 'tbody tr:has-text("Community Learning Coordinator")' }
+  - click: { selector: 'tbody tr:has-text("Community Learning Coordinator") [data-testid^="edit-agent-"]' }
+  - wait: { selector: 'input[name="name"][value="Community Learning Coordinator"]' }
+  - eval: |
+      const id = sessionStorage.getItem('admin-create-id');
+      if (location.pathname !== '/app/agents/edit/' + id || new URLSearchParams(location.search).get('admin') !== 'true') throw new Error('Created admin row Edit did not open its own native editor');
+      for (const [selector,value] of [['textarea[name="description"]','A fictional coordinator for inclusive community learning workshops.'],['textarea[name="instructions"]','Plan accessible community learning workshops using plain language and supplied resources.'],['input[name="starter_messages.0"]','Plan an inclusive community workshop.']]) {
+        if (document.querySelector(selector)?.value !== value) throw new Error('Reload lost created editor field: ' + selector);
+      }
+  - scroll: { text: Feature This Agent, exact: true }
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+  - click: { role: button, name: Share, exact: true }
+  - wait: { text: Training, exact: true }
+  - wait: { label: Update access for Training }
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/persona/' + sessionStorage.getItem('admin-create-id'));
+        if (!r.ok || JSON.stringify(await r.json()) !== sessionStorage.getItem('admin-create-saved-detail')) throw new Error('Admin editor reload lost the created record or share draft');
+        const dialog = document.querySelector('[role="dialog"]');
+        const groupPermission = dialog?.querySelector('[aria-label="Update access for Training"]');
+        const publicPermission = dialog?.querySelector('[aria-label="Change public permission"]');
+        if (!dialog?.textContent.includes('Anyone in your organization') || !groupPermission?.textContent.includes('Edit') || !publicPermission?.textContent.includes('Edit')) throw new Error('Native saved Share did not display both leveled Editor choices');
+      })()
+  - shot: admin-create-editor-reloaded-group-permissions
+  - press: Escape
+  - goto: /app/agents
+  - wait: { selector: '.radial-00:has-text("Community Learning Coordinator")' }
+  - eval: |
+      const card = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')].find(e => e.textContent.includes('Community Learning Coordinator'));
+      if (!card?.closest('.grid')?.parentElement?.textContent.includes('Featured') || !card.textContent.includes('A fictional coordinator for inclusive community learning workshops.')) throw new Error('Created agent missing saved content in native Featured gallery');
+  - shot: admin-create-featured-gallery-reload
+  # Existing fake control-plane fresh reset only; all product writes above use native controls.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-mcp-admin'],anchor:current.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!response.ok) throw new Error('Fresh admin-create reset failed');
+      })()
+  - goto: /admin/agents
+  - wait: { testid: agent-row-actions-14 }
+  - wait_gone: { selector: 'tbody tr:has-text("Community Learning Coordinator")' }
+  - eval: |
+      (async () => {
+        for (const [path,key] of [['/persona','admin-create-catalog-seeds'],['/admin/persona?include_deleted=false&get_editable=false','admin-create-admin-seeds']]) {
+          const r = await fetch('/api' + path);
+          if (!r.ok || JSON.stringify(await r.json()) !== sessionStorage.getItem(key)) throw new Error('Fresh reset did not restore sole Agent seeds: ' + path);
+        }
+        for (const seed of JSON.parse(sessionStorage.getItem('admin-create-detail-seeds'))) {
+          const r = await fetch('/api/persona/' + seed.id);
+          if (!r.ok || JSON.stringify(await r.json()) !== JSON.stringify(seed)) throw new Error('Create mutated protected seed detail ' + seed.id);
+        }
+        const me = await (await fetch('/api/me')).json();
+        if (JSON.stringify(me.preferences.pinned_assistants) !== sessionStorage.getItem('admin-create-pin-seeds')) throw new Error('Fresh reset did not restore seed pins');
+      })()
+  - shot: admin-create-fresh-reset-admin-seeds
+  - goto: /app/agents
+  - wait: { selector: '.radial-00:has-text("Training & Onboarding Desk")' }
+  - wait_gone: { selector: '.radial-00:has-text("Community Learning Coordinator")' }
+  - shot: admin-create-fresh-reset-gallery

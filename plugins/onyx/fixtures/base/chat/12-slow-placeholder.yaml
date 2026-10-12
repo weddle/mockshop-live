@@ -1,0 +1,10 @@
+# Deliberately slow answer so a scenario can press Stop mid-stream (neutral placeholder text).
+match: "^placeholder: long answer"
+title: Placeholder long answer
+chunk_delay_ms: 450
+answer: |
+  This is a deliberately long placeholder answer used to show the Stop button. It streams slowly, one short chunk at a time, so that a scenario has several seconds to press Stop before it finishes.
+
+  Paragraph two of the placeholder answer continues with more neutral filler text. Nothing here refers to a real organization, person or document; it only exists to give the stream some length.
+
+  Paragraph three keeps going in the same way, and paragraph four would follow it if the user had not stopped the answer already.

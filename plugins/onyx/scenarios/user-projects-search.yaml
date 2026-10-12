@@ -1,0 +1,158 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app → native rename/create-and-move and link setup → folded Projects / Search Chats.
+# Outcome: Chat/project search/empty/create/cancel/navigation/prefilled creation; keep/fresh search setup.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-search
+title: Chat/project search/empty/create/cancel/navigation/prefilled creation; keep/fresh search setup
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Independent setup / outcome: Independent fresh base entry.
+  - goto: /app
+  # Independent setup / outcome: Native prerequisite replay: rename default seed.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+  # Independent setup / outcome: Native prerequisite replay: rename default seed.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+  # Independent setup / outcome: Native prerequisite replay: rename default seed.
+  - click: { role: menuitem, name: Rename, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: rename default seed.
+  - fill: { selector: '.opal-sidebar-tab input', value: Study circle welcome notes }
+  # Independent setup / outcome: Native prerequisite replay: rename default seed.
+  - press: Enter
+  # Independent setup / outcome: Native prerequisite replay: move menu.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+  # Independent setup / outcome: Native prerequisite replay: move menu.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+  # Independent setup / outcome: Native prerequisite replay: move menu.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+  # Independent setup / outcome: Native prerequisite replay: move menu.
+  - fill: { placeholder: Search Projects, value: Literacy Circle }
+  # Independent setup / outcome: Native prerequisite replay: Create-and-move Literacy Circle.
+  - click: { role: menuitem, name: Create Literacy Circle, exact: true }
+  # Independent setup / outcome: Native existing-file link supplies a visible navigation sentinel; no upload dependency.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Native existing-file link supplies a visible navigation sentinel; no upload dependency.
+  - click: { role: button, name: Add Files, exact: true }
+  # Native quick picker has only the three newest files; reading is in its full-library entry.
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+  # Independent setup / outcome: Native existing-file link supplies a visible navigation sentinel; no upload dependency.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+  # Independent setup / outcome: Native existing-file link supplies a visible navigation sentinel; no upload dependency.
+  - wait: { text: library-reading.txt, exact: true }
+  - click: { role: button, name: Done, exact: true }
+  # Original user-projects step 219 (source line 319): Preserved native journey.
+  - click: { role: button, name: Close Sidebar, exact: true }
+  # Original user-projects step 220 (source line 320): Preserved native journey.
+  - click: { testid: AppSidebar/projects }
+  # Original user-projects step 221 (source line 321): Preserved native journey.
+  - wait: { testid: ProjectsPopover/search }
+  # Original user-projects step 222 (source line 322): Preserved native journey.
+  - shot: { name: folded-projects-popover, full_page: true }
+  # Original user-projects step 223 (source line 323): Preserved native journey.
+  - fill: { testid: ProjectsPopover/search, value: Study circle welcome }
+  # Original user-projects step 224 (source line 324): Preserved native journey.
+  - wait: { selector: '[data-testid="ProjectsPopover/row"] a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]' }
+  # Original user-projects step 225 (source line 325): Preserved native journey.
+  - shot: { name: folded-project-chat-search, full_page: true }
+  # Independent outcome: folded chat row navigates through the existing sole chat replay.
+  - click: { selector: '[data-testid="ProjectsPopover/row"] a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]' }
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+  - shot: { name: folded-project-chat-navigation, full_page: true }
+  - click: { testid: AppSidebar/projects }
+  # Original user-projects step 226 (source line 326): Preserved native journey.
+  - fill: { testid: ProjectsPopover/search, value: no-such-project }
+  # Original user-projects step 227 (source line 327): Preserved native journey.
+  - wait: { text: No projects found, exact: true }
+  # Original user-projects step 228 (source line 328): Preserved native journey.
+  - shot: { name: folded-project-search-empty, full_page: true }
+  # Original user-projects step 229 (source line 329): Preserved native journey.
+  - click: { testid: ProjectsPopover/new-project }
+  # Original user-projects step 230 (source line 330): Preserved native journey.
+  - wait: { selector: 'input[name="projectName"]' }
+  # Original user-projects step 231 (source line 331): Preserved native journey.
+  - shot: { name: folded-new-project-modal, full_page: true }
+  # Original user-projects step 232 (source line 332): Preserved native journey.
+  - click: { role: button, name: Cancel, exact: true }
+  # Original user-projects step 233 (source line 333): Preserved native journey.
+  - click: { testid: AppSidebar/projects }
+  # Original user-projects step 234 (source line 334): Preserved native journey.
+  - fill: { testid: ProjectsPopover/search, value: Revision Workshop }
+  # Original user-projects step 235 (source line 335): Preserved native journey.
+  - click: { selector: '[data-testid="ProjectsPopover/row"] button[aria-label="Revision Workshop"]' }
+  # Original user-projects step 236 (source line 336): Preserved native journey.
+  - wait: { text: library-reading.txt, exact: true }
+  # Original user-projects step 237 (source line 337): Preserved native journey.
+  - shot: { name: folded-project-navigation, full_page: true }
+  # Original user-projects step 238 (source line 338): Preserved native journey.
+  - click: { role: button, name: Open Sidebar, exact: true }
+  # Source command filter is a noninteractive heading at <=3 projects; create a fourth native seed in-run.
+  - hover: { selector: '.opal-sidebar-section__header:has-text("Projects")' }
+  - click: { selector: '.opal-sidebar-section__header:has-text("Projects") button' }
+  - fill: { selector: 'input[name="projectName"]', value: Reading Garden }
+  - click: { role: button, name: Create Project, exact: true }
+  - wait: { selector: '.opal-content-xl [title="Reading Garden"]' }
+  # Original user-projects step 239 (source line 340): Preserved native journey.
+  - click: { role: button, name: Search Chats, exact: true }
+  # Original user-projects step 240 (source line 341): Preserved native journey.
+  - wait: { placeholder: 'Search chat sessions, projects...' }
+  # Original user-projects step 241 (source line 342): Preserved native journey.
+  - click: { role: option, name: Projects, exact: true }
+  # Original user-projects step 242 (source line 343): Preserved native journey.
+  - shot: { name: command-project-filter, full_page: true }
+  # Original user-projects step 243 (source line 344): Preserved native journey.
+  - fill: { placeholder: 'Search chat sessions, projects...', value: Revision Workshop }
+  # Original user-projects step 244 (source line 345): Preserved native journey.
+  - shot: { name: command-project-search, full_page: true }
+  # Original user-projects step 245 (source line 346): Preserved native journey.
+  - click: { role: option, name: Revision Workshop, exact: false }
+  # Original user-projects step 246 (source line 347): Preserved native journey.
+  - wait: { text: library-reading.txt, exact: true }
+  # Original user-projects step 247 (source line 348): Preserved native journey.
+  - click: { role: button, name: Search Chats, exact: true }
+  # Original user-projects step 248 (source line 349): Preserved native journey.
+  - fill: { placeholder: 'Search chat sessions, projects...', value: Reading Journal }
+  # Independent outcome: source command menu exposes no-more-results plus prefilled Create.
+  - wait: { text: No more results, exact: true }
+  - shot: { name: command-project-search-empty, full_page: true }
+  # Original user-projects step 249 (source line 350): Preserved native journey.
+  - click: { role: option, name: 'Create New Project "Reading Journal"', exact: true }
+  # Original user-projects step 250 (source line 351): Preserved native journey.
+  - wait: { selector: 'input[name="projectName"]' }
+  # Original user-projects step 251 (source line 352): Preserved native journey.
+  - eval: |
+      if (document.querySelector('input[name="projectName"]').value !== 'Reading Journal') throw new Error('Command project create lost search name');
+  # Original user-projects step 252 (source line 354): Preserved native journey.
+  - shot: { name: command-project-create-prefilled, full_page: true }
+  # Original user-projects step 253 (source line 355): Preserved native journey.
+  - click: { role: button, name: Cancel, exact: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state: { overlays: [] }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (!document.body.textContent.includes('library-reading.txt') || !document.body.textContent.includes('Literacy Circle') || !document.body.textContent.includes('Reading Garden')) throw new Error('Keep lost search-unit native setup');
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-search-keep, full_page: true }
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[],anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=2
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (document.body.textContent.includes('Literacy Circle') || document.body.textContent.includes('Reading Garden') || document.body.textContent.includes('library-reading.txt') || document.body.textContent.includes('Study circle welcome notes')) throw new Error('Reset retained search-unit links/title/project');
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-search-fresh-reset, full_page: true }

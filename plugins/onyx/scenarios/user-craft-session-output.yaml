@@ -1,0 +1,109 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-session-output
+title: "Craft saved session, sharing and complete output inventory"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - goto: /craft/v1?sessionId=craft-workshop
+  - wait: { text: Accessible workshop handout, exact: true }
+  - shot: craft-main-existing-session
+  - click: { role: button, name: Not now, exact: true }
+  - shot: craft-setup-skipped
+  - click: { selector: '.opal-sidebar-tab:has-text("Accessible workshop handout") button[aria-label="Session options"]' }
+  - shot: craft-session-menu
+  - click: { text: Rename, exact: true }
+  - shot: craft-session-rename
+  - fill: { selector: '.opal-sidebar-tab input', value: Fictional workshop handout revised }
+  - press: Enter
+  - wait: { text: Fictional workshop handout revised, exact: true }
+  - eval: location.reload()
+  - wait: { text: Fictional workshop handout revised, exact: true }
+  - shot: craft-session-renamed-reopened
+  # The saved session has no nextjs_port: loadSession leaves its panel closed.
+  # This is the real header toggle (tooltip-only, no accessible-name prop).
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+  - wait: { role: button, name: Files, exact: true }
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+  - shot: craft-output-closed
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+  - shot: craft-output-reopened
+  - click: { role: button, name: Files, exact: true }
+  - shot: craft-output-files
+  - click: { selector: 'button.w-full:has-text("outputs")' }
+  - shot: craft-output-folder-expanded
+  - click: { selector: 'button.w-full:has-text("handout.md")' }
+  - wait: { text: Fictional learning handout, exact: false }
+  - shot: craft-output-markdown
+  - click: { role: button, name: Download MD file, exact: true }
+  - shot: craft-output-file-download
+  - click: { role: button, name: Go back, exact: true }
+  - click: { role: button, name: Go forward, exact: true }
+  - click: { role: button, name: Refresh, exact: true }
+  - shot: craft-output-navigation-refresh
+  - click: { role: button, name: Export to .docx, exact: true }
+  - wait: { role: button, name: Export to .docx, exact: true }
+  - shot: craft-output-docx-export
+  - click: { role: button, name: Files, exact: true }
+  - click: { selector: 'button.w-full:has-text("attendance.csv")' }
+  - shot: craft-output-raw-text
+  - click: { role: button, name: Files, exact: true }
+  - click: { selector: 'button.w-full:has-text("activity-diagram.svg")' }
+  - wait: { selector: 'img[alt="activity-diagram.svg"].opacity-100' }
+  - shot: craft-output-image
+  - click: { role: button, name: Files, exact: true }
+  - click: { selector: 'button.w-full:has-text("learning.pdf")' }
+  - wait: { selector: 'iframe[title="learning.pdf"][src^="blob:"]' }
+  - shot: craft-output-pdf
+  - click: { role: button, name: Files, exact: true }
+  - click: { selector: 'button.w-full:has-text("workshop.pptx")' }
+  - wait: { text: Slide 1 of 2, exact: true }
+  - shot: craft-output-presentation-first
+  - press: ArrowRight
+  - wait: { text: Slide 2 of 2, exact: true }
+  - shot: craft-output-presentation-second
+  - press: ArrowLeft
+  - click: { role: button, name: Artifacts, exact: true }
+  - shot: craft-output-artifacts
+  - click: { selector: '[aria-label="Open Fictional learning preview"] button:has-text("Download")' }
+  # Artifacts lists children of outputs, not an outputs wrapper; use its actual folder row.
+  - click: { selector: '[aria-label="Toggle references"] button:has-text("Download")' }
+  - shot: craft-output-artifact-archives
+  - click: { role: button, name: Preview, exact: true }
+  - shot: craft-output-ready-preview
+  - click: { selector: '[data-testid="url-text-wrapper"] button' }
+  - shot: craft-output-preview-url-copied
+  - click: { role: button, name: open in a new tab, exact: true }
+  - shot: craft-output-local-new-tab-return
+  - click: { role: button, name: Share webapp, exact: true }
+  - shot: craft-output-share-private
+  - click: { role: button, name: Organization, exact: false }
+  - click: { role: button, name: Copy link, exact: true }
+  - shot: craft-output-share-organization
+  - press: Escape
+  - click: { role: button, name: Close handout.md, exact: true }
+  - shot: craft-output-transient-tab-closed
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: "/craft/v1?sessionId=craft-workshop"
+  - wait: {"text": "Accessible workshop handout", "exact": true}
+  - shot: "craft-unit-session-output-reset"

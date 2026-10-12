@@ -1,0 +1,21 @@
+{
+  "name": "mockshop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Ryan Weddle <weddle@gmail.com>",
+  "description": "Repeatable frontend demos with fixture-backed state, starting with Onyx.",
+  "dependencies": {
+    "playwright-core": "^1.64.0",
+    "yaml": "^2.9.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/weddle/mockshop-live.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weddle/mockshop-live/issues"
+  },
+  "homepage": "https://github.com/weddle/mockshop-live#readme"
+}

@@ -1,0 +1,85 @@
+# DEVELOPMENT inventory; independent parent strict/every-PNG acceptance/publication remains pending.
+# Independent fresh reset uses the existing control plane; mutations under test use only native controls.
+
+name: sharing-feedback-navigation
+title: Native live feedback details, persistence and shared navigation
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 900]
+overlays: []
+steps:
+  - goto: /app
+  - eval: |
+      (async () => {
+        const currentResponse = await fetch('/api/__mockshop/state');
+        if (!currentResponse.ok) throw new Error('Independent Sharing seed read failed');
+        const current = await currentResponse.json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:[],locale:'en',keep:false,resetChats:true,anchor:current.demo_anchor})});
+        if (!response.ok) throw new Error('Independent Sharing reset failed');
+        sessionStorage.removeItem('sharing-workshop-id');
+        sessionStorage.removeItem('sharing-workshop-link');
+      })();
+  # Native prerequisite replay only; original screenshots remain in their single primary owning unit.
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+  - wait: { testid: 'AgentMessage/toolbar', nth: 1 }
+  - settle: 1200
+  - eval: |
+      const toolbars = [...document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')];
+      if (toolbars.length !== 2 || !document.body.innerText.includes('Start with a short reading circle.')) throw new Error('Seeded workshop did not replay both saved turns');
+      if (toolbars.some(t => !t.textContent.includes('GPT-5.2'))) throw new Error('Saved answer model labels did not replay');
+      if ([...toolbars[1].querySelectorAll('button')].some(b => b.textContent.trim() === 'Sources')) throw new Error('No-source closing reflection invented a Sources control');
+      sessionStorage.setItem('sharing-workshop-id', '61616161-0000-4000-8000-000000000001');
+  - click: { selector: '[aria-label="share-chat-button"]' }
+  - wait: { text: Share this chat, exact: true }
+  - click: { selector: '[aria-label="share-modal-option-public"]' }
+  - click: { selector: '[aria-label="share-modal-submit"]' }
+  - wait: { text: Chat shared, exact: true }
+  - wait: { text: Share link copied to clipboard!, exact: true }
+  - eval: |
+      const input = document.querySelector('[aria-label="share-modal-link-input"]');
+      const expected = `${location.origin}/app/shared/${sessionStorage.getItem('sharing-workshop-id')}`;
+      if (input?.value !== expected || !input.readOnly) throw new Error('Native saved share link is not this exact fake conversation');
+      sessionStorage.setItem('sharing-workshop-link', input.value);
+  - press: Escape
+  # Live answer CopyButton uses its actual native success icon, not an API response echo.
+  # Primary original operations 188-225; every original interaction and named PNG is retained.
+  - click: { testid: 'AgentMessage/like-button', nth: 1 }
+  - wait: { placeholder: What did you like about this response? }
+  - fill: { placeholder: What did you like about this response?, value: Helpful quiet reflection option. }
+  - click: { role: button, name: Submit, exact: true }
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+  - shot: live-like-submitted-with-details
+  - eval: location.reload()
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+  - shot: live-feedback-details-persists-reload
+  - click: { testid: 'AgentMessage/like-button', nth: 1 }
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="empty"]', nth: 1 }
+  - shot: live-like-toggle-off
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+  - wait: { placeholder: What did you dislike about this response? }
+  - shot: live-dislike-required-modal
+  - click: { role: button, name: Cancel, exact: true }
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="empty"]', nth: 1 }
+  - shot: live-dislike-cancel-no-vote
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+  - fill: { placeholder: What did you dislike about this response?, value: Please offer a written reflection as well. }
+  - click: { role: button, name: Submit, exact: true }
+  - wait_gone: { role: dialog }
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+  - shot: live-dislike-submitted-after-sharing
+  - goto: /app/shared/61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+  - click: { role: link, name: Start New Session, exact: true }
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  - shot: shared-start-new-chat
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+  - shot: feedback-reopens-after-shared-navigation
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="empty"]', nth: 1 }
+  - shot: live-removes-feedback-after-reopen

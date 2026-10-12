@@ -1,0 +1,86 @@
+# #21 remaining named controls; independently seeded, no replay of accepted #31 lifecycles.
+name: user-settings-controls-shortcuts
+title: Native prompt-shortcut empty, draft, invalid, CRUD, keep and reset
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+  - click: { selector: 'a[href="/app/settings/chat-preferences"]' }
+  - wait: { selector: 'label:has-text("Use Prompt Shortcuts") [role="switch"][aria-checked="false"]' }
+  - click: { selector: 'label:has-text("Use Prompt Shortcuts") [role="switch"]' }
+  - wait: { placeholder: Summarize }
+  - eval: |
+      const rows = document.querySelectorAll('input[placeholder="Summarize"]');
+      if (rows.length !== 1 || rows[0].value !== '' || !document.querySelector('button[aria-label="Remove shortcut"]')?.matches('[aria-disabled="true"],:disabled')) throw new Error('Native empty shortcut row/disabled remove missing');
+  - shot: { name: shortcuts-empty-native, full_page: true }
+  - fill: { placeholder: Summarize, value: workshop }
+  - eval: |
+      if (document.querySelectorAll('input[placeholder="Summarize"]').length !== 2) throw new Error('Native trailing empty draft row missing');
+  - shot: { name: shortcuts-incomplete-unsaved-draft, full_page: true }
+  - fill: { placeholder: 'Provide a concise 1–2 sentence summary of the following:', value: Summarize the fictional workshop handout in plain language. }
+  - press: Tab
+  - wait: { text: Shortcut created, exact: true }
+  - goto: /app/settings/chat-preferences
+  - wait: { selector: 'input[placeholder="Summarize"][value="workshop"]' }
+  - eval: |
+      if (![...document.querySelectorAll('textarea')].some(el => el.value === 'Summarize the fictional workshop handout in plain language.')) throw new Error('Created shortcut did not survive direct reload');
+  - scroll: { selector: 'textarea[placeholder="Provide a concise 1–2 sentence summary of the following:"]' }
+  - eval: |
+      const fields = [document.querySelector('input[placeholder="Summarize"]'), document.querySelector('textarea[placeholder="Provide a concise 1–2 sentence summary of the following:"]')];
+      if (fields.some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Created shortcut controls must be inside the visible viewport');
+  - shot: { name: shortcuts-created-reloaded, full_page: true }
+  # Existing incomplete rows get a source-native red error variant and do not overwrite the saved record.
+  - fill: { placeholder: 'Provide a concise 1–2 sentence summary of the following:', value: '' }
+  - press: Tab
+  - wait: { selector: '.opal-input-textarea[data-variant="error"]' }
+  - eval: |
+      (async () => {
+        const rows = await (await fetch('/api/input_prompt')).json();
+        if (rows.length !== 1 || rows[0].content !== 'Summarize the fictional workshop handout in plain language.') throw new Error('Incomplete native draft overwrote saved shortcut');
+      })()
+  - shot: { name: shortcuts-native-invalid-protected, full_page: true }
+  - fill: { placeholder: 'Provide a concise 1–2 sentence summary of the following:', value: Explain workshop activities with accessible examples. }
+  - press: Tab
+  - wait: { text: Shortcut updated, exact: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+  - goto: /app/settings/chat-preferences
+  - wait: { selector: 'input[placeholder="Summarize"][value="workshop"]' }
+  - eval: |
+      if (![...document.querySelectorAll('textarea')].some(el => el.value === 'Explain workshop activities with accessible examples.')) throw new Error('Shortcut update did not survive keep/reload');
+  - scroll: { selector: 'textarea[placeholder="Provide a concise 1–2 sentence summary of the following:"]' }
+  - eval: |
+      const fields = [document.querySelector('input[placeholder="Summarize"]'), document.querySelector('textarea[placeholder="Provide a concise 1–2 sentence summary of the following:"]')];
+      if (fields.some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Kept shortcut controls must be inside the visible viewport');
+  - shot: { name: shortcuts-updated-kept, full_page: true }
+  - click: { selector: 'button[aria-label="Remove shortcut"]:not([aria-disabled="true"]):not(:disabled)' }
+  - wait: { text: Shortcut deleted, exact: true }
+  - goto: /app/settings/chat-preferences
+  - eval: |
+      if ([...document.querySelectorAll('input[placeholder="Summarize"]')].some(el => el.value === 'workshop')) throw new Error('Deleted shortcut returned after reload');
+  - scroll: { selector: 'textarea[placeholder="Provide a concise 1–2 sentence summary of the following:"]' }
+  - eval: |
+      const fields = [document.querySelector('input[placeholder="Summarize"]'), document.querySelector('textarea[placeholder="Provide a concise 1–2 sentence summary of the following:"]')];
+      if (fields.some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Deleted shortcut empty controls must be inside the visible viewport');
+  - shot: { name: shortcuts-deleted-reloaded, full_page: true }
+  # Leave a saved dirty row before fresh reset, not a coincidentally empty list.
+  - fill: { placeholder: Summarize, value: disposable }
+  - fill: { placeholder: 'Provide a concise 1–2 sentence summary of the following:', value: Fictional reset-isolation handout. }
+  - press: Tab
+  - wait: { text: Shortcut created, exact: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+  - goto: /app/settings/chat-preferences
+  - wait: { selector: 'label:has-text("Use Prompt Shortcuts") [role="switch"][aria-checked="false"]' }
+  - click: { selector: 'label:has-text("Use Prompt Shortcuts") [role="switch"]' }
+  - wait: { placeholder: Summarize }
+  - eval: |
+      const inputs = [...document.querySelectorAll('input[placeholder="Summarize"]')];
+      if (inputs.length !== 1 || inputs[0].value !== '') throw new Error('Dirty shortcut leaked through fresh reset');
+  - shot: { name: shortcuts-reset-empty, full_page: true }

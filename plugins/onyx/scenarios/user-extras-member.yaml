@@ -1,0 +1,37 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-member
+title: Native Extras - member
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras-member]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:['demo-user-extras-member'],anchor:current.demo_anchor,locale:'en',keep:false})});
+      })()
+  - goto: /app
+  - wait: { selector: '[aria-label="non-admin-name-prompt"]' }
+  - shot: {name: extras-21-member-name-required, full_page: true}
+  - fill: { placeholder: Your name, value: Avery Learner }
+  - press: Enter
+  - wait: { selector: '[aria-label="non-admin-confirmation"]' }
+  - shot: {name: extras-22-member-name-confirmation, full_page: true}
+  - click: { label: Edit display name }
+  - fill: { placeholder: Your name, value: Avery Educator }
+  - click: { role: button, name: Save, exact: true }
+  - click: { selector: '[aria-label="non-admin-confirmation"] button' }
+  - goto: /app
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (me.personalization.name !== 'Avery Educator') throw new Error('Member name edit did not persist');
+        if (document.querySelector('[aria-label="non-admin-name-prompt"]')) throw new Error('Saved member name prompt reopened');
+      })()
+  - shot: {name: extras-23-member-saved-reload, full_page: true}

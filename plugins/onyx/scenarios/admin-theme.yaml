@@ -1,0 +1,170 @@
+# #65 route-sized native proof: Appearance and Theming aliases.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-theme
+title: Appearance and Theming aliases - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/theme
+  - shot: inventory-theme-alias
+  - goto: /ee/admin/theme
+  - shot: inventory-theme-ee
+  - goto: /admin/theme
+  - shot: theme-menu-route
+  - click: { selector: 'a[href="/admin/theme"]' }
+  - shot: theme-sidebar
+  - goto: /ee/admin/theme
+  - fill: { selector: 'input[data-label="greeting-message-input"]', value: Welcome to the fictional Learning Workshop. }
+  - click: { role: button, name: Apply Changes, exact: true }
+  - goto: /admin/security
+  - goto: /ee/admin/theme
+  - eval: |
+      if (document.querySelector('input[data-label="greeting-message-input"]')?.value !== 'Welcome to the fictional Learning Workshop.') throw new Error('Theme greeting did not persist');
+  - shot: theme-ee-saved
+  - scroll: { selector: 'input[data-label="chat-header-input"]' }
+  - shot: theme-native-header-footer-help-loaded
+  - fill: { selector: 'input[data-label="chat-header-input"]', value: Fictional workshop header }
+  - fill: { selector: 'textarea[data-label="chat-footer-textarea"]', value: Fictional educational footer. No real account or provider. }
+  - fill: { selector: 'input[data-label="custom-help-link-url-input"]', value: https://learning.example.invalid/help }
+  - fill: { selector: 'input[data-label="custom-help-link-label-input"]', value: Workshop help (fake) }
+  - scroll: { selector: '[data-label="first-visit-notice-toggle"]' }
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+  - wait: { selector: 'input[data-label="notice-header-input"]' }
+  - shot: theme-first-visit-native-conditional-form
+  - fill: { selector: 'input[data-label="notice-header-input"]', value: Fictional workshop welcome }
+  - fill: { selector: 'textarea[data-label="notice-content-textarea"]', value: Fictional learning environment notice. }
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+  - wait: { selector: 'textarea[data-label="consent-prompt-textarea"]' }
+  - fill: { selector: 'textarea[data-label="consent-prompt-textarea"]', value: I understand this is a fictional workshop. }
+  - scroll: { selector: 'textarea[data-label="consent-prompt-textarea"]' }
+  - shot: theme-consent-native-conditional-content
+  - scroll: { selector: '[data-label="system-announcement-toggle"]' }
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+  - fill: { selector: 'input[data-label="system-announcement-header-input"]', value: Fictional workshop announcement }
+  - fill: { selector: 'textarea[data-label="system-announcement-content-textarea"]', value: Educational demonstration announcement only. }
+  - click: { selector: '[data-label="system-announcement-popup-toggle"]' }
+  - scroll: { selector: '[data-label="system-announcement-popup-toggle"]' }
+  - shot: theme-announcement-native-conditional-popup
+  - click: { selector: '[data-label="system-announcement-popup-toggle"]' }
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+  - click: { role: button, name: Apply Changes, exact: true }
+  - goto: /admin/security
+  - goto: /ee/admin/theme
+  - wait: { selector: 'input[data-label="chat-header-input"][value="Fictional workshop header"]' }
+  - scroll: { selector: 'input[data-label="custom-help-link-url-input"]' }
+  - eval: |
+      (() => {
+        const expected = { 'chat-footer-textarea': 'Fictional educational footer. No real account or provider.', 'custom-help-link-url-input': 'https://learning.example.invalid/help', 'custom-help-link-label-input': 'Workshop help (fake)' };
+        for (const [label, value] of Object.entries(expected)) if (document.querySelector(`[data-label="${label}"]`)?.value !== value) throw new Error(`Theme lower readback failed: ${label}`);
+      })()
+  - shot: theme-header-footer-help-navigation-readback
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+  - wait: { selector: 'input[data-label="notice-header-input"][value="Fictional workshop welcome"]' }
+  - scroll: { selector: 'textarea[data-label="consent-prompt-textarea"]' }
+  - eval: |
+      (() => {
+        if (document.querySelector('[data-label="notice-content-textarea"]')?.value !== 'Fictional learning environment notice.' || document.querySelector('[data-label="consent-prompt-textarea"]')?.value !== 'I understand this is a fictional workshop.') throw new Error('Theme native notice content did not persist');
+      })()
+  - shot: theme-notice-content-navigation-readback
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/ee/admin/theme';
+      })()
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="false"]' }
+  - scroll: { selector: '[data-label="system-announcement-toggle"]' }
+  - wait: { selector: '[data-label="system-announcement-toggle"][aria-checked="false"]' }
+  - shot: reset-theme-native-lower-content
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+  - fill: { selector: 'input[data-label="notice-header-input"]', value: Fictional published workshop welcome }
+  - fill: { selector: 'textarea[data-label="notice-content-textarea"]', value: This is an explicitly fictional learning environment notice. }
+  - click: { role: button, name: Apply Changes, exact: true }
+  - goto: /app
+  - wait: { role: dialog }
+  - wait: { text: Fictional published workshop welcome, exact: true }
+  - wait: { text: This is an explicitly fictional learning environment notice., exact: true }
+  - wait_gone: { role: checkbox, name: Consent checkbox, exact: true }
+  - shot: theme-user-first-visit-without-consent
+  - press: Escape
+  - wait: { text: Fictional published workshop welcome, exact: true }
+  - shot: theme-user-notice-native-blocking-dialog
+  - goto: /ee/admin/theme
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="true"]' }
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+  - fill: { selector: 'textarea[data-label="consent-prompt-textarea"]', value: I understand this published workshop is fictional. }
+  - click: { role: button, name: Apply Changes, exact: true }
+  - goto: /app
+  - wait: { role: dialog }
+  - wait: { text: I understand this published workshop is fictional., exact: true }
+  - shot: theme-user-published-consent-notice
+  - click: { selector: '[role="dialog"] button:has-text("Start")' }
+  - wait: { text: You need to agree to the terms to access the application., exact: true }
+  - shot: theme-user-native-consent-required
+  - click: { role: checkbox, name: Consent checkbox, exact: true }
+  - wait: { selector: '[role="checkbox"][aria-label="Consent checkbox"][aria-checked="true"]' }
+  - wait_gone: { text: You need to agree to the terms to access the application., exact: true }
+  - shot: theme-user-native-consent-checked
+  - click: { selector: '[role="dialog"] button:has-text("Start")' }
+  - wait_gone: { text: Fictional published workshop welcome, exact: true }
+  - wait: { testid: action-management-toggle }
+  - shot: theme-user-notice-acknowledged
+  - goto: /admin/security
+  - goto: /app
+  - wait: { testid: action-management-toggle }
+  - wait_gone: { text: Fictional published workshop welcome, exact: true }
+  - eval: |
+      if (localStorage.getItem('allUsersInitialPopupFlowCompleted') !== 'true') throw new Error('Native Start did not preserve first-visit acknowledgment');
+  - shot: theme-user-notice-ack-navigation-readback
+  - goto: /ee/admin/theme
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="true"]' }
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+  - fill: { selector: 'input[data-label="system-announcement-header-input"]', value: Fictional published workshop announcement }
+  - fill: { selector: 'textarea[data-label="system-announcement-content-textarea"]', value: Published educational announcement. No real account or provider changed. }
+  - click: { selector: '[data-label="system-announcement-popup-toggle"]' }
+  - click: { role: button, name: Apply Changes, exact: true }
+  - goto: /app
+  - wait: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+  - wait: { text: Published educational announcement. No real account or provider changed., exact: true }
+  - shot: theme-user-published-system-announcement
+  - click: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement") button[aria-label="Dismiss"]' }
+  - wait_gone: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+  - shot: theme-user-announcement-native-dismissed
+  - goto: /admin/security
+  - goto: /app
+  - wait: { testid: action-management-toggle }
+  - wait_gone: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+  - shot: theme-user-announcement-dismiss-navigation-readback
+  - goto: /ee/admin/theme
+  - wait: { selector: 'input[data-label="system-announcement-header-input"][value="Fictional published workshop announcement"]' }
+  - scroll: { selector: '[data-label="system-announcement-popup-toggle"]' }
+  - shot: theme-published-announcement-admin-readback
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+  - click: { role: button, name: Apply Changes, exact: true }
+  - goto: /app
+  - wait: { testid: action-management-toggle }
+  - wait_gone: { text: Fictional published workshop welcome, exact: true }
+  - wait_gone: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+  - eval: |
+      (async () => {
+        const banner = await fetch('/api/admin/banner').then(r => r.json());
+        const enterprise = await fetch('/api/enterprise-settings').then(r => r.json());
+        if (banner !== null || enterprise.show_first_visit_notice || enterprise.enable_consent_screen) throw new Error('Native unpublish/notice disable did not persist');
+      })()
+  - shot: theme-native-announcement-unpublished
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/ee/admin/theme';
+      })()
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="false"]' }
+  - wait: { selector: '[data-label="system-announcement-toggle"][aria-checked="false"]' }
+  - shot: reset-theme-published-notice-announcement

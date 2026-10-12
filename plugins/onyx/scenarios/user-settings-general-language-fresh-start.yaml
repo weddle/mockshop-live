@@ -1,0 +1,31 @@
+# #34 same owning Language witness, not an additional product/locale matrix.
+# Run immediately after user-settings-general-language ends demonstrably dirty Spanish.
+# Original60 maps to core/runner.mjs95–105: backend seed reset, genuinely NEW browser
+# context and declared en locale-cookie prelude. No cookie script or product bypass.
+# Original61–66 below are unchanged: direct General, English wait/scroll/field,
+# saved preference plus native HTML en, and the original final reset image state.
+# Native i18n/request.ts37–41 reads HttpOnly NEXT_LOCALE; a backend-only reset in
+# the prior Spanish browser cannot reset that cookie. Author DEV is not acceptance.
+name: user-settings-general-language-fresh-start
+title: Native General Language fresh run restores coherent English UI
+requires: enterprise
+strict: true
+locale: en
+overlays:
+- edition-enterprise
+viewport:
+- 1440
+- 1000
+steps:
+- goto: /app/settings/general
+- wait:
+    selector: label:has-text("Display Language") input
+- scroll:
+    selector: label:has-text("Display Language") input
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Display Language'))?.querySelector('input');
+    if (control?.value !== 'English') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "en" || document.documentElement.lang !== "en") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-dirty-fresh-reset

@@ -1,0 +1,25 @@
+--- a/src/views/AgentsNavigationPage.tsx
++++ b/src/views/AgentsNavigationPage.tsx
+@@ -45,7 +45,10 @@
+       </div>
+       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2">
+         {agents
+-          .sort((a, b) => b.id - a.id)
++          .sort((a, b) =>
++            (a.display_priority ?? Infinity) - (b.display_priority ?? Infinity) ||
++            b.id - a.id
++          )
+           .map((agent) => (
+             <AgentCard
+               key={agent.id}
+@@ -97,7 +100,9 @@
+       const mineFilter =
+         activeTab === "your" ? checkUserOwnsAgent(user, agent) : true;
+ 
+-      return (nameMatches || labelMatches) && mineFilter;
++      // Keep owned unlisted agents reachable in Your; All is curated discovery.
++      const listedMatches = activeTab === "your" || agent.is_listed !== false;
++      return listedMatches && (nameMatches || labelMatches) && mineFilter;
+     });
+   }, [agentsFilteredByFilters, searchQuery, activeTab, user]);
+ 

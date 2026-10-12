@@ -1,0 +1,13 @@
+# Fallback answer when no other script matches (first message of a chat; see 98-follow-up.yaml for later turns).
+default: true
+title: Quick question
+queries: [Seaside Collection overview]
+documents:
+  - id: CONF-OPS-HOME
+    title: Seaside Collection — Company Handbook
+    source: confluence
+    link: https://seaside.atlassian.example/wiki/spaces/HR/pages/1/Company+Handbook
+    blurb: Seaside Collection operates 14 boutique coastal properties across California, Florida and the Carolinas.
+    updated: "{{ago:60d}}"
+answer: |
+  Seaside Collection runs **14 boutique coastal properties** across California, Florida and the Carolinas [1]. Ask me about staff training, property SOPs, or IT issues — I'll pull from Salesforce, Confluence, Slack, Google Drive and Zoom.

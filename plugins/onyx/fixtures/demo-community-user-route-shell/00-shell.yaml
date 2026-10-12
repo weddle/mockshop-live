@@ -1,0 +1,6 @@
+# #34 Community route repair only: no custom analytics script is configured.
+# Exact existing edition-enterprise/00-edition.yaml72 empty-config DTO; source
+# analytics/hooks.ts92-109 returns string|null and shared.tsx113 injects only a truthy script.
+# The native auth-path probe can occur with a supported fake member even in compiled CE.
+# No EE settings/license 200, elevation, executable script, extra handler or state store.
+GET /enterprise-settings/custom-analytics-script: null

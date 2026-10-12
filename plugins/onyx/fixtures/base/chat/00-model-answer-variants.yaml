@@ -1,0 +1,41 @@
+# Neutral, editable education example. Keys are exact model configuration names, not UI labels.
+match: 'community learning workshop'
+title: Community learning workshop
+queries: []
+documents: []
+answer: |
+  **Community learning workshop**
+
+  Invite learners to choose one topic, discuss it in pairs, and share one reflection with the group.
+  This common fixture response is used when the selected model has no override.
+regenerate:
+  - 'Common workshop revision after {{prev.title}}: choose a topic together, discuss it in pairs, and close with a shared reflection.'
+model_variants:
+  gpt-5.2:
+    title: Workshop planning guide
+    answer: |
+      **Workshop planning guide**
+
+      1. Ask each learner to name a practical learning goal.
+      2. Build a short activity around the most common goal.
+      3. Offer written and spoken ways to participate.
+      4. Finish with an individual next-step card.
+    regenerate:
+      - 'Planning revision after {{prev.title}}: collect learning goals, select one activity, offer two participation formats, and write next-step cards.'
+  gpt-4.1:
+    title: Workshop facilitation guide
+    answer: |
+      **Workshop facilitation guide**
+
+      Open with a welcoming check-in, demonstrate the activity, and let small groups practise at their own pace.
+      Use a quiet reflection break before inviting volunteers to share what helped them learn. [1]
+    regenerate:
+      - 'Facilitation revision after {{prev.title}}: welcome the group, demonstrate the activity, allow small-group practice, and pause for reflection. [1]'
+    documents:
+      - id: community-workshop-facilitation
+        title: Community workshop facilitation notes
+        source: web
+        link: https://learning.example/workshop-facilitation
+        blurb: Fictional education notes recommending a welcoming check-in, practical demonstration, small-group practice and a quiet reflection break.
+        owners: [Community Learning Team]
+    citations: { 1: community-workshop-facilitation }

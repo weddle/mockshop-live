@@ -1,0 +1,100 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-notifications
+title: Native Extras - notifications
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-user-extras'],anchor:current.demo_anchor,locale:'en',keep:false})});
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+      })()
+  - goto: /app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+  - click: { role: button, name: Start, exact: true }
+  - wait: { text: You need to agree to the terms to access the application., exact: true }
+  - click: { label: Consent checkbox }
+  - click: { role: button, name: Start, exact: true }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - click: { label: Next banner }
+  - wait: { text: Clinical education workshop reminder, exact: true }
+  - click: { label: Previous banner }
+  - wait: { text: Learning workshop announcement, exact: true }
+  - click: { label: Next banner }
+  - click: { role: button, name: View, exact: true }
+  - wait: { testid: agent-name-display }
+  - click: { label: Dismiss }
+  - wait: { text: Learning workshop announcement, exact: true }
+  - goto: /app
+  - eval: "if(localStorage.getItem('allUsersInitialPopupFlowCompleted') !== 'true' || document.querySelector('[role=\"dialog\"]')) throw new Error('Consent dismissal did not survive reload')"
+  # Lossless primary operations from the former monolithic proof.
+  - click: { selector: '#onyx-user-dropdown' }
+  - click: { text: Notifications, exact: true }
+  - wait: { text: Campus Learning Guide shared with your group, exact: true }
+  - wait: { text: Clinical Education Guide materials ready, exact: true }
+  - shot: {name: extras-32-notifications-new-older-pinned, full_page: true}
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+  - click: { selector: '[data-hover-group="notifications-popover/NotificationItem"]:has-text("Learning accessibility checklist updated") .hoverable-replace-hover button' }
+  - settle: 500
+  - wait: { selector: '#onyx-user-dropdown span.text-text-light-05:text-is("2")' }
+  - wait: { text: Older, exact: true }
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"]:has-text("Learning accessibility checklist updated") .hoverable-replace-hover button' }
+  - shot: {name: extras-32a-notification-mark-one-read, full_page: true}
+  # Stock pinned Onyx can retain the old popover header before reload; account and read-row outcomes above are native.
+  - eval: "location.reload()"
+  - wait: { selector: '#onyx-user-dropdown span.text-text-light-05:text-is("2")' }
+  - click: { selector: '#onyx-user-dropdown' }
+  - click: { text: Notifications, exact: true }
+  - wait: { selector: '[role="menuitem"] span.text-action-selection-05:text-is("2 unread")' }
+  - wait: { text: Older, exact: true }
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"]:has-text("Learning accessibility checklist updated") .hoverable-replace-hover button' }
+  - shot: { name: extras-32b-notification-one-read-native-reload, full_page: true }
+  - click: { text: Campus Learning Guide shared with your group, exact: true }
+  - wait: { testid: agent-name-display }
+  - eval: |
+      (async () => {
+        if (new URL(location.href).searchParams.get('agentId') !== '11') throw new Error('Notification did not open its native agent target');
+        const summary = await (await fetch('/api/notifications/summary')).json();
+        if (summary.undismissed_count !== 1) throw new Error('Opening native notification did not mark it read');
+      })()
+  - shot: {name: extras-33-notification-open-native-target, full_page: true}
+  - click: { selector: '#onyx-user-dropdown' }
+  - click: { text: Notifications, exact: true }
+  - click: { selector: '[role="menuitem"] .flex-row:has(> span.text-action-selection-05) button' }
+  - settle: 500
+  - eval: |
+      (async () => {
+        const summary = await (await fetch('/api/notifications/summary')).json();
+        if (summary.undismissed_count !== 0) throw new Error('Mark All as Read did not persist');
+      })()
+  - wait_gone: { selector: '#onyx-user-dropdown span.text-text-light-05' }
+  - wait_gone: { selector: '.fixed.bottom-2.z-toast' }
+  - wait: { text: Older, exact: true }
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"] .hoverable-replace-hover button' }
+  - shot: {name: extras-34-notifications-dismiss-all, full_page: true}
+  - click: { selector: '[role="menuitem"]:has-text("Notifications") button', nth: 0 }
+  - wait: { text: Notifications, exact: true }
+  - shot: { name: extras-34a-notifications-native-back, full_page: true }
+  - press: Escape
+  # Native hard reload reconciles the stock cached header; the original before-reload dismissal and Back states remain above.
+  - eval: "location.reload()"
+  - wait: { testid: agent-name-display }
+  - wait_gone: { selector: '#onyx-user-dropdown span.text-text-light-05' }
+  - wait_gone: { selector: '.fixed.bottom-2.z-toast' }
+  - click: { selector: '#onyx-user-dropdown' }
+  - click: { text: Notifications, exact: true }
+  - wait: { text: Older, exact: true }
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+  - wait_gone: { selector: '[role="menuitem"] span.text-action-selection-05' }
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"] .hoverable-replace-hover button' }
+  - shot: { name: extras-34b-notification-consumers-dismissed-reload, full_page: true }

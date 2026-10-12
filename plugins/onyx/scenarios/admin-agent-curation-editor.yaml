@@ -1,0 +1,51 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset; direct admin entry. Agent14 starts listed/unfeatured; prior visibility segment leaves Agent12 at its same listed seed state.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+
+name: admin-agent-curation-editor
+title: Native editor Feature Save, unlisted warning, direct reload and Relist
+requires: enterprise
+strict: true
+locale: en
+overlays: [demo-mcp-admin]
+viewport: [1440, 900]
+steps:
+  - goto: /admin/agents
+  - wait: { testid: agent-row-actions-14 }
+  - hover: { testid: agent-row-actions-14 }
+  - click: { testid: edit-agent-14 }
+  - wait: { selector: 'input[name="name"][value="IT Helpdesk"]' }
+  - scroll: { text: Feature This Agent, exact: true }
+  - click: { selector: 'button#is_featured' }
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+  - shot: editor-feature-draft
+  - click: { role: button, name: Save, exact: true }
+  - goto: /app/agents/edit/14?admin=true
+  - wait: { selector: 'input[name="name"][value="IT Helpdesk"]' }
+  - scroll: { text: Feature This Agent, exact: true }
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+  - shot: editor-feature-saved-reload
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/persona/14');
+        if (!r.ok) throw new Error('Saved editor detail missing');
+        const saved = await r.json();
+        if (!saved.is_featured || !saved.is_listed || saved.name !== 'IT Helpdesk') throw new Error('Native editor Feature save not persisted');
+        sessionStorage.setItem('admin-curation-editor-saved', JSON.stringify(saved));
+      })()
+  - scroll: { role: button, name: Unlist Agent, exact: true }
+  - click: { role: button, name: Unlist Agent, exact: true }
+  - wait: { role: button, name: Relist Agent, exact: true }
+  - scroll: { text: Feature This Agent, exact: true }
+  - wait: { text: This agent is unlisted and won't be shown in the featured list., exact: true }
+  - shot: editor-featured-unlisted-warning
+  - goto: /app/agents
+  - wait: { selector: '.radial-00:has-text("Training Analyst")' }
+  - wait_gone: { selector: '.radial-00:has-text("IT Helpdesk")' }
+  - shot: editor-unlisted-gallery
+  - goto: /app/agents/edit/14?admin=true
+  - wait: { selector: 'input[name="name"][value="IT Helpdesk"]' }
+  - scroll: { role: button, name: Relist Agent, exact: true }
+  - click: { role: button, name: Relist Agent, exact: true }
+  - wait: { role: button, name: Unlist Agent, exact: true }
+  - shot: editor-relisted

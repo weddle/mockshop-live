@@ -1,0 +1,37 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-self-access
+title: Native Extras - self access
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+  - click: { label: Consent checkbox }
+  - click: { role: button, name: Start, exact: true }
+  - wait_gone: { selector: '[role="dialog"]' }
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app?agentId=12
+  - wait: { testid: agent-name-display }
+  - shot: {name: extras-64-group-owned-agent-direct-selection, full_page: true}
+  - goto: /app/agents/edit/12
+  - click: { role: button, name: Share, exact: true }
+  - fill: { placeholder: 'Add users, groups, and accounts', value: maya }
+  - click: { text: maya.chen@seasidecollection.example, exact: true }
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+  - click: { role: button, name: Share, exact: true }
+  - click: { label: Update access for maya.chen@seasidecollection.example }
+  - shot: {name: extras-64a-shared-agent-self-access-menu, full_page: true}
+  - click: { text: Remove Access, exact: true }
+  - settle: 500
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/12')).json();
+        if(a.user_shares.some(s=>s.user.email==='maya.chen@seasidecollection.example')) throw new Error('Remove own access did not persist');
+      })()
+  - shot: {name: extras-64b-shared-agent-self-access-removed, full_page: true}
+  - press: Escape

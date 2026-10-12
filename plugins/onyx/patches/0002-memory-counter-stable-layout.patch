@@ -1,0 +1,13 @@
+# Mockshop UI patch for the pinned Onyx memory editor.
+# Blurring the focused draft collapsed its counter row between pointer-down and
+# pointer-up, moving the saved memory's delete button away from the click.
+# Keep the counter's space when invisible so ordinary delete clicks reach it.
+--- a/src/refresh-components/modals/MemoriesModal.tsx
++++ b/src/refresh-components/modals/MemoriesModal.tsx
+@@ -135,5 +135,5 @@
+         <div
+-          className={isFocused ? "visible" : "invisible h-0 overflow-hidden"}
++          className={isFocused ? "visible" : "invisible"}
+         >
+           <CharacterCount value={memory.content} limit={MAX_MEMORY_LENGTH} />
+         </div>

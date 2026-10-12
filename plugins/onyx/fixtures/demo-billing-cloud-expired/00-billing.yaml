@@ -1,0 +1,2 @@
+# Native expired subscription/error snapshot; no deletion or license effects.
+GET /mockshop/admin-pages/billing-case: expired

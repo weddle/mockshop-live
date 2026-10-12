@@ -1,0 +1,111 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app?projectId=1 → View All / Add Files.
+# Outcome: Seeded five-file list, preview/search/empty, modal/card unlink and shared library survivors; keep/fresh links.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-files
+title: Seeded five-file list, preview/search/empty, modal/card unlink and shared library survivors; keep/fresh links
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Independent setup / outcome: Independent seeded five-file project entry.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Independent seeded five-file project entry.
+  - wait: { text: View All, exact: true }
+  # Original user-projects step 58 (source line 76): Preserved native journey.
+  - click: { text: View All, exact: true }
+  # Original user-projects step 59 (source line 77): Preserved native journey.
+  - wait: { text: Project Files, exact: true }
+  # Original user-projects step 60 (source line 78): Preserved native journey.
+  - wait: { text: attendance-demo.csv, exact: true }
+  # Original user-projects step 61 (source line 79): Preserved native journey.
+  - shot: { name: project-files-view-all, full_page: true }
+  # Original user-projects step 62 (source line 80): Preserved native journey.
+  - fill: { placeholder: Search files..., value: no-such-learning-file }
+  # Original user-projects step 63 (source line 81): Preserved native journey.
+  - wait: { text: No files found, exact: true }
+  # Original user-projects step 64 (source line 82): Preserved native journey.
+  - shot: { name: project-files-search-empty, full_page: true }
+  # Original user-projects step 65 (source line 83): Preserved native journey.
+  - fill: { placeholder: Search files..., value: library-reading }
+  # Original user-projects step 66 (source line 84): Preserved native journey.
+  - hover: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt")' }
+  # Original user-projects step 67 (source line 85): Preserved native journey.
+  - click: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt") .opal-attachment-item-button-action button', nth: 0 }
+  # Original user-projects step 68 (source line 86): Preserved native journey.
+  - wait: { text: Synthetic demo reading note, exact: false }
+  # Original user-projects step 69 (source line 87): Preserved native journey.
+  - shot: { name: project-file-preview, full_page: true }
+  # Original user-projects step 70 (source line 88): Preserved native journey.
+  - press: Escape
+  # Original user-projects step 71 (source line 89): Preserved native journey.
+  - wait: { placeholder: Search files... }
+  # Original user-projects step 72 (source line 90): Preserved native journey.
+  - hover: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt")' }
+  # Original user-projects step 73 (source line 91): Preserved native journey.
+  - click: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt") .opal-attachment-item-button-action button', nth: 1 }
+  # Original user-projects step 74 (source line 92): Preserved native journey.
+  - wait_gone: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("library-reading.txt")' }
+  # Original user-projects step 75 (source line 93): Preserved native journey.
+  - shot: { name: project-file-unlinked-modal, full_page: true }
+  # Original user-projects step 76 (source line 94): Preserved native journey.
+  - click: { role: button, name: Done, exact: true }
+  # Original user-projects step 77 (source line 95): Preserved native journey.
+  - eval: |
+      (async () => {
+        const files = await (await fetch('/api/user/files/recent')).json();
+        if (!files.some(f => f.id === 'uf-demo-reading')) throw new Error('Project unlink deleted shared user file');
+      })()
+  # Original user-projects step 78 (source line 100): Preserved native journey.
+  - hover: { text: study-guide.md, exact: true }
+  # Original user-projects step 79 (source line 101): Preserved native journey.
+  - click: { selector: 'div.relative:has(> .min-w-0):has-text("study-guide.md") button[aria-label="Remove"]' }
+  # Original user-projects step 80 (source line 102): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 81 (source line 103): Preserved native journey.
+  - eval: |
+      if (document.body.textContent.includes('library-reading.txt') || document.body.textContent.includes('study-guide.md')) throw new Error('Unlink did not survive reload');
+  # Original user-projects step 82 (source line 105): Preserved native journey.
+  - shot: { name: project-file-card-unlinked-reload, full_page: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state: { overlays: [] }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (document.body.textContent.includes('library-reading.txt') || document.body.textContent.includes('study-guide.md')) throw new Error('Keep restored unlinked files');
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-unlink-keep, full_page: true }
+  # Independent setup / outcome: Native shared-library outcome supplements original read-only catalog assertion.
+  - click: { role: button, name: Add Files, exact: true }
+  # Independent setup / outcome: Native shared-library outcome supplements original read-only catalog assertion.
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+  # Independent setup / outcome: Native shared-library outcome supplements original read-only catalog assertion.
+  - wait: { text: library-reading.txt, exact: true }
+  # Independent setup / outcome: Native shared-library outcome supplements original read-only catalog assertion.
+  - wait: { text: study-guide.md, exact: true }
+  # Independent setup / outcome: Native shared-library outcome supplements original read-only catalog assertion.
+  - shot: { name: unlinked-files-still-in-library, full_page: true }
+  # Independent setup / outcome: Native shared-library outcome supplements original read-only catalog assertion.
+  - click: { role: button, name: Done, exact: true }
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[],anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (!document.body.textContent.includes('library-reading.txt') || !document.body.textContent.includes('study-guide.md')) throw new Error('Reset lost seed file links');
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-files-fresh-reset, full_page: true }

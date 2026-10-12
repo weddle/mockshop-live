@@ -1,0 +1,85 @@
+# >3 distinct model prerequisite is supplied by the named usage-only overlay; no base #31 data changes.
+name: user-settings-controls-usage
+title: Native usage presets, custom calendar, model expansion and price groups
+strict: true
+locale: en
+overlays: [demo-user-settings-usage]
+steps:
+  - goto: /app/settings/general
+  - click: { selector: 'a[href="/app/settings/usage"]' }
+  - wait: { text: '$0.72 spent', exact: true }
+  - wait: { role: button, name: Show 3 more models, exact: true }
+  - wait: { testid: usage-model-preview }
+  - wait: { text: 'gpt-5.2 · default', exact: true }
+  - shot: { name: usage-month-native-collapsed, full_page: true }
+  - click: { role: button, name: Show 3 more models, exact: true }
+  - wait: { role: button, name: Show fewer models, exact: true }
+  - wait_gone: { testid: usage-model-preview }
+  - eval: |
+      if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 6) throw new Error('Native expansion did not reveal six month models');
+  - shot: { name: usage-month-expanded-models, full_page: true }
+  - click: { role: button, name: Show fewer models, exact: true }
+  - wait: { testid: usage-model-preview }
+  - click: { role: button, name: Anthropic, exact: true }
+  - wait: { text: '$3.00 in · $15.00 out · $0.30 cache', exact: true }
+  - shot: { name: usage-anthropic-price-expanded, full_page: true }
+  - click: { role: button, name: Anthropic, exact: true }
+  - wait_gone: { text: '$3.00 in · $15.00 out · $0.30 cache', exact: true }
+  - click: { role: button, name: On-prem GPU cluster, exact: true }
+  - wait: { selector: 'text="— in · — out · — cache" >> nth=0' }
+  - shot: { name: usage-unpriced-model-native, full_page: true }
+  - click: { role: button, name: 1D, exact: true }
+  - wait: { text: '$0.24 spent', exact: true }
+  - wait_gone: { testid: usage-models-expander }
+  - eval: |
+      if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 1) throw new Error('One-day native filter did not leave one model');
+  - shot: { name: usage-one-day-filtered, full_page: true }
+  - click: { role: button, name: 7D, exact: true }
+  - wait: { text: '$0.68 spent', exact: true }
+  - wait: { role: button, name: Show 2 more models, exact: true }
+  - shot: { name: usage-seven-day-filtered, full_page: true }
+  - click: { testid: admin-date-range-selector-button }
+  - wait: { selector: '.opal-calendar' }
+  - eval: |
+      if (!document.querySelector('.opal-calendar-cell--disabled button')) throw new Error('Native future-date disabled guard missing');
+  - shot: { name: usage-custom-calendar-native, full_page: true }
+  - click: { selector: '.opal-calendar-day:text-is("1")' }
+  - wait: { selector: '.opal-calendar' }
+  - wait: { text: '$0.68 spent', exact: true }
+  - shot: { name: usage-custom-pending-start, full_page: true }
+  - click: { selector: '.opal-calendar-day:text-is("2")' }
+  - wait_gone: { selector: '.opal-calendar' }
+  - wait: { text: No usage recorded yet, exact: true }
+  - wait: { text: '$0.00 spent', exact: true }
+  - wait: { text: '$9.26 remaining', exact: true }
+  - shot: { name: usage-custom-empty-window, full_page: true }
+  - click: { testid: admin-date-range-selector-button }
+  - click: { selector: '.opal-calendar-day:text-is("9")' }
+  - click: { selector: '.opal-calendar-day:text-is("8")' }
+  - wait: { text: '$0.42 spent', exact: true }
+  - eval: |
+      if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 2) throw new Error('Reversed custom range did not yield Oct 8–9 models');
+  - shot: { name: usage-custom-reversed-range-loaded, full_page: true }
+  - click: { role: button, name: 3M, exact: true }
+  - wait: { text: '$0.74 spent', exact: true }
+  - click: { role: button, name: Show 4 more models, exact: true }
+  - wait: { role: button, name: Show fewer models, exact: true }
+  - eval: |
+      (async () => {
+        if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 7) throw new Error('Three-month expansion did not reveal seven models');
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:['demo-user-settings-usage'], keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+  - wait: { text: '$0.74 spent', exact: true }
+  - shot: { name: usage-three-month-expanded-kept, full_page: true }
+  # Date window/expansion are source-local React state, not a fabricated saved backend preference.
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:['demo-user-settings-usage'], locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+  - goto: /app/settings/usage
+  - wait: { text: '$0.72 spent', exact: true }
+  - wait: { role: button, name: Show 3 more models, exact: true }
+  - wait: { testid: usage-model-preview }
+  - shot: { name: usage-reset-native-default-month, full_page: true }

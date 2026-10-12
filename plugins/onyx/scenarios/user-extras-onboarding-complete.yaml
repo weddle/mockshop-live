@@ -1,0 +1,80 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-onboarding-complete
+title: Native Extras - onboarding complete
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras-first-run]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`);
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+      })()
+  - goto: /app
+  - wait: { selector: '[aria-label="onboarding-flow"]' }
+  - click: { role: button, name: "Let's Go", exact: true }
+  - wait: { placeholder: Your name }
+  - fill: { placeholder: Your name, value: Jordan Educator }
+  - settle: 900
+  - click: { role: button, name: Next, exact: true }
+  - wait: { selector: '[aria-label="onboarding-llm-step"]' }
+  # Lossless primary operations from the former monolithic proof.
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Nebius TokenFactory")' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-12-onboarding-nebius-form, full_page: true}
+  - press: Escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Bifrost")' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-13-onboarding-bifrost-form, full_page: true}
+  - press: Escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Ollama")' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-14-onboarding-ollama-form, full_page: true}
+  - press: Escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("LM Studio")' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-15-onboarding-lm-studio-form, full_page: true}
+  - press: Escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("OpenAI-Compatible")' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-16-onboarding-openai-compatible-form, full_page: true}
+  - press: Escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Custom LLM Provider")' }
+  - wait: { selector: '[role="dialog"]' }
+  - shot: {name: extras-17-onboarding-custom-form, full_page: true}
+  - press: Escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("GPT")' }
+  - wait: { selector: 'input[name="api_key"]' }
+  - shot: {name: extras-18-onboarding-openai-required, full_page: true}
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-not-a-secret }
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - click: { role: button, name: Next, exact: true }
+  - wait: { role: button, name: Finish Setup, exact: true }
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (me.personalization.name !== 'Jordan Educator') throw new Error('Native onboarding name did not persist');
+        const catalog = await (await fetch('/api/llm/provider')).json();
+        if (!catalog.providers.length) throw new Error('Provider owner #3 did not persist native onboarding choice');
+        for (const href of ['/admin/web-search', '/admin/image-generation', '/admin/users']) {
+          if (!document.querySelector(`a[href="${href}"]`)) throw new Error(`Missing final native setup link ${href}`);
+        }
+      })()
+  - shot: {name: extras-19-onboarding-complete-optional-links, full_page: true}
+  - click: { role: button, name: Finish Setup, exact: true }
+  - wait_gone: { selector: '[aria-label="onboarding-flow"]' }
+  - goto: /app
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (localStorage.getItem(`onyx:onboardingCompleted:${me.id}`) !== 'true') throw new Error('Native Finish Setup did not persist dismissal');
+        if (document.querySelector('[aria-label="onboarding-flow"]')) throw new Error('Dismissed onboarding reopened on reload');
+      })()
+  - shot: {name: extras-20-onboarding-dismissed-reload, full_page: true}

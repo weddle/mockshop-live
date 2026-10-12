@@ -1,0 +1,8 @@
+# New messages still use the existing script picker/NDJSON engine. Neutral fictional education only.
+match: "library sharing follow-up"
+title: Accessible library workshop
+chunk_delay_ms: 15
+answer: |
+  **Future shared library activity**
+
+  Add an optional paired-reading activity with a large-print handout. Keep the quiet reflection option available. This fictional activity was added after the local share link was created.

@@ -1,0 +1,55 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-verification
+title: "Independent native #69 unit: auth-verification"
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 900]
+overlays: [demo-auth-anonymous]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/verify$/'
+    reason: Only this unit’s deliberately staged native endpoint400; the visible error and recovery are required.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/verify\]$/'
+    reason: Exact staged invalid-token verify400 source; the complete native error and valid-token recovery are asserted.
+# Independent prerequisites: Native independent Robin signup produces unverified identity and issued verification link; missing/invalid/resend/valid native token flow.
+steps:
+  - state: { overlays: [demo-auth-anonymous] }
+  - goto: /auth/login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+  - goto: /auth/signup?email=robin.guest%40workshop.example
+  - wait: { testid: email }
+  - eval: |
+      if (document.querySelector('[data-testid="email"]')?.value !== 'robin.guest@workshop.example') throw new Error('Signup direct email was not prefilled');
+  - fill: { testid: password, value: MockOnly-Workshop1! }
+  - click: { role: button, name: Create Account, exact: true }
+  - wait: { text: "it looks like you haven't verified your email yet.", exact: false }
+  - goto: /auth/verify-email
+  - wait: { text: Missing verification token. Try requesting a new verification email. }
+  - shot: auth-verify-missing-token
+  # Keep the real pointer click; skip settling the always-pulsing error-form logo
+  # so the unchanged native transient success toast remains visible for its shot.
+  - click: { role: button, name: Get new verification email, exact: true, settle: 0 }
+  - wait: { text: A new verification email has been sent! }
+  - shot: auth-verify-resend
+  - goto: /auth/verify-email?token=mock-only-invalid
+  - wait: { text: 'Failed to verify your email - LOCAL FAKE DEMO — invalid or expired demo verification link.. Please try requesting a new verification email.' }
+  - shot: auth-verify-invalid-token
+  - eval: window.location.assign('/api/mockshop/auth-anonymous/email-link/verify')
+  - wait: { text: Your email has been verified! Please sign in to continue. }
+  - shot: auth-verify-success-login
+  - eval: |
+      (async () => {
+        const box = await (await fetch('/api/mockshop/auth-anonymous/messages')).json();
+        if (!box.verified || box.mode !== 'logged-out' || (await fetch('/api/me')).status !== 401) throw new Error('Fake verification did not persist/clear staged session');
+      })()

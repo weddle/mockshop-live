@@ -1,0 +1,89 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-files
+title: Independent native file library, actual fictional uploads, cited answer, preview and saved-file replay
+strict: true
+requires: enterprise
+locale: en
+viewport: [1440, 1000]
+overlays: []
+steps:
+  - goto: /nrf
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  - click: &attach { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  - wait: { text: Upload Files, exact: true }
+  - press: ArrowUp
+  - hover: { selector: '.opal-dropdown[data-state="open"]' }
+  - scroll: { role: menuitem, name: All Recent Files, exact: true }
+  - shot: { name: nrf-files-menu, full_page: true, hover: { role: menuitem, name: All Recent Files, exact: true } }
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+  - wait: { placeholder: Search files... }
+  - fill: { placeholder: Search files..., value: No fictional matching file }
+  - wait: { text: No files found, exact: true }
+  - shot: { name: nrf-file-library-empty, full_page: true }
+  - fill: { placeholder: Search files..., value: library-reading }
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+  - wait: { text: 1 file selected }
+  - shot: { name: nrf-file-library-selected, full_page: true }
+  - click: { role: button, name: Done, exact: true }
+  - hover: { text: library-reading.txt, exact: true }
+  - click: { selector: '#onyx-chat-input div.relative:has-text("library-reading.txt") button[aria-label="Remove"]' }
+  - shot: { name: nrf-selected-file-removed, full_page: true }
+  - click: *attach
+  - click: { text: Upload Files, exact: true }
+  - eval: |
+      const input = document.querySelector('input[type="file"][accept="*/*"]');
+      if (!input?.multiple) throw new Error('Missing native shared #28 upload input');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Disposable fictional education text, never user tab data.'], 'workshop-notes.txt', {type:'text/plain'}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change',{bubbles:true}));
+  - wait: { text: Processing..., exact: true }
+  - eval: |
+      if (!document.querySelector('#onyx-chat-input-send-button').disabled) throw new Error('Native send was not gated by shared file processing');
+  - shot: { name: nrf-file-processing, full_page: true }
+  - wait_gone: { text: Processing..., exact: true, timeout: 20000 }
+  - shot: { name: nrf-file-ready, full_page: true }
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'extension: summarize the attached fictional workshop notes' }
+  - click: { selector: '#onyx-chat-input-send-button' }
+  - wait: { text: 'This is a scripted educational demonstration, not an analysis of uploaded bytes.' }
+  - wait: { testid: 'AgentMessage/toolbar', timeout: 30000 }
+  - wait: { selector: '#onyx-human-message:has-text("workshop-notes.txt")' }
+  - shot: { name: nrf-file-cited-answer, full_page: true }
+  - click: { selector: '#onyx-human-message #onyx-file div:has-text("workshop-notes.txt") button[aria-label="Expand document"]' }
+  - wait: { text: Synthetic workshop notes }
+  - wait: { text: 'This preview is fixture text, not uploaded content.' }
+  - shot: { name: nrf-file-human-preview, full_page: true }
+  - press: Escape
+  - click: { role: button, name: Sources }
+  - wait: { text: Cited Sources }
+  - wait: { selector: '#onyx-chat-sidebar:has-text("workshop-notes.txt"):has-text("User Files")' }
+  - shot: { name: nrf-file-cited-sources, full_page: true }
+  - click: { selector: '#onyx-chat-sidebar button:has-text("workshop-notes.txt")' }
+  - wait: { text: Synthetic workshop notes }
+  - shot: { name: nrf-file-citation-preview, full_page: true }
+  - press: Escape
+  - click: { selector: '#onyx-chat-sidebar .sticky button', nth: 0 }
+  - click: { testid: 'AgentMessage/regenerate', last: true }
+  - wait: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+  - click: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("five-minute welcome circle") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+  - shot: { name: nrf-file-regenerated-grounding, full_page: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/chat/get-user-chat-sessions');
+        if (!response.ok) throw new Error('Native file conversation history could not be read');
+        const {sessions} = await response.json();
+        const session = sessions.find(item => item.name === 'Workshop file reflection');
+        if (!session) throw new Error('The actual native file conversation was not saved');
+        location.assign('/app?chatId=' + session.id);
+      })()
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("five-minute welcome circle") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+  - wait: { selector: '#onyx-human-message:has-text("workshop-notes.txt")' }
+  - shot: { name: nrf-file-reopened-in-onyx, full_page: true }
+  - eval: location.reload()
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("five-minute welcome circle") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+  - wait: { selector: '#onyx-human-message:has-text("workshop-notes.txt")' }
+  - shot: { name: nrf-file-fresh-replay, full_page: true }

@@ -1,0 +1,69 @@
+# #58 native ModelSettingsPopover only: fictional configured reasoning/chat models.
+# No newly discovered models: PortkeyModal134–138 retains the saved configurations,
+# numeric IDs and policy metadata, as in the accepted configured-only Rename seed.
+x-models: &models
+  - id: 6401
+    name: workshop-reasoning-demo
+    display_name: Workshop Reasoning (local fake)
+    vendor: openai
+    is_visible: true
+    max_input_tokens: 64000
+    supports_image_input: true
+    supports_reasoning: true
+    supported_reasoning_efforts: [low, medium, high]
+    reasoning_effort_max: null
+    reasoning_effort_default: null
+    temperature_default: 1
+  - id: 6402
+    name: workshop-chat-demo
+    display_name: Workshop Chat (local fake)
+    vendor: openai
+    is_visible: true
+    max_input_tokens: null
+    supports_image_input: false
+    supports_reasoning: false
+    supported_reasoning_efforts: []
+    reasoning_effort_max: null
+    reasoning_effort_default: null
+    temperature_default: null
+x-default: &default { provider_id: 64, model_name: workshop-reasoning-demo }
+x-provider: &provider
+  id: 64
+  name: Campus Model Policies (local fake)
+  provider: portkey
+  api_key: mock-only-not-a-secret
+  api_base: https://campus-model-policies.invalid/messages
+  api_version: null
+  custom_config: { portkey_api_mode: messages }
+  is_public: true
+  is_auto_mode: false
+  groups: []
+  personas: []
+  deployment_name: null
+  model_configurations: *models
+  next_model_configuration_offset: null
+GET /admin/llm/provider:
+  providers: [*provider]
+  default_text: *default
+  default_vision: null
+  default_chat_naming: *default
+  default_craft: null
+x-public: &public
+  providers:
+    - id: 64
+      name: Campus Model Policies (local fake)
+      provider: portkey
+      provider_display_name: Portkey
+      model_configurations: *models
+      next_model_configuration_offset: null
+  default_text: *default
+  default_vision: null
+  default_chat_naming: *default
+  default_craft: null
+GET /llm/provider: *public
+GET /llm/persona/:id/providers: *public
+GET /admin/llm/built-in/options/portkey:
+  name: portkey
+  known_models: *models
+  recommended_default_model: { name: workshop-reasoning-demo, display_name: Workshop Reasoning (local fake) }
+POST /admin/llm/portkey/available-models: []

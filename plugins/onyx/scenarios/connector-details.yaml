@@ -1,0 +1,147 @@
+# #62: one strict pass for menu/list entry, every direct route and native detail panels.
+# Read-only fake metadata. Resolve All/reindex/OAuth and connector management writes are
+# outside this leaf: no connector execution, credential provisioning or permission model.
+name: connector-details
+requires: enterprise
+title: Four connector details and populated Jira indexing errors
+strict: true
+viewport: [1440, 900]
+steps:
+  - goto: /admin/connectors
+  - click: { selector: 'a[href="/admin/indexing-status"]' }
+  - wait: { placeholder: Search connectors... }
+  - shot: indexing-status-menu
+  - fill: { placeholder: Search connectors..., value: Policies }
+  - settle: 800
+  - click: { text: Expand All }
+  - wait: { text: "Google Drive – Policies & Procedures" }
+  - shot: google-drive-list-entry
+  - click: { text: "Google Drive – Policies & Procedures", exact: true }
+  - wait: { text: Connector Configuration }
+  - eval: |
+      if (location.pathname !== '/admin/connector/103' || !document.body.innerText.includes('Google Drive – Policies & Procedures')) throw new Error('Google Drive row opened the wrong connector');
+  - shot: google-drive-row-detail
+  - goto: /admin/connector/103
+  - wait: { text: Connector Configuration }
+  - wait: { text: "Google Drive – Policies & Procedures", exact: true }
+  - shot: google-drive-direct-detail
+  - scroll: { text: Credential, exact: true }
+  - wait: { text: "Policies service account (fake)" }
+  - shot: google-drive-credential-config
+  - click: { text: Advanced, exact: true }
+  - scroll: { selector: table, last: true }
+  - wait: { role: tab, name: Indexing, exact: true }
+  - shot: google-drive-index-history
+  - click: { selector: 'tbody tr:first-child td:nth-child(2) button' }
+  - wait: { text: "No stage timing data has been recorded", exact: false }
+  - shot: google-drive-stage-metrics-empty
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+  - click: { role: tab, name: Document Permission Sync, exact: true }
+  - wait: { text: Docs Synced, exact: true }
+  - shot: google-drive-document-sync
+  - click: { role: tab, name: Group Membership Sync, exact: true }
+  - wait: { text: Memberships, exact: true }
+  - shot: google-drive-group-sync
+  - click: { role: tab, name: Indexing, exact: true }
+  - wait: { text: New Docs, exact: true }
+
+  - goto: /admin/indexing-status
+  - fill: { placeholder: Search connectors..., value: learning }
+  - settle: 800
+  - click: { text: Expand All }
+  - wait: { text: "Slack – #learning-*, #ops-*" }
+  - shot: slack-list-entry
+  - click: { text: "Slack – #learning-*, #ops-*", exact: true }
+  - wait: { text: Connector Configuration }
+  - eval: |
+      if (location.pathname !== '/admin/connector/104' || !document.body.innerText.includes('Slack – #learning-*, #ops-*')) throw new Error('Slack row opened the wrong connector');
+  - shot: slack-row-detail
+  - goto: /admin/connector/104
+  - wait: { text: Connector Configuration }
+  - wait: { text: "Slack – #learning-*, #ops-*", exact: true }
+  - shot: slack-direct-detail
+  - scroll: { text: Credential, exact: true }
+  - wait: { text: "Learning workspace bot (fake)" }
+  - shot: slack-credential-config
+  - click: { text: Advanced, exact: true }
+  - scroll: { selector: table, last: true }
+  - wait: { role: tab, name: Indexing, exact: true }
+  - shot: slack-index-history
+  - click: { role: tab, name: Document Permission Sync, exact: true }
+  - wait: { text: Docs Synced, exact: true }
+  - shot: slack-document-sync
+  - click: { role: tab, name: Group Membership Sync, exact: true }
+  - wait: { text: "This connector does not use a separate group-membership syncing job.", exact: true }
+  - shot: slack-group-sync-not-applicable
+  - click: { role: tab, name: Indexing, exact: true }
+  - wait: { text: New Docs, exact: true }
+
+  - goto: /admin/indexing-status
+  - fill: { placeholder: Search connectors..., value: Meeting }
+  - settle: 800
+  - click: { text: Expand All }
+  - wait: { text: "Zoom – Meeting transcripts" }
+  - shot: zoom-list-entry
+  - click: { text: "Zoom – Meeting transcripts", exact: true }
+  - wait: { text: Connector Configuration }
+  - eval: |
+      if (location.pathname !== '/admin/connector/105' || !document.body.innerText.includes('Zoom – Meeting transcripts')) throw new Error('Zoom row opened the wrong connector');
+  - shot: zoom-row-detail
+  - goto: /admin/connector/105
+  - wait: { text: Connector Configuration }
+  - wait: { text: "Zoom – Meeting transcripts", exact: true }
+  - shot: zoom-direct-detail
+  - scroll: { text: Credential, exact: true }
+  - wait: { text: "Workshop transcripts account (fake)" }
+  - shot: zoom-credential-config
+  - click: { text: Advanced, exact: true }
+  - scroll: { selector: table, last: true }
+  - wait: { role: tab, name: Indexing, exact: true }
+  - shot: zoom-index-history
+  - click: { role: tab, name: Document Permission Sync, exact: true }
+  - wait: { text: "This connector does not use a separate document-permission syncing job.", exact: true }
+  - shot: zoom-document-sync-not-applicable
+  - click: { role: tab, name: Group Membership Sync, exact: true }
+  - wait: { text: "This connector does not use a separate group-membership syncing job.", exact: true }
+  - shot: zoom-group-sync-not-applicable
+  - click: { role: tab, name: Indexing, exact: true }
+  - wait: { text: New Docs, exact: true }
+
+  - goto: /admin/indexing-status
+  - fill: { placeholder: Search connectors..., value: Jira }
+  - settle: 800
+  - click: { text: Expand All }
+  - wait: { text: "Jira – IT Service Desk" }
+  - shot: jira-list-entry-errors
+  - click: { text: "Jira – IT Service Desk", exact: true }
+  - wait: { text: Connector Configuration }
+  - eval: |
+      if (location.pathname !== '/admin/connector/106' || !document.body.innerText.includes('Jira – IT Service Desk')) throw new Error('Jira row opened the wrong connector');
+  - wait: { text: Some documents failed to index, exact: true }
+  - shot: jira-row-detail-errors
+  - goto: /admin/connector/106
+  - wait: { text: Connector Configuration }
+  - wait: { text: "Jira – IT Service Desk", exact: true }
+  - wait: { text: Some documents failed to index, exact: true }
+  - shot: jira-direct-detail-errors
+  - click: { role: button, name: View details., exact: true }
+  - wait: { role: dialog }
+  - wait: { text: Indexing Errors, exact: true }
+  - wait: { text: ITSD-204, exact: true }
+  - wait: { text: ITSD-219, exact: true }
+  - eval: |
+      const modal = document.querySelector('[role="dialog"]');
+      if (!modal?.textContent.includes('accessibility workshop handout') || !modal.textContent.includes('operations handoff checklist') || !modal.textContent.includes('Unresolved')) throw new Error('Jira errors did not render their specific fake rows/status');
+  - shot: jira-indexing-errors-populated
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+  - wait_gone: { role: dialog }
+  - scroll: { text: Credential, exact: true }
+  - wait: { text: "IT Service Desk account (fake)" }
+  - shot: jira-credential-config
+  - click: { text: Advanced, exact: true }
+  - scroll: { selector: table, last: true }
+  - wait: { text: New Docs, exact: true }
+  - shot: jira-index-history-errors
+  - click: { role: button, name: View full trace, exact: true }
+  - wait: { text: Fake indexing diagnostic, exact: false }
+  - shot: jira-index-attempt-error-trace

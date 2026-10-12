@@ -1,0 +1,2 @@
+# Native Cloud Plans/Checkout display only; no provider or account operations.
+GET /mockshop/admin-pages/billing-case: none

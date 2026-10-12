@@ -1,0 +1,208 @@
+name: mcp-actions
+title: Fictional MCP management - menu, tools, Add, auth configuration, persistence and reset
+strict: true
+locale: en
+overlays: [demo-mcp-admin]
+steps:
+  # The native admin navigation entry and direct URL must show the same inventory.
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/mcp-actions"]' }
+  - wait: { text: "Seaside PMS (internal MCP)" }
+  - shot: mcp-menu-entry
+  - goto: /admin/mcp-actions
+  - click: { role: button, name: "View tools for Seaside PMS (internal MCP)", exact: true }
+  - wait: { text: Group block status, exact: true }
+  - wait: { text: Rooming list status, exact: true }
+  - eval: |
+      (async () => {
+      const toggles = document.querySelectorAll('[aria-label^="tool-toggle-"]');
+      if (toggles.length !== 2 || [...toggles].some(t => t.getAttribute('aria-checked') !== 'true'))
+        throw new Error('Expected exactly the two enabled Seaside PMS tools');
+      const r = await fetch('/api/admin/mcp/servers');
+      const {mcp_servers: servers} = await r.json();
+      if (!r.ok || servers.length !== 1 || servers[0].id !== 1 || servers[0].tool_count !== 2 ||
+          servers[0].owner !== 'maya.chen@seasidecollection.example' || servers[0].status !== 'CONNECTED')
+        throw new Error('Configured server metadata does not match the reused fixture');
+      })()
+  - shot: mcp-direct-tools
+  - click: { selector: '[aria-label="tool-toggle-Group block status"]' }
+  - wait: { selector: '[aria-label="tool-toggle-Group block status"][aria-checked="false"]' }
+  - goto: /admin/mcp-actions
+  - click: { role: button, name: "View tools for Seaside PMS (internal MCP)", exact: true }
+  - wait: { selector: '[aria-label="tool-toggle-Group block status"][aria-checked="false"]' }
+  - wait: { selector: '[aria-label="tool-toggle-Rooming list status"][aria-checked="true"]' }
+  - shot: mcp-toggle-persisted
+  - click: { role: button, name: Disable all tools, exact: true }
+  - wait: { selector: '[aria-label="tool-toggle-Rooming list status"][aria-checked="false"]' }
+  - shot: mcp-bulk-disabled
+  - click: { role: button, name: Enable all, exact: true }
+  - wait: { selector: '[aria-label="tool-toggle-Group block status"][aria-checked="true"]' }
+  - wait: { selector: '[aria-label="tool-toggle-Rooming list status"][aria-checked="true"]' }
+  - click: { role: button, name: Refresh tools, exact: true }
+  - settle: 1200
+  - shot: mcp-refreshed
+  - click: { role: button, name: "Manage Seaside PMS (internal MCP) server", exact: true }
+  - wait: { text: Manage MCP Server, exact: true }
+  - shot: mcp-manage
+  - fill: { selector: 'textarea[name="description"]', value: "Mock-only read-only PMS tools for education program room blocks and rooming lists." }
+  - click: { role: button, name: Save Changes, exact: true }
+  - wait_gone: { text: Manage MCP Server, exact: true }
+  - goto: /admin/mcp-actions
+  - wait: { text: "Mock-only read-only PMS tools for education program room blocks and rooming lists.", exact: true }
+  - shot: mcp-manage-persisted
+  - hover: { text: "Seaside PMS (internal MCP)", exact: true }
+  - click: { role: button, name: "Disconnect Seaside PMS (internal MCP) server", exact: true }
+  - click: { role: button, name: Disconnect, exact: true }
+  - wait: { role: button, name: "Reconnect to Seaside PMS (internal MCP)", exact: true }
+  - goto: /admin/mcp-actions
+  - wait: { role: button, name: "Reconnect to Seaside PMS (internal MCP)", exact: true }
+  - shot: mcp-disconnected-persisted
+  - click: { role: button, name: "Reconnect to Seaside PMS (internal MCP)", exact: true }
+  - wait: { role: button, name: "View tools for Seaside PMS (internal MCP)", exact: true }
+  - click: { role: button, name: "View tools for Seaside PMS (internal MCP)", exact: true }
+  - click: { selector: '[aria-label="tool-toggle-Group block status"]' }
+  - wait: { selector: '[aria-label="tool-toggle-Group block status"][aria-checked="false"]' }
+  - hover: { text: "Seaside PMS (internal MCP)", exact: true }
+  - click: { role: button, name: "Disconnect Seaside PMS (internal MCP) server", exact: true }
+  - click: { role: button, name: "Disconnect & Delete", exact: true }
+  - wait_gone: { text: "Seaside PMS (internal MCP)", exact: true }
+  - goto: /admin/mcp-actions
+  - wait_gone: { text: "Seaside PMS (internal MCP)", exact: true }
+  - shot: mcp-deleted-persisted
+  # Native Add opens native authentication. All values here are fictional.
+  - click: { role: button, name: Add MCP Server, exact: true }
+  - fill: { selector: 'input[name="name"]', value: "Learning Lab (fake MCP)" }
+  - fill: { selector: 'textarea[name="description"]', value: "Fictional workshop resources. Authentication and tools are simulated for this run only." }
+  - fill: { selector: 'input[name="server_url"]', value: "https://learning-lab.example/mcp" }
+  - shot: mcp-add-server
+  - click: { role: button, name: Add Server, exact: true }
+  - wait: { selector: '[data-testid="mcp-auth-method-select"]' }
+  - wait: { selector: 'input[name="oauth_client_id"]' }
+  - shot: mcp-auth-oauth-auto
+  - fill: { selector: 'input[name="oauth_client_id"]', value: "mock-only-not-a-secret" }
+  - fill: { selector: 'input[name="oauth_client_secret"]', value: "mock-only-not-a-secret" }
+  - click: { text: Advanced, exact: true }
+  - click: { selector: 'input[value="Auto Discovery"]' }
+  - click: { text: Known Provider, exact: true }
+  - fill: { selector: 'input[name="oauth_authorization_endpoint"]', value: "https://learning-lab.example/fake-authorize" }
+  - fill: { selector: 'input[name="oauth_token_endpoint"]', value: "https://learning-lab.example/fake-token" }
+  - fill: { selector: 'input[name="oauth_scopes_override"]', value: "workshops:read,rooms:read" }
+  - fill: { selector: 'input[name="oauth_additional_auth_params"]', value: '{"mockshop_demo":"fake-in-run-only"}' }
+  - shot: mcp-auth-oauth-known-provider
+  - click: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - wait: { role: button, name: "Manage Learning Lab (fake MCP) server", exact: true }
+  - wait: { text: "Workshop resources (fake)", exact: true }
+  - wait: { text: "Learning room status (fake)", exact: true }
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/admin/mcp/servers/2');
+        const s = await r.json();
+        if (!r.ok || s.status !== 'CONNECTED' || s.auth_type !== 'OAUTH' ||
+            s.oauth_provider_mode !== 'KNOWN_PROVIDER' || s.tool_count !== 2 ||
+            !s.mock_authentication?.simulated || !s.mock_authentication.message.includes('Simulated') ||
+            s.admin_credentials.client_secret !== 'mock-only-not-a-secret' ||
+            s.oauth_scopes_override.join(',') !== 'workshops:read,rooms:read')
+          throw new Error('Native fake OAuth configuration did not persist');
+      })()
+  - shot: mcp-created-connected
+  - goto: /admin/mcp-actions
+  - click: { role: button, name: "Manage Learning Lab (fake MCP) server", exact: true }
+  - wait: { text: Manage MCP Server, exact: true }
+  - shot: mcp-created-manage
+  - click: { role: button, name: Edit Configs, exact: true }
+  - wait: { selector: 'input[name="oauth_authorization_endpoint"][value="https://learning-lab.example/fake-authorize"]' }
+  - shot: mcp-auth-oauth-persisted
+  - click: { selector: '[data-testid="mcp-auth-method-select"]' }
+  - click: { text: API Key, exact: true }
+  - click: { role: tab, name: Individual Key (Per User), exact: true }
+  - fill: { selector: 'input[name="user_credentials.api_key"]', value: "mock-only-not-a-secret" }
+  - shot: mcp-auth-individual-key
+  - click: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - wait_gone: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - goto: /admin/mcp-actions
+  - click: { role: button, name: "Manage Learning Lab (fake MCP) server", exact: true }
+  - click: { role: button, name: Edit Configs, exact: true }
+  - wait: { selector: 'input[name="user_credentials.api_key"][value="mock-only-not-a-secret"]' }
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/admin/mcp/servers/2');
+        const s = await r.json();
+        if (!r.ok || s.auth_type !== 'API_TOKEN' || s.auth_performer !== 'PER_USER' ||
+            s.user_credentials.api_key !== 'mock-only-not-a-secret' || !s.mock_authentication.simulated)
+          throw new Error('Individual fake authentication did not persist');
+      })()
+  - shot: mcp-auth-individual-persisted
+  - click: { role: tab, name: Shared Key (Admin), exact: true }
+  - fill: { selector: 'input[name="api_token"]', value: "mock-only-not-a-secret" }
+  - shot: mcp-auth-shared-key
+  - click: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - wait_gone: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - goto: /admin/mcp-actions
+  - click: { role: button, name: "Manage Learning Lab (fake MCP) server", exact: true }
+  - click: { role: button, name: Edit Configs, exact: true }
+  - wait: { selector: 'input[name="api_token"][value="mock-only-not-a-secret"]' }
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/admin/mcp/servers/2');
+        const s = await r.json();
+        if (!r.ok || s.auth_type !== 'API_TOKEN' || s.auth_performer !== 'ADMIN' ||
+            s.admin_credentials.api_key !== 'mock-only-not-a-secret' || !s.mock_authentication.simulated)
+          throw new Error('Shared fake authentication did not persist');
+      })()
+  - shot: mcp-auth-key-persisted
+  - click: { selector: '[data-testid="mcp-auth-method-select"]' }
+  - click: { text: None, exact: true }
+  - wait: { text: No authentication for this MCP server, exact: true }
+  - shot: mcp-auth-none
+  - click: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - wait_gone: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - goto: /admin/mcp-actions
+  - hover: { text: "Learning Lab (fake MCP)", exact: true }
+  - click: { role: button, name: "Disconnect Learning Lab (fake MCP) server", exact: true }
+  - click: { role: button, name: Disconnect & Delete, exact: true }
+  - wait_gone: { text: "Learning Lab (fake MCP)", exact: true }
+  - eval: |
+      (async () => {
+        const list = await (await fetch('/api/mcp/servers')).json();
+        const tools = await (await fetch('/api/tool')).json();
+        if (list.mcp_servers.some(s => s.id === 2) || tools.some(t => t.mcp_server_id === 2))
+          throw new Error('Deleted fake server or tools leaked into editor catalog');
+      })()
+  - shot: mcp-created-deleted
+  # Leave another newly-created row pending so reset proves creation state is cleared too.
+  - click: { role: button, name: Add MCP Server, exact: true }
+  - fill: { selector: 'input[name="name"]', value: "Learning Lab reset probe (fake MCP)" }
+  - fill: { selector: 'textarea[name="description"]', value: "Fake pending server for in-run reset proof." }
+  - fill: { selector: 'input[name="server_url"]', value: "https://learning-reset.example/mcp" }
+  - click: { role: button, name: Add Server, exact: true }
+  - wait: { selector: '[data-testid="mcp-auth-connect-button"]' }
+  - click: { role: button, name: Cancel, exact: true }
+  - wait: { text: "Learning Lab reset probe (fake MCP)", exact: true }
+  - shot: mcp-created-pending-reset
+  # Exercise the same fresh-run reset as the runner, without resetting strict miss evidence.
+  - eval: |
+      (async () => {
+      const current = await fetch('/api/__mockshop/state');
+      if (!current.ok) throw new Error('Cannot read mock reset state');
+      const state = await current.json();
+      const reset = await fetch('/api/__mockshop/state', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({overlays: ['demo-mcp-admin'], locale: state.locale, anchor: state.demo_anchor})
+      });
+      if (!reset.ok) throw new Error('Fresh mock run reset failed');
+      })()
+  - goto: /admin/mcp-actions
+  - wait: { text: "Read-only access to the property management system for group blocks and rooming lists.", exact: true }
+  - click: { role: button, name: "View tools for Seaside PMS (internal MCP)", exact: true }
+  - wait: { selector: '[aria-label="tool-toggle-Group block status"][aria-checked="true"]' }
+  - wait: { selector: '[aria-label="tool-toggle-Rooming list status"][aria-checked="true"]' }
+  - wait_gone: { text: "Learning Lab reset probe (fake MCP)", exact: true }
+  - eval: |
+      (async () => {
+        const list = await (await fetch('/api/admin/mcp/servers')).json();
+        const s = await (await fetch('/api/admin/mcp/servers/1')).json();
+        if (list.mcp_servers.length !== 1 || s.auth_type !== 'NONE' || s.mock_authentication ||
+            s.name !== 'Seaside PMS (internal MCP)' || s.tool_count !== 2)
+          throw new Error('Fresh reset did not restore MCP seeds and remove created/auth state');
+      })()
+  - shot: mcp-fresh-reset

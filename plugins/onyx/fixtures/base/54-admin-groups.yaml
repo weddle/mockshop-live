@@ -1,0 +1,26 @@
+# Fictional education/operations groups. Base50 names and IDs stay usable by Share Agent.
+# Internal seed endpoint avoids first-match collisions with base50 native group fixtures.
+GET /mockshop/admin-groups/seeds:
+  groups:
+    - { id: 1, name: Training, manager_ids: [u1], cc_pair_ids: [108], document_set_ids: [21], agent_ids: [11], enabled_permissions: [add:agents, create:user_api_keys], token_limits: [{ token_id: 601, enabled: true, token_budget: 100, period_hours: 24, cost_budget_cents: 500 }] }
+    - { id: 2, name: Property Operations, manager_ids: [u4], cc_pair_ids: [102], document_set_ids: [22], agent_ids: [12], enabled_permissions: [read:query_history], token_limits: [] }
+    - { id: 3, name: Front Office, manager_ids: [u6], cc_pair_ids: [], document_set_ids: [], agent_ids: [], enabled_permissions: [], token_limits: [] }
+  # Native ConnectorStatus picker DTO, using the existing connector IDs and names.
+  connectors:
+    - { cc_pair_id: 102, name: Confluence – OPS space, connector: { id: 302, name: Confluence – OPS space, source: confluence }, credential: { id: 202 }, groups: [{ id: 2, name: Property Operations }], status: ACTIVE, access_type: private, has_successful_run: true }
+    - { cc_pair_id: 108, name: Confluence – Training space, connector: { id: 308, name: Confluence – Training space, source: confluence }, credential: { id: 208 }, groups: [{ id: 1, name: Training }], status: ACTIVE, access_type: private, has_successful_run: true }
+  resource_permissions: { manage: true, manage_members: true, delete: true, edit_permissions: true, edit_token_limits: true }
+  create_defaults: { manager_ids: [], cc_pairs: [], document_sets: [], personas: [], is_up_to_date: true, is_up_for_deletion: false, is_default: false, incognito_enabled: false }
+GET /manage/admin/permissions/registry:
+  - { id: manage_llms, display_name: Manage Language Models, description: Configure fictional model settings., permissions: [manage:llms], group: 1 }
+  - { id: manage_connectors_and_document_sets, display_name: Manage Connectors and Document Sets, description: Organize fictional learning and operations resources., permissions: [manage:connectors, manage:document_sets], group: 1 }
+  - { id: manage_actions, display_name: Manage Actions, description: Configure fictional actions., permissions: [manage:actions], group: 1 }
+  - { id: manage_groups, display_name: Manage Groups, description: Organize fictional group records., permissions: [manage:user_groups], group: 1 }
+  - { id: manage_service_accounts, display_name: Manage Service Accounts, description: Configure fictional service account records., permissions: [manage:service_account_api_keys], group: 1 }
+  - { id: manage_bots, display_name: Manage Bots, description: Configure fictional bot records., permissions: [manage:bots], group: 1 }
+  - { id: create_agents, display_name: Create Agents, description: Create fictional workshop agents., permissions: [add:agents], group: 2 }
+  - { id: manage_agents, display_name: Manage Agents, description: Edit fictional agent records., permissions: [manage:agents], group: 2 }
+  - { id: view_agent_analytics, display_name: View Agent Analytics, description: View fictional usage summaries., permissions: [read:agent_analytics], group: 2 }
+  - { id: view_query_history, display_name: View Query History, description: View fictional query history., permissions: [read:query_history], group: 2 }
+  - { id: create_user_access_token, display_name: Create User Access Tokens, description: Create nonfunctional demo access tokens., permissions: [create:user_api_keys], group: 2 }
+# Admin security and API-key seeds remain owned by the actual #65 fixture56.

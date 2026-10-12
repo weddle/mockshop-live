@@ -1,0 +1,157 @@
+# #58 EDITONLY prepared; unexecuted/unaccepted. One independent saved ADMIN route unit.
+# Source15 LanguageModelsPage ExistingProviderCard passes existingLlmProvider to BedrockModal.
+# BedrockModal96–119 clears inactive credentials and conditions model discovery on complete
+# active credentials. Yup303–309 requires REGION only: missing credentials must NOT be
+# misrepresented as an Update validation guard. Source321–330 omits empty inactive fields.
+# 93 operations / 15 named images: menu/direct saved Access edit; all native method choices;
+# real IAM, Access Key and Long-term API Key Update/reopen; distinct saved regions, fake
+# credential redaction, missing-credential discovery versus Update behavior; region-invalid
+# canceled draft protection; dirty keep/hard navigation; fresh original-method/region reset.
+# Supplementary GETs are readback, not product mutations. Only the existing reset control is
+# written directly. sessionStorage contains witness snapshots, not another product store.
+# RefetchButton is source-native but has no label. Its public header row also contains the
+# labelled Deselect All button: count that same row's buttons to assert discovery visibility
+# without inventing an aria-label, installing a selector or touching private React state.
+name: admin-provider-bedrock-edit
+title: Native admin Bedrock saved auth methods, regions, credentials and protected reset
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-mcp-admin, demo-admin-provider-bedrock]
+steps:
+  # 1–10: menu and direct route, genuine saved Access Key seed with local model.
+  - goto: /admin/agents
+  - click: { selector: 'a[href="/admin/language-models"]' }
+  - wait: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Bedrock seed read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 59);
+      if (c.providers.length !== 1 || p?.provider !== 'bedrock' || p.name !== 'Campus Bedrock (local fake)' || p.custom_config?.BEDROCK_AUTH_METHOD !== 'access_key' || p.custom_config?.AWS_REGION_NAME !== 'us-east-1' || p.custom_config?.AWS_ACCESS_KEY_ID !== 'mock-only-not-a-secret' || p.custom_config?.AWS_SECRET_ACCESS_KEY !== 'mock-only-not-a-secret' || Object.hasOwn(p.custom_config,'AWS_BEARER_TOKEN_BEDROCK')) throw new Error('Configured Bedrock seed prerequisite missing'); sessionStorage.setItem('mockshop-admin-bedrock-seed',JSON.stringify(c)); })()
+  - shot: { name: admin-bedrock-menu-configured-seed, full_page: true }
+  - goto: /admin/language-models
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]');
+      if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Access Key' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-east-1' || d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]').value !== 'mock-only-not-a-secret' || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]').value !== 'mock-only-not-a-secret' || d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]') || d.querySelector('input[name="name"]').value !== 'Campus Bedrock (local fake)' || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Genuine saved Access Key seed did not open');
+      let row = [...d.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deselect All'); if (!row) throw new Error('Native model header missing'); while (row.parentElement?.textContent.trim() === 'Deselect All') row = row.parentElement; if ((row.matches('button') ? 1 : row.querySelectorAll('button').length) !== 2) throw new Error('Complete saved Access Key should expose native discovery');
+  - shot: { name: admin-bedrock-seed-access-key-edit, full_page: true }
+  # 11–27: native method menu, IAM clears inactive credentials, saved region and real reopen.
+  - click: { selector: '[role="dialog"] input[name="custom_config.BEDROCK_AUTH_METHOD"]' }
+  - wait: { selector: '[role="option"]:has-text("Environment IAM Role")' }
+  - eval: >-
+      const rows = [...document.querySelectorAll('[role="option"]')]; if (['Environment IAM Role','Access Key','Long-term API Key'].some(label => !rows.some(row => row.textContent.includes(label)))) throw new Error('Required native Bedrock method choice missing');
+  - shot: { name: admin-bedrock-native-method-menu, full_page: true }
+  - click: { selector: '[role="option"]:has-text("Environment IAM Role")' }
+  - wait_gone: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Environment IAM Role' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-east-1' || ['AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_BEARER_TOKEN_BEDROCK'].some(key => d.querySelector(`input[name="custom_config.${key}"]`)) || !d.textContent.includes('IAM role attached to the environment')) throw new Error('IAM transition did not show native notice/preserve region/hide inactive credential fields');
+  - click: { selector: '[role="dialog"] input[name="custom_config.AWS_REGION_NAME"]' }
+  - click: { selector: '[role="option"]:has-text("us-west-2")' }
+  - shot: { name: admin-bedrock-iam-region-ready-update, full_page: true }
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Saved IAM catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 59), seed = JSON.parse(sessionStorage.getItem('mockshop-admin-bedrock-seed'));
+      const models = list => list.map(m => [m.id,m.name,m.display_name,m.is_visible,m.max_input_tokens,m.supports_image_input,m.supports_reasoning]);
+      if (c.providers.length !== 1 || p?.provider !== 'bedrock' || p.custom_config?.BEDROCK_AUTH_METHOD !== 'iam' || p.custom_config?.AWS_REGION_NAME !== 'us-west-2' || ['AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_BEARER_TOKEN_BEDROCK'].some(key => Object.hasOwn(p.custom_config,key)) || p.api_key !== null || p.api_base !== null || p.name !== 'Campus Bedrock (local fake)' || p.is_public !== true || p.is_auto_mode !== false || p.groups.length || p.personas.length || JSON.stringify(models(p.model_configurations)) !== JSON.stringify(models(seed.providers[0].model_configurations)) || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft])) throw new Error('IAM save failed mode/region/inactive clearing or protected model/access/default fields'); })()
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.BEDROCK_AUTH_METHOD"][value="Environment IAM Role"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-west-2' || ['AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_BEARER_TOKEN_BEDROCK'].some(key => d.querySelector(`input[name="custom_config.${key}"]`)) || !d.textContent.includes('IAM role attached to the environment') || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Saved IAM region/notice/model did not genuinely reopen');
+  - shot: { name: admin-bedrock-iam-saved-reopen, full_page: true }
+  # 28–45: Access Key starts empty after IAM; discovery hidden but Update not key-invalid.
+  - click: { selector: '[role="dialog"] input[name="custom_config.BEDROCK_AUTH_METHOD"]' }
+  - click: { selector: '[role="option"]:has-text("Access Key")' }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'), submit = d.querySelector('button[type="submit"]');
+      if (d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]').value !== '' || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]').value !== '' || d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]') || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-west-2' || submit.disabled || submit.closest('[aria-disabled="true"]')) throw new Error('Native Access Key clearing or region-only Update validation mismatch');
+      let row = [...d.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deselect All'); if (!row) throw new Error('Native model header missing'); while (row.parentElement?.textContent.trim() === 'Deselect All') row = row.parentElement; if ((row.matches('button') ? 1 : row.querySelectorAll('button').length) !== 1) throw new Error('Incomplete Access Key incorrectly exposes native discovery');
+  - shot: { name: admin-bedrock-access-incomplete-discovery-not-update-guard, full_page: true }
+  - fill: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"]', value: mock-campus-access-id }
+  - fill: { selector: '[role="dialog"] input[name="custom_config.AWS_SECRET_ACCESS_KEY"]', value: mock-campus-access-secret }
+  - click: { selector: '[role="dialog"] input[name="custom_config.AWS_REGION_NAME"]' }
+  - click: { selector: '[role="option"]:has-text("us-east-2")' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-east-2' || d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]').value !== 'mock-campus-access-id' || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]').value !== 'mock-campus-access-secret') throw new Error('Region selection clobbered active Access Key draft');
+      let row = [...d.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deselect All'); if (!row) throw new Error('Native model header missing'); while (row.parentElement?.textContent.trim() === 'Deselect All') row = row.parentElement; if ((row.matches('button') ? 1 : row.querySelectorAll('button').length) !== 2) throw new Error('Complete Access Key does not expose native discovery');
+  - shot: { name: admin-bedrock-access-region-credentials-ready-update, full_page: true }
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider/59'); if (!r.ok) throw new Error('Saved Access Key detail read failed'); const p = await r.json(); if (p.id !== 59 || p.custom_config?.BEDROCK_AUTH_METHOD !== 'access_key' || p.custom_config?.AWS_REGION_NAME !== 'us-east-2' || p.custom_config?.AWS_ACCESS_KEY_ID !== 'mock-only-not-a-secret' || p.custom_config?.AWS_SECRET_ACCESS_KEY !== 'mock-only-not-a-secret' || Object.hasOwn(p.custom_config,'AWS_BEARER_TOKEN_BEDROCK') || JSON.stringify(p).includes('mock-campus-access-id') || JSON.stringify(p).includes('mock-campus-access-secret') || p.model_configurations.length !== 1 || p.model_configurations[0].name !== 'learning-notes-demo' || p.model_configurations[0].is_visible !== true) throw new Error('Access Key save failed method/region/redaction/inactive clearing/model preservation'); })()
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"][value="mock-only-not-a-secret"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Access Key' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-east-2' || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]').value !== 'mock-only-not-a-secret' || d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]') || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Saved Access Key method/region/redacted credentials did not genuinely reopen');
+  - shot: { name: admin-bedrock-access-saved-redacted-reopen, full_page: true }
+  # 46–62: Long-term API Key clears Access fields; native bearer/region Update and reopen.
+  - click: { selector: '[role="dialog"] input[name="custom_config.BEDROCK_AUTH_METHOD"]' }
+  - click: { selector: '[role="option"]:has-text("Long-term API Key")' }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'), submit = d.querySelector('button[type="submit"]'); if (d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]').value !== '' || d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]') || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]') || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-east-2' || submit.disabled || submit.closest('[aria-disabled="true"]')) throw new Error('Native long-term field clearing or region-only Update validation mismatch');
+      let row = [...d.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deselect All'); if (!row) throw new Error('Native model header missing'); while (row.parentElement?.textContent.trim() === 'Deselect All') row = row.parentElement; if ((row.matches('button') ? 1 : row.querySelectorAll('button').length) !== 1) throw new Error('Incomplete bearer incorrectly exposes native discovery');
+  - shot: { name: admin-bedrock-long-term-incomplete-discovery-not-update-guard, full_page: true }
+  - fill: { selector: '[role="dialog"] input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]', value: mock-campus-bedrock-bearer }
+  - click: { selector: '[role="dialog"] input[name="custom_config.AWS_REGION_NAME"]' }
+  - click: { selector: '[role="option"]:has-text("eu-west-2")' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'eu-west-2' || d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]').value !== 'mock-campus-bedrock-bearer') throw new Error('Region selection clobbered active bearer draft');
+      let row = [...d.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deselect All'); if (!row) throw new Error('Native model header missing'); while (row.parentElement?.textContent.trim() === 'Deselect All') row = row.parentElement; if ((row.matches('button') ? 1 : row.querySelectorAll('button').length) !== 2) throw new Error('Complete bearer does not expose native discovery');
+  - shot: { name: admin-bedrock-long-term-region-bearer-ready-update, full_page: true }
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Saved long-term catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 59), seed = JSON.parse(sessionStorage.getItem('mockshop-admin-bedrock-seed'));
+      const models = list => list.map(m => [m.id,m.name,m.display_name,m.is_visible,m.max_input_tokens,m.supports_image_input,m.supports_reasoning]);
+      if (c.providers.length !== 1 || p?.provider !== 'bedrock' || p.custom_config?.BEDROCK_AUTH_METHOD !== 'long_term_api_key' || p.custom_config?.AWS_REGION_NAME !== 'eu-west-2' || p.custom_config?.AWS_BEARER_TOKEN_BEDROCK !== 'mock-only-not-a-secret' || ['AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY'].some(key => Object.hasOwn(p.custom_config,key)) || JSON.stringify(c).includes('mock-campus-bedrock-bearer') || p.api_key !== null || p.api_base !== null || p.name !== 'Campus Bedrock (local fake)' || p.is_public !== true || p.is_auto_mode !== false || p.groups.length || p.personas.length || JSON.stringify(models(p.model_configurations)) !== JSON.stringify(models(seed.providers[0].model_configurations)) || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft])) throw new Error('Long-term save failed method/region/redaction/inactive clearing or protected model/access/default fields'); sessionStorage.setItem('mockshop-admin-bedrock-committed',JSON.stringify(c)); })()
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"][value="mock-only-not-a-secret"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Long-term API Key' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'eu-west-2' || d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]') || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]') || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Saved Long-term API Key method/region/redacted bearer did not genuinely reopen');
+  - shot: { name: admin-bedrock-long-term-saved-redacted-reopen, full_page: true }
+  # 63–79: region-invalid alternate-method draft; Cancel protects the actual committed Long-term state.
+  - click: { selector: '[role="dialog"] input[name="custom_config.BEDROCK_AUTH_METHOD"]' }
+  - click: { selector: '[role="option"]:has-text("Access Key")' }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]').value !== '' || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]').value !== '' || d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]')) throw new Error('Returning to Access Key retained inactive saved bearer/access credentials');
+  - click: { selector: '[role="dialog"] input[name="custom_config.AWS_REGION_NAME"]' }
+  - click: { selector: '[role="option"]:has-text("eu-west-2")' }
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== '') throw new Error('Native re-picking selected region did not clear required region');
+      let row = [...d.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deselect All'); if (!row) throw new Error('Native model header missing'); while (row.parentElement?.textContent.trim() === 'Deselect All') row = row.parentElement; if ((row.matches('button') ? 1 : row.querySelectorAll('button').length) !== 1) throw new Error('Invalid region incorrectly exposes native discovery');
+  - shot: { name: admin-bedrock-region-required-invalid-cancel-draft, full_page: true }
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Protected Bedrock catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-bedrock-committed')) throw new Error('Canceled invalid Access/region draft changed committed method/credentials/defaults/models'); })()
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"][value="mock-only-not-a-secret"]' }
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Long-term API Key' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'eu-west-2' || d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]') || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]')) throw new Error('Canceled invalid draft leaked into genuine saved Long-term reopen');
+  - shot: { name: admin-bedrock-cancel-protected-long-term-reopen, full_page: true }
+  - press: Escape
+  # 80–86: existing keep preserves genuinely saved dirty method/region through hard navigation.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-mcp-admin','demo-admin-provider-bedrock'],keep:true})}); if (!r.ok) throw new Error('Existing keep control failed'); })()
+  - goto: /admin/language-models
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"][value="mock-only-not-a-secret"]' }
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Long-term API Key' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'eu-west-2' || d.querySelector('input[name="custom_config.AWS_ACCESS_KEY_ID"]') || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]') || d.querySelector('input[name="name"]').value !== 'Campus Bedrock (local fake)' || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Keep/hard navigation lost saved Bedrock native fields/model'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Kept Bedrock catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-bedrock-committed')) throw new Error('Keep/hard navigation changed committed provider catalog'); })()
+  - shot: { name: admin-bedrock-long-term-saved-keep-reload-reopen, full_page: true }
+  - press: Escape
+  # 87–93: fresh seed visibly restores Access Key/us-east-1, not dirty Long-term/eu-west-2.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-mcp-admin','demo-admin-provider-bedrock'],keep:false,resetChats:true})}); if (!r.ok) throw new Error('Existing fresh-reset control failed'); })()
+  - goto: /admin/language-models
+  - click: { role: button, name: Edit Campus Bedrock (local fake), exact: true }
+  - wait: { selector: '[role="dialog"] input[name="custom_config.AWS_ACCESS_KEY_ID"][value="mock-only-not-a-secret"]' }
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="custom_config.BEDROCK_AUTH_METHOD"]').value !== 'Access Key' || d.querySelector('input[name="custom_config.AWS_REGION_NAME"]').value !== 'us-east-1' || d.querySelector('input[name="custom_config.AWS_SECRET_ACCESS_KEY"]').value !== 'mock-only-not-a-secret' || d.querySelector('input[name="custom_config.AWS_BEARER_TOKEN_BEDROCK"]') || d.querySelector('input[name="name"]').value !== 'Campus Bedrock (local fake)' || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Fresh seed did not visibly restore original Bedrock method/region/credentials/model'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Fresh Bedrock seed catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-bedrock-seed')) throw new Error('Fresh reset did not restore exact original catalog/model IDs/defaults or retained dirty auth metadata'); })()
+  - shot: { name: admin-bedrock-fresh-seed-access-key-restored, full_page: true }
+  - press: Escape

@@ -1,0 +1,42 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-tasks-empty
+title: "Craft native empty scheduled tasks"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - eval: |
+      (async () => {
+        for (const path of ['/skills','/build/apps','/mcp/servers/craft','/build/scheduled-tasks']) await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path,state:path === '/skills'?'loaded':'empty'})});
+      })()
+  - goto: /craft/v1/tasks
+  - wait: {"text": "No scheduled tasks found", "exact": true}
+  - shot: craft-tasks-empty
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: /craft/v1/tasks/task-campus
+  - shot: craft-task-run-history-empty
+  - goto: /craft/v1/tasks/task-advanced/edit
+  - shot: craft-task-legacy-advanced-condition
+  - goto: "/craft/v1/tasks"
+  - wait: { text: Clinic teaching checklist, exact: true }
+  - shot: "craft-unit-tasks-empty-reset"

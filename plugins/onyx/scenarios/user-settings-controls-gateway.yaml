@@ -1,0 +1,63 @@
+# Native prerequisites: Business+ tier, visible model, CREATE_USER_API_KEYS, available gateway scope.
+# Existing Enterprise seeds provide them. No gateway requests or provider/network actions.
+name: user-settings-controls-gateway
+title: Native enterprise gateway URL/model copy and scoped token mint/copy
+requires: enterprise
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+  - click: { selector: 'a[href="/app/settings/llm-gateway"]' }
+  - wait: { text: Gateway URL, exact: true }
+  - wait: { role: button, name: New token, exact: true }
+  - click: { selector: 'button:has-text("/api/gateway/v1")', settle: 0 }
+  - wait: { selector: 'button:has-text("/api/gateway/v1") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+  - shot: { name: gateway-url-copy-native-success, delay: 0 }
+  - click: { role: button, name: OpenAI }
+  - wait: { role: button, name: 1/gpt-5.2, exact: true }
+  - click: { role: button, name: 1/gpt-5.2, exact: true, settle: 0 }
+  - wait: { selector: 'button:has-text("1/gpt-5.2") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+  - shot: { name: gateway-model-id-copy-native-success, delay: 0 }
+  - click: { role: button, name: New token, exact: true }
+  - wait: { selector: 'input[placeholder="Name your token"][value="LLM Gateway"]' }
+  - wait: { selector: 'input[placeholder="Select permissions"][value="Limited access"]' }
+  - wait: { selector: '[role="checkbox"][aria-label="LLM Gateway Use"][aria-checked="true"]' }
+  - shot: { name: gateway-native-scoped-token-defaults, full_page: true }
+  - click: { role: checkbox, name: LLM Gateway Use, exact: true }
+  - eval: |
+      if (![...document.querySelectorAll('[role="dialog"] button')].find(el => el.textContent.trim() === 'Create Token')?.matches('[aria-disabled="true"],:disabled')) throw new Error('Empty gateway scope must disable minting');
+  - click: { role: checkbox, name: LLM Gateway Use, exact: true }
+  - fill: { placeholder: Name your token, value: Workshop gateway demo }
+  - click: { placeholder: Select expiration }
+  - click: { text: No expiration, exact: true }
+  - click: { role: button, name: Create Token, exact: true }
+  - wait: { text: mockshop-not-a-real-token-0001, exact: true }
+  - click: { role: button, name: Copy Token, exact: true, settle: 0 }
+  - wait: { selector: 'button:has-text("Copy Token") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+  - shot: { name: gateway-token-copy-native-success, delay: 0 }
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+  - goto: /app/settings/accounts-access
+  - wait: { text: Workshop gateway demo, exact: true }
+  - wait: { text: 'Created today - Never expires - Use llm gateway', exact: true }
+  - eval: |
+      (async () => {
+        const rows = await (await fetch('/api/user/pats')).json();
+        const row = rows.find(el => el.name === 'Workshop gateway demo');
+        if (row?.expires_at !== null || row?.scopes.join(',') !== 'use:llm_gateway' || 'token' in row) throw new Error('Gateway token did not persist in the sole PAT store');
+      })()
+  - shot: { name: gateway-token-account-list-kept, full_page: true }
+  - goto: /app/settings/llm-gateway
+  - wait: { role: button, name: New token, exact: true }
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[], locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+  - goto: /app/settings/accounts-access
+  - wait: { text: No access tokens created., exact: true }
+  - shot: { name: gateway-token-reset-isolated, full_page: true }

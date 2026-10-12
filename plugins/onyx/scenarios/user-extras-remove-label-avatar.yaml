@@ -1,0 +1,66 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-remove-label-avatar
+title: Native Extras - remove label avatar
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 1000]
+overlays: [demo-user-extras]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+  - click: { label: Consent checkbox }
+  - click: { role: button, name: Start, exact: true }
+  - wait_gone: { selector: '[role="dialog"]' }
+  - goto: /app/agents/edit/11
+  - wait: { selector: 'input[name="name"]' }
+  - fill: { placeholder: Add labels..., value: Inclusive Learning }
+  - press: Enter
+  - wait: { text: Inclusive Learning, exact: true }
+  - click: { role: button, name: Save, exact: true }
+  - goto: /app/agents/edit/11
+  - wait: { text: Inclusive Learning, exact: true }
+  - hover: { selector: '.h-30.w-30' }
+  - click: { selector: '.h-30.w-30' }
+  - wait: { text: Upload Image, exact: true }
+  - click: { selector: '[role="menuitem"].grid button', nth: 1 }
+  - click: { role: button, name: Save, exact: true }
+  - goto: /app/agents/edit/11
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.icon_name || a.uploaded_image_id) throw new Error('Native avatar icon did not persist');
+      })()
+  - click: { selector: '.h-30.w-30' }
+  - click: { text: Upload Image, exact: true }
+  - eval: |
+      (async () => {
+        const config = await (await fetch('/api/mockshop/user-extras')).json();
+        const bytes = Uint8Array.from(atob(config.avatar_png_base64), c=>c.charCodeAt(0));
+        const transfer = new DataTransfer(); transfer.items.add(new File([bytes], 'fictional-education-avatar.png', {type:'image/png'}));
+        const input = document.querySelector('input[type="file"][accept="image/*"]');
+        input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+      })()
+  - settle: 700
+  - click: { role: button, name: Save, exact: true }
+  - goto: /app/agents/edit/11
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.uploaded_image_id?.startsWith('mock-user-extras-avatar-')) throw new Error('Native avatar upload marker did not persist');
+      })()
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app/agents/edit/11
+  - click: { label: Remove Inclusive Learning }
+  - click: { selector: '.h-30.w-30' }
+  - click: { selector: '[role="menuitem"].grid button', nth: 0 }
+  - click: { role: button, name: Save, exact: true }
+  - goto: /app/agents/edit/11
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if(a.labels.some(l=>l.name==='Inclusive Learning') || a.uploaded_image_id || a.icon_name) throw new Error('Native label removal/default avatar did not persist');
+      })()
+  - shot: {name: extras-63a-agent-label-removed-avatar-default, full_page: true}

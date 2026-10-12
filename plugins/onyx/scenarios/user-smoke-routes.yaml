@@ -1,0 +1,95 @@
+# One smoke shot per end-user route (README coverage table, #23/#34). Not polished: each shot just proves the route
+# renders offline from fixtures. Admin routes (/admin/*) are out of scope here; OAuth callback routes are listed in the
+# README table as not mockable stand-alone.
+name: user-smoke-routes
+title: End-user route smoke pass
+continue_on_error: true
+steps:
+  - goto: /app
+  - settle: 800
+  - shot: app-home
+  - goto: /app?agentId=11
+  - settle: 800
+  - shot: app-agent
+  - goto: /app?chatId=11111111-0000-4000-8000-000000000001
+  - settle: 1200
+  - shot: app-history-chat
+  - goto: /app/agents
+  - settle: 800
+  - shot: agents-gallery
+  - goto: /app/agents/create
+  - settle: 1200
+  - shot: agents-create
+  - goto: /app/agents/edit/11
+  - settle: 1200
+  - shot: agents-edit
+  - goto: /ee/agents/stats/11
+  - settle: 1200
+  - shot: agent-stats
+  - goto: /app/settings
+  - settle: 800
+  - shot: settings
+  - goto: /app/settings/general
+  - settle: 800
+  - shot: settings-general
+  - goto: /app/settings/chat-preferences
+  - settle: 800
+  - shot: settings-chat-preferences
+  - goto: /app/settings/accounts-access
+  - settle: 800
+  - shot: settings-accounts-access
+  - goto: /app/settings/connectors
+  - settle: 800
+  - shot: settings-connectors
+  - goto: /app/settings/llm-gateway
+  - settle: 800
+  - shot: settings-llm-gateway
+  - goto: /app/settings/usage
+  - settle: 800
+  - shot: settings-usage
+  - goto: /app/shared/11111111-0000-4000-8000-000000000001
+  - settle: 1200
+  - shot: shared-chat
+  - goto: /anonymous/demo
+  - settle: 800
+  - shot: anonymous
+  - goto: /craft
+  - settle: 800
+  - shot: craft
+  - goto: /nrf
+  - settle: 800
+  - shot: nrf
+  - goto: /nrf/side-panel
+  - settle: 800
+  - shot: nrf-side-panel
+  - goto: /auth/login
+  - settle: 800
+  - shot: auth-login
+  - goto: /auth/signup
+  - settle: 800
+  - shot: auth-signup
+  - goto: /auth/forgot-password
+  - settle: 800
+  - shot: auth-forgot-password
+  - goto: /auth/reset-password
+  - settle: 800
+  - shot: auth-reset-password
+  - goto: /auth/verify-email
+  - settle: 800
+  - shot: auth-verify-email
+  - goto: /auth/waiting-on-verification
+  - settle: 800
+  - shot: auth-waiting-on-verification
+  - goto: /auth/error
+  - settle: 800
+  - shot: auth-error
+  - goto: /auth/join
+  - settle: 800
+  - shot: auth-join
+  - goto: /auth/create-account
+  - settle: 800
+  - shot: auth-create-account
+  # local viewer for a cited source (#25); a mock page behind Onyx's /api proxy, so not a goto page route
+  - eval: "location.href = '/api/mockshop/source/CONF-HR-TP-4412'"
+  - wait: { testid: mockshop-source }
+  - shot: cited-source-viewer

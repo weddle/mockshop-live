@@ -1,0 +1,17 @@
+# Native member NoAgentModal branch only, not a permission-isolation matrix.
+GET /mockshop/user-extras-options:
+  enabled: true
+  empty_sidebar: true
+  empty_gallery: true
+  notifications: []
+  settings: { disable_default_assistant: true }
+  user_fields:
+    role: basic
+    is_admin: false
+    is_superuser: false
+    effective_permissions: [basic]
+    admin_capabilities: []
+  branding: { show_first_visit_notice: false }
+GET /chat/get-user-chat-sessions: { sessions: [] }
+GET /user/projects: []
+GET /user/files: []

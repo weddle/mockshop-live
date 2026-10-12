@@ -1,0 +1,88 @@
+# Required native Cloud Billing frontend; source-derived, not runtime accepted.
+# Real Onyx controls only; external Stripe UI/purchases/portal remain unprovided.
+name: admin-billing-cloud-details
+title: Native Cloud subscription and displayed seat edits
+strict: true
+requires: enterprise-cloud
+locale: en
+overlays: [demo-mcp-admin, demo-billing-cloud-active]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/billing"]' }
+  - wait: { role: button, name: Update Seats, exact: true }
+  - wait: { text: 15 Seats, exact: true }
+  - shot: billing-cloud-details-menu
+  - goto: /admin/billing
+  - wait: { text: 15 Seats, exact: true }
+  - shot: billing-cloud-details-direct
+  - click: { role: button, name: View Plan Details, exact: true }
+  - wait: { text: Your Current Plan, exact: true }
+  - shot: billing-cloud-details-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+  - wait: { text: 15 Seats, exact: true }
+  - shot: billing-cloud-details-plan-back
+  - click: { role: button, name: Update Seats, exact: true }
+  - wait: { role: button, name: Confirm Change, exact: true }
+  - eval: |
+      const confirm = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Confirm Change');
+      if (!confirm?.disabled || document.querySelector('.opal-input-number input')?.value !== '15') throw new Error('Unchanged seat edit must be disabled');
+  - shot: billing-cloud-seats-unchanged-disabled
+  - fill: { selector: ".opal-input-number input", value: "1" }
+  - wait: { text: You cannot set seats below current }
+  - eval: |
+      (async () => {
+        const users = await fetch('/api/manage/users?include_api_keys=false').then(r => r.json());
+        const minimum = [...users.accepted, ...users.slack_users].filter(u => u.is_active).length + users.invited.length;
+        if (!document.body.textContent.includes(String(minimum) + ' seats in use/pending')) throw new Error('Seat error minimum must include actual Users and invitations');
+        const confirm = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'Confirm Change');
+        if (!confirm?.disabled) throw new Error('Below-minimum Confirm must be disabled');
+      })()
+  - shot: billing-cloud-seats-below-minimum
+  - fill: { selector: ".opal-input-number input", value: "20" }
+  - wait: { text: 5 seats to be added, exact: true }
+  - shot: billing-cloud-seats-add-preview
+  - click: { role: button, name: Cancel, exact: true }
+  - wait: { text: 15 Seats, exact: true }
+  - shot: billing-cloud-seats-cancelled
+  - click: { role: button, name: Update Seats, exact: true }
+  - fill: { selector: ".opal-input-number input", value: "12" }
+  - wait: { text: 3 seats to be removed, exact: true }
+  - shot: billing-cloud-seats-remove-preview
+  - click: { role: button, name: Confirm Change, exact: true }
+  - wait: { text: 12 Seats, exact: true }
+  - eval: |
+      (async () => {
+        const billing = await fetch('/api/tenants/billing-information').then(r => r.json());
+        if (billing.seats !== 12) throw new Error('Native seat save did not update owned display DTO');
+      })()
+  - shot: billing-cloud-seats-removed-saved
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/billing"]' }
+  - wait: { text: 12 Seats, exact: true }
+  - shot: billing-cloud-seats-navigation-readback
+  - click: { role: button, name: Update Seats, exact: true }
+  - fill: { selector: ".opal-input-number input", value: "20" }
+  - wait: { text: 8 seats to be added, exact: true }
+  - click: { role: button, name: Confirm Change, exact: true }
+  - wait: { text: 20 Seats, exact: true }
+  - shot: billing-cloud-seats-added-saved
+  - click: { role: link, name: View Users, exact: true }
+  - wait: { text: Users & Requests, exact: true }
+  - shot: billing-cloud-details-users-handoff
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['demo-mcp-admin','demo-billing-cloud-active'],strict:true,locale:'en',anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!res.ok) throw new Error('Billing display reset failed');
+        location.href = '/admin/billing';
+      })()
+  - wait: { text: 15 Seats, exact: true }
+  - shot: billing-cloud-seats-dirty-reset
+  - wait: { text: Business Plan, exact: true }
+  - click: { role: button, name: View Plan Details, exact: true }
+  - wait: { selector: '[aria-label="Business plan card"]:has-text("Your Current Plan")' }
+  - eval: |
+      if (document.querySelector('[aria-label="Enterprise plan card"]')?.textContent.includes('Your Current Plan')) throw new Error('Subscribed Business must not mark Enterprise as current');
+  - shot: billing-cloud-business-tier-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+  - wait: { text: Business Plan, exact: true }

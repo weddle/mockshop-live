@@ -1,0 +1,19 @@
+# Recents: "Key West hurricane-watch runbook".
+turns:
+  - message: Walk me through the hurricane-watch runbook for the Key West property.
+    script:
+      title: Key West hurricane-watch runbook
+      queries: [Key West hurricane watch runbook]
+      documents:
+        - id: CONF-OPS-KW-77
+          title: "Key West: Hurricane watch & warning runbook"
+          source: confluence
+          link: https://seaside.atlassian.example/wiki/spaces/OPS/pages/77/Hurricane+runbook
+          blurb: "Watch (48h): notify arriving guests, secure pool furniture, check generator fuel, confirm the evacuation partner hotel."
+          updated: "{{ago:60d}}"
+      answer: |
+        When a **hurricane watch** is issued (about 48 hours out) [1]:
+        1. Notify guests arriving in the next 72 hours and offer flexible rebooking.
+        2. Secure pool furniture and loose signage.
+        3. Check generator fuel and run the weekly load test early.
+        4. Confirm rooms with the inland evacuation partner hotel.

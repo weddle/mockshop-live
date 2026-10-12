@@ -1,0 +1,117 @@
+# Issue #28 independent native proof unit; no acceptance claim.
+# Fresh runner start resets base fixtures, chats and browser; never chain unit outputs.
+
+# Source/core/artifacts frozen; native file inputs only; no generic error allowances.
+name: user-files-text-data-pdf
+title: Native code, structured data and PDF preview
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Independent native format upload seed.
+  - goto: /app
+  # Independent native format upload seed.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  # Independent native format upload seed.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Independent native format upload seed.
+  - click: { text: All Recent Files, exact: true }
+  # Independent native format upload seed.
+  - wait: { placeholder: Search files... }
+  # Independent native format upload seed.
+  - click: { role: button, name: Add Files, exact: true }
+  # Independent native format upload seed.
+  - eval: |
+      const input = document.querySelector('input[type="file"]:not([accept])');
+      if (!input?.multiple) throw new Error('Native library multiple-file input is missing');
+      const transfer = new DataTransfer();
+      for (const name of ['learning-example.py', 'learning-demo.json', 'learning-handout.pdf']) transfer.items.add(new File(['Discarded synthetic caller bytes.'], name));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change', {bubbles: true}));
+  # Independent native format upload seed.
+  - wait: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-handout.pdf"):has-text("Processing...")' }
+  # Independent native format upload seed.
+  - wait: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-handout.pdf"):not(:has-text("Processing...")):not(:has-text("Uploading..."))', timeout: 20000 }
+  # Original user-files step 263, source line 346.
+  - wait: { placeholder: Search files... }
+  # Original user-files step 264, source line 347.
+  - fill: { placeholder: Search files..., value: learning-example.py }
+  # Original user-files step 265, source line 348.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-example.py")' }
+  # Original user-files step 266, source line 349.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-example.py") button:has(svg path[d^="M12 8.66667"])' }
+  # Original user-files step 267, source line 350.
+  - wait: { text: Welcome every learner }
+  # Original user-files step 268, source line 351.
+  - shot: code-preview
+  # Original user-files step 269, source line 352.
+  - press: Escape
+  # Original user-files step 270, source line 353.
+  - wait: { placeholder: Search files... }
+  # Original user-files step 271, source line 354.
+  - fill: { placeholder: Search files..., value: learning-demo.json }
+  # Original user-files step 272, source line 355.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-demo.json")' }
+  # Original user-files step 273, source line 356.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-demo.json") button:has(svg path[d^="M12 8.66667"])' }
+  # Original user-files step 274, source line 357.
+  - wait: { text: '"synthetic"' }
+  # Original user-files step 275, source line 358.
+  - shot: structured-data-preview
+  # Original user-files step 276, source line 359.
+  - press: Escape
+  # Original user-files step 277, source line 360.
+  - wait: { placeholder: Search files... }
+  # Original user-files step 278, source line 361.
+  - fill: { placeholder: Search files..., value: learning-handout.pdf }
+  # Original user-files step 279, source line 362.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-handout.pdf")' }
+  # Original user-files step 280, source line 363.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-handout.pdf") button:has(svg path[d^="M12 8.66667"])' }
+  # Original user-files step 281, source line 364.
+  - wait: { selector: '[role="dialog"] iframe[src^="blob:"]' }
+  # Original user-files step 282, source line 365.
+  # Parent native rendered PDF page/content witness is mandatory; iframe presence alone is not acceptance.
+  - shot: pdf-preview
+  # Native download href readback: the same document actually rendered above, not a copied fixture or stale previous preview.
+  - eval: |
+      (async () => {
+        const dialog = document.querySelector('[role="dialog"]:has(iframe[title="PDF Viewer"])');
+        const iframe = dialog?.querySelector('iframe');
+        const download = dialog?.querySelector('a[download="learning-handout.pdf"]');
+        if (!download || download.href !== iframe.src.split('#')[0]) throw new Error('Native PDF download does not refer to the current preview');
+        const response = await fetch(download.href);
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const content = new TextDecoder().decode(bytes);
+        if (!response.ok || response.headers.get('Content-Type')?.split(';')[0] !== 'application/pdf' || !content.startsWith('%PDF-1.4') || !content.includes('Synthetic learning handout') || !content.includes('Welcome every learner. This is fixture content.') || !content.trimEnd().endsWith('%%EOF')) throw new Error('Native PDF download did not return the actual synthetic handout document');
+      })()
+  # Exercise the source-authored download control; browser completion is not inferred from readback or clicking.
+  - click: { selector: '[role="dialog"] a[download="learning-handout.pdf"]' }
+  # Original user-files step 283, source line 366.
+  - press: Escape
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - click: { role: button, name: Done, exact: true }
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const result = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: [], anchor: current.demo_anchor, locale: 'en', keep: false, resetChats: true})});
+        if (!result.ok) throw new Error('File state control failed');
+      })()
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - goto: /app
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - click: { text: All Recent Files, exact: true }
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - wait: { placeholder: Search files... }
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - wait: { text: library-reading.txt, exact: true }
+  # Owning dirty/reset outcome discards native code/data/PDF uploads.
+  - eval: |
+      const library = document.querySelector('[role="dialog"]');
+      if (['learning-example.py', 'learning-demo.json', 'learning-handout.pdf'].some(name => library.textContent.includes(name)) || !library.textContent.includes('attendance-demo.csv') || !library.textContent.includes('protected-reading.txt')) throw new Error('Fresh reset did not discard native uploads and restore the fictional seed library');

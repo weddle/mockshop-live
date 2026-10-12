@@ -1,0 +1,63 @@
+# #65 native enabled form on direct aliases; stock pin has no reachable client menu.
+# Parent explicit launch setting CUSTOM_ANALYTICS_SECRET_KEY=mockshop-admin-pages-demo enables only the server form.
+# Original menu expectation is source-disposed in the route map; all native form actions/nine images remain.
+name: admin-custom-analytics-enabled
+title: Custom Analytics enabled native form - fictional local script
+requires: enterprise-cloud
+strict: true
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/performance/custom-analytics
+  - wait: { selector: 'textarea' }
+  - shot: inventory-custom-analytics-native-build-state
+  - goto: /ee/admin/performance/custom-analytics
+  - wait: { selector: 'textarea' }
+  - shot: inventory-custom-analytics-ee-native-build-state
+  - goto: /admin/performance/custom-analytics
+  - wait: { selector: 'textarea' }
+  - shot: custom-analytics-direct-build-state
+  - goto: /ee/admin/performance/custom-analytics
+  - wait: { selector: 'textarea' }
+  - shot: custom-analytics-ee-build-state
+  - goto: /admin/performance/analytics
+  - goto: /admin/performance/custom-analytics
+  - wait: { selector: 'textarea' }
+  - shot: custom-analytics-enabled-native-direct-entry
+  - goto: /ee/admin/performance/custom-analytics
+  - fill: { selector: 'textarea', value: "window.__mockshopEducationalAnalytics = 'learning-workshop';" }
+  - fill: { selector: 'input[type="password"]', value: mockshop-admin-pages-demo }
+  - shot: custom-analytics-enabled-edit-form
+  - click: { role: button, name: Update, exact: true }
+  - wait: { text: Custom analytics script updated successfully!, exact: true }
+  - shot: custom-analytics-enabled-local-save
+  - goto: /admin/security
+  - goto: /admin/performance/custom-analytics
+  - wait: { selector: 'textarea:has-text("window.__mockshopEducationalAnalytics")' }
+  - eval: |
+      (async () => {
+        const expected = "window.__mockshopEducationalAnalytics = 'learning-workshop';";
+        if (document.querySelector('textarea')?.value !== expected) {
+          const diagnostic = await fetch('/api/enterprise-settings/custom-analytics-script');
+          throw new Error(`Native custom script form did not read saved script; GET diagnostic: ${diagnostic.status} ${diagnostic.headers.get('content-type')} ${await diagnostic.text()}`);
+        }
+        const response = await fetch('/api/enterprise-settings/custom-analytics-script');
+        const body = await response.text();
+        if (response.status !== 200 || !response.headers.get('content-type')?.includes('application/json') || JSON.parse(body) !== expected) throw new Error('Saved custom script did not use the native JSON string response');
+        return { status: response.status, content_type: response.headers.get('content-type'), body };
+      })()
+  - shot: custom-analytics-enabled-navigation-readback
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/ee/admin/performance/custom-analytics';
+      })()
+  - wait: { selector: 'textarea' }
+  - eval: |
+      (async () => {
+        if (document.querySelector('textarea')?.value !== '') throw new Error('Custom analytics did not reset to native unconfigured form');
+        const response = await fetch('/api/enterprise-settings/custom-analytics-script');
+        if (response.status !== 200 || await response.json() !== null) throw new Error('Custom analytics did not restore the native null script seed');
+      })()
+  - shot: custom-analytics-enabled-reset

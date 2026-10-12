@@ -1,0 +1,80 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-skills-sharing
+title: "Craft native skill organization, user and group sharing"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - goto: "/craft/v1/skills"
+  - wait: {"placeholder": "Search skills..."}
+  - click: { role: button, name: Create skill, exact: true }
+  - click: { text: Start from scratch, exact: true }
+  - wait: { selector: 'input[name="name"]' }
+  - fill: { selector: 'input[name="name"]', value: accessible-workshop }
+  - fill: { selector: 'textarea[name="description"]', value: A fictional inclusive workshop handout guide. }
+  - fill: { selector: 'textarea[name="instructions_markdown"]', value: "# Accessible workshop\n\nOffer clear headings, large-print notes and quiet reflection time." }
+  - click: { role: button, name: Rendered markdown, exact: true }
+  - click: { role: button, name: Raw markdown, exact: true }
+  - click: { role: button, name: Save, exact: true }
+  - eval: |
+      (async () => {
+        const skills = await (await fetch('/api/skills')).json();
+        const skill = skills.customs.find(s => s.name === 'accessible-workshop');
+        if (!skill?.instructions_markdown.includes('quiet reflection')) throw new Error('Native skill create did not retain editable content');
+        sessionStorage.setItem('craft-created-skill', skill.id);
+        location.href = '/craft/v1/skills/edit/' + skill.id;
+      })()
+  - wait: { selector: 'textarea[name="description"]' }
+  - fill: { selector: 'textarea[name="description"]', value: Updated fictional learning guide. }
+  - click: { role: button, name: Save, exact: true }
+  - eval: location.href = '/craft/v1/skills/edit/' + sessionStorage.getItem('craft-created-skill')
+  - wait: { selector: 'textarea[name="description"]' }
+  - click: { role: button, name: Edit sharing, exact: true }
+  - shot: craft-skill-sharing-private
+  - click: { role: button, name: Change sharing scope, exact: true }
+  - click: { text: Anyone in your organization, exact: true }
+  - click: { role: button, name: Change organization permission, exact: true }
+  - click: { text: Edit, exact: true }
+  - shot: craft-skill-sharing-organization-editor
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+  - click: { role: button, name: Edit sharing, exact: true }
+  - fill: { placeholder: 'Add users, groups, and accounts', value: devon }
+  - click: { text: devon.ortiz@seasidecollection.example, exact: true }
+  - fill: { placeholder: 'Add users, groups, and accounts', value: Training }
+  - click: { text: Training, exact: true }
+  - click: { selector: '[aria-label="Select staged permission"]' }
+  - click: { text: Edit, exact: true }
+  - shot: craft-skill-sharing-user-group-staged
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+  - click: { role: button, name: Edit sharing, exact: true }
+  - shot: craft-skill-sharing-user-group-reopened
+  - click: { selector: '[aria-label="Update access for Training"]' }
+  - click: { text: Remove Access, exact: true }
+  - click: { selector: '[aria-label="Update access for devon.ortiz@seasidecollection.example"]' }
+  - click: { text: Remove Access, exact: true }
+  - shot: craft-skill-sharing-access-removed
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: "/craft/v1/skills"
+  - wait: {"text": "campus-study-plan", "exact": true}
+  - shot: "craft-unit-skills-sharing-reset"

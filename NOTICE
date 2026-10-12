@@ -1,0 +1,39 @@
+Mockshop
+Copyright (c) 2026 Ryan Weddle. Licensed under the MIT License (see LICENSE).
+
+Credits and third-party notices
+
+Onyx (https://github.com/onyx-dot-app/onyx)
+  Content outside Onyx's `ee/` directories is MIT Expat licensed.
+  Copyright (c) 2023-present DanswerAI, Inc.
+
+  Bits of Mockshop derive from or are modeled on Onyx:
+  - plugins/onyx/patches/0001-*.patch contains a few lines of Onyx's web/next.config.js (MIT).
+  - plugins/onyx/chat.mjs and the fixtures reproduce Onyx API and stream packet shapes (modeled on the
+    backend's streaming_models.py and web/tests/e2e/utils/chatMock.ts). The code is original to Mockshop;
+    nothing is copied verbatim beyond field and packet-type names.
+
+  This repository does not ship a full Onyx frontend or generated runtime. It does
+  include patch excerpts and modifications from Onyx Enterprise files in
+  plugins/onyx/patches/0009-*.patch and 0012-*.patch. Those patches are NOT covered
+  by Mockshop's MIT License: they are subject to the Onyx Enterprise License,
+  whose exact pinned text is included in patches/ONYX-ENTERPRISE-LICENSE.txt.
+  DanswerAI, Inc. retains the rights specified by that license; use and distribution
+  of those modifications remain subject to its terms.
+  The frontend is built locally from the pinned upstream commit into
+  plugins/onyx/runtime/ (git-ignored). Community is the default and disables paid
+  features, but Onyx imports ee/ modules in every build. Disabling those features
+  does not relicense the included upstream modules. Enterprise use and any
+  redistribution of generated runtimes require compliance with upstream terms.
+
+Cua Cursor Motion (https://github.com/trycua/cua, libs/typescript/cursor-motion)
+  MIT License. Copyright (c) 2025 Cua AI, Inc.
+  core/vendor/cua-cursor-motion/ is a JavaScript port of its planner, effects and canvas player, made at commit
+  5e638b2113f7105b93e0cccf4477e4080995f717. The original LICENSE text is in that folder. The Cua cursor artwork
+  is not included; Mockshop draws its own cursor shapes.
+
+Third-party dependencies
+  - playwright-core (Apache-2.0)
+  - yaml (ISC)
+
+"Onyx" is a trademark of its owners. Mockshop is not affiliated with or endorsed by Onyx or DanswerAI, Inc.

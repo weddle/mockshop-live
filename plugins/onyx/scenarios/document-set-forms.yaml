@@ -1,0 +1,127 @@
+# #63 route inventory: list, /new, /21 and newly created /23, native missing-ID state.
+# Pinned frontend uses list-backed per-id editing; deletion is immediate, without a dialog.
+name: document-set-forms
+title: Document set connector selection, create, edit, delete and reset
+viewport: [1440, 900]
+requires: enterprise
+strict: true
+steps:
+  - goto: /admin/connectors
+  - click: { selector: 'a[href="/admin/documents/sets"]' }
+  - wait: { role: button, name: Learning & Development }
+  - shot: document-sets-menu-entry
+  - goto: /admin/documents/sets
+  - wait: { role: button, name: Property Operations }
+  - shot: document-sets-direct-list
+  - click: { role: link, name: New Document Set }
+  - wait: { placeholder: A name for the document set }
+  - shot: document-set-create-empty
+  - click: { role: button, name: Create Document Set }
+  - wait: { text: Please enter a name for the set }
+  - shot: document-set-create-required-name
+  - fill: { placeholder: A name for the document set, value: Campus Safety Resources }
+  - fill: { placeholder: Describe what the document set represents, value: Fictional campus safety procedures and learning materials }
+  # #checkbox-is_public is the aria-hidden input beneath Opal's visible surface.
+  # The native label has its own Formik toggle; target that user-facing control.
+  - click: { text: Make this document set Public?, exact: true }
+  - wait: { selector: '#checkbox-is_public + [role="checkbox"][aria-checked="false"]' }
+  - wait: { selector: '[data-testid="groups-search-input"]:enabled' }
+  - fill: { selector: '[data-testid="groups-search-input"]', value: Training }
+  - click: { text: Training, exact: true }
+  - press: Escape
+  - shot: document-set-private-group-staged
+  - click: { selector: '[data-testid="connector-search-input"]' }
+  - wait: { text: Confluence – Training space, exact: true }
+  - shot: document-set-connector-options
+  - click: { text: Confluence – Training space, exact: true }
+  - press: Escape
+  - click: { role: button, name: Remove connector }
+  - wait: { text: No connectors selected. Search and select connectors above. }
+  - shot: document-set-connector-removed
+  - fill: { selector: '[data-testid="connector-search-input"]', value: Policies }
+  - click: { text: Google Drive – Policies & Procedures, exact: true }
+  - press: Escape
+  - shot: document-set-create-staged
+  - click: { role: button, name: Create Document Set }
+  - wait: { role: button, name: Campus Safety Resources }
+  - shot: document-set-created-list
+  - click: { role: button, name: Campus Safety Resources }
+  - wait: { placeholder: A name for the document set }
+  - eval: |
+      (() => {
+        if (document.querySelector('input[name="name"]')?.value !== 'Campus Safety Resources' ||
+            document.querySelector('[name="description"]')?.value !== 'Fictional campus safety procedures and learning materials' ||
+            document.querySelector('#checkbox-is_public')?.checked !== false ||
+            !document.body.innerText.includes('Training') ||
+            !document.body.innerText.includes('Google Drive – Policies & Procedures')) throw new Error('Created form did not preserve content and selection');
+      })()
+  - shot: document-set-created-detail
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/manage/document-set?get_editable=true');
+        const rows = await response.json();
+        const created = rows.find(row => row.name === 'Campus Safety Resources');
+        if (!created || created.is_public || !created.groups.includes(1) || created.cc_pair_summaries.length !== 1 || created.cc_pair_summaries[0].id !== 103) throw new Error('Native private/group/connector save lost staged fields');
+      })()
+  - goto: /admin/documents/sets
+  - click: { role: button, name: Learning & Development }
+  - wait: { placeholder: A name for the document set }
+  - eval: |
+      (() => {
+        if (document.querySelector('[name="name"]')?.value !== 'Learning & Development' ||
+            document.querySelector('[name="description"]')?.value !== 'Onboarding paths, training records and recorded training sessions' ||
+            !document.body.innerText.includes('Zoom – Meeting transcripts')) throw new Error('Seeded edit did not prepopulate');
+      })()
+  - shot: document-set-seeded-row-edit
+  - fill: { placeholder: A name for the document set, value: Learning Resources Updated }
+  - fill: { placeholder: Describe what the document set represents, value: Revised fictional learning resources }
+  - click: { role: button, name: Remove connector }
+  - fill: { selector: '[data-testid="connector-search-input"]', value: Training }
+  - click: { text: Confluence – Training space, exact: true }
+  - press: Escape
+  - shot: document-set-edit-staged
+  - click: { role: button, name: Update Document Set }
+  - wait: { role: button, name: Learning Resources Updated }
+  - shot: document-set-updated-list
+  - goto: /admin/documents/sets/21
+  - wait: { placeholder: A name for the document set }
+  - eval: |
+      (() => {
+        if (document.querySelector('[name="name"]')?.value !== 'Learning Resources Updated' ||
+            document.querySelector('[name="description"]')?.value !== 'Revised fictional learning resources' ||
+            !document.body.innerText.includes('Confluence – Training space') ||
+            document.body.innerText.includes('Zoom – Meeting transcripts')) throw new Error('Direct edit route lost saved changes');
+      })()
+  - shot: document-set-direct-edit-persisted
+  - goto: /admin/documents/sets/new
+  - wait: { placeholder: A name for the document set }
+  - shot: document-set-direct-create
+  - click: { role: button, name: Cancel }
+  - wait: { role: button, name: Update Document Set }
+  - shot: document-set-create-cancelled
+  - goto: /admin/documents/sets/9999
+  - wait: { text: Document set with id 9999 not found }
+  - shot: document-set-native-not-found
+  - goto: /admin/documents/sets
+  - wait: { role: button, name: Campus Safety Resources }
+  - click: { selector: 'tr:has-text("Campus Safety Resources") [data-testid="delete-button"]' }
+  - wait_gone: { role: button, name: Campus Safety Resources }
+  - shot: document-set-deleted-list
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: [], locale: 'en'})});
+        if (!response.ok) throw new Error('Reset failed');
+        location.href = '/admin/documents/sets/21';
+      })()
+  - wait: { placeholder: A name for the document set }
+  - eval: |
+      (() => {
+        if (document.querySelector('[name="name"]')?.value !== 'Learning & Development' ||
+            !document.body.innerText.includes('Zoom – Meeting transcripts')) throw new Error('Reset did not restore seeded edit');
+      })()
+  - shot: document-set-reset-seeded-edit
+  - goto: /admin/documents/sets
+  - wait: { role: button, name: Learning & Development }
+  - eval: |
+      (() => { if (document.body.innerText.includes('Campus Safety Resources') || document.body.innerText.includes('Learning Resources Updated')) throw new Error('Reset leaked in-run writes'); })()
+  - shot: document-set-reset-list

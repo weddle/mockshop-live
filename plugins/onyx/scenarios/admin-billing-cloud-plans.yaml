@@ -1,0 +1,98 @@
+# Required native Cloud Billing frontend; source-derived, not runtime accepted.
+# Real Onyx controls only; external Stripe UI/purchases/portal remain unprovided.
+name: admin-billing-cloud-plans
+title: Native Cloud Plans and Checkout choices - no external payment
+strict: true
+requires: enterprise-cloud
+locale: en
+overlays: [demo-mcp-admin, demo-billing-cloud-none]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+known_errors:
+  - match: '/^console: Error creating checkout session: (?:Error: )?Invalid response from checkout session(?:\n\s+at [\s\S]*)?$/'
+    reason: 'Required native Checkout invalid-response guard at pinned CheckoutView149–157 logs this exact Error and renders it inline. Only this source-authored event/stack is classified; no HTTP, unknown console, request or step waiver.'
+steps:
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/billing"]' }
+  - wait: { role: button, name: Get Business Plan, exact: true }
+  - shot: billing-cloud-plans-menu
+  - goto: /admin/billing
+  - wait: { selector: '[aria-label="Enterprise plan card"]' }
+  - shot: billing-cloud-plans-direct
+  - click: { role: button, name: Get Business Plan, exact: true }
+  - wait: { role: button, name: Adjust Plan, exact: true }
+  - wait: { role: button, name: Continue to Payment, exact: true }
+  - eval: |
+      (async () => {
+        const users = await fetch('/api/manage/users?include_api_keys=false').then(r => r.json());
+        const minimum = Math.max(1, [...users.accepted, ...users.slack_users].filter(u => u.is_active).length);
+        const field = document.querySelector('.opal-input-number input');
+        if (field?.value !== String(minimum)) throw new Error('Checkout minimum does not match actual Users');
+        if (!document.querySelector('.billing-option[data-selected="true"]')?.textContent.includes('Annual')) throw new Error('Annual default missing');
+        if (!document.querySelectorAll('.opal-input-number button')[2]?.disabled) throw new Error('Decrement must be disabled at native minimum');
+      })()
+  - shot: billing-cloud-checkout-annual-minimum
+  - click: { text: Monthly, exact: true }
+  - wait: { text: After your 1-month free trial ends. }
+  - shot: billing-cloud-checkout-monthly
+  - fill: { selector: ".opal-input-number input", value: "12" }
+  - click: { selector: ":nth-match(.opal-input-number button, 2)" }
+  - wait: { selector: '.opal-input-number input[value="13"]' }
+  - shot: billing-cloud-checkout-seat-increment
+  - click: { selector: ":nth-match(.opal-input-number button, 3)" }
+  - wait: { selector: '.opal-input-number input[value="12"]' }
+  - shot: billing-cloud-checkout-seat-decrement
+  - click: { selector: ":nth-match(.opal-input-number button, 1)" }
+  - eval: |
+      (async () => {
+        const users = await fetch('/api/manage/users?include_api_keys=false').then(r => r.json());
+        const minimum = Math.max(1, [...users.accepted, ...users.slack_users].filter(u => u.is_active).length);
+        if (document.querySelector('.opal-input-number input')?.value !== String(minimum)) throw new Error('Native Reset did not restore Checkout minimum');
+        if (!document.querySelectorAll('.opal-input-number button')[0]?.disabled) throw new Error('Reset must be disabled at default');
+      })()
+  - shot: billing-cloud-checkout-seat-reset
+  - click: { text: Annual, exact: true }
+  - eval: |
+      if (!document.querySelector('.billing-option[data-selected="true"]')?.textContent.includes('Annual')) throw new Error('Annual choice not restored');
+      if (![...document.querySelectorAll('button')].some(b => b.textContent.trim() === 'Continue to Payment' && !b.disabled)) throw new Error('Native payment handoff control missing');
+  - shot: billing-cloud-checkout-payment-handoff-visible
+  - click: { role: button, name: Adjust Plan, exact: true }
+  - wait: { role: button, name: Get Business Plan, exact: true }
+  - shot: billing-cloud-checkout-adjust-plan
+  - click: { role: button, name: Get Business Plan, exact: true }
+  - wait: { role: button, name: Continue to Payment, exact: true }
+  - shot: billing-cloud-checkout-reopened
+  - goto: /admin/documents/sets
+  - click: { selector: 'a[href="/admin/billing"]' }
+  - wait: { role: button, name: Get Business Plan, exact: true }
+  - shot: billing-cloud-plans-navigation-reset
+  - click: { role: button, name: Get Business Plan, exact: true }
+  - wait: { role: button, name: Continue to Payment, exact: true }
+  - click: { role: button, name: Continue to Payment, exact: true }
+  - wait: { selector: 'button:disabled:has-text("Loading...")' }
+  - shot: billing-cloud-checkout-native-submitting
+  - wait: { selector: '.billing-error-text:has-text("Invalid response from checkout session")' }
+  - wait: { selector: 'button:not(:disabled):has-text("Continue to Payment")' }
+  - shot: billing-cloud-checkout-native-failure-feedback
+  - eval: |
+      (async () => {
+        const receipt = await fetch('/api/mockshop/admin-pages/billing-handoffs').then(r => r.json());
+        const billing = await fetch('/api/tenants/billing-information').then(r => r.json());
+        const choice = document.querySelector('.billing-option[data-selected="true"]')?.textContent || '';
+        if (!receipt.checkout || receipt.checkout.seats !== Number(document.querySelector('.opal-input-number input')?.value) || !choice.toLowerCase().includes(receipt.checkout.billing_period) || receipt.checkout.provider_contacted !== false || billing.subscribed !== false) throw new Error('Native Checkout request/failure altered protected billing or lost the chosen plan');
+        if (Object.hasOwn(receipt.checkout, 'email')) throw new Error('Checkout email must not be retained');
+      })()
+  - click: { role: button, name: Adjust Plan, exact: true }
+  - wait: { role: button, name: Get Business Plan, exact: true }
+  - shot: billing-cloud-checkout-failure-native-return
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin','demo-billing-cloud-none'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/billing';
+      })()
+  - wait: { role: button, name: Get Business Plan, exact: true }
+  - eval: |
+      (async () => {
+        const receipt = await fetch('/api/mockshop/admin-pages/billing-handoffs').then(r => r.json());
+        if (receipt.checkout !== null || receipt.portal !== null) throw new Error('Fresh Billing reset retained handoff metadata');
+      })()
+  - shot: reset-billing-cloud-checkout-handoff

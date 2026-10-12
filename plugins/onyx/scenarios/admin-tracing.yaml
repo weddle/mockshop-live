@@ -1,0 +1,35 @@
+# #65 route-sized native proof: Tracing.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-tracing
+title: Tracing - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/tracing
+  - shot: inventory-tracing
+  - goto: /admin/sso-providers
+  - click: { selector: 'a[href="/admin/tracing"]' }
+  - shot: tracing-menu-empty
+  - goto: /admin/tracing
+  - click: { selector: '[aria-label="Braintrust"]' }
+  - wait: { role: dialog }
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-not-a-secret }
+  - fill: { selector: 'input[name="project"]', value: Learning Workshop }
+  - shot: tracing-connect-dialog
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+  - wait_gone: { role: dialog }
+  - goto: /admin/security
+  - goto: /admin/tracing
+  - wait: { text: Connected, exact: true }
+  - shot: tracing-saved
+  - hover: { selector: '[aria-label="Braintrust"]' }
+  - click: { role: button, name: Disconnect Braintrust, exact: true }
+  - wait: { role: dialog }
+  - shot: tracing-disconnect-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+  - wait_gone: { role: dialog }
+  - shot: tracing-disconnected

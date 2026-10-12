@@ -1,0 +1,27 @@
+# #65 route-sized native proof: Export Logs aliases and receipt.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-export-logs
+title: Export Logs aliases and receipt - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/export-logs
+  - shot: inventory-export-logs-alias
+  - goto: /ee/admin/export-logs
+  - shot: inventory-export-logs-ee
+  - goto: /admin/export-logs
+  - shot: export-logs-menu-route
+  - click: { selector: 'a[href="/admin/export-logs"]' }
+  - shot: export-logs-sidebar
+  - goto: /ee/admin/export-logs
+  - shot: export-logs-ee-direct
+  - click: { role: button, name: Export Logs, exact: true }
+  - wait: { text: no log files found, exact: true }
+  - shot: export-logs-empty-receipt
+  - goto: /ee/admin/export-logs?export=00000000000000000000000000000001
+  - wait: { text: no log files found, exact: true }
+  - shot: export-logs-receipt-navigation

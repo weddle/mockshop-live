@@ -1,0 +1,27 @@
+# Recents: "Late checkout policy for Gold members" (opened via /app?chatId=...). Turns replay in order.
+turns:
+  - message: What's our late checkout policy for Seaside Rewards Gold members?
+    script:
+      title: Late checkout policy for Gold members
+      queries: [Seaside Rewards Gold late checkout]
+      documents:
+        - id: CONF-OPS-FO-210
+          title: "Front Office SOP: Late checkout"
+          source: confluence
+          link: https://seaside.atlassian.example/wiki/spaces/OPS/pages/210/Late+checkout
+          blurb: "Gold members: complimentary late checkout until 2 PM, subject to availability; Platinum until 4 PM."
+          updated: "{{ago:30d}}"
+      answer: |
+        Gold members get **complimentary late checkout until 2 PM**, subject to availability on the day [1]. Platinum members get 4 PM [1].
+  - message: Can the front desk guarantee it at booking?
+    script:
+      title: Late checkout policy for Gold members
+      documents:
+        - id: CONF-OPS-FO-210
+          title: "Front Office SOP: Late checkout"
+          source: confluence
+          link: https://seaside.atlassian.example/wiki/spaces/OPS/pages/210/Late+checkout
+          blurb: "Late checkout can't be guaranteed in advance for Gold; the front desk confirms it the evening before departure."
+          updated: "{{ago:30d}}"
+      answer: |
+        No. For Gold it can't be guaranteed at booking; the front desk confirms it the evening before departure [1].

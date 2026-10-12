@@ -1,0 +1,20 @@
+--- a/src/app/nrf/NRFPage.tsx
++++ b/src/app/nrf/NRFPage.tsx
+@@ -298,7 +298,7 @@
+     });
+ 
+   // Chat session controller for loading sessions
+-  useChatSessionController({
++  const { onMessageSelection } = useChatSessionController({
+     existingChatSessionId,
+     searchParams: searchParams!,
+     firstMessage: undefined,
+@@ -505,7 +505,7 @@
+                     currentMessageFiles={currentMessageFiles}
+                     setPresentingDocument={setPresentingDocument}
+                     onSubmit={onSubmit}
+-                    onMessageSelection={() => {}}
++                    onMessageSelection={onMessageSelection}
+                     stopGenerating={stopGenerating}
+                     onResubmit={handleResubmitLastMessage}
+                     deepResearchEnabled={deepResearchEnabled}

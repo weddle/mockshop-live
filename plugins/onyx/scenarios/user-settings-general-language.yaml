@@ -1,0 +1,140 @@
+# #34 native coverage witness; author development is not acceptance.
+# Existing base en preference and sole #31 owner; no new overlay/backend/Auth writes.
+# SettingsPage854–868 and InputSingleSelect: nine native endonyms, Escape cancel,
+# source defaultOption re-selection no-op; one English→Spanish product-control witness,
+# NOT a nine-locale page-rendering matrix. PATCH {language}, backend NEXT_LOCALE cookie,
+# native router.refresh; readback GET /me. Original steps1–59 end dirty Spanish.
+# Run user-settings-general-language-fresh-start immediately next: its existing runner
+# reset/new-context/locale prelude replaces original60; original61–66 remain there.
+# Backend-only same-browser reset does not reset native HttpOnly NEXT_LOCALE.
+name: user-settings-general-language
+title: Native General Display Language menu, saved selection and reset
+requires: enterprise
+strict: true
+locale: en
+overlays:
+- edition-enterprise
+viewport:
+- 1440
+- 1000
+steps:
+- goto: /app
+- eval: "(async () => {\n  const current = await (await fetch('/api/__mockshop/state')).json();\n  const r = await\
+    \ fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['edition-enterprise'],anchor:current.demo_anchor,locale:\"\
+    en\",keep:false,resetChats:true})});\n  if (!r.ok) throw new Error('Independent General preference fresh reset\
+    \ failed');\n})()"
+- goto: /app
+- wait:
+    selector: '#onyx-user-dropdown'
+- click:
+    selector: '#onyx-user-dropdown'
+- wait:
+    selector: a[href="/app/settings"]
+- shot: general-language-settings-menu-entry
+- click:
+    selector: a[href="/app/settings"]
+- wait:
+    selector: a[href="/app/settings/general"]
+- eval: if(location.pathname !== '/app/settings/general') throw new Error('Native Settings menu did not enter General');
+- wait:
+    selector: label:has-text("Display Language") input
+- scroll:
+    selector: label:has-text("Display Language") input
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Display Language'))?.querySelector('input');
+    if (control?.value !== 'English') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "en" || document.documentElement.lang !== "en") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-initial-english
+- click:
+    selector: label:has-text("Display Language") input
+- wait:
+    selector: '[role="option"]:has-text("Español")'
+- eval: const names=['English','Español','Português','Français','Deutsch','日本語','简体中文','한국어','العربية']; const rows=[...document.querySelectorAll('[role=option]')];
+    if(rows.length!==names.length || names.some(name=>!rows.some(row=>row.textContent.includes(name)))) throw new
+    Error('Native language option inventory missing');
+- shot: general-language-options-open
+- scroll:
+    selector: '[role="option"]:has-text("العربية")'
+- shot: general-language-options-end
+- press: Escape
+- wait_gone:
+    selector: '[role="option"]:has-text("Español")'
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Display Language'))?.querySelector('input');
+    if (control?.value !== 'English') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "en" || document.documentElement.lang !== "en") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-cancel-protected
+- click:
+    selector: label:has-text("Display Language") input
+- click:
+    selector: '[role="option"]:has-text("Español")'
+- wait:
+    selector: label:has-text("Idioma de la interfaz") input
+- scroll:
+    selector: label:has-text("Idioma de la interfaz") input
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Idioma de la interfaz'))?.querySelector('input');
+    if (control?.value !== 'Español') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "es" || document.documentElement.lang !== "es") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-native-spanish
+- goto: /app/settings/chat-preferences
+- click:
+    selector: a[href="/app/settings/general"]
+- wait:
+    selector: label:has-text("Idioma de la interfaz") input
+- scroll:
+    selector: label:has-text("Idioma de la interfaz") input
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Idioma de la interfaz'))?.querySelector('input');
+    if (control?.value !== 'Español') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "es" || document.documentElement.lang !== "es") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-saved-native-navigation
+- eval: location.reload()
+- wait:
+    selector: label:has-text("Idioma de la interfaz") input
+- scroll:
+    selector: label:has-text("Idioma de la interfaz") input
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Idioma de la interfaz'))?.querySelector('input');
+    if (control?.value !== 'Español') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "es" || document.documentElement.lang !== "es") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-saved-reload
+- eval: "(async () => {\n  const current = await (await fetch('/api/__mockshop/state')).json();\n  const r = await\
+    \ fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['edition-enterprise'],anchor:current.demo_anchor,locale:\"\
+    es\",keep:true,resetChats:false})});\n  if (!r.ok) throw new Error('Independent General preference keep failed');\n\
+    })()"
+- goto: /app/settings/general
+- wait:
+    selector: label:has-text("Idioma de la interfaz") input
+- scroll:
+    selector: label:has-text("Idioma de la interfaz") input
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Idioma de la interfaz'))?.querySelector('input');
+    if (control?.value !== 'Español') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "es" || document.documentElement.lang !== "es") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-dirty-keep
+- click:
+    selector: label:has-text("Idioma de la interfaz") input
+- click:
+    selector: '[role="option"]:has-text("Español")'
+- wait_gone:
+    selector: '[role="option"]:has-text("Español")'
+- eval: |
+    const control = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Idioma de la interfaz'))?.querySelector('input');
+    if (control?.value !== 'Español') throw new Error('Native General language field label/value mismatch');
+- eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed');
+    const p=(await r.json()).preferences; if (p.language !== "es" || document.documentElement.lang !== "es") throw
+    new Error('Native General UI/readback preference mismatch'); })()
+- shot: general-language-reselect-noop

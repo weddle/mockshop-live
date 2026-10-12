@@ -1,0 +1,2 @@
+# Native trial-status/Upgrade control display; no trial processing or charges.
+GET /mockshop/admin-pages/billing-case: trialing

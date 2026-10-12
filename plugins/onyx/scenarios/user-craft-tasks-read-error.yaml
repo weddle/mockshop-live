@@ -1,0 +1,49 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-tasks-read-error
+title: "Craft native scheduled-task read error and Try again recovery"
+requires: enterprise
+strict: true
+locale: en
+viewport: [1440, 900]
+overlays: [edition-enterprise, demo-mcp-admin, demo-user-craft]
+known_errors:
+  - match: "/^http 500 GET http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/scheduled-tasks$/"
+    reason: "Only this independently staged Tasks read500; positively assert native Failed to load scheduled tasks. before original622, then retain actual Try again recovery. Exact status, verb, loopback port field and native path/query only; all other HTTP problems, console errors and failed steps remain strict."
+  - match: "/^console: Failed to load resource: the server responded with a status of 500 \\(Internal Server Error\\) \\[source: http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/scheduled-tasks\\]$/"
+    reason: "Actual 7.9s scoped DEV observed this native console source URL alongside the exact staged GET500 and positive Failed to load scheduled tasks/Try again recovery. Only this unit/status/message/owned-port/path; unlocated or other-source console remains strict."
+steps:
+  - goto: "/app"
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = ['edition-enterprise','demo-mcp-admin','demo-user-craft'];
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+  - eval: |
+      (async () => {
+        for (const path of ['/build/apps','/build/scheduled-tasks']) await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path,state:'error'})});
+      })()
+  - goto: /craft/v1/tasks
+  - wait: {"text": "Failed to load scheduled tasks.", "exact": true}
+  - shot: craft-tasks-error
+  - eval: |
+      (async () => { await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/build/scheduled-tasks',state:'loaded'})}); })()
+  - click: { role: button, name: Try again, exact: true }
+  - wait: { selector: '[data-testid="new-task-button"]' }
+  - wait: { text: Clinic teaching checklist, exact: true }
+  - shot: craft-tasks-retry-loaded
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+  - goto: "/craft/v1/tasks"
+  - wait: { text: Clinic teaching checklist, exact: true }
+  - shot: "craft-unit-tasks-read-error-reset"

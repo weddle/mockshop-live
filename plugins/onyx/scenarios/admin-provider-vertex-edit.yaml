@@ -1,0 +1,510 @@
+# #34 EDITONLY prepared; unexecuted/unaccepted. 139 operations / 19 named images.
+# One independently seeded ADMIN unit, not an onboarding edit or accepted matrix.
+# Source LanguageModelsPage131–136/225–234 passes existingLlmProvider; registry binds
+# vertex_ai to VertexAIModal. Its disabled saved name, native auth selector, region,
+# Service Account single-file input, Workload project, model/access and Update remain native.
+# hooks_enabled=true is scoped to this new named overlay; baseline fixtures remain false.
+# VertexAIModal70–77 clears inactive values;255–259 omits empty custom-config fields.
+# Field396–425 + FileDropzoneField43–52 read the selected fictional File via FileReader.
+# Reuse accepted #69 public DataTransfer/input-change convention: no React/Formik injection,
+# synthetic product response or direct provider mutation. File bytes come from the fictional
+# original provider fixture snapshot, not a source export, credential copy or real key.
+# Source stores credential contents, NOT an uploaded filename; genuine saved Service Account
+# reopen shows its native file control without claiming a persisted file selection/name.
+# Supplementary admin/detail/public GETs assert the sole fake owner's redacted saved DTO;
+# they do not replace visible native Update/card/reopen/guards/cancel/navigation/reload proof.
+# sessionStorage holds only witness snapshots; direct writes target existing runner reset only.
+# Required artifact/lease and independent strict/EVERY-PNG acceptance are parent-owned.
+name: admin-provider-vertex-edit
+title: Native saved admin Vertex Service Account and Workload edit/reopen protection
+requires: enterprise
+strict: true
+locale: en
+viewport:
+- 1440
+- 1000
+overlays:
+- demo-mcp-admin
+- demo-admin-provider-vertex
+steps:
+- goto: /admin/agents
+- click:
+    selector: a[href="/admin/language-models"]
+- wait:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'),s=await fetch('/api/settings'); if(!r.ok||!s.ok)
+    throw new Error('Saved Vertex seed/settings prerequisite read failed'); const c=await r.json(),p=c.providers[0],settings=await
+    s.json(); if(c.providers.length!==1||p?.id!==34||p.provider!=='vertex_ai'||p.name!=='Campus Vertex (local fake)'||p.custom_config?.vertex_auth_method!=='service_account_json'||p.custom_config.vertex_location!=='us-central1'||Object.hasOwn(p.custom_config,'vertex_project')||settings.hooks_enabled!==true)
+    throw new Error('Named saved Service Account/selector opt-in seed missing'); const j=JSON.parse(p.custom_config.vertex_credentials);
+    if(j.type!=='service_account'||j.project_id!=='mock-campus-seed-project'||j.client_email!=='fictional-vertex@example.invalid'||j.private_key!=='mock-only-not-a-secret')
+    throw new Error('Fictional JSON seed prerequisite missing'); sessionStorage.setItem('mockshop-admin-vertex-seed',JSON.stringify(c));})()
+- shot:
+    name: admin-vertex-menu-configured-seed
+    full_page: true
+- goto: /admin/language-models
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "us-central1"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw new
+    Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]''); if
+    (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-service-seed-pristine-editor
+    full_page: true
+- click:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- click:
+    selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Workload Identity (GKE)", "custom_config.vertex_location":
+    "us-central1", "custom_config.vertex_project": ""})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value
+    !== value) throw new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]''))
+    throw new Error(''Workload retained the inactive native Service Account upload control'');'
+- press: Tab
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-workload-project-required
+    full_page: true
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    value: mock-canceled-seed-draft
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_location"]'
+    value: europe-west1
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"]
+      *)'
+- shot:
+    name: admin-vertex-workload-canceled-seed-draft
+    full_page: true
+- click:
+    selector: '[role="dialog"] button:has-text("Cancel")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'); if(!r.ok) throw new Error('Protected Vertex catalog
+    read failed'); if(JSON.stringify(await r.json())!==sessionStorage.getItem("mockshop-admin-vertex-seed")) throw
+    new Error('Cancel/keep/reset changed the protected Vertex catalog/models/access/defaults');})()
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "us-central1"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw new
+    Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]''); if
+    (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-canceled-seed-protected-service-reopen
+    full_page: true
+- click:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- click:
+    selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    value: mock-campus-workload-project
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_location"]'
+    value: us-east1
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"]
+      *)'
+- shot:
+    name: admin-vertex-workload-ready-native-update
+    full_page: true
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"]
+      *)'
+- click:
+    selector: '[role="dialog"] button[type="submit"]:has-text("Update")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- wait:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- eval: '(async()=>{const [ar,dr,ur]=await Promise.all([''/api/admin/llm/provider'',''/api/admin/llm/provider/34'',''/api/llm/provider''].map(p=>fetch(p)));
+    if(!ar.ok||!dr.ok||!ur.ok) throw new Error(''Saved Vertex catalog/detail/public read failed''); const c=await
+    ar.json(),detail=await dr.json(),u=await ur.json(),p=c.providers.find(p=>p.id===34),seed=JSON.parse(sessionStorage.getItem(''mockshop-admin-vertex-seed''));
+    if(c.providers.length!==1||p?.provider!==''vertex_ai''||p.name!==''Campus Vertex (local fake)''||p.is_public!==true||p.is_auto_mode!==false||p.groups.length||p.personas.length||p.model_configurations.length!==1)
+    throw new Error(''Saved edit created/replaced a provider or changed protected access/model configuration'');
+    const m=p.model_configurations[0]; if(m.id!==3401||m.name!==''learning-notes-demo''||m.is_visible!==true||m.max_input_tokens!==32768)
+    throw new Error(''Saved edit changed protected model identity/visibility/token limit''); const defaults=c=>[c.default_text,c.default_vision,c.default_chat_naming,c.default_craft];
+    if(JSON.stringify(defaults(c))!==JSON.stringify(defaults(seed))||JSON.stringify(defaults(u))!==JSON.stringify(defaults(seed)))
+    throw new Error(''Saved edit changed protected defaults''); if(JSON.stringify(detail)!==JSON.stringify(p)||p.custom_config_changed!==true)
+    throw new Error(''Saved detail/changed-custom-config DTO did not reflect actual edit''); for(const [key,value]
+    of Object.entries({"vertex_auth_method": "workload_identity", "vertex_location": "us-east1", "vertex_project":
+    "mock-campus-workload-project"})) if(p.custom_config?.[key]!==value) throw new Error(''Saved Vertex custom configuration
+    mismatch: ''+key); if(Object.hasOwn(p.custom_config,''vertex_credentials'')) throw new Error(''Workload save
+    retained inactive Service Account credentials''); if(u.providers.length!==1||u.providers[0].id!==34||u.providers[0].model_configurations.length!==1||u.providers[0].model_configurations[0].id!==3401||Object.hasOwn(u.providers[0],''custom_config'')||Object.hasOwn(u.providers[0],''api_key''))
+    throw new Error(''Sole public catalog lost model identity or exposed admin credentials''); sessionStorage.setItem("mockshop-admin-vertex-workload",JSON.stringify(c));})()'
+- shot:
+    name: admin-vertex-workload-saved-native-card
+    full_page: true
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Workload Identity (GKE)", "custom_config.vertex_location":
+    "us-east1", "custom_config.vertex_project": "mock-campus-workload-project"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value
+    !== value) throw new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]''))
+    throw new Error(''Workload retained the inactive native Service Account upload control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-workload-saved-genuine-reopen
+    full_page: true
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    value: ''
+- press: Tab
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Workload Identity (GKE)", "custom_config.vertex_location":
+    "us-east1", "custom_config.vertex_project": ""})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value
+    !== value) throw new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]''))
+    throw new Error(''Workload retained the inactive native Service Account upload control'');'
+- shot:
+    name: admin-vertex-saved-workload-empty-project-guard
+    full_page: true
+- click:
+    selector: '[role="dialog"] button:has-text("Cancel")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'); if(!r.ok) throw new Error('Protected Vertex catalog
+    read failed'); if(JSON.stringify(await r.json())!==sessionStorage.getItem("mockshop-admin-vertex-workload"))
+    throw new Error('Cancel/keep/reset changed the protected Vertex catalog/models/access/defaults');})()
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Workload Identity (GKE)", "custom_config.vertex_location":
+    "us-east1", "custom_config.vertex_project": "mock-campus-workload-project"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value
+    !== value) throw new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]''))
+    throw new Error(''Workload retained the inactive native Service Account upload control'');'
+- shot:
+    name: admin-vertex-invalid-workload-protected-reopen
+    full_page: true
+- click:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- click:
+    selector: '[role="option"]:has-text("Service Account JSON")'
+- wait:
+    selector: '[role="dialog"] input[type="file"][id="temporary.filename-custom_config.vertex_credentials"]'
+    state: attached
+    any_visibility: true
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "us-east1"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw new
+    Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]''); if
+    (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-service-missing-credentials-guard
+    full_page: true
+- eval: const input=document.querySelector('[role=dialog] input[type=file][id="temporary.filename-custom_config.vertex_credentials"]');
+    if(!input||input.multiple) throw new Error('Native single-file Vertex credential control missing'); const seed=JSON.parse(sessionStorage.getItem('mockshop-admin-vertex-seed')),json=seed.providers[0].custom_config.vertex_credentials;
+    const transfer=new DataTransfer(); transfer.items.add(new File([json],'fictional-vertex-service-account.json',{type:'application/json'}));
+    input.files=transfer.files; input.dispatchEvent(new Event('change',{bubbles:true}));
+- wait:
+    text: fictional-vertex-service-account.json
+    exact: true
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_location"]'
+    value: europe-west4
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"]
+      *)'
+- shot:
+    name: admin-vertex-service-native-file-reader-ready-update
+    full_page: true
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"]
+      *)'
+- click:
+    selector: '[role="dialog"] button[type="submit"]:has-text("Update")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- wait:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- eval: '(async()=>{const [ar,dr,ur]=await Promise.all([''/api/admin/llm/provider'',''/api/admin/llm/provider/34'',''/api/llm/provider''].map(p=>fetch(p)));
+    if(!ar.ok||!dr.ok||!ur.ok) throw new Error(''Saved Vertex catalog/detail/public read failed''); const c=await
+    ar.json(),detail=await dr.json(),u=await ur.json(),p=c.providers.find(p=>p.id===34),seed=JSON.parse(sessionStorage.getItem(''mockshop-admin-vertex-seed''));
+    if(c.providers.length!==1||p?.provider!==''vertex_ai''||p.name!==''Campus Vertex (local fake)''||p.is_public!==true||p.is_auto_mode!==false||p.groups.length||p.personas.length||p.model_configurations.length!==1)
+    throw new Error(''Saved edit created/replaced a provider or changed protected access/model configuration'');
+    const m=p.model_configurations[0]; if(m.id!==3401||m.name!==''learning-notes-demo''||m.is_visible!==true||m.max_input_tokens!==32768)
+    throw new Error(''Saved edit changed protected model identity/visibility/token limit''); const defaults=c=>[c.default_text,c.default_vision,c.default_chat_naming,c.default_craft];
+    if(JSON.stringify(defaults(c))!==JSON.stringify(defaults(seed))||JSON.stringify(defaults(u))!==JSON.stringify(defaults(seed)))
+    throw new Error(''Saved edit changed protected defaults''); if(JSON.stringify(detail)!==JSON.stringify(p)||p.custom_config_changed!==true)
+    throw new Error(''Saved detail/changed-custom-config DTO did not reflect actual edit''); for(const [key,value]
+    of Object.entries({"vertex_auth_method": "service_account_json", "vertex_location": "europe-west4"})) if(p.custom_config?.[key]!==value)
+    throw new Error(''Saved Vertex custom configuration mismatch: ''+key); if(Object.hasOwn(p.custom_config,''vertex_project'')
+    || p.custom_config.vertex_credentials!==''mock-only-not-a-secret'' || JSON.stringify(p).includes(''fictional-vertex@example.invalid'')
+    || JSON.stringify(p).includes(''mock-campus-seed-project'')) throw new Error(''Service Account save retained
+    inactive project or echoed the fictional uploaded JSON instead of the sole owner redaction''); if(u.providers.length!==1||u.providers[0].id!==34||u.providers[0].model_configurations.length!==1||u.providers[0].model_configurations[0].id!==3401||Object.hasOwn(u.providers[0],''custom_config'')||Object.hasOwn(u.providers[0],''api_key''))
+    throw new Error(''Sole public catalog lost model identity or exposed admin credentials''); sessionStorage.setItem("mockshop-admin-vertex-committed",JSON.stringify(c));})()'
+- shot:
+    name: admin-vertex-service-saved-native-card
+    full_page: true
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "europe-west4"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw
+    new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-service-saved-genuine-reopen
+    full_page: true
+- click:
+    selector: '[role="dialog"] button:has-text("Cancel")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- eval: '(async()=>{const r=await fetch(''/api/__mockshop/state'',{method:''POST'',headers:{''Content-Type'':''application/json''},body:JSON.stringify({"overlays":
+    ["demo-mcp-admin", "demo-admin-provider-vertex"], "keep": true})}); if(!r.ok) throw new Error(''Existing Vertex
+    keep control failed'');})()'
+- goto: /admin/agents
+- click:
+    selector: a[href="/admin/language-models"]
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "europe-west4"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw
+    new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'); if(!r.ok) throw new Error('Protected Vertex catalog
+    read failed'); if(JSON.stringify(await r.json())!==sessionStorage.getItem("mockshop-admin-vertex-committed"))
+    throw new Error('Cancel/keep/reset changed the protected Vertex catalog/models/access/defaults');})()
+- shot:
+    name: admin-vertex-service-dirty-keep-hard-navigation-reopen
+    full_page: true
+- eval: location.reload()
+- wait:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "europe-west4"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw
+    new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'); if(!r.ok) throw new Error('Protected Vertex catalog
+    read failed'); if(JSON.stringify(await r.json())!==sessionStorage.getItem("mockshop-admin-vertex-committed"))
+    throw new Error('Cancel/keep/reset changed the protected Vertex catalog/models/access/defaults');})()
+- shot:
+    name: admin-vertex-service-hard-reload-saved-reopen
+    full_page: true
+- click:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- click:
+    selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Workload Identity (GKE)", "custom_config.vertex_location":
+    "europe-west4", "custom_config.vertex_project": ""})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value
+    !== value) throw new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]''))
+    throw new Error(''Workload retained the inactive native Service Account upload control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    value: mock-canceled-after-save
+- fill:
+    selector: '[role="dialog"] input[name="custom_config.vertex_location"]'
+    value: asia-southeast1
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"]
+      *)'
+- shot:
+    name: admin-vertex-post-save-canceled-workload-draft
+    full_page: true
+- click:
+    selector: '[role="dialog"] button:has-text("Cancel")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'); if(!r.ok) throw new Error('Protected Vertex catalog
+    read failed'); if(JSON.stringify(await r.json())!==sessionStorage.getItem("mockshop-admin-vertex-committed"))
+    throw new Error('Cancel/keep/reset changed the protected Vertex catalog/models/access/defaults');})()
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "europe-west4"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw
+    new Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]'');
+    if (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- shot:
+    name: admin-vertex-post-save-cancel-protected-service-reopen
+    full_page: true
+- click:
+    selector: '[role="dialog"] button:has-text("Cancel")'
+- wait_gone:
+    selector: '[role="dialog"]'
+- eval: if(sessionStorage.getItem('mockshop-admin-vertex-committed')===sessionStorage.getItem('mockshop-admin-vertex-seed'))
+    throw new Error('Fresh reset would not prove a dirty provider configuration');
+- eval: '(async()=>{const r=await fetch(''/api/__mockshop/state'',{method:''POST'',headers:{''Content-Type'':''application/json''},body:JSON.stringify({"overlays":
+    ["demo-mcp-admin", "demo-admin-provider-vertex"], "keep": false, "resetChats": true})}); if(!r.ok) throw new
+    Error(''Existing Vertex fresh-reset control failed'');})()'
+- goto: /admin/language-models
+- click:
+    role: button
+    name: Edit Campus Vertex (local fake)
+    exact: true
+- wait:
+    selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+- wait:
+    selector: '[role="dialog"]:has-text("Learning Notes (local fake)")'
+- eval: 'const d=document.querySelector(''[role=dialog]''); for (const [name,value] of Object.entries({"name": "Campus
+    Vertex (local fake)", "custom_config.vertex_auth_method": "Service Account JSON", "custom_config.vertex_location":
+    "us-central1"})) { if (d.querySelector(''input[name=''+JSON.stringify(name)+'']'')?.value !== value) throw new
+    Error(''Genuine saved Vertex field mismatch: ''+name); } const n=d.querySelector(''input[name="name"]''); if
+    (!n.matches('':disabled'') && !n.readOnly && !n.closest(''[aria-disabled="true"]'')) throw new Error(''Existing-provider
+    display name is not protected''); if (!d.textContent.includes(''Learning Notes (local fake)'') || !d.textContent.includes(''Models
+    Access'') || ![...d.querySelectorAll(''input'')].some(i=>i.value===''All Users & Agents'')) throw new Error(''Native
+    saved model/public access controls were not preserved''); if (d.querySelector(''input[name="custom_config.vertex_project"]'')
+    || !d.querySelector(''input[type=file][id="temporary.filename-custom_config.vertex_credentials"]'')) throw new
+    Error(''Saved Service Account did not expose its native file control or retained the inactive Workload project
+    control'');'
+- wait:
+    selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+- eval: (async()=>{const r=await fetch('/api/admin/llm/provider'); if(!r.ok) throw new Error('Protected Vertex catalog
+    read failed'); if(JSON.stringify(await r.json())!==sessionStorage.getItem("mockshop-admin-vertex-seed")) throw
+    new Error('Cancel/keep/reset changed the protected Vertex catalog/models/access/defaults');})()
+- shot:
+    name: admin-vertex-fresh-original-service-json-region-model-defaults-restored
+    full_page: true
+- click:
+    selector: '[role="dialog"] button:has-text("Cancel")'
+- wait_gone:
+    selector: '[role="dialog"]'

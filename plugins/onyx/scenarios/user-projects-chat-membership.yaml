@@ -1,0 +1,160 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app?projectId=1 → native detail chat menu.
+# Outcome: Custom-agent warning close/reopen/checkbox/confirm, move/replay/remove, native pointer drag in/out; keep/fresh membership.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-chat-membership
+title: Custom-agent warning close/reopen/checkbox/confirm, move/replay/remove, native pointer drag in/out; keep/fresh membership
+strict: true
+locale: en
+overlays: []
+viewport: [1440, 900]
+steps:
+  # Original user-projects step 168 (source line 231): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 169 (source line 232): Preserved native journey.
+  - hover: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]:not(.opal-sidebar-tab a)' }
+  # Original user-projects step 170 (source line 233): Preserved native journey.
+  - click: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"] button[aria-label="Chat options"]' }
+  # Original user-projects step 171 (source line 234): Preserved native journey.
+  - shot: { name: project-detail-chat-options, full_page: true }
+  # Original user-projects step 172 (source line 235): Preserved native journey.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+  # Original user-projects step 173 (source line 236): Preserved native journey.
+  - click: { role: menuitem, name: Revision Workshop, exact: true }
+  # Original user-projects step 174 (source line 237): Preserved native journey.
+  - wait: { text: Move Custom Agent Chat, exact: true }
+  # Original user-projects step 175 (source line 238): Preserved native journey.
+  - shot: { name: custom-agent-move-warning, full_page: true }
+  # Original user-projects step 176 (source line 239): Preserved native journey.
+  - press: Escape
+  # Original user-projects step 177 (source line 240): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 178 (source line 241): Preserved native journey.
+  - wait: { text: Food-safety refresher course outline, exact: true }
+  # Original user-projects step 179 (source line 242): Preserved native journey.
+  - hover: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]:not(.opal-sidebar-tab a)' }
+  # Original user-projects step 180 (source line 243): Preserved native journey.
+  - click: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"] button[aria-label="Chat options"]' }
+  # Original user-projects step 181 (source line 244): Preserved native journey.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+  # Original user-projects step 182 (source line 245): Preserved native journey.
+  - click: { role: menuitem, name: Revision Workshop, exact: true }
+  # Original user-projects step 183 (source line 246): Preserved native journey.
+  - click: { selector: '[role="dialog"] label[for="move-custom-agent-do-not-show"]' }
+  - eval: |
+      const checkbox = document.getElementById('move-custom-agent-do-not-show');
+      if (checkbox?.getAttribute('data-state') !== 'checked' && !checkbox?.checked) throw new Error('Native do-not-show checkbox is not checked');
+  # Original user-projects step 184 (source line 247): Preserved native journey.
+  - click: { role: button, name: Confirm Move, exact: true }
+  # Original user-projects step 185 (source line 248): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 186 (source line 249): Preserved native journey.
+  - wait: { text: Food-safety refresher course outline, exact: true }
+  # Original user-projects step 187 (source line 250): Preserved native journey.
+  - shot: { name: custom-chat-moved-reload, full_page: true }
+  # Original user-projects step 188 (source line 251): Preserved native journey.
+  - click: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]:not(.opal-sidebar-tab a)' }
+  # Original user-projects step 189 (source line 252): Preserved native journey.
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+  # Original user-projects step 190 (source line 253): Preserved native journey.
+  - shot: { name: project-chat-reopened-answer, full_page: true }
+  # Original user-projects step 191 (source line 254): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 192 (source line 255): Preserved native journey.
+  - hover: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]:not(.opal-sidebar-tab a)' }
+  # Original user-projects step 193 (source line 256): Preserved native journey.
+  - click: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"] button[aria-label="Chat options"]' }
+  # Original user-projects step 194 (source line 257): Preserved native journey.
+  - click: { role: menuitem, name: Remove from Revision Workshop, exact: true }
+  # Original user-projects step 195 (source line 258): Preserved native journey.
+  - goto: /app?projectId=2
+  # Original user-projects step 196 (source line 259): Preserved native journey.
+  - wait: { text: No chats yet., exact: true }
+  # Original user-projects step 197 (source line 260): Preserved native journey.
+  - eval: |
+      if (!document.querySelector('.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]')) throw new Error('Removed chat absent from Recents');
+  # Original user-projects step 198 (source line 262): Preserved native journey.
+  - shot: { name: chat-removed-project-reload, full_page: true }
+  # Original user-projects step 199 (source line 265): Preserved native journey.
+  - eval: |
+      (async () => {
+        const source = document.querySelector('.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]')?.closest('[data-testid="ChatButton"]')?.parentElement;
+        const target = document.querySelector('.opal-sidebar-tab button[aria-label="Accessible Learning Lab"]');
+        if (!source || !target) throw new Error('Drag source/project target missing');
+        const a = source.getBoundingClientRect(), b = target.getBoundingClientRect();
+        const start = {x:a.left+a.width/2,y:a.top+a.height/2}, end = {x:b.left+b.width/2,y:b.top+b.height/2};
+        const event = (type,x,y,buttons) => new PointerEvent(type,{bubbles:true,cancelable:true,composed:true,isPrimary:true,pointerId:21,pointerType:'mouse',button:0,buttons,clientX:x,clientY:y});
+        source.dispatchEvent(event('pointerdown',start.x,start.y,1));
+        await new Promise(resolve => setTimeout(resolve,100));
+        document.dispatchEvent(event('pointermove',start.x,start.y-12,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointermove',end.x,end.y,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointermove',end.x,end.y,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointerup',end.x,end.y,0));
+        await new Promise(resolve => setTimeout(resolve,600));
+      })()
+  # Original user-projects step 200 (source line 282): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 201 (source line 283): Preserved native journey.
+  - wait: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]:not(.opal-sidebar-tab a)' }
+  # Original user-projects step 202 (source line 284): Preserved native journey.
+  - shot: { name: chat-dragged-to-project-reload, full_page: true }
+  # Original user-projects step 203 (source line 285): Preserved native journey.
+  - eval: |
+      (async () => {
+        const source = document.querySelector('.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]')?.closest('[data-testid="ChatButton"]')?.parentElement;
+        const target = [...document.querySelectorAll('.opal-sidebar-section__header')].find(el => el.textContent.trim() === 'Recents');
+        if (!source || !target) throw new Error('Drag source/Recents target missing');
+        const a = source.getBoundingClientRect(), b = target.getBoundingClientRect();
+        const start = {x:a.left+a.width/2,y:a.top+a.height/2}, end = {x:b.left+b.width/2,y:b.top+b.height/2};
+        const event = (type,x,y,buttons) => new PointerEvent(type,{bubbles:true,cancelable:true,composed:true,isPrimary:true,pointerId:22,pointerType:'mouse',button:0,buttons,clientX:x,clientY:y});
+        source.dispatchEvent(event('pointerdown',start.x,start.y,1));
+        await new Promise(resolve => setTimeout(resolve,100));
+        document.dispatchEvent(event('pointermove',start.x,start.y+12,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointermove',end.x,end.y,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointermove',end.x,end.y,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointerup',end.x,end.y,0));
+        await new Promise(resolve => setTimeout(resolve,600));
+      })()
+  # Original user-projects step 204 (source line 303): Preserved native journey.
+  - goto: /app?projectId=1
+  # Original user-projects step 205 (source line 304): Preserved native journey.
+  - wait: { text: No chats yet., exact: true }
+  # Original user-projects step 206 (source line 305): Preserved native journey.
+  - wait: { selector: '.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]' }
+  # Original user-projects step 207 (source line 306): Preserved native journey.
+  - shot: { name: chat-dragged-to-recents-reload, full_page: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state: { overlays: [] }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (!document.body.textContent.includes('No chats yet.') || !document.querySelector('.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]')) throw new Error('Keep lost drag-out to Recents');
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-membership-keep, full_page: true }
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:[],anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=1
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (!document.querySelector('a[href="/app?chatId=11111111-0000-4000-8000-000000000001"]:not(.opal-sidebar-tab a)')) throw new Error('Reset lost original project chat membership');
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-membership-fresh-reset, full_page: true }

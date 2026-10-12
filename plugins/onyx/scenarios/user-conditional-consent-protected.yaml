@@ -1,0 +1,68 @@
+# #34 EDITONLY prepared native unit; no execution/acceptance claim. CE/other locales unverified.
+# Fictional LOCAL inputs only. Every run independently resets the same sole Auth owner.
+name: user-conditional-consent-protected
+title: User Conditional Consent Protected
+requires: enterprise
+strict: true
+locale: en
+viewport:
+- 1440
+- 900
+overlays:
+- edition-enterprise
+- demo-user-conditional
+known_errors:
+- match: /^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me$/
+  reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and
+    unchanged receipt.
+- match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source:
+    http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+  reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console
+    waiver.
+steps:
+- goto: /app/settings/accounts-access
+- eval: "(async () => {\n  const current = await (await fetch('/api/__mockshop/state')).json();\n  const response\
+    \ = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['edition-enterprise','demo-user-conditional'],anchor:current.demo_anchor,locale:'en',keep:false})});\n\
+    \  if (!response.ok) throw new Error('Conditional independent reset failed');\n  const receipt = await (await\
+    \ fetch('/api/mockshop/user-conditional/receipts')).json();\n  if (Object.keys(receipt.callbacks).length ||\
+    \ Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered)\
+    \ throw new Error('Conditional reset retained dirty receipts');\n  const me = await (await fetch('/api/me')).json();\n\
+    \  if (me.email !== 'alex.learner@workshop.example' || !me.password_configured) throw new Error('Sole Auth owner\
+    \ did not restore fictional member');\n})()"
+- eval: (async () => { const r=await fetch('/api/mockshop/auth-anonymous/stage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'logged-out'})});
+    if(!r.ok) throw new Error('Sole Auth logged-out staging failed'); })()
+- goto: /oauth-provider/authorize?request=BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+- wait:
+    testid: email
+- eval: if (location.pathname !== '/auth/login' || new URL(location.href).searchParams.get('next') !== '/oauth-provider/authorize?request=BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
+    throw new Error('Native protected consent did not preserve login return');
+- shot:
+    name: conditional-consent-protected-login
+    delay: 0
+- goto: /oauth-provider/authorize
+- wait: { testid: email }
+- eval: |
+    if (location.pathname !== '/auth/login' || new URL(location.href).searchParams.has('next')) throw new Error('Native missing-request notFound did not follow source login fallback');
+- shot: { name: conditional-consent-missing-request-source-login, delay: 0 }
+- goto: /oauth-provider/authorize?request=short
+- wait: { testid: email }
+- eval: |
+    if (location.pathname !== '/auth/login' || new URL(location.href).searchParams.has('next')) throw new Error('Native invalid-request notFound did not follow source login fallback');
+- shot: { name: conditional-consent-invalid-request-source-login, delay: 0 }
+- eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.consents).length
+    === 0)) throw new Error('Native interaction receipt mismatch'); })()
+- eval: "(async () => {\n  const current = await (await fetch('/api/__mockshop/state')).json();\n  const response\
+    \ = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:['edition-enterprise','demo-user-conditional'],anchor:current.demo_anchor,locale:'en',keep:false})});\n\
+    \  if (!response.ok) throw new Error('Conditional independent reset failed');\n  const receipt = await (await\
+    \ fetch('/api/mockshop/user-conditional/receipts')).json();\n  if (Object.keys(receipt.callbacks).length ||\
+    \ Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered)\
+    \ throw new Error('Conditional reset retained dirty receipts');\n  const me = await (await fetch('/api/me')).json();\n\
+    \  if (me.email !== 'alex.learner@workshop.example' || !me.password_configured) throw new Error('Sole Auth owner\
+    \ did not restore fictional member');\n})()"
+- goto: /oauth-provider/authorize?request=BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+- wait:
+    text: Allow access
+    exact: true
+- shot:
+    name: conditional-consent-protected-reset
+    delay: 0

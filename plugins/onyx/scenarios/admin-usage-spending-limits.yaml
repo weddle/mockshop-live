@@ -1,0 +1,108 @@
+# #65 route-sized native proof: Usage and spending limits.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-usage-spending-limits
+title: Usage and spending limits - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+overlays: [demo-mcp-admin]
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/performance/usage
+  - shot: inventory-usage-alias
+  - goto: /ee/admin/performance/usage
+  - shot: inventory-usage-ee
+  - goto: /admin/performance/usage
+  - shot: usage-menu-route
+  - click: { selector: 'a[href="/admin/performance/usage"]' }
+  - shot: usage-sidebar
+  - goto: /ee/admin/performance/usage
+  - shot: usage-ee-direct
+  - wait: { text: Manage spending limits, exact: true }
+  - click: { role: tab, name: Global, exact: true }
+  - shot: usage-global-limits-empty
+  - click: { role: button, name: Create spending limit, exact: true }
+  - wait: { role: dialog }
+  - fill: { selector: 'input[name="cost_budget_dollars"]', value: '20' }
+  - fill: { selector: 'input[name="period_days"]', value: '1' }
+  - shot: usage-global-limit-create-dialog
+  - click: { role: button, name: Create limit, exact: true }
+  - wait_gone: { role: dialog }
+  - goto: /admin/voice
+  - goto: /admin/performance/usage
+  - wait: { selector: '[role="switch"][aria-label^="Disable"]' }
+  - click: { role: tab, name: Global, exact: true }
+  - shot: usage-global-limit-saved
+  - click: { selector: '[role="switch"][aria-label^="Disable"]' }
+  - wait: { selector: '[role="switch"][aria-label^="Enable"]' }
+  - shot: usage-global-limit-disabled
+  - click: { selector: 'button[aria-label^="Delete"]' }
+  - wait_gone: { selector: '[role="switch"][aria-label^="Enable"]' }
+  - shot: usage-global-limit-deleted
+  - click: { role: button, name: Create spending limit, exact: true }
+  - wait: { role: dialog }
+  - click: { role: radio, name: Per user, exact: true }
+  - fill: { selector: 'input[name="token_budget"]', value: '100' }
+  - shot: usage-user-limit-create-dialog
+  - click: { role: button, name: Create limit, exact: true }
+  - wait: { text: 'Use at least 1,000 tokens', exact: true }
+  - shot: usage-user-limit-native-validation
+  - fill: { selector: 'input[name="token_budget"]', value: '1000' }
+  - click: { role: button, name: Create limit, exact: true }
+  - wait_gone: { role: dialog }
+  - click: { role: tab, name: Users, exact: true }
+  - wait: { selector: '[role="switch"][aria-label^="Disable"]' }
+  - shot: usage-user-limit-saved
+  - click: { selector: '[role="switch"][aria-label^="Disable"]' }
+  - shot: usage-user-limit-disabled
+  - click: { role: tab, name: Groups, exact: true }
+  - wait: { text: Training, exact: true }
+  - shot: usage-group-limits-composed
+  - click: { selector: '[role="switch"][aria-label^="Disable"]' }
+  - wait: { selector: '[role="switch"][aria-label^="Enable"]' }
+  - shot: usage-group-limit-disabled
+  - goto: /admin/voice
+  - goto: /admin/performance/usage
+  - click: { role: tab, name: Groups, exact: true }
+  - wait: { selector: '[role="switch"][aria-label^="Enable"]' }
+  - shot: usage-group-limit-disabled-navigation-readback
+  - click: { selector: 'button[aria-label^="Delete"]' }
+  - wait_gone: { text: Training, exact: true }
+  - shot: usage-group-limit-deleted
+  - goto: /admin/voice
+  - goto: /admin/performance/usage
+  - click: { role: tab, name: Groups, exact: true }
+  - wait_gone: { text: Training, exact: true }
+  - shot: usage-group-limit-deleted-navigation-readback
+  - click: { role: button, name: Create spending limit, exact: true }
+  - wait: { role: dialog }
+  - click: { role: radio, name: User group, exact: true }
+  - shot: usage-group-limit-create-native-form
+  - click: { text: Training, exact: true }
+  - fill: { selector: 'input[name="cost_budget_dollars"]', value: '10' }
+  - fill: { selector: 'input[name="token_budget"]', value: '2000' }
+  - fill: { selector: 'input[name="period_days"]', value: '1' }
+  - shot: usage-group-limit-create-filled
+  - click: { role: button, name: Create limit, exact: true }
+  - wait_gone: { role: dialog }
+  - click: { role: tab, name: Groups, exact: true }
+  - wait: { text: Training, exact: true }
+  - shot: usage-group-limit-created
+  - goto: /admin/voice
+  - goto: /admin/performance/usage
+  - click: { role: tab, name: Groups, exact: true }
+  - wait: { text: Training, exact: true }
+  - shot: usage-group-limit-created-navigation-readback
+  - click: { role: tab, name: Users, exact: true }
+  - click: { selector: 'button[aria-label^="Delete"]' }
+  - shot: usage-user-limit-deleted
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: ['demo-mcp-admin'], strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/performance/usage';
+      })()
+  - wait: { text: Manage spending limits, exact: true }
+  - click: { role: tab, name: Groups, exact: true }
+  - wait: { text: Training, exact: true }
+  - shot: usage-group-limit-reset-seed
