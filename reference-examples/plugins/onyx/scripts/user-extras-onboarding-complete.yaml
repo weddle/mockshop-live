@@ -1,0 +1,132 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-onboarding-complete
+title: Native Extras - onboarding complete
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`);
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait: { selector: '[aria-label="onboarding-flow"]' }
+    id: wait-aria-label-onboarding-flow
+  - click: { role: button, name: "Let's Go", exact: true }
+    id: click-let-s-go
+  - wait: { placeholder: Your name }
+    id: wait
+  - fill: { placeholder: Your name, value: Jordan Educator }
+    id: fill
+  - settle: 900
+    id: settle
+  - click: { role: button, name: Next, exact: true }
+    id: click-next
+  - wait: { selector: '[aria-label="onboarding-llm-step"]' }
+    id: wait-aria-label-onboarding-llm-step
+  # Lossless primary operations from the former monolithic proof.
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Nebius TokenFactory")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-nebius
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog
+  - shot: { name: extras-12-onboarding-nebius-form, full_page: true }
+    id: shot-extras-12-onboarding-nebius-form
+  - press: Escape
+    id: press-escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Bifrost")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-bifros
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-2
+  - shot: { name: extras-13-onboarding-bifrost-form, full_page: true }
+    id: shot-extras-13-onboarding-bifrost-form
+  - press: Escape
+    id: press-escape-2
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Ollama")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-ollama
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-3
+  - shot: { name: extras-14-onboarding-ollama-form, full_page: true }
+    id: shot-extras-14-onboarding-ollama-form
+  - press: Escape
+    id: press-escape-3
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("LM Studio")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-lm-stu
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-4
+  - shot: { name: extras-15-onboarding-lm-studio-form, full_page: true }
+    id: shot-extras-15-onboarding-lm-studio-form
+  - press: Escape
+    id: press-escape-4
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("OpenAI-Compatible")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-openai
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-5
+  - shot: { name: extras-16-onboarding-openai-compatible-form, full_page: true }
+    id: shot-extras-16-onboarding-openai-compatible-form
+  - press: Escape
+    id: press-escape-5
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Custom LLM Provider")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-custom
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-6
+  - shot: { name: extras-17-onboarding-custom-form, full_page: true }
+    id: shot-extras-17-onboarding-custom-form
+  - press: Escape
+    id: press-escape-6
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("GPT")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-gpt
+  - wait: { selector: 'input[name="api_key"]' }
+    id: wait-input-name-api-key
+  - shot: { name: extras-18-onboarding-openai-required, full_page: true }
+    id: shot-extras-18-onboarding-openai-required
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-not-a-secret }
+    id: fill-input-name-api-key
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - click: { role: button, name: Next, exact: true }
+    id: click-next-2
+  - wait: { role: button, name: Finish Setup, exact: true }
+    id: wait-finish-setup
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (me.personalization.name !== 'Jordan Educator') throw new Error('Native onboarding name did not persist');
+        const catalog = await (await fetch('/api/llm/provider')).json();
+        if (!catalog.providers.length) throw new Error('Provider owner #3 did not persist native onboarding choice');
+        for (const href of ['/admin/web-search', '/admin/image-generation', '/admin/users']) {
+          if (!document.querySelector(`a[href="${href}"]`)) throw new Error(`Missing final native setup link ${href}`);
+        }
+      })()
+    id: eval-script-2
+  - shot: { name: extras-19-onboarding-complete-optional-links, full_page: true }
+    id: shot-extras-19-onboarding-complete-optional-links
+  - click: { role: button, name: Finish Setup, exact: true }
+    id: click-finish-setup
+  - wait_gone: { selector: '[aria-label="onboarding-flow"]' }
+    id: wait-gone-aria-label-onboarding-flow
+  - goto: /app
+    id: goto-app-3
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (localStorage.getItem(`onyx:onboardingCompleted:${me.id}`) !== 'true') throw new Error('Native Finish Setup did not persist dismissal');
+        if (document.querySelector('[aria-label="onboarding-flow"]')) throw new Error('Dismissed onboarding reopened on reload');
+      })()
+    id: eval-script-3
+  - shot: { name: extras-20-onboarding-dismissed-reload, full_page: true }
+    id: shot-extras-20-onboarding-dismissed-reload
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-first-run.yaml

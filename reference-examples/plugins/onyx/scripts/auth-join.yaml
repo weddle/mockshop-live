@@ -1,0 +1,94 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-join
+title: "Independent native #69 unit: auth-join"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/register$/'
+    reason: Only this unit’s deliberately staged native endpoint400; the visible error and recovery are required.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/register\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^console: \[Toast\] LOCAL FAKE DEMO — staged account creation failure; no account created\. \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/0se759_ajj\-mw\.js\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+# Independent prerequisites: Original fresh reset/stage retained; local link/direct prefill, validation/error/success and logged-out pending redirect.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state-2
+  - eval: |
+      fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})})
+    id: eval-script-2
+  - eval: window.location.assign('/api/mockshop/auth-anonymous/email-link/join')
+    id: eval-script-3
+  - wait: { text: Re-authenticate to join team }
+    id: wait-re-authenticate-to-join-team
+  - shot: auth-join-local-link
+    id: shot-auth-join-local-link
+  - goto: /auth/join?email=robin.guest%40workshop.example&team=Community%20Learning&next=%2Fapp
+    id: goto-auth-join-email-robin-guest-40workshop-example-team-communi
+  - wait: { text: Re-authenticate to join team }
+    id: wait-re-authenticate-to-join-team-2
+  - shot: auth-join-direct-empty
+    id: shot-auth-join-direct-empty
+  - fill: { testid: password, value: short }
+    id: fill
+  - press: Tab
+    id: press-tab
+  - eval: |
+      if (!document.querySelector('button[type="submit"]')?.disabled) throw new Error('Join must use native signup validation');
+    id: eval-script-4
+  - shot: auth-join-validation
+    id: shot-auth-join-validation
+  - fill: { testid: email, value: staged.failure@workshop.example }
+    id: fill-2
+  - fill: { testid: password, value: MockOnly-Workshop1! }
+    id: fill-3
+  - click: { role: button, name: Join, exact: true }
+    id: click-join
+  - wait: { text: 'LOCAL FAKE DEMO — staged account creation failure; no account created.' }
+    id: wait-local-fake-demo-staged-account-creation-failure-no-account-
+  - shot: auth-join-error
+    id: shot-auth-join-error
+  - fill: { testid: email, value: robin.guest@workshop.example }
+    id: fill-4
+  - shot: auth-join-ready
+    id: shot-auth-join-ready
+  - click: { role: button, name: Join, exact: true }
+    id: click-join-2
+  - wait: { role: button, name: here, exact: true }
+    id: wait-here
+  - shot: auth-join-success-waiting
+    id: shot-auth-join-success-waiting
+  - eval: |
+      fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})})
+    id: eval-script-5
+  - goto: /auth/waiting-on-verification
+    id: goto-auth-waiting-on-verification
+  - wait: { testid: email }
+    id: wait
+  - shot: auth-waiting-logged-out-redirect
+    id: shot-auth-waiting-logged-out-redirect
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

@@ -1,7 +1,0 @@
-# Recents (placeholder healthcare org): "Badge reader not working on 4 West".
-turns:
-  - message: The badge reader on 4 West isn't working. What should I do?
-    script:
-      title: Badge reader not working on 4 West
-      answer: |
-        Placeholder answer: use the manual entry log at the 4 West nurses' station and open an IT ticket marked "Facilities access". The IT Service Desk aims to respond within 2 hours.

@@ -1,0 +1,409 @@
+apps:
+  onyx:
+    viewer: jordan
+    people:
+      jordan:
+        id: edu-u1
+    agents:
+      assistant:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 0
+        name: Assistant
+        description: Everyday assistant grounded in Lakeshore State University's catalog and handbooks.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 0
+        is_featured: true
+        builtin_persona: true
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: null
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      course-catalog-helper:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 21
+        name: Course Catalog Helper
+        description: Prerequisites, sections and degree requirements from the course catalog.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Prerequisites
+            message: What are the prerequisites for the intro statistics course?
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 1
+        is_featured: true
+        builtin_persona: false
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BooksStack
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      student-services:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 22
+        name: Student Services
+        description: Registration, financial aid and housing procedures for student-facing staff.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Add/drop
+            message: What is the add/drop deadline this term?
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 2
+        is_featured: true
+        builtin_persona: false
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Activity
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      it-service-desk:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 23
+        name: IT Service Desk
+        description: Campus Wi-Fi, LMS and account troubleshooting.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 3
+        is_featured: false
+        builtin_persona: false
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Terminal
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+    sources:
+      sharepoint:
+        visible: false
+      confluence:
+        visible: false
+    documents:
+      edu-cat-stat101:
+        id: EDU-CAT-STAT101
+        blurb: "Placeholder catalog entry: prerequisite MATH 095 or placement score; 4 credits; offered fall and spring."
+        updated: "{{vars.onyx_template_open}}ago:40d}}"
+      edu-conf-adv-12:
+        id: EDU-CONF-ADV-12
+        blurb: "Placeholder handbook text: advisors may approve a prerequisite waiver with department sign-off."
+        updated: "{{vars.onyx_template_open}}ago:90d}}"
+    conversations:
+      intro-statistics-prerequisites:
+        id: 44444444-0000-4000-8000-000000000001
+        time_created: "{{vars.onyx_template_open}}ago:5h}}"
+        time_updated: "{{vars.onyx_template_open}}ago:5h}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: course-catalog-helper
+        turns:
+          - message: "{{conversations.intro-statistics-prerequisites.messages.0.text}}"
+            script:
+              match: prerequisite|statistics|course|add/drop
+              default: true
+              title: Intro statistics prerequisites
+              queries:
+                - intro statistics course prerequisites
+              documents:
+                - id: "{{apps.onyx.documents.edu-cat-stat101.id}}"
+                  title: "{{documents.edu-cat-stat101.title}}"
+                  source: "{{sources.sharepoint.vendor}}"
+                  link: https://catalog.{{company.domain}}/courses/STAT-101
+                  blurb: "{{apps.onyx.documents.edu-cat-stat101.blurb}}"
+                  updated: "{{apps.onyx.documents.edu-cat-stat101.updated}}"
+                - id: "{{apps.onyx.documents.edu-conf-adv-12.id}}"
+                  title: "{{documents.edu-conf-adv-12.title}}"
+                  source: "{{sources.confluence.vendor}}"
+                  link: https://wiki.{{company.domain}}/display/ADV/12
+                  blurb: "{{apps.onyx.documents.edu-conf-adv-12.blurb}}"
+                  updated: "{{apps.onyx.documents.edu-conf-adv-12.updated}}"
+              answer: "{{conversations.intro-statistics-prerequisites.messages.1.text}}"
+      lms-gradebook-not-syncing:
+        id: 44444444-0000-4000-8000-000000000002
+        time_created: "{{vars.onyx_template_open}}ago:2d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:2d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: it-service-desk
+        turns:
+          - message: "{{conversations.lms-gradebook-not-syncing.messages.0.text}}"
+            script:
+              title: LMS gradebook not syncing
+              answer: "{{conversations.lms-gradebook-not-syncing.messages.1.text}}"
+    replies:
+      10-university:
+        match: prerequisite|statistics|course|add/drop
+        default: true
+        title: Intro statistics prerequisites
+        queries:
+          - intro statistics course prerequisites
+        text: |
+          **STAT 101 Introduction to Statistics** requires MATH 095 or a qualifying placement score [1]. Placeholder text:
+
+          - It's 4 credits and offered in fall and spring [1].
+          - Advisors can request a prerequisite waiver with department sign-off [2].
+        cites:
+          - edu-cat-stat101
+          - edu-conf-adv-12
+    fixtures:
+      GET /me:
+        id: "{{apps.onyx.people.jordan.id}}"
+        email: "{{people.jordan.email}}"
+        is_active: true
+        is_superuser: false
+        is_verified: true
+        role: basic
+        account_type: STANDARD
+        is_admin: false
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - basic
+        admin_capabilities: []
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 21
+            - 22
+          default_model: null
+          recent_assistants:
+            - 0
+            - 21
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.jordan.name}}"
+          role: "{{people.jordan.title}}"
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /enterprise-settings:
+        application_name: "{{company.name}}"
+        use_custom_logo: false
+        use_custom_logotype: false
+        logo_display_style: null
+        custom_nav_items: []
+        custom_lower_disclaimer_content: Lakeshore State University — placeholder demo org (fictional).
+        custom_header_content: null
+        two_lines_for_chat_header: null
+        custom_popup_header: null
+        custom_popup_content: null
+        enable_consent_screen: null
+        consent_screen_prompt: null
+        show_first_visit_notice: null
+        custom_greeting_message: Hi {{people.jordan.name}}. What can I find for you?
+      GET /user/pinned-assistants:
+        - 0
+        - 21
+        - 22
+      GET /tool:
+        - id: 1
+          name: internal_search
+          display_name: Internal Search
+          description: Search connected knowledge.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: SearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+    teams: {}

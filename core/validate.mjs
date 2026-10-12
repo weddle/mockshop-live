@@ -1,4 +1,4 @@
-// Mockshop scenario/manifest validation: a tiny JSON Schema (subset) checker + plugin-aware checks.
+// Mockshop script/manifest validation: a tiny JSON Schema (subset) checker + plugin-aware checks.
 // Used by `./mockshop validate` and by `./mockshop live` (to validate exported YAML).
 import fs from "node:fs";
 import path from "node:path";
@@ -6,7 +6,7 @@ import YAML from "yaml";
 import { ROOT } from "./plugin.mjs";
 
 const load = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, "schema", f), "utf8"));
-export const scenarioSchema = () => load("scenario.schema.json");
+export const scriptSchema = () => load("script.schema.json");
 export const pluginSchema = () => load("plugin.schema.json");
 
 const typeOf = (v) => (v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v);
@@ -131,15 +131,28 @@ function pluginChecks(m, sc) {
   return { errs, warns };
 }
 
-// Validate scenario text/object. m = loaded plugin (optional). Returns { ok, errors[], warnings[] }.
-export function validateScenario(input, m = null) {
+// Validate script text/object. m = loaded plugin (optional). Returns { ok, errors[], warnings[] }.
+export function validateScript(input, m = null) {
   let sc = input;
   if (typeof input === "string") {
     try { sc = YAML.parse(input); } catch (e) { return { ok: false, errors: [{ path: "(yaml)", message: e.message.split("\n")[0] }], warnings: [] }; }
   }
-  const errors = check(scenarioSchema(), sc), warnings = [];
+  const errors = check(scriptSchema(), sc), warnings = [];
   if (!errors.length && m) { const r = pluginChecks(m, sc); errors.push(...r.errs); warnings.push(...r.warns); }
   return { ok: !errors.length, errors, warnings };
+}
+
+// File validation follows the same content/profile/compiler path as rendering.
+// Keep validateScript synchronous for live authoring and schema consumers.
+export async function validateScriptFile(file, m, opts = {}) {
+  try {
+    const { prepareScript } = await import("./script.mjs");
+    const resolved = await prepareScript(m, file, opts);
+    const { errs, warns } = pluginChecks(m, resolved);
+    return { ok: !errs.length, errors: errs, warnings: warns };
+  } catch (e) {
+    return { ok: false, errors: [{ path: file, message: e.message }], warnings: [] };
+  }
 }
 
 export function validateManifest(file) {
@@ -158,7 +171,7 @@ const pathOf = (u) => (u.replace(/^[a-z]+:\/\/[^/]+/i, "").split(/[?#]/)[0].repl
 // Vocabulary route -> RegExp; ":param" segments match one path segment.
 const routeRx = (r) => new RegExp(`^${pathOf(r).split("/").map((s) => (s.startsWith(":") ? "[^/]+" : s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))).join("/")}$`);
 
-// plugins/<p>/vocabulary.yaml (docs/plugin-vocabulary.md): schema + references, scenarios, locales, editions, routes, snippets.
+// plugins/<p>/vocabulary.yaml (docs/plugin-vocabulary.md): schema + guides, scripts, locales, editions, routes, snippets.
 export function validateVocabulary(file, m) {
   let doc;
   try { doc = YAML.parse(fs.readFileSync(file, "utf8")); } catch (e) { return { ok: false, errors: [{ path: "(yaml)", message: e.message.split("\n")[0] }], warnings: [] }; }
@@ -172,17 +185,44 @@ export function validateVocabulary(file, m) {
     (doc[list] || []).forEach((x, i) => { if (ids[list].has(x.id)) E(`${list}[${i}].id`, `duplicate id "${x.id}"`); ids[list].add(x.id); });
   }
   const ref = (p, list, v) => { if (v !== undefined && !ids[list].has(v)) E(p, `unknown ${list.slice(0, -1)} "${v}"${closest(v, [...ids[list]])}`); };
-  // scenarios: name -> {gotos, shots}
+  // Bundled scripts: name -> {gotos, shots}. Operating guides do not depend on the sample catalog.
   const scen = new Map();
-  if (m.scenariosDir && fs.existsSync(m.scenariosDir)) for (const f of fs.readdirSync(m.scenariosDir).filter((f) => /\.ya?ml$/.test(f))) {
-    let sc; try { sc = YAML.parse(fs.readFileSync(path.join(m.scenariosDir, f), "utf8")); } catch { continue; }
-    const steps = Array.isArray(sc?.steps) ? sc.steps : [];
+  if (m.scriptsDir && fs.existsSync(m.scriptsDir)) for (const f of fs.readdirSync(m.scriptsDir).filter((f) => /\.ya?ml$/.test(f))) {
+    let sc; try { sc = YAML.parse(fs.readFileSync(path.join(m.scriptsDir, f), "utf8")); } catch { continue; }
+    const steps = Array.isArray(sc?.steps) ? sc.steps : (sc?.scenes || []).flatMap((scene) => scene.steps || []);
     scen.set(f.replace(/\.ya?ml$/, ""), {
       gotos: steps.filter((s) => typeof s?.goto === "string").map((s) => pathOf(s.goto)),
       shots: new Set(steps.map((s) => (typeof s?.shot === "string" ? s.shot : s?.shot?.name)).filter(Boolean)),
     });
   }
-  const refScenario = (p, name) => { if (name !== undefined && !scen.has(name)) E(p, `no scenario "${name}" in ${path.relative(ROOT, m.scenariosDir)}/${closest(name, [...scen.keys()])}`); };
+  const refScript = (p, name) => { if (name !== undefined && !scen.has(name)) E(p, `no script "${name}" in ${path.relative(ROOT, m.scriptsDir)}/${closest(name, [...scen.keys()])}`); };
+  const guides = new Map();
+  const refGuide = (field, target) => {
+    if (target === undefined) return;
+    const [relative, anchor, ...extra] = target.split("#");
+    const guide = path.resolve(m.dir, relative);
+    if (!relative.endsWith(".md") || extra.length || path.isAbsolute(relative) || path.relative(m.dir, guide).startsWith("..")) {
+      E(field, "guide must name a Markdown file within this plugin, optionally followed by #heading"); return;
+    }
+    if (!fs.existsSync(guide) || !fs.statSync(guide).isFile()) { E(field, `missing operating guide "${relative}"`); return; }
+    if (!anchor) return;
+    if (!guides.has(guide)) {
+      const text = fs.readFileSync(guide, "utf8");
+      const anchors = new Set([...text.matchAll(/<a\s+id=["']([^"']+)["']/g)].map((match) => match[1]));
+      const counts = new Map();
+      let fenced = false;
+      for (const line of text.split("\n")) {
+        if (/^\s*(```|~~~)/.test(line)) { fenced = !fenced; continue; }
+        const heading = !fenced && line.match(/^#{1,6}\s+(.+?)\s*#*\s*$/);
+        if (!heading) continue;
+        const slug = heading[1].toLowerCase().replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}_\s-]/gu, "").replace(/\s/g, "-");
+        const n = counts.get(slug) || 0;
+        anchors.add(n ? `${slug}-${n}` : slug); counts.set(slug, n + 1);
+      }
+      guides.set(guide, anchors);
+    }
+    if (!guides.get(guide).has(anchor)) E(field, `no heading "#${anchor}" in "${relative}"`);
+  };
   const editions = m.editions ? Object.keys(m.editions) : [];
   const routes = webRoutes(m, errors), gotos = [...scen.values()].flatMap((s) => s.gotos);
   let unchecked = 0;
@@ -195,23 +235,25 @@ export function validateVocabulary(file, m) {
       else if (!gotos.some((g) => routeRx(r).test(g))) unchecked++;
     });
   });
-  if (unchecked) W("surfaces", `${unchecked} works/partial route(s) not opened by any ${m.name} scenario and no built route table to check them against`);
+  if (unchecked) W("surfaces", `${unchecked} works/partial route(s) not opened by a bundled ${m.name} script and no built route table to check them against`);
   (doc.entities || []).forEach((x, i) => (x.surfaces || []).forEach((s, j) => ref(`entities[${i}].surfaces[${j}]`, "surfaces", s)));
   (doc.actions || []).forEach((x, i) => {
     ref(`actions[${i}].surface`, "surfaces", x.surface);
     (x.entities || []).forEach((e, j) => ref(`actions[${i}].entities[${j}]`, "entities", e));
-    refScenario(`actions[${i}].scenario`, x.scenario);
+    refScript(`actions[${i}].script`, x.script);
+    refGuide(`actions[${i}].guide`, x.guide);
   });
   (doc.moments || []).forEach((x, i) => {
     ref(`moments[${i}].surface`, "surfaces", x.surface);
-    refScenario(`moments[${i}].scenario`, x.scenario);
+    refScript(`moments[${i}].script`, x.script);
+    refGuide(`moments[${i}].guide`, x.guide);
     if (x.shot !== undefined) {
-      if (x.scenario === undefined) E(`moments[${i}].shot`, "needs a scenario");
-      else if (scen.has(x.scenario) && !scen.get(x.scenario).shots.has(x.shot)) E(`moments[${i}].shot`, `no shot "${x.shot}" in scenario "${x.scenario}"${closest(x.shot, [...scen.get(x.scenario).shots])}`);
+      if (x.script === undefined) E(`moments[${i}].shot`, "needs a script");
+      else if (scen.has(x.script) && !scen.get(x.script).shots.has(x.shot)) E(`moments[${i}].shot`, `no shot "${x.shot}" in script "${x.script}"${closest(x.shot, [...scen.get(x.script).shots])}`);
     }
   });
   (doc.not_supported || []).forEach((x, i) => ref(`not_supported[${i}].surface`, "surfaces", x.surface));
-  const sch = scenarioSchema(), step = sch.$defs.step;
+  const sch = scriptSchema(), step = sch.$defs.step;
   (doc.snippets || []).forEach((x, i) => {
     ref(`snippets[${i}].action`, "actions", x.action);
     x.steps.forEach((s, j) => errors.push(...check(step, s, sch, `snippets[${i}].steps[${j}]`)));

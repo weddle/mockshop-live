@@ -1,0 +1,131 @@
+apps:
+  onyx:
+    fixtures:
+      GET /mockshop/auth-anonymous/content:
+        label: LOCAL FAKE AUTH DEMO — no email sent, no real account or authentication
+        email: "{{people.alex-learner.email}}"
+        join_email: robin.guest@workshop.example
+        error_email: staged.failure@workshop.example
+        name: "{{people.alex-learner.name}}"
+        guest_name: Workshop Visitor (fake demo)
+        team: Community Learning (fake demo)
+        demo_input: MockOnly-Workshop1!
+        verify_token: mock-only-verify-workshop
+        reset_token: mock-only-reset-workshop
+        anonymous_path: demo
+        upload_name: workshop-notes.txt
+        upload_text: LOCAL FAKE DEMO — disposable fictional workshop input; not a real document.
+        authorize_delay_ms: 2000
+        auth_profiles:
+          mixed:
+            multi_tenant: false
+            password_auth_enabled: true
+            sso_providers:
+              - name: workshop-google
+                display_name: Workshop Google (fake)
+                provider_type: GOOGLE_OAUTH
+                authorize_url: /api/mockshop/auth-anonymous/authorize/google
+              - name: workshop-oidc
+                display_name: Workshop OIDC (fake)
+                provider_type: OIDC
+                authorize_url: /api/mockshop/auth-anonymous/authorize/oidc
+              - name: workshop-saml
+                display_name: Workshop SAML (fake)
+                provider_type: SAML
+                authorize_url: /api/mockshop/auth-anonymous/authorize/saml
+          sso-only:
+            multi_tenant: false
+            password_auth_enabled: false
+            sso_providers:
+              - name: workshop-google
+                display_name: Workshop Google (fake)
+                provider_type: GOOGLE_OAUTH
+                authorize_url: /api/mockshop/auth-anonymous/authorize/google
+              - name: workshop-oidc
+                display_name: Workshop OIDC (fake)
+                provider_type: OIDC
+                authorize_url: /api/mockshop/auth-anonymous/authorize/oidc
+              - name: workshop-saml
+                display_name: Workshop SAML (fake)
+                provider_type: SAML
+                authorize_url: /api/mockshop/auth-anonymous/authorize/saml
+          auto-sso:
+            multi_tenant: false
+            password_auth_enabled: false
+            sso_providers:
+              - name: workshop-oidc
+                display_name: Workshop OIDC (fake)
+                provider_type: OIDC
+                authorize_url: /api/mockshop/auth-anonymous/authorize/oidc
+          first-user:
+            multi_tenant: false
+            has_users: false
+          multitenant:
+            multi_tenant: true
+            password_auth_enabled: true
+            sso_providers: []
+        messages:
+          login_error: LOCAL FAKE DEMO — staged sign-in failure; no authentication attempted.
+          register_error: LOCAL FAKE DEMO — staged account creation failure; no account created.
+          email_error: LOCAL FAKE DEMO — staged email-link failure; no email sent.
+          verify_error: LOCAL FAKE DEMO — invalid or expired demo verification link.
+          reset_error: LOCAL FAKE DEMO — invalid or expired demo reset link.
+          password_error: LOCAL FAKE DEMO — use the displayed fictional demo input, not a real password.
+          authorize_error: LOCAL FAKE DEMO — staged provider start failure; no IdP contacted.
+          discovery_error: LOCAL FAKE DEMO — staged SSO lookup failure; no workspace queried.
+          verify_subject: LOCAL FAKE DEMO — verify workshop email (not sent)
+          reset_subject: LOCAL FAKE DEMO — reset workshop demo input (not sent)
+      GET /tenants/anonymous-user:
+        anonymous_user_enabled: true
+        anonymous_user_path: demo
+      GET /settings:
+        maximum_chat_retention_days: null
+        company_name: "{{company.name}}"
+        company_description: Boutique coastal hotels & resorts (fictional demo company)
+        gpu_enabled: false
+        application_status: active
+        anonymous_user_enabled: false
+        invite_only_enabled: false
+        deep_research_enabled: true
+        multi_model_chat_enabled: true
+        search_ui_enabled: true
+        auto_detect_search_filters: true
+        ee_features_enabled: false
+        tier: community
+        temperature_override_enabled: true
+        reasoning_override_enabled: true
+        hide_provider_grouping: false
+        auto_scroll: false
+        query_history_type: normal
+        hide_query_history_from_admin_panel: false
+        image_extraction_and_analysis_enabled: true
+        image_analysis_max_size_mb: 20
+        user_knowledge_enabled: true
+        user_file_max_upload_size_mb: 100
+        file_token_count_threshold_k: null
+        show_extra_connectors: true
+        disable_default_assistant: false
+        craft_default_enabled: false
+        llm_gateway_enabled: true
+        craft_instructions: null
+        seat_count: null
+        used_seats: null
+        opensearch_indexing_enabled: true
+        oauth_provider_enabled: false
+        notifications: []
+        needs_reindexing: false
+        tenant_id: public
+        onyx_craft_enabled: true
+        onyx_craft_available: true
+        opencode_debugging_enabled: false
+        vector_db_enabled: true
+        hide_onyx_branding: false
+        hooks_enabled: false
+        version: v3.4.0
+        max_allowed_upload_size_mb: 250
+        default_pruning_freq: 86400
+        default_user_file_max_upload_size_mb: 100
+        default_file_token_count_threshold_k: 200
+        is_containerized: true
+        posthog_key: null
+        posthog_host: null

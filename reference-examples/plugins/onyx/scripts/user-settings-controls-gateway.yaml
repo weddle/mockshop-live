@@ -1,0 +1,113 @@
+# Native prerequisites: Business+ tier, visible model, CREATE_USER_API_KEYS, available gateway scope.
+# Existing Enterprise seeds provide them. No gateway requests or provider/network actions.
+name: user-settings-controls-gateway
+title: Native enterprise gateway URL/model copy and scoped token mint/copy
+requires: enterprise
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - click: { selector: 'a[href="/app/settings/llm-gateway"]' }
+    id: click-a-href-app-settings-llm-gateway
+  - wait: { text: Gateway URL, exact: true }
+    id: wait-gateway-url
+  - wait: { role: button, name: New token, exact: true }
+    id: wait-new-token
+  - click: { selector: 'button:has-text("/api/gateway/v1")', settle: 0 }
+    id: click-button-has-text-api-gateway-v1
+  - wait: { selector: 'button:has-text("/api/gateway/v1") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-button-has-text-api-gateway-v1-path-d-m13-5-4-5l6-12l2-5-8-
+  - shot: { name: gateway-url-copy-native-success, delay: 0 }
+    id: shot-gateway-url-copy-native-success
+  - click: { role: button, name: OpenAI }
+    id: click-openai
+  - wait: { role: button, name: 1/gpt-5.2, exact: true }
+    id: wait-1-gpt-5-2
+  - click: { role: button, name: 1/gpt-5.2, exact: true, settle: 0 }
+    id: click-1-gpt-5-2
+  - wait: { selector: 'button:has-text("1/gpt-5.2") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-button-has-text-1-gpt-5-2-path-d-m13-5-4-5l6-12l2-5-8-5
+  - shot: { name: gateway-model-id-copy-native-success, delay: 0 }
+    id: shot-gateway-model-id-copy-native-success
+  - click: { role: button, name: New token, exact: true }
+    id: click-new-token
+  - wait: { selector: 'input[placeholder="Name your token"][value="LLM Gateway"]' }
+    id: wait-input-placeholder-name-your-token-value-llm-gateway
+  - wait: { selector: 'input[placeholder="Select permissions"][value="Limited access"]' }
+    id: wait-input-placeholder-select-permissions-value-limited-access
+  - wait: { selector: '[role="checkbox"][aria-label="LLM Gateway Use"][aria-checked="true"]' }
+    id: wait-role-checkbox-aria-label-llm-gateway-use-aria-checked-true
+  - shot: { name: gateway-native-scoped-token-defaults, full_page: true }
+    id: shot-gateway-native-scoped-token-defaults
+  - click: { role: checkbox, name: LLM Gateway Use, exact: true }
+    id: click-llm-gateway-use
+  - eval: |
+      if (![...document.querySelectorAll('[role="dialog"] button')].find(el => el.textContent.trim() === 'Create Token')?.matches('[aria-disabled="true"],:disabled')) throw new Error('Empty gateway scope must disable minting');
+    id: eval-script
+  - click: { role: checkbox, name: LLM Gateway Use, exact: true }
+    id: click-llm-gateway-use-2
+  - fill: { placeholder: Name your token, value: Workshop gateway demo }
+    id: fill
+  - click: { placeholder: Select expiration }
+    id: click
+  - click: { text: No expiration, exact: true }
+    id: click-no-expiration
+  - click: { role: button, name: Create Token, exact: true }
+    id: click-create-token
+  - wait: { text: mockshop-not-a-real-token-0001, exact: true }
+    id: wait-mockshop-not-a-real-token-0001
+  - click: { role: button, name: Copy Token, exact: true, settle: 0 }
+    id: click-copy-token
+  - wait: { selector: 'button:has-text("Copy Token") path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-button-has-text-copy-token-path-d-m13-5-4-5l6-12l2-5-8-5
+  - shot: { name: gateway-token-copy-native-success, delay: 0 }
+    id: shot-gateway-token-copy-native-success
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+    id: eval-script-2
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - wait: { text: Workshop gateway demo, exact: true }
+    id: wait-workshop-gateway-demo
+  - wait: { text: 'Created today - Never expires - Use llm gateway', exact: true }
+    id: wait-created-today-never-expires-use-llm-gateway
+  - eval: |
+      (async () => {
+        const rows = await (await fetch('/api/user/pats')).json();
+        const row = rows.find(el => el.name === 'Workshop gateway demo');
+        if (row?.expires_at !== null || row?.scopes.join(',') !== 'use:llm_gateway' || 'token' in row) throw new Error('Gateway token did not persist in the sole PAT store');
+      })()
+    id: eval-script-3
+  - shot: { name: gateway-token-account-list-kept, full_page: true }
+    id: shot-gateway-token-account-list-kept
+  - goto: /app/settings/llm-gateway
+    id: goto-app-settings-llm-gateway
+  - wait: { role: button, name: New token, exact: true }
+    id: wait-new-token-2
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+    id: eval-script-4
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-2
+  - wait: { text: No access tokens created., exact: true }
+    id: wait-no-access-tokens-created
+  - shot: { name: gateway-token-reset-isolated, full_page: true }
+    id: shot-gateway-token-reset-isolated
+world: ../../../worlds/seaside/world.yaml

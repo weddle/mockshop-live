@@ -1,0 +1,102 @@
+apps:
+  onyx:
+    fixtures:
+      GET /admin/llm/provider:
+        providers:
+          - id: 59
+            name: Campus Bedrock (local fake)
+            provider: bedrock
+            api_key: null
+            api_base: null
+            api_version: null
+            custom_config:
+              AWS_REGION_NAME: us-east-1
+              BEDROCK_AUTH_METHOD: access_key
+              AWS_ACCESS_KEY_ID: mock-only-not-a-secret
+              AWS_SECRET_ACCESS_KEY: mock-only-not-a-secret
+            is_public: true
+            is_auto_mode: false
+            groups: []
+            personas: []
+            deployment_name: null
+            model_configurations:
+              - id: 5901
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 59
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 59
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /llm/provider:
+        providers:
+          - id: 59
+            name: Campus Bedrock (local fake)
+            provider: bedrock
+            provider_display_name: Amazon Bedrock
+            model_configurations:
+              - id: 5901
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 59
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 59
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /llm/persona/:id/providers:
+        providers:
+          - id: 59
+            name: Campus Bedrock (local fake)
+            provider: bedrock
+            provider_display_name: Amazon Bedrock
+            model_configurations:
+              - id: 5901
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 59
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 59
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /admin/llm/built-in/options/bedrock:
+        name: bedrock
+        known_models:
+          - id: 5901
+            name: learning-notes-demo
+            display_name: Learning Notes (local fake)
+            is_visible: true
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+        recommended_default_model:
+          name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+      POST /admin/llm/bedrock/available-models:
+        - name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+          max_input_tokens: 32768
+          supports_image_input: false

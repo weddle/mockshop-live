@@ -1,2 +1,0 @@
-# Native Cloud subscription/seats display only; edits persist only in Pages state.
-GET /mockshop/admin-pages/billing-case: active

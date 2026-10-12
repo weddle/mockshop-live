@@ -1,0 +1,80 @@
+# #65 route-sized native proof: Slack bots and native create/detail lifecycle.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-slack-bots
+title: Slack bots and native create/detail lifecycle - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/bots
+    id: goto-admin-bots
+  - shot: inventory-slack-bots
+    id: shot-inventory-slack-bots
+  - goto: /admin/bots/new
+    id: goto-admin-bots-new
+  - shot: inventory-slack-bot-new
+    id: shot-inventory-slack-bot-new
+  - goto: /admin/bots/6501
+    id: goto-admin-bots-6501
+  - shot: inventory-slack-bot-detail
+    id: shot-inventory-slack-bot-detail
+  - goto: /admin/service-accounts
+    id: goto-admin-service-accounts
+  - click: { selector: 'a[href="/admin/bots"]' }
+    id: click-a-href-admin-bots
+  - wait: { text: Learning Desk (fake Slack bot), exact: true }
+    id: wait-learning-desk-fake-slack-bot
+  - shot: slack-bots-menu
+    id: shot-slack-bots-menu
+  - goto: /admin/bots
+    id: goto-admin-bots-2
+  - shot: slack-bots-direct
+    id: shot-slack-bots-direct
+  - goto: /admin/bots/new
+    id: goto-admin-bots-new-2
+  - shot: slack-bot-new-form
+    id: shot-slack-bot-new-form
+  - fill: { selector: 'input[name="name"]', value: Workshop practice (fake Slack bot) }
+    id: fill-input-name-name
+  - fill: { selector: 'input[name="bot_token"]', value: mock-only-bot-token }
+    id: fill-input-name-bot-token
+  - fill: { selector: 'input[name="app_token"]', value: mock-only-app-token }
+    id: fill-input-name-app-token
+  - shot: slack-bot-create-filled
+    id: shot-slack-bot-create-filled
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { text: Workshop practice (fake Slack bot), exact: true }
+    id: wait-workshop-practice-fake-slack-bot
+  - shot: slack-bot-created
+    id: shot-slack-bot-created
+  - click: { selector: 'input[type="checkbox"]' }
+    id: click-input-type-checkbox
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/bots/6502
+    id: goto-admin-bots-6502
+  - shot: slack-bot-enabled-saved
+    id: shot-slack-bot-enabled-saved
+  - click: { role: button, name: Delete, exact: true }
+    id: click-delete
+  - wait: { role: dialog }
+    id: wait
+  - shot: slack-bot-delete-confirm
+    id: shot-slack-bot-delete-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+    id: click-role-dialog-button-has-text-delete
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - shot: slack-bot-deleted
+    id: shot-slack-bot-deleted
+  - goto: /admin/bots/6501
+    id: goto-admin-bots-6501-2
+  - shot: slack-bot-detail
+    id: shot-slack-bot-detail
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

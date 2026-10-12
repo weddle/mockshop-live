@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { check } from "../core/validate.mjs";
 
-const schema = JSON.parse(fs.readFileSync(new URL("./scenario.schema.json", import.meta.url), "utf8"));
-const errorsFor = (scenario) => check(schema, scenario);
+const schema = JSON.parse(fs.readFileSync(new URL("./script.schema.json", import.meta.url), "utf8"));
+const errorsFor = (script) => check(schema, script);
 const withCursor = (cursor) => ({ cursor, steps: [{ goto: "/app" }] });
 
 const valid = [
@@ -100,7 +100,7 @@ for (const [name, cursor] of invalid) {
 
 // Exercise the consumer placements without changing #45's op/locator constraints.
 const placements = [
-  ["scenario", (cursor) => withCursor(cursor)],
+  ["script", (cursor) => withCursor(cursor)],
   ["clip", (cursor) => ({ clip: { cursor }, steps: [{ goto: "/app" }] })],
   ["cursor-only with modifiers", (cursor) => ({ steps: [{ cursor, only: "clip", at: "1:02.5" }] })],
   ["step modifier", (cursor) => ({ steps: [{ click: "Save", cursor }] })],
@@ -112,9 +112,9 @@ const placements = [
   ["inline mark", (cursor) => ({ steps: [{ mark: { name: "here", cursor } }] })],
   ["inline keyframe", (cursor) => ({ steps: [{ keyframe: { name: "here", cursor } }] })],
 ];
-for (const [name, scenarioFor] of placements) {
-  assert.deepEqual(errorsFor(scenarioFor({ style: "comet_swoop", look: { shape: "ring" } })), [], `${name} accepts valid config`);
-  assert.ok(errorsFor(scenarioFor({ effects: { rippple: true } })).length > 0, `${name} rejects nested config typos`);
+for (const [name, scriptFor] of placements) {
+  assert.deepEqual(errorsFor(scriptFor({ style: "comet_swoop", look: { shape: "ring" } })), [], `${name} accepts valid config`);
+  assert.ok(errorsFor(scriptFor({ effects: { rippple: true } })).length > 0, `${name} rejects nested config typos`);
 }
 assert.deepEqual(errorsFor({ steps: [{ shot: { name: "here", cursor: { at: [640, 400], ripple: 0.35 } }, cursor: false }] }), [], "inline still keys and overriding modifier remain valid");
 assert.ok(errorsFor({ steps: [{ move: { to: [900, 300], hold: 400, cursor: { style: "typo" } }, cursor: false }] }).length > 0, "overriding modifier does not hide invalid inline config");

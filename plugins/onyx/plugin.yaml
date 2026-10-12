@@ -94,7 +94,7 @@ auth_bypass: >
 runner:
   viewport: [1440, 900]
   timezone: America/New_York
-  demo_anchor: 2026-10-09T10:00:00-04:00   # fixed demo "now": fixture {{ago:..}} times and the page clock start here, so every run shows the same times (override per scenario)
+  demo_anchor: 2026-10-09T10:00:00-04:00   # fixed demo "now": fixture {{ago:..}} times and the page clock start here, so every run shows the same times (override per script)
   cookies:
     - { name: fastapiusersauth, value: mockshop }
   allow_hosts:                 # everything else outbound is blocked

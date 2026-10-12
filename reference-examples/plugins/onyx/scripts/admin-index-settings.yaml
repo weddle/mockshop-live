@@ -1,0 +1,126 @@
+# #65 route-sized native proof: Index Settings.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-index-settings
+title: Index Settings - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/index-settings
+    id: goto-admin-index-settings
+  - shot: inventory-index-settings
+    id: shot-inventory-index-settings
+  - goto: /admin/index-settings
+    id: goto-admin-index-settings-2
+  - wait: { text: View All Models, exact: true }
+    id: wait-view-all-models
+  - shot: index-settings-direct
+    id: shot-index-settings-direct
+  - click: { selector: 'a[href="/admin/index-settings"]' }
+    id: click-a-href-admin-index-settings
+  - click: { role: button, name: View All Models, exact: true }
+    id: click-view-all-models
+  - shot: index-settings-model-panel
+    id: shot-index-settings-model-panel
+  - click: { role: button, name: Add Custom Model, exact: true }
+    id: click-add-custom-model
+  - wait: { role: dialog }
+    id: wait
+  - shot: index-settings-custom-dialog
+    id: shot-index-settings-custom-dialog
+  - fill: { selector: 'input[name="modelName"]', value: educational/fake-embedding }
+    id: fill-input-name-modelname
+  - fill: { selector: 'input[name="modelDim"]', value: '768' }
+    id: fill-input-name-modeldim
+  - click: { role: button, name: Connect, exact: true }
+    id: click-connect
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - shot: index-settings-custom-selected
+    id: shot-index-settings-custom-selected
+  - click: { role: button, name: Apply & Re-index, exact: true }
+    id: click-apply-re-index
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/index-settings
+    id: goto-admin-index-settings-3
+  - wait: { text: educational/fake-embedding, exact: true }
+    id: wait-educational-fake-embedding
+  - shot: index-settings-custom-saved
+    id: shot-index-settings-custom-saved
+  - scroll: { text: Vector Quantization, exact: true }
+    id: scroll-vector-quantization
+  - shot: index-lower-vector-quantization-loaded
+    id: shot-index-lower-vector-quantization-loaded
+  - click: { selector: 'label:has-text("Vector Quantization") button', nth: 0 }
+    id: click-label-has-text-vector-quantization-button
+  - wait: { text: 7-bit, exact: true }
+    id: wait-7-bit
+  - shot: index-vector-quantization-options
+    id: shot-index-vector-quantization-options
+  - click: { text: 7-bit, exact: true }
+    id: click-7-bit
+  - scroll: { text: Retrieval Optimization, exact: true }
+    id: scroll-retrieval-optimization
+  - wait: { selector: 'label:has-text("Multipass Indexing") [role="switch"][disabled]' }
+    id: wait-label-has-text-multipass-indexing-role-switch-disabled
+  - shot: index-retrieval-native-disabled-multipass
+    id: shot-index-retrieval-native-disabled-multipass
+  - click: { selector: 'label:has-text("Contextual Retrieval") [role="switch"]' }
+    id: click-label-has-text-contextual-retrieval-role-switch
+  - click: { selector: 'label:has-text("Contextual Retrieval LLM") input[role="combobox"]' }
+    id: click-label-has-text-contextual-retrieval-llm-input-role-combobo
+  - click: { selector: '[role="listbox"] [role="button"][aria-expanded="false"]:has-text("OpenAI")' }
+    id: click-role-listbox-role-button-aria-expanded-false-has-text-open
+  - click: { selector: '[role="listbox"] [role="option"]:has-text("GPT-5.2")' }
+    id: click-role-listbox-role-option-has-text-gpt-5-2
+  - wait: { selector: 'label:has-text("Contextual Retrieval LLM") input[value="GPT-5.2"]' }
+    id: wait-label-has-text-contextual-retrieval-llm-input-value-gpt-5-2
+  - shot: index-contextual-native-model-selected
+    id: shot-index-contextual-native-model-selected
+  - scroll: { text: Image Processing, exact: true }
+    id: scroll-image-processing
+  - click: { selector: 'label:has-text("Extract & Caption Images") [role="switch"]' }
+    id: click-label-has-text-extract-caption-images-role-switch
+  - wait: { selector: 'label:has-text("Extract & Caption Images") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-extract-caption-images-role-switch-aria-chec
+  - click: { selector: 'label:has-text("Extract & Caption Images") [role="switch"]' }
+    id: click-label-has-text-extract-caption-images-role-switch-2
+  - wait: { selector: 'label:has-text("Extract & Caption Images") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-extract-caption-images-role-switch-aria-chec-2
+  - click: { selector: 'label:has-text("Captioning LLM") input[role="combobox"]' }
+    id: click-label-has-text-captioning-llm-input-role-combobox
+  - click: { selector: '[role="listbox"] [role="option"]:has-text("GPT-4.1")' }
+    id: click-role-listbox-role-option-has-text-gpt-4-1
+  - wait: { selector: 'label:has-text("Captioning LLM") input[value="GPT-4.1"]' }
+    id: wait-label-has-text-captioning-llm-input-value-gpt-4-1
+  - click: { selector: 'label:has-text("Max Image Size for Analysis") button', nth: 0 }
+    id: click-label-has-text-max-image-size-for-analysis-button
+  - click: { text: '10', exact: true }
+    id: click-10
+  - shot: index-image-captioning-size-draft
+    id: shot-index-image-captioning-size-draft
+  - click: { role: button, name: Revert, exact: true }
+    id: click-revert
+  - wait: { selector: 'label:has-text("Extract & Caption Images") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-extract-caption-images-role-switch-aria-chec-3
+  - shot: index-image-native-reverted
+    id: shot-index-image-native-reverted
+  - scroll: { text: Retrieval Optimization, exact: true }
+    id: scroll-retrieval-optimization-2
+  - wait: { selector: 'label:has-text("Contextual Retrieval") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-contextual-retrieval-role-switch-aria-checke
+  - shot: index-retrieval-native-reverted
+    id: shot-index-retrieval-native-reverted
+  - scroll: { text: Vector Quantization, exact: true }
+    id: scroll-vector-quantization-2
+  - wait: { selector: 'label:has-text("Vector Quantization") input[value="None"]' }
+    id: wait-label-has-text-vector-quantization-input-value-none
+  - shot: index-vector-native-reverted
+    id: shot-index-vector-native-reverted
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,70 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-roles
+title: Native accepted User admin access and independent reset
+strict: true
+requires: enterprise
+locale: en
+steps:
+  - goto: /admin/users
+    id: goto-admin-users
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+    id: fill-input-placeholder-search-users
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions
+  - shot: users-active-menu
+    id: shot-users-active-menu
+  - click: { text: Make Admin, exact: true }
+    id: click-make-admin
+  - wait: { text: User is now an admin, exact: true }
+    id: wait-user-is-now-an-admin
+  - shot: users-admin-feedback
+    id: shot-users-admin-feedback
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-2
+  - click: { text: Remove Admin Access, exact: true }
+    id: click-remove-admin-access
+  - wait: { text: Admin access removed, exact: true }
+    id: wait-admin-access-removed
+  - shot: users-admin-removed
+    id: shot-users-admin-removed
+  # The original grant/removal lifecycle ends clean. Grant again before reset so reset is meaningful.
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-3
+  - click: { text: Make Admin, exact: true }
+    id: click-make-admin-2
+  - wait: { text: User is now an admin, exact: true }
+    id: wait-user-is-now-an-admin-2
+  - goto: /admin/users
+    id: goto-admin-users-2
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+    id: fill-input-placeholder-search-users-2
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-4
+  - wait: { text: Remove Admin Access, exact: true }
+    id: wait-remove-admin-access
+  - shot: users-admin-persisted
+    id: shot-users-admin-persisted
+  - press: Escape
+    id: press-escape
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en'})});
+        if (!res.ok) throw new Error('Mock reset failed');
+        location.reload();
+      })()
+    id: eval-script
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+    id: fill-input-placeholder-search-users-3
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-5
+  - wait: { text: Make Admin, exact: true }
+    id: wait-make-admin
+  - shot: users-role-reset
+    id: shot-users-role-reset
+world: ../../../worlds/seaside/world.yaml

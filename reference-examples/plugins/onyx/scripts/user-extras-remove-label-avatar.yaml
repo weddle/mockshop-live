@@ -1,0 +1,104 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-remove-label-avatar
+title: Native Extras - remove label avatar
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - fill: { placeholder: Add labels..., value: Inclusive Learning }
+    id: fill
+  - press: Enter
+    id: press-enter
+  - wait: { text: Inclusive Learning, exact: true }
+    id: wait-inclusive-learning
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-2
+  - wait: { text: Inclusive Learning, exact: true }
+    id: wait-inclusive-learning-2
+  - hover: { selector: '.h-30.w-30' }
+    id: hover-h-30-w-30
+  - click: { selector: '.h-30.w-30' }
+    id: click-h-30-w-30
+  - wait: { text: Upload Image, exact: true }
+    id: wait-upload-image
+  - click: { selector: '[role="menuitem"].grid button', nth: 1 }
+    id: click-role-menuitem-grid-button
+  - click: { role: button, name: Save, exact: true }
+    id: click-save-2
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-3
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.icon_name || a.uploaded_image_id) throw new Error('Native avatar icon did not persist');
+      })()
+    id: eval-script
+  - click: { selector: '.h-30.w-30' }
+    id: click-h-30-w-30-2
+  - click: { text: Upload Image, exact: true }
+    id: click-upload-image
+  - eval: |
+      (async () => {
+        const config = await (await fetch('/api/mockshop/user-extras')).json();
+        const bytes = Uint8Array.from(atob(config.avatar_png_base64), c=>c.charCodeAt(0));
+        const transfer = new DataTransfer(); transfer.items.add(new File([bytes], 'fictional-education-avatar.png', {type:'image/png'}));
+        const input = document.querySelector('input[type="file"][accept="image/*"]');
+        input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+      })()
+    id: eval-script-2
+  - settle: 700
+    id: settle
+  - click: { role: button, name: Save, exact: true }
+    id: click-save-3
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-4
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.uploaded_image_id?.startsWith('mock-user-extras-avatar-')) throw new Error('Native avatar upload marker did not persist');
+      })()
+    id: eval-script-3
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-5
+  - click: { label: Remove Inclusive Learning }
+    id: click-2
+  - click: { selector: '.h-30.w-30' }
+    id: click-h-30-w-30-3
+  - click: { selector: '[role="menuitem"].grid button', nth: 0 }
+    id: click-role-menuitem-grid-button-2
+  - click: { role: button, name: Save, exact: true }
+    id: click-save-4
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-6
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if(a.labels.some(l=>l.name==='Inclusive Learning') || a.uploaded_image_id || a.icon_name) throw new Error('Native label removal/default avatar did not persist');
+      })()
+    id: eval-script-4
+  - shot: { name: extras-63a-agent-label-removed-avatar-default, full_page: true }
+    id: shot-extras-63a-agent-label-removed-avatar-default
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

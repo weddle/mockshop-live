@@ -1,7 +1,7 @@
 // Project metadata and associations only. Chat replay remains in handlers.mjs; files in #28.
 export default function createUserProjectHandlers(core, { getFile, listChatSessions } = {}) {
   let data;
-  const reset = () => { data = undefined; };
+  const reset = (body = {}) => { if (!body.keep) data = undefined; };
   const records = () => {
     if (data) return data;
     const seeds = structuredClone(core.fixture("GET", "/user/projects") || []);

@@ -1,0 +1,62 @@
+# Admin: connector catalog -> add a Confluence connector (form filled in) ->
+# indexing status across sources -> a connector mid-reindex with attempt history.
+name: admin-connectors
+requires: enterprise # Document Access field (add form) and the Public/Permission Syncing columns (indexing status) are Business+ only
+title: Admin adds a Confluence connector and checks indexing
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/connectors
+    id: goto-admin-connectors
+  - shot: connector-catalog
+    id: shot-connector-catalog
+  - click: { text: Confluence }
+    id: click-confluence
+  - wait: { text: Authentication Account }
+    id: wait-authentication-account
+  - fill: { placeholder: "https://your-domain.atlassian.net/wiki", value: "https://seaside.atlassian.example/wiki" }
+    id: fill
+  - click: { selector: "input[type=radio]" }
+    id: click-input-type-radio
+  - wait_gone: { text: "Swapped credential successfully!", timeout: 12000 }
+    id: wait-gone-swapped-credential-successfully
+  - shot: add-confluence-form
+    id: shot-add-confluence-form
+  - fill: { label: Space Key, value: OPS }
+    id: fill-2
+  - fill: { placeholder: Confluence, value: "Confluence – OPS space" }
+    id: fill-3
+  - scroll: { text: Connector Content }
+    id: scroll-connector-content
+  - shot: add-confluence-content
+    id: shot-add-confluence-content
+  - goto: /admin/indexing-status
+    id: goto-admin-indexing-status
+  - shot: indexing-status
+    id: shot-indexing-status
+  - type: { placeholder: Search connectors..., value: Confluence }
+    id: type
+  - settle: 800
+    id: settle
+  - click: { text: Expand All }
+    id: click-expand-all
+  - settle: 600
+    id: settle-2
+  - shot: indexing-status-confluence
+    id: shot-indexing-status-confluence
+  - click: { text: "Confluence – OPS space" }
+    id: click-confluence-ops-space
+  - wait: { text: Connector Configuration }
+    id: wait-connector-configuration
+  - settle: 800
+    id: settle-3
+  - shot: connector-detail
+    id: shot-connector-detail
+  - click: { text: Advanced }
+    id: click-advanced
+  - settle: 800
+    id: settle-4
+  - scroll: { selector: "table", last: true }
+    id: scroll-table
+  - shot: connector-index-attempts
+    id: shot-connector-index-attempts
+world: ../../../worlds/seaside/world.yaml

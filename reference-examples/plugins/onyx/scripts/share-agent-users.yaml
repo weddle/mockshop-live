@@ -1,0 +1,118 @@
+# #61: native picker only; never Save, invite, transfer ownership or change permissions.
+# Exact pinned f858083d6 runtime; base Maya already has the fake admin role.
+name: share-agent-users
+title: Share Agent fictional user search and staged selection
+requires: enterprise
+strict: true
+viewport: [ 1440, 900 ]
+steps:
+  # Menu -> gallery -> card Edit Agent is the native editor entry point.
+  - goto: /app
+    id: goto-app
+  - click: { text: More Agents, exact: true }
+    id: click-more-agents
+  - wait: { text: Featured Agents }
+    id: wait-featured-agents
+  - hover: { selector: 'div.radial-00:has-text("{{teams.training.name}} & Onboarding Desk")' }
+    id: hover-div-radial-00-has-text-training-onboarding-desk
+  # Icon-only Edit has a tooltip, not an aria-label, at this pin; scope its SVG to this card.
+  - click: { selector: 'div.radial-00:has-text("{{teams.training.name}} & Onboarding Desk") button:has(path[d^="M8 13.3333H14"])' }
+    id: click-div-radial-00-has-text-training-onboarding-desk-button-has
+  - wait: { placeholder: Name your agent }
+    id: wait
+  - eval: |
+      if (location.pathname !== '/app/agents/edit/11') throw new Error('Gallery edit did not open agent 11');
+    id: eval-script
+  - shot: editor-from-gallery
+    id: shot-editor-from-gallery
+  - scroll: { text: Share Agent }
+    id: scroll-share-agent
+  - click: { role: button, name: Share, exact: true }
+    id: click-share
+  - wait: { placeholder: "Add users, groups, and accounts" }
+    id: wait-2
+  - shot: share-picker-empty-query
+    id: shot-share-picker-empty-query
+  # The pinned picker deliberately shows suggestions only for a nonempty query.
+  - fill: { placeholder: "Add users, groups, and accounts", value: "{{company.domain}}" }
+    id: fill
+  - wait: { text: "{{people.devon.email}}", exact: true }
+    id: wait-devon-ortiz-seasidecollection-example
+  - wait: { text: "{{people.priya.email}}", exact: true }
+    id: wait-priya-raman-seasidecollection-example
+  - shot: share-picker-loaded-users
+    id: shot-share-picker-loaded-users
+  - fill: { placeholder: "Add users, groups, and accounts", value: DEVON }
+    id: fill-2
+  - wait: { text: "{{people.devon.email}}", exact: true }
+    id: wait-devon-ortiz-seasidecollection-example-2
+  - wait_gone: { text: "{{people.priya.email}}", exact: true }
+    id: wait-gone-priya-raman-seasidecollection-example
+  - shot: share-picker-filtered
+    id: shot-share-picker-filtered
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example
+  - wait: { selector: '[role="dialog"] div.rounded-08:has-text("{{people.devon.email}}") button' }
+    id: wait-role-dialog-div-rounded-08-has-text-devon-ortiz-seasidecoll
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[placeholder="Add users, groups, and accounts"]');
+      if (input?.value !== '') throw new Error('Selecting a user did not clear the native search');
+    id: eval-script-2
+  - shot: share-picker-user-selected
+    id: shot-share-picker-user-selected
+  - click: { selector: '[role="dialog"] div.rounded-08:has-text("{{people.devon.email}}") button' }
+    id: click-role-dialog-div-rounded-08-has-text-devon-ortiz-seasidecol
+  - wait_gone: { text: "{{people.devon.email}}", exact: true }
+    id: wait-gone-devon-ortiz-seasidecollection-example
+  - shot: share-picker-user-cleared
+    id: shot-share-picker-user-cleared
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-2
+  - wait: { placeholder: "Add users, groups, and accounts" }
+    id: wait-3
+  - fill: { placeholder: "Add users, groups, and accounts", value: priya }
+    id: fill-3
+  - wait: { text: "{{people.priya.email}}", exact: true }
+    id: wait-priya-raman-seasidecollection-example-2
+  - shot: share-picker-reopened
+    id: shot-share-picker-reopened
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  # Direct route independently reaches the same native modal and editable users.
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - wait: { placeholder: Name your agent }
+    id: wait-4
+  - shot: editor-direct-link
+    id: shot-editor-direct-link
+  - scroll: { text: Share Agent }
+    id: scroll-share-agent-2
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-3
+  - wait: { placeholder: "Add users, groups, and accounts" }
+    id: wait-5
+  - fill: { placeholder: "Add users, groups, and accounts", value: priya }
+    id: fill-4
+  - wait: { text: "{{people.priya.email}}", exact: true }
+    id: wait-priya-raman-seasidecollection-example-3
+  - click: { text: "{{people.priya.email}}", exact: true }
+    id: click-priya-raman-seasidecollection-example
+  - wait: { selector: '[role="dialog"] div.rounded-08:has-text("{{people.priya.email}}") button' }
+    id: wait-role-dialog-div-rounded-08-has-text-priya-raman-seasidecoll
+  - shot: share-picker-direct-selected
+    id: shot-share-picker-direct-selected
+  - click: { selector: '[role="dialog"] div.rounded-08:has-text("{{people.priya.email}}") button' }
+    id: click-role-dialog-div-rounded-08-has-text-priya-raman-seasidecol
+  - wait_gone: { text: "{{people.priya.email}}", exact: true }
+    id: wait-gone-priya-raman-seasidecollection-example-2
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel-3
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+world: ../../../worlds/seaside/world.yaml

@@ -1,20 +1,20 @@
-# Scenario authoring and live control
+# Script authoring and live control
 
-Mockshop exposes the same scenario steps to YAML files and a JSON-lines live session. This guide is for people and programmatic clients; it does not require a particular agent runtime.
+Mockshop exposes the same script steps to YAML files and a JSON-lines live session. This guide is for people and programmatic clients; it does not require a particular agent runtime.
 
-References: [scenario specification](scenario-spec.md), [scenario schema](../schema/scenario.schema.json), [plugin vocabulary format](plugin-vocabulary.md), [installation and platform requirements](../README.md#requirements).
+References: [script specification](script-spec.md), [script schema](../schema/script.schema.json), [plugin vocabulary format](plugin-vocabulary.md), [installation and platform requirements](../README.md#requirements).
 
-## Author a scenario
+## Author a script
 
-1. Read the included plugin's [capability vocabulary](../plugins/onyx/vocabulary.yaml), [playbook](../plugins/onyx/PLAYBOOK.md), [manifest](../plugins/onyx/plugin.yaml) and [README](../plugins/onyx/README.md). Reuse steps and locators from existing scenarios; a rendered control is not proof that its backend behavior is implemented.
+1. Read the plugin's [capability vocabulary](../plugins/onyx/vocabulary.yaml), [playbook](../plugins/onyx/PLAYBOOK.md), [backend/API map](../plugins/onyx/API-MAP.md), [manifest](../plugins/onyx/plugin.yaml) and [README](../plugins/onyx/README.md). Author from the operating references; private sample scripts are not a dependency. A rendered control is not proof that its backend behavior is implemented.
 2. Write a YAML file with `name`, optional viewport/locale/clip settings and `steps`. A typical screen sequence is `goto` or `click`, then `wait` for visible content, then `shot`. Prefer `testid`, `role` plus `name`, `placeholder` or `label`; use CSS selectors for stable identifiers.
-3. Run `./mockshop validate <file.yaml>` or `./mockshop validate onyx/<scenario>`. Schema validation does not exercise a browser or check locator correctness. Route checking needs a built frontend route manifest.
+3. Run `./mockshop validate <file.yaml>` or `./mockshop validate onyx/<script>`. Schema validation does not exercise a browser or check locator correctness. Route checking needs a built frontend route manifest.
 4. Run `./mockshop shot <target>`, inspect the report and open the PNGs in `out/onyx/<name>/`. A failed step can indicate a bad locator, an unsupported mock interaction or a frontend error; use the report and a live session to distinguish them.
 5. For video, run `./mockshop clip <target>`. Add `pause`, `card`, `mark`/`keyframe` and `at:` where needed. The `.timeline.json` records action/marker times; recordings do not include generated narration.
 
 Use fictional fixture data. Keep generated runtimes and toolchains separate from source edits. For concurrent instances, set `MOCKSHOP_ONYX_WEB_PORT` and `MOCKSHOP_ONYX_MOCK_PORT` to ports you control; backend state is shared by sessions on the same mock port. `down` stops the configured listeners, not just the current session's browser.
 
-Only run trusted scenario files and plugins: `eval` executes page JavaScript, plugins run local code and builds execute manifest shell commands.
+Only run trusted script files and plugins: `eval` executes page JavaScript, plugins run local code and builds execute manifest shell commands.
 
 ## Start a live session
 
@@ -38,7 +38,7 @@ A step uses the YAML vocabulary expressed as JSON:
 {"id":7,"cmd":"end"}
 ```
 
-Optional `id` is echoed in step/command responses. `only`, `at` and `cursor` modifiers follow the scenario specification. Commands are:
+Optional `id` is echoed in step/command responses. `only`, `at` and `cursor` modifiers follow the script specification. Commands are:
 
 | Command | Result |
 |---|---|

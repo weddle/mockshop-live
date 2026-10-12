@@ -1,0 +1,22 @@
+name: quiet
+title: Restrained pointer and reduced motion
+cursor:
+  style: straight
+  reduced_motion: true
+  screenshots: true
+  look:
+    shape: arrow
+    size: 28
+    fill: '#20242a'
+    stroke: '#ffffff'
+    shadow: false
+  effects:
+    trail: false
+    glow: false
+    ripple: false
+clip:
+  nav_fade: 0
+  fade_ms: 0
+  type_ms: 1600
+  hold_ms: 1600
+viewport: [1440, 900]

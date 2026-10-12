@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Onyx world application block (apps.onyx)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "viewer": { "type": "string", "description": "Shared person key. Defaults to the first declared person, or the neutral workspace viewer." },
+    "people": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "string" } }, "additionalProperties": false } },
+    "teams": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "integer", "minimum": 0 }, "managers": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } }, "additionalProperties": false } },
+    "agents": { "type": "object", "additionalProperties": { "type": "object", "required": ["name"], "properties": { "id": { "type": "integer", "minimum": 0 }, "name": { "type": "string" }, "description": { "type": "string" }, "owner": { "type": ["string", "null"] }, "sources": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } }, "additionalProperties": true } },
+    "sources": { "type": "object", "additionalProperties": { "$ref": "#/$defs/source" } },
+    "documents": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" }, "blurb": { "type": "string" }, "updated": { "type": "string" }, "metadata": { "type": "object" }, "url_vendor": { "type": "string" }, "score": { "type": ["number", "null"] }, "tags": { "type": "array" }, "document_sets": { "type": "array" } }, "additionalProperties": false } },
+    "conversations": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "string" }, "agent": { "type": "string" }, "turns": { "type": "array", "items": { "type": "object", "required": ["message"], "properties": { "message": { "type": "string" }, "script": { "type": "object" } }, "additionalProperties": true } } }, "additionalProperties": true } },
+    "replies": { "type": "object", "additionalProperties": { "$ref": "#/$defs/reply" } },
+    "models": { "type": "object", "additionalProperties": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" } }, "additionalProperties": false } },
+    "settings": { "type": "object", "description": "Onyx workspace settings overriding neutral defaults and the active edition." },
+    "fixtures": { "type": "object", "propertyNames": { "pattern": "^(GET|POST|PUT|PATCH|DELETE|ANY) /\\S*$" }, "description": "Explicit Onyx API seed DTOs for specialized existing screens. This is the ordinary fixture response format, not a route-patch language. Shared connector and document snapshots are projected by the adapter." },
+    "history": { "type": "object", "additionalProperties": { "type": "object" } },
+    "source_bodies": { "type": "object", "additionalProperties": { "type": "string" } }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "minimum": 0 },
+        "connector_id": { "type": "integer", "minimum": 0 },
+        "credential_id": { "type": "integer", "minimum": 0 },
+        "visible": { "type": "boolean" },
+        "name": { "type": "string" },
+        "config": { "type": "object" },
+        "config_vendor": { "type": "string" },
+        "config_by_vendor": { "type": "object", "additionalProperties": { "type": "object" } },
+        "credential_by_vendor": { "type": "object", "additionalProperties": { "type": "object" } },
+        "connector": { "type": "object" },
+        "credential": { "type": "object" },
+        "detail": { "type": "object" },
+        "row": { "type": "object" },
+        "attempts": { "type": "object" },
+        "errors": { "type": "object" },
+        "permission_sync": { "type": "object" },
+        "group_sync": { "type": "object" },
+        "url_vendor": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "reply": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string" },
+        "queries": { "type": "array", "items": { "type": "string" } },
+        "cites": { "type": "array", "items": { "type": "string" } },
+        "title": { "type": "string" },
+        "reasoning": { "type": "string" },
+        "chunk_delay_ms": { "type": "number", "minimum": 0 },
+        "match": { "type": "string" },
+        "after": { "type": "string" },
+        "default": { "type": "boolean" },
+        "follow_up_default": { "type": "boolean" },
+        "regenerate": { "type": "array", "items": { "type": "string" } },
+        "model_variants": { "type": "object" },
+        "web_search": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

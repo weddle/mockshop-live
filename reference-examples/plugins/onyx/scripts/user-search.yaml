@@ -1,0 +1,598 @@
+# #30: pin-native controls, not an invented /search route or Auto menu option.
+# Parent composes handlers-user-search callbacks before exercising this inventory.
+name: user-search
+title: Native Search and Chat modes, source filters, time and tags, results and reset
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^console: \[Toast\] Fictional search is temporarily unavailable\. Try another workshop query\. \[source: http:\/\/127\.0\.0\.1:\d+\/_next\/static\/chunks\/1h15gs0jly9g_\.js\]$/'
+    reason: 'Required staged native Search error: SearchUI calls toast.error on the fixture JSON error and the pinned toast store logs this exact message. Network misses, OAuth failures, other console errors and failed steps remain strict.'
+steps:
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences
+  - click: { selector: '[data-testid="AppSidebar/new-session"] a[href="/app"]' }
+    id: click-data-testid-appsidebar-new-session-a-href-app
+  - wait: { role: button, name: Change app mode, exact: true }
+    id: wait-change-app-mode
+  - click: { role: button, name: Change app mode, exact: true }
+    id: click-change-app-mode
+  - wait: { selector: '[role="option"]:has-text("Quick search for documents")' }
+    id: wait-role-option-has-text-quick-search-for-documents
+  - wait: { selector: '[role="option"]:has-text("Conversation and research")' }
+    id: wait-role-option-has-text-conversation-and-research
+  - shot: mode-menu-search-chat
+    id: shot-mode-menu-search-chat
+  - click: { selector: '[role="option"]:has-text("Quick search for documents")' }
+    id: click-role-option-has-text-quick-search-for-documents
+  - wait: { selector: 'button[aria-label="Change app mode"]:has-text("Search")' }
+    id: wait-button-aria-label-change-app-mode-has-text-search
+  - shot: search-mode-selected
+    id: shot-search-mode-selected
+  - type: { selector: '#onyx-chat-input-textbox', value: Find learning resources }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { selector: 'svg[role="status"]' }
+    id: wait-svg-role-status
+  - shot: search-loading
+    id: shot-search-loading
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md
+  - shot: search-results-loaded
+    id: shot-search-results-loaded
+  - click: { selector: 'button:has-text("2") >> xpath=ancestor::div[contains(concat(" ", normalize-space(@class), " "), " gap-1 ")][1] >> button >> nth=-1' }
+    id: click-button-has-text-2-xpath-ancestor-div-contains-concat-norma
+  - wait: { text: Workshop next-session checklist, exact: true }
+    id: wait-workshop-next-session-checklist
+  - wait_gone: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-gone-accessible-workshop-checklist-md
+  - shot: search-results-page-two
+    id: shot-search-results-page-two
+  - click: { selector: 'button:has-text("2") >> xpath=ancestor::div[contains(concat(" ", normalize-space(@class), " "), " gap-1 ")][1] >> button >> nth=0' }
+    id: click-button-has-text-2-xpath-ancestor-div-contains-concat-norma-2
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md-2
+  - click: { text: Google Drive, exact: true }
+    id: click-google-drive
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout
+  - wait_gone: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-gone-accessible-workshop-checklist-md-2
+  - shot: results-source-selected
+    id: shot-results-source-selected
+  - click: { text: Slack, exact: true }
+    id: click-slack
+  - wait: { text: Educator workshop planning notes, exact: true }
+    id: wait-educator-workshop-planning-notes
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout-2
+  - shot: results-source-multiple-selected
+    id: shot-results-source-multiple-selected
+  - click: { text: Slack, exact: true }
+    id: click-slack-2
+  - wait_gone: { text: Educator workshop planning notes, exact: true }
+    id: wait-gone-educator-workshop-planning-notes
+  - click: { text: Google Drive, exact: true }
+    id: click-google-drive-2
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md-3
+  - shot: results-source-cleared
+    id: shot-results-source-cleared
+  - click: { text: Accessible workshop checklist.md, exact: true }
+    id: click-accessible-workshop-checklist-md
+  # Native Markdown joins adjacent fixture lines into one paragraph.
+  # Require the selected body heading and loaded paragraph, not an exact sentence node.
+  - wait: { selector: '[role="dialog"]:has(h1:text-is("Accessible workshop checklist")) .prose p:has-text("captions and large-print handouts")' }
+    id: wait-role-dialog-has-h1-text-is-accessible-workshop-checklist-pr
+  - shot: result-native-file-preview
+    id: shot-result-native-file-preview
+  - press: Escape
+    id: press-escape
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - click: { role: button, name: All Time, exact: true }
+    id: click-all-time
+  - wait: { role: option, name: Past 24 hours, exact: true }
+    id: wait-past-24-hours
+  - shot: time-filter-menu
+    id: shot-time-filter-menu
+  - click: { role: option, name: Past 24 hours, exact: true }
+    id: click-past-24-hours
+  - wait: { text: 1 Result, exact: true }
+    id: wait-1-result
+  - wait_gone: { text: Community workshop facilitator guide, exact: true }
+    id: wait-gone-community-workshop-facilitator-guide
+  - shot: time-day-selected
+    id: shot-time-day-selected
+  - click: { role: button, name: Past 24 hours, exact: true }
+    id: click-past-24-hours-2
+  - click: { role: option, name: Past week, exact: true }
+    id: click-past-week
+  - wait: { text: 2 Results, exact: true }
+    id: wait-2-results
+  - shot: time-week-selected
+    id: shot-time-week-selected
+  - click: { role: button, name: Past week, exact: true }
+    id: click-past-week-2
+  - click: { role: option, name: Past month, exact: true }
+    id: click-past-month
+  - wait: { text: 20 Results, exact: true }
+    id: wait-20-results
+  - shot: time-month-selected
+    id: shot-time-month-selected
+  - click: { role: button, name: Past month, exact: true }
+    id: click-past-month-2
+  - click: { role: option, name: Past year, exact: true }
+    id: click-past-year
+  - wait: { text: 21 Results, exact: true }
+    id: wait-21-results
+  - shot: time-year-selected
+    id: shot-time-year-selected
+  # The clear X is a sibling of the active FilterButton, not part of its trigger.
+  - click: { selector: 'div.relative:has(> button:has-text("Past year")) button:not(:has-text("Past year"))' }
+    id: click-div-relative-has-button-has-text-past-year-button-not-has-
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results-2
+  - click: { role: button, name: Tags, exact: true }
+    id: click-tags
+  - wait: { selector: 'input[placeholder="Filter tags..."]:focus' }
+    id: wait-input-placeholder-filter-tags-focus
+  - shot: tag-filter-menu
+    id: shot-tag-filter-menu
+  - fill: { placeholder: Filter tags..., value: no-such-tag }
+    id: fill
+  - wait_gone: { role: option, name: Accessibility, exact: true }
+    id: wait-gone-accessibility
+  - shot: tag-filter-no-match
+    id: shot-tag-filter-no-match
+  - fill: { placeholder: Filter tags..., value: access }
+    id: fill-2
+  - click: { role: option, name: Accessibility, exact: true }
+    id: click-accessibility
+  # Refining replaces the dropdown with a spinner but retains tagFilterOpen.
+  # Wait for the returned results and remounted menu before toggling it closed;
+  # disappearance during searching is not a closed-dropdown acknowledgement.
+  - wait: { text: 2 Results, exact: true }
+    id: wait-2-results-2
+  - wait: { role: button, name: 1 Tag, exact: true }
+    id: wait-1-tag
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md-4
+  - wait: { text: Community workshop facilitator guide, exact: true }
+    id: wait-community-workshop-facilitator-guide
+  - wait_gone: { text: Community health learning handout, exact: true }
+    id: wait-gone-community-health-learning-handout
+  - wait: { selector: 'input[placeholder="Filter tags..."]:focus' }
+    id: wait-input-placeholder-filter-tags-focus-2
+  - wait: { role: option, name: Accessibility, exact: true }
+    id: wait-accessibility
+  - shot: tag-selected-menu
+    id: shot-tag-selected-menu
+  - click: { role: button, name: 1 Tag, exact: true }
+    id: click-1-tag
+  - wait_gone: { selector: 'input[placeholder="Filter tags..."]' }
+    id: wait-gone-input-placeholder-filter-tags
+  - wait_gone: { role: listbox, name: Tags, exact: true }
+    id: wait-gone-tags
+  - shot: tag-selected
+    id: shot-tag-selected
+  - click: { role: button, name: 1 Tag, exact: true }
+    id: click-1-tag-2
+  - wait: { selector: 'input[placeholder="Filter tags..."][value=""]:focus' }
+    id: wait-input-placeholder-filter-tags-value-focus
+  - fill: { placeholder: Filter tags..., value: health }
+    id: fill-3
+  - click: { role: option, name: Healthcare, exact: true }
+    id: click-healthcare
+  - wait: { text: 3 Results, exact: true }
+    id: wait-3-results
+  - wait: { role: button, name: 2 Tags, exact: true }
+    id: wait-2-tags
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md-5
+  - wait: { text: Community workshop facilitator guide, exact: true }
+    id: wait-community-workshop-facilitator-guide-2
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout-3
+  - wait: { selector: 'input[placeholder="Filter tags..."]:focus' }
+    id: wait-input-placeholder-filter-tags-focus-3
+  - wait: { role: option, name: Accessibility, exact: true }
+    id: wait-accessibility-2
+  - wait: { role: option, name: Healthcare, exact: true }
+    id: wait-healthcare
+  - shot: tags-multiple-selected-menu
+    id: shot-tags-multiple-selected-menu
+  - click: { role: button, name: 2 Tags, exact: true }
+    id: click-2-tags
+  - wait_gone: { selector: 'input[placeholder="Filter tags..."]' }
+    id: wait-gone-input-placeholder-filter-tags-2
+  - wait_gone: { role: listbox, name: Tags, exact: true }
+    id: wait-gone-tags-2
+  - shot: tags-multiple-selected
+    id: shot-tags-multiple-selected
+  - click: { role: button, name: 2 Tags, exact: true }
+    id: click-2-tags-2
+  - wait: { selector: 'input[placeholder="Filter tags..."][value=""]:focus' }
+    id: wait-input-placeholder-filter-tags-value-focus-2
+  - fill: { placeholder: Filter tags..., value: access }
+    id: fill-4
+  - click: { role: option, name: Accessibility, exact: true }
+    id: click-accessibility-2
+  - wait: { text: 1 Result, exact: true }
+    id: wait-1-result-2
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout-4
+  - wait: { role: button, name: 1 Tag, exact: true }
+    id: wait-1-tag-2
+  - wait_gone: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-gone-accessible-workshop-checklist-md-3
+  - wait_gone: { text: Community workshop facilitator guide, exact: true }
+    id: wait-gone-community-workshop-facilitator-guide-2
+  - wait: { selector: 'input[placeholder="Filter tags..."]:focus' }
+    id: wait-input-placeholder-filter-tags-focus-4
+  - wait: { role: option, name: Accessibility, exact: true }
+    id: wait-accessibility-3
+  - wait: { role: option, name: Healthcare, exact: true }
+    id: wait-healthcare-2
+  - shot: tag-individually-removed-menu
+    id: shot-tag-individually-removed-menu
+  - click: { role: button, name: 1 Tag, exact: true }
+    id: click-1-tag-3
+  - wait_gone: { selector: 'input[placeholder="Filter tags..."]' }
+    id: wait-gone-input-placeholder-filter-tags-3
+  - wait_gone: { role: listbox, name: Tags, exact: true }
+    id: wait-gone-tags-3
+  - shot: tag-individually-removed
+    id: shot-tag-individually-removed
+  - click: { role: button, name: All Time, exact: true }
+    id: click-all-time-2
+  - click: { role: option, name: Past 24 hours, exact: true }
+    id: click-past-24-hours-3
+  - wait: { text: No results found, exact: true }
+    id: wait-no-results-found
+  - wait: { role: button, name: Past 24 hours, exact: true }
+    id: wait-past-24-hours-2
+  - wait: { role: button, name: 1 Tag, exact: true }
+    id: wait-1-tag-3
+  - wait_gone: { text: Community health learning handout, exact: true }
+    id: wait-gone-community-health-learning-handout-2
+  - shot: combined-filters-empty
+    id: shot-combined-filters-empty
+  - click: { selector: 'div.relative:has(> button:has-text("Past 24 hours")) button:not(:has-text("Past 24 hours"))' }
+    id: click-div-relative-has-button-has-text-past-24-hours-button-not-
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout-5
+  - wait: { text: 1 Result, exact: true }
+    id: wait-1-result-3
+  - wait: { role: button, name: All Time, exact: true }
+    id: wait-all-time
+  - click: { selector: 'div.relative:has(> button:has-text("1 Tag")) button:not(:has-text("1 Tag"))' }
+    id: click-div-relative-has-button-has-text-1-tag-button-not-has-text
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results-3
+  - wait: { role: button, name: Tags, exact: true }
+    id: wait-tags
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md-6
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout-6
+  - wait_gone: { role: button, name: 1 Tag, exact: true }
+    id: wait-gone-1-tag
+  - shot: filters-cleared
+    id: shot-filters-cleared
+  - fill: { selector: '#onyx-chat-input-textbox', value: no matching workshop }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { text: No results found, exact: true }
+    id: wait-no-results-found-2
+  - wait_gone: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-gone-accessible-workshop-checklist-md-4
+  - shot: query-empty
+    id: shot-query-empty
+  - fill: { selector: '#onyx-chat-input-textbox', value: search unavailable }
+    id: fill-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-3
+  - wait: { text: Search failed, exact: true }
+    id: wait-search-failed
+  - wait: { text: Fictional search is temporarily unavailable. Try another workshop query., exact: true }
+    id: wait-fictional-search-is-temporarily-unavailable-try-another-wor
+  - shot: native-search-error
+    id: shot-native-search-error
+  - fill: { selector: '#onyx-chat-input-textbox', value: Find learning resources }
+    id: fill-onyx-chat-input-textbox-3
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-4
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results-4
+  - wait: { text: Community workshop facilitator guide, exact: true }
+    id: wait-community-workshop-facilitator-guide-3
+  - wait_gone: { text: Search failed, exact: true }
+    id: wait-gone-search-failed
+  - shot: search-error-recovered
+    id: shot-search-error-recovered
+  - eval: 'window.open = (url) => { location.href = url; return null; }'
+    id: eval-script
+  - click: { text: Community workshop facilitator guide, exact: true }
+    id: click-community-workshop-facilitator-guide
+  - wait: { testid: mockshop-source }
+    id: wait
+  - wait: { selector: '[data-testid="mockshop-source"]:has(> h1:text-is("Community workshop facilitator guide")) > p:not(.blurb):has-text("plain language")' }
+    id: wait-data-testid-mockshop-source-has-h1-text-is-community-worksh
+  - shot: result-local-source-viewer
+    id: shot-result-local-source-viewer
+  - eval: "location.href = '/api/mockshop/source/LEARNING-HEALTH-HANDOUT'"
+    id: eval-script-2
+  - wait: { testid: mockshop-source }
+    id: wait-2
+  - wait: { selector: '[data-testid="mockshop-source"]:has(> h1:text-is("Community health learning handout")) > p:not(.blurb):has-text("general wellbeing information sheet")' }
+    id: wait-data-testid-mockshop-source-has-h1-text-is-community-health
+  - shot: source-viewer-direct
+    id: shot-source-viewer-direct
+  # Results are browser-local: a full navigation starts idle, not a saved search.
+  - goto: /app
+    id: goto-app
+  - click: { role: button, name: Change app mode, exact: true }
+    id: click-change-app-mode-2
+  - click: { selector: '[role="option"]:has-text("Conversation and research")' }
+    id: click-role-option-has-text-conversation-and-research
+  - wait: { selector: 'button[aria-label="Change app mode"]:has-text("Chat")' }
+    id: wait-button-aria-label-change-app-mode-has-text-chat
+  - shot: chat-mode-selected
+    id: shot-chat-mode-selected
+  - click: { testid: action-management-toggle }
+    id: click
+  - click: { text: Internal Search, exact: true }
+    id: click-internal-search
+  - wait: { placeholder: Search Filters }
+    id: wait-3
+  - shot: chat-source-popover
+    id: shot-chat-source-popover
+  - fill: { placeholder: Search Filters, value: Drive }
+    id: fill-5
+  - wait: { role: switch, name: Toggle Google Drive, exact: true }
+    id: wait-toggle-google-drive
+  - wait_gone: { role: switch, name: Toggle Slack, exact: true }
+    id: wait-gone-toggle-slack
+  - shot: chat-source-search
+    id: shot-chat-source-search
+  - fill: { placeholder: Search Filters, value: no-such-source }
+    id: fill-6
+  - wait_gone: { selector: '[data-testid="tool-options"] [role="switch"]' }
+    id: wait-gone-data-testid-tool-options-role-switch
+  - shot: chat-source-no-match
+    id: shot-chat-source-no-match
+  - fill: { placeholder: Search Filters, value: '' }
+    id: fill-7
+  - click: { text: Disable All Sources, exact: true }
+    id: click-disable-all-sources
+  - wait: { text: Enable All Sources, exact: true }
+    id: wait-enable-all-sources
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="false"]' }
+    id: wait-role-switch-aria-label-toggle-google-drive-aria-checked-fal
+  - wait: { selector: '[role="switch"][aria-label="Toggle Slack"][aria-checked="false"]' }
+    id: wait-role-switch-aria-label-toggle-slack-aria-checked-false
+  - wait_gone: { selector: '[data-testid="tool-options"] [role="switch"][aria-checked="true"]' }
+    id: wait-gone-data-testid-tool-options-role-switch-aria-checked-true
+  - shot: chat-all-sources-disabled
+    id: shot-chat-all-sources-disabled
+  - click: { role: switch, name: Toggle Google Drive, exact: true }
+    id: click-toggle-google-drive
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="true"]' }
+    id: wait-role-switch-aria-label-toggle-google-drive-aria-checked-tru
+  - wait: { selector: '[role="switch"][aria-label="Toggle Slack"][aria-checked="false"]' }
+    id: wait-role-switch-aria-label-toggle-slack-aria-checked-false-2
+  - wait_gone: { selector: '[data-testid="tool-options"] [role="switch"][aria-checked="true"]:not([aria-label="Toggle Google Drive"])' }
+    id: wait-gone-data-testid-tool-options-role-switch-aria-checked-true-2
+  - shot: chat-drive-only-selected
+    id: shot-chat-drive-only-selected
+  - click: { testid: action-management-toggle }
+    id: click-2
+  - wait_gone: { testid: tool-options }
+    id: wait-gone-2
+  - type: { selector: '#onyx-chat-input-textbox', value: Find learning resources }
+    id: type-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-5
+  - wait: { testid: onyx-ai-message }
+    id: wait-4
+  - wait: { text: "Fictional health-education handout using plain-language examples, not patient information." }
+    id: wait-fictional-health-education-handout-using-plain-language-exa
+  # The inline SourceTag label is Text's default span inside the click target.
+  # Match/click that native leaf; :text-is on the containing button is not its text.
+  - wait: { selector: '[data-testid="onyx-ai-message"] span:text-is("Google Drive")' }
+    id: wait-data-testid-onyx-ai-message-span-text-is-google-drive
+  - wait: { role: button, name: Sources, exact: true }
+    id: wait-sources
+  - shot: chat-filtered-answer-citation
+    id: shot-chat-filtered-answer-citation
+  - eval: 'window.open = (url) => { location.href = url; return null; }'
+    id: eval-script-3
+  - click: { selector: '[data-testid="onyx-ai-message"] span:text-is("Google Drive")' }
+    id: click-data-testid-onyx-ai-message-span-text-is-google-drive
+  - wait: { testid: mockshop-source }
+    id: wait-5
+  - wait: { selector: '[data-testid="mockshop-source"]:has(> h1:text-is("Community health learning handout")) > p:not(.blurb):has-text("general wellbeing information sheet")' }
+    id: wait-data-testid-mockshop-source-has-h1-text-is-community-health-2
+  - shot: chat-citation-local-viewer
+    id: shot-chat-citation-local-viewer
+  - goto: /app?chatId=00000000-0000-4000-8000-000000000001
+    id: goto-app-chatid-00000000-0000-4000-8000-000000000001
+  - wait: { testid: onyx-ai-message }
+    id: wait-6
+  - wait: { text: "Fictional health-education handout using plain-language examples, not patient information." }
+    id: wait-fictional-health-education-handout-using-plain-language-exa-2
+  - wait: { selector: '[data-testid="onyx-ai-message"] span:text-is("Google Drive")' }
+    id: wait-data-testid-onyx-ai-message-span-text-is-google-drive-2
+  - wait: { role: button, name: Sources, exact: true }
+    id: wait-sources-2
+  - shot: chat-filtered-answer-reopened
+    id: shot-chat-filtered-answer-reopened
+  - click: { role: button, name: Sources, exact: true }
+    id: click-sources
+  - wait: { text: Cited Sources, exact: true }
+    id: wait-cited-sources
+  - wait: { selector: '#onyx-chat-sidebar button:has-text("Community health learning handout")' }
+    id: wait-onyx-chat-sidebar-button-has-text-community-health-learning
+  - wait_gone: { selector: '#onyx-chat-sidebar button:has-text("Community workshop facilitator guide")' }
+    id: wait-gone-onyx-chat-sidebar-button-has-text-community-workshop-f
+  - shot: chat-filtered-sources-panel
+    id: shot-chat-filtered-sources-panel
+  - eval: 'window.open = (url) => { location.href = url; return null; }'
+    id: eval-script-4
+  - click: { selector: '#onyx-chat-sidebar button:has-text("Community health learning handout")' }
+    id: click-onyx-chat-sidebar-button-has-text-community-health-learnin
+  - wait: { testid: mockshop-source }
+    id: wait-7
+  - wait: { selector: '[data-testid="mockshop-source"]:has(> h1:text-is("Community health learning handout")) > p:not(.blurb):has-text("general wellbeing information sheet")' }
+    id: wait-data-testid-mockshop-source-has-h1-text-is-community-health-3
+  - shot: chat-sources-local-viewer
+    id: shot-chat-sources-local-viewer
+  - goto: /app?chatId=00000000-0000-4000-8000-000000000001
+    id: goto-app-chatid-00000000-0000-4000-8000-000000000001-2
+  - wait: { testid: onyx-ai-message }
+    id: wait-8
+  - wait: { selector: '[data-testid="onyx-ai-message"] span:text-is("Google Drive")' }
+    id: wait-data-testid-onyx-ai-message-span-text-is-google-drive-3
+  - click: { testid: action-management-toggle }
+    id: click-3
+  - click: { role: button, name: Select Search Sources, exact: true }
+    id: click-select-search-sources
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="true"]' }
+    id: wait-role-switch-aria-label-toggle-google-drive-aria-checked-tru-2
+  - wait: { selector: '[role="switch"][aria-label="Toggle Slack"][aria-checked="false"]' }
+    id: wait-role-switch-aria-label-toggle-slack-aria-checked-false-3
+  - wait_gone: { selector: '[data-testid="tool-options"] [role="switch"][aria-checked="true"]:not([aria-label="Toggle Google Drive"])' }
+    id: wait-gone-data-testid-tool-options-role-switch-aria-checked-true-3
+  - shot: chat-source-selection-reopened
+    id: shot-chat-source-selection-reopened
+  - click: { text: Disable All Sources, exact: true }
+    id: click-disable-all-sources-2
+  - wait: { text: Enable All Sources, exact: true }
+    id: wait-enable-all-sources-2
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="false"]' }
+    id: wait-role-switch-aria-label-toggle-google-drive-aria-checked-fal-2
+  - wait_gone: { selector: '[data-testid="tool-options"] [role="switch"][aria-checked="true"]' }
+    id: wait-gone-data-testid-tool-options-role-switch-aria-checked-true-4
+  - click: { testid: action-management-toggle }
+    id: click-4
+  - wait_gone: { testid: tool-options }
+    id: wait-gone-3
+  - type: { selector: '#onyx-chat-input-textbox', value: Find learning resources with no sources }
+    id: type-onyx-chat-input-textbox-3
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-6
+  - wait: { text: No fictional learning resources match these filters. Enable a source or clear the filters and try again., exact: true }
+    id: wait-no-fictional-learning-resources-match-these-filters-enable-
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("No fictional learning resources match these filters. Enable a source or clear the filters and try again.")' }
+    id: wait-data-testid-onyx-ai-message-has-text-no-fictional-learning-
+  - shot: chat-no-sources-answer
+    id: shot-chat-no-sources-answer
+  - click: { testid: action-management-toggle }
+    id: click-5
+  - click: { role: button, name: Select Search Sources, exact: true }
+    id: click-select-search-sources-2
+  - click: { text: Enable All Sources, exact: true }
+    id: click-enable-all-sources
+  - wait: { text: Disable All Sources, exact: true }
+    id: wait-disable-all-sources
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="true"]' }
+    id: wait-role-switch-aria-label-toggle-google-drive-aria-checked-tru-3
+  - wait: { selector: '[role="switch"][aria-label="Toggle Slack"][aria-checked="true"]' }
+    id: wait-role-switch-aria-label-toggle-slack-aria-checked-true
+  - wait_gone: { selector: '[data-testid="tool-options"] [role="switch"][aria-checked="false"]' }
+    id: wait-gone-data-testid-tool-options-role-switch-aria-checked-fals
+  - shot: chat-sources-enabled-all
+    id: shot-chat-sources-enabled-all
+  - click: { testid: action-management-toggle }
+    id: click-6
+  - wait_gone: { testid: tool-options }
+    id: wait-gone-4
+  # Pinned useSendChatMessageFromURL also accepts a native direct filtered-chat handoff.
+  - goto: /app?sources=google_drive&tags=Healthcare&from=2026-09-01T00%3A00%3A00Z&to=2026-10-09T14%3A00%3A00Z&user-prompt=Find%20learning%20resources&send-on-load=true
+    id: goto-app-sources-google-drive-tags-healthcare-from-2026-09-01t00
+  - wait: { testid: onyx-ai-message }
+    id: wait-9
+  - wait: { text: "Fictional health-education handout using plain-language examples, not patient information." }
+    id: wait-fictional-health-education-handout-using-plain-language-exa-3
+  - wait: { selector: '[data-testid="onyx-ai-message"] span:text-is("Google Drive")' }
+    id: wait-data-testid-onyx-ai-message-span-text-is-google-drive-4
+  - wait: { role: button, name: Sources, exact: true }
+    id: wait-sources-3
+  - shot: direct-source-time-tag-chat
+    id: shot-direct-source-time-tag-chat
+  - goto: /app?sources=google_drive&tags=Healthcare&from=2026-10-08T14%3A00%3A00Z&to=2026-10-09T14%3A00%3A00Z&user-prompt=Find%20learning%20resources&send-on-load=true
+    id: goto-app-sources-google-drive-tags-healthcare-from-2026-10-08t14
+  - wait: { text: No fictional learning resources match these filters. Enable a source or clear the filters and try again., exact: true }
+    id: wait-no-fictional-learning-resources-match-these-filters-enable--2
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("No fictional learning resources match these filters. Enable a source or clear the filters and try again.")' }
+    id: wait-data-testid-onyx-ai-message-has-text-no-fictional-learning--2
+  - shot: direct-combined-filter-empty-chat
+    id: shot-direct-combined-filter-empty-chat
+  # Native saved default mode is a simple existing preference write, not a search session.
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-2
+  - wait: { selector: 'label:has-text("Default App Mode") input[value="Chat"]' }
+    id: wait-label-has-text-default-app-mode-input-value-chat
+  - click: { selector: 'label:has-text("Default App Mode") input' }
+    id: click-label-has-text-default-app-mode-input
+  - click: { role: option, name: Search, exact: true }
+    id: click-search
+  - wait_gone: { role: option, name: Search, exact: true }
+    id: wait-gone-search
+  - wait: { selector: 'label:has-text("Default App Mode") input[value="Search"]' }
+    id: wait-label-has-text-default-app-mode-input-value-search
+  - goto: /app
+    id: goto-app-2
+  - wait: { selector: 'button[aria-label="Change app mode"]:has-text("Search")' }
+    id: wait-button-aria-label-change-app-mode-has-text-search-2
+  - shot: default-search-mode-persisted
+    id: shot-default-search-mode-persisted
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-3
+  - wait: { selector: 'label:has-text("Default App Mode") input[value="Search"]' }
+    id: wait-label-has-text-default-app-mode-input-value-search-2
+  - shot: default-search-setting-reloaded
+    id: shot-default-search-setting-reloaded
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, locale: 'en', anchor: '2026-10-09T10:00:00-04:00'}) });
+        if (!response.ok) throw new Error('Run reset failed');
+      })()
+    id: eval-script-5
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-4
+  - wait: { selector: 'label:has-text("Default App Mode") input[value="Chat"]' }
+    id: wait-label-has-text-default-app-mode-input-value-chat-2
+  - goto: /app
+    id: goto-app-3
+  - wait: { selector: 'button[aria-label="Change app mode"]:has-text("Chat")' }
+    id: wait-button-aria-label-change-app-mode-has-text-chat-2
+  - shot: reset-mode-restored
+    id: shot-reset-mode-restored
+  - click: { role: button, name: Change app mode, exact: true }
+    id: click-change-app-mode-3
+  - click: { selector: '[role="option"]:has-text("Quick search for documents")' }
+    id: click-role-option-has-text-quick-search-for-documents-2
+  - type: { selector: '#onyx-chat-input-textbox', value: Find learning resources }
+    id: type-onyx-chat-input-textbox-4
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-7
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results-5
+  - wait: { text: Accessible workshop checklist.md, exact: true }
+    id: wait-accessible-workshop-checklist-md-7
+  - wait: { text: Community health learning handout, exact: true }
+    id: wait-community-health-learning-handout-7
+  - shot: reset-search-seeds-restored
+    id: shot-reset-search-seeds-restored
+world: ../../../worlds/seaside/world.yaml

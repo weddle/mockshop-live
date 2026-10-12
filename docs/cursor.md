@@ -7,11 +7,43 @@ Headless Chrome has no visible pointer, so Mockshop draws one. Before each move,
   states fire on the way, as they would for a person;
 - an **overlay** (a page-wide `<canvas>`, `pointer-events: none`) plays the same trajectory with its effects.
 
-Path planning is deterministic for the same seed, scenario, targets and configuration. Browser layout and capture
+Path planning is deterministic for the same seed, script, targets and configuration. Browser layout and capture
 timing can still vary; this does not promise byte-identical screenshots or recordings. Cursor control is part of
-Mockshop's experimental v0.1.1 runner.
+Mockshop's experimental v0.2.0 runner.
 
-Demo: `plugins/onyx/scenarios/cursor-demo.yaml` (`./mockshop clip onyx/cursor-demo`, `./mockshop shot onyx/cursor-demo`).
+Demo: `plugins/onyx/scripts/cursor-demo.yaml` (`./mockshop clip onyx/cursor-demo`, `./mockshop shot onyx/cursor-demo`).
+
+## Reusable profiles and scoped direction
+
+Cursor settings are presentation, never world content. Select a default with script `profile: path/to/profile.yaml`, or replace that selection for a render:
+
+```bash
+./mockshop clip docs/examples/omzo-incident.yaml --profile profiles/zoom-blue.yaml
+```
+
+A profile has a `cursor` section using the options below, plus optional `clip`, `viewport`, `scale`, and `theme` settings. Put scoped changes in script, scene, or step `presentation`:
+
+```yaml
+presentation:
+  cursor:
+    look: {fill: "#0B5CFF", size: 34}
+```
+
+`presentation: {cursor: false}` hides the pointer for its scope. Scene settings revert after the scene; step settings revert after the step. Hiding does not erase the inherited appearance.
+
+To restyle a finished script without changing it, pass `--render-overrides file.yaml`:
+
+```yaml
+scenes:
+  admin:
+    cursor: false
+steps:
+  incident-question:
+    cursor:
+      look: {fill: "#0B5CFF", size: 40}
+```
+
+Targets are stable IDs, not timestamps or click numbers. External settings win at their matching scope; more specific scene/step settings still win over broader defaults. See [the world/script spec](worlds-spec.md).
 
 ## Where to configure it
 
@@ -20,7 +52,7 @@ Settings merge in this order (later wins):
 1. built-in defaults (`CURSOR_DEFAULTS` in `core/cursor.mjs`)
 2. manifest `runner.cursor:` (plugin.yaml, optional)
 3. back-compat clip keys: `clip.cursor` (`false` = no overlay; object/string = merged), `clip.move_ms` (= `timing: fixed, ms: <move_ms>`), `clip.pre_click_ms`
-4. scenario `cursor:`
+4. script `cursor:`
 5. a step whose only key is `cursor:`, which changes the settings from that step on
 6. a per-step `cursor:` **step modifier**, written beside the op key like `only:` and `at:`. It works on `click`,
    `hover`, `move` and `shot` (for a shot it also takes the still keys below). It applies to that step only, and a
@@ -87,7 +119,7 @@ steps:
 | `peak_speed`, `min_start_speed`, `min_end_speed` | px/s | 900, 300, 200 | `classic` speed profile. |
 | `turn_radius` | px | 80 | `classic` Dubins turning radius. |
 | `heading` | `tangent` `fixed` | `tangent` (magnetic: fixed) | With `look.rotate`, the arrow leans into the motion (`tangent`) or keeps its rest pose (`fixed`). |
-| `seed` | string | scenario name | Determinism seed. Each move uses `seed|scenario|n`; only `adaptive` draws random numbers. |
+| `seed` | string | script name | Determinism seed. Each move uses `seed|script|n`; only `adaptive` draws random numbers. |
 | `reduced_motion` | bool | `false` | Short, straight 120 ms glide with no effects. |
 | `effects` | `{trail, glow, magnet, ripple, squish}` bools | style's | Turn effects on or off; unset keeps the style's default. |
 | `trail` | `{secs, fade_len, steps, tail_width, head_width, alpha}` | `0.18, 60, 26, 2, 12, 0.38` | Comet trail geometry. |

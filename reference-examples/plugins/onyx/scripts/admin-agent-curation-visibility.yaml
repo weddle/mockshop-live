@@ -1,0 +1,150 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset; direct admin entry and existing seed/pin read. Agent13 starts unfeatured, matching the prior original segment outcome.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+
+name: admin-agent-curation-visibility
+title: Native Unlist cancellation, List/re-list, All/Your discovery and pinned direct access
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - wait: { testid: agent-row-actions-14 }
+    id: wait
+  - eval: |
+      (async () => {
+        const get = async path => {
+          const r = await fetch('/api' + path);
+          if (!r.ok) throw new Error('Missing native read: ' + path);
+          return r.json();
+        };
+        const seeds = await Promise.all([11,12,13,14].map(id => get('/persona/' + id)));
+        sessionStorage.setItem('admin-curation-seeds', JSON.stringify(seeds));
+        sessionStorage.setItem('admin-curation-pins', JSON.stringify((await get('/me')).preferences.pinned_assistants));
+        const ids = [...document.querySelectorAll('tbody [data-testid^="agent-row-actions-"]')].map(e => e.dataset.testid);
+        if (ids.join(',') !== 'agent-row-actions-11,agent-row-actions-12,agent-row-actions-13,agent-row-actions-14')
+          throw new Error('Seeded native admin order is incorrect');
+      })()
+    id: eval-script
+  - goto: /admin/agents
+    id: goto-admin-agents-2
+  - wait: { testid: agent-row-actions-12 }
+    id: wait-2
+  - hover: { testid: agent-row-actions-12 }
+    id: hover
+  - click: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Agent actions"]' }
+    id: click-data-testid-agent-row-actions-12-button-aria-label-agent-a
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent
+  - wait: { role: dialog, has_text: Unlist Guest Ops Copilot }
+    id: wait-3
+  - shot: unlist-confirmation
+    id: shot-unlist-confirmation
+  - press: Escape
+    id: press-escape
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - eval: |
+      (async () => {
+        if (!(await (await fetch('/api/persona/12')).json()).is_listed) throw new Error('Cancel changed visibility');
+      })()
+    id: eval-script-2
+  - hover: { testid: agent-row-actions-12 }
+    id: hover-2
+  - click: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Agent actions"]' }
+    id: click-data-testid-agent-row-actions-12-button-aria-label-agent-a-2
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent-2
+  - click: { selector: '[role="dialog"] button:has-text("Unlist")' }
+    id: click-role-dialog-button-has-text-unlist
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Re-list Agent"]' }
+    id: wait-data-testid-agent-row-actions-12-button-aria-label-re-list-
+  - wait: { selector: 'tr:has([data-testid="agent-row-actions-12"]):has-text("Unlisted")' }
+    id: wait-tr-has-data-testid-agent-row-actions-12-has-text-unlisted
+  - shot: unlisted-still-manageable
+    id: shot-unlisted-still-manageable
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { testid: AgentsPage/container }
+    id: wait-4
+  - wait: { selector: '.radial-00:has-text("{{teams.training.name}} Analyst")' }
+    id: wait-radial-00-has-text-training-analyst
+  - wait_gone: { selector: '.radial-00:has-text("Guest Ops Copilot")' }
+    id: wait-gone-radial-00-has-text-guest-ops-copilot
+  - wait: { selector: '.opal-sidebar-tab a[aria-label="Guest Ops Copilot"]' }
+    id: wait-opal-sidebar-tab-a-aria-label-guest-ops-copilot
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/12')).json();
+        const me = await (await fetch('/api/me')).json();
+        if (a.is_listed || JSON.stringify(me.preferences.pinned_assistants) !== sessionStorage.getItem('admin-curation-pins')) throw new Error('Unlist changed pins or failed to persist');
+      })()
+    id: eval-script-3
+  - shot: unlisted-gallery-keeps-sidebar-pin
+    id: shot-unlisted-gallery-keeps-sidebar-pin
+  - click: { role: tab, name: Your Agents, exact: true }
+    id: click-your-agents
+  - wait: { selector: '.radial-00:has-text("Guest Ops Copilot")' }
+    id: wait-radial-00-has-text-guest-ops-copilot
+  - shot: owned-unlisted-your-gallery
+    id: shot-owned-unlisted-your-gallery
+  - click: { role: tab, name: All Agents, exact: true }
+    id: click-all-agents
+  - wait_gone: { selector: '.radial-00:has-text("Guest Ops Copilot")' }
+    id: wait-gone-radial-00-has-text-guest-ops-copilot-2
+  - goto: /app?agentId=12
+    id: goto-app-agentid-12
+  - wait: { text: "What's our late checkout policy for {{company.name}} Rewards Gold members?", exact: true }
+    id: wait-what-s-our-late-checkout-policy-for-seaside-rewards-gold-me
+  - shot: unlisted-direct-agent-access
+    id: shot-unlisted-direct-agent-access
+  - goto: /admin/agents
+    id: goto-admin-agents-3
+  - wait: { testid: agent-row-actions-12 }
+    id: wait-5
+  - hover: { testid: agent-row-actions-12 }
+    id: hover-3
+  - click: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Agent actions"]' }
+    id: click-data-testid-agent-row-actions-12-button-aria-label-agent-a-3
+  - wait: { role: menuitem, name: List Agent, exact: true }
+    id: wait-list-agent
+  - shot: list-menu
+    id: shot-list-menu
+  - click: { role: menuitem, name: List Agent, exact: true }
+    id: click-list-agent
+  - wait: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Remove Featured"]' }
+    id: wait-data-testid-agent-row-actions-12-button-aria-label-remove-f
+  - goto: /app/agents
+    id: goto-app-agents-2
+  - wait: { selector: '.radial-00:has-text("Guest Ops Copilot")' }
+    id: wait-radial-00-has-text-guest-ops-copilot-2
+  - shot: listed-gallery-after-menu
+    id: shot-listed-gallery-after-menu
+  - goto: /admin/agents
+    id: goto-admin-agents-4
+  - wait: { testid: agent-row-actions-12 }
+    id: wait-6
+  - hover: { testid: agent-row-actions-12 }
+    id: hover-4
+  - click: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Agent actions"]' }
+    id: click-data-testid-agent-row-actions-12-button-aria-label-agent-a-4
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent-3
+  - click: { selector: '[role="dialog"] button:has-text("Unlist")' }
+    id: click-role-dialog-button-has-text-unlist-2
+  - wait: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Re-list Agent"]' }
+    id: wait-data-testid-agent-row-actions-12-button-aria-label-re-list--2
+  - click: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Re-list Agent"]' }
+    id: click-data-testid-agent-row-actions-12-button-aria-label-re-list
+  - wait: { selector: '[data-testid="agent-row-actions-12"] button[aria-label="Remove Featured"]' }
+    id: wait-data-testid-agent-row-actions-12-button-aria-label-remove-f-2
+  - shot: relisted-inline-admin
+    id: shot-relisted-inline-admin
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

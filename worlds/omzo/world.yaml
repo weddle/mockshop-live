@@ -1,0 +1,63 @@
+company:
+  name: Omzo
+  domain: omzo.example
+  description: Fictional communications company
+people:
+  dana:
+    name: Dana Reyes
+    email: dana.reyes@{{company.domain}}
+    title: Director of Reliability Engineering
+  sam:
+    name: Sam Adeyemi
+    email: sam.adeyemi@{{company.domain}}
+    title: Incident Commander
+teams:
+  reliability:
+    name: Reliability
+    members: [dana, sam]
+sources:
+  runbooks:
+    name: Engineering Runbooks
+    vendor: confluence
+  incident-channels:
+    name: Incident response
+    vendor: slack
+documents:
+  rollback:
+    source: runbooks
+    title: Relay rollback procedure
+    owners: [sam]
+    summary: "{{people.sam.name}} coordinates the rollback."
+    body: "Contact {{people.sam.name}} before starting the rollback. Disable the relay flag, then verify meeting join latency has returned to baseline."
+  rollback-thread:
+    source: incident-channels
+    title: "{{vars.rollback_incident}} response thread"
+    author: sam
+    body: "{{people.sam.name}}: The relay rollback completed at 14:52 UTC. Meeting join latency is back to baseline. {{people.dana.name}} will review the safeguards."
+  postmortem:
+    source: runbooks
+    title: "{{vars.rollback_incident}} postmortem"
+    owners: [dana]
+    body: "{{people.sam.name}} coordinated recovery. {{people.dana.name}} owns the postmortem review and rollout safeguards."
+conversations:
+  relay-rollback-runbook-walkthrough:
+    title: Relay rollback runbook walkthrough
+    messages:
+      - role: user
+        person: dana
+        text: Who coordinates the rollback?
+      - role: assistant
+        text: "{{people.sam.name}} coordinates the rollback. [1]"
+        documents: [rollback]
+  weekend-on-call-handoff-notes:
+    title: Weekend on-call handoff notes
+    messages:
+      - role: user
+        person: sam
+        text: Who owns the follow-up review?
+      - role: assistant
+        text: "{{people.dana.name}} owns the review and rollout safeguards. [1]"
+        documents: [postmortem]
+vars:
+  rollback_incident: INC-2291
+  incident: "{{vars.rollback_incident}}"

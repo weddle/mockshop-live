@@ -17,11 +17,13 @@ export default function createSaveControls(core) {
     const credentials = clone(core.fixture("GET", "/manage/admin/credential") || []);
     for (const pair of Object.values(pairs)) if (!credentials.some((c) => c.id === pair.credential.id)) credentials.push(clone(pair.credential));
     for (const pair of Object.values(pairs)) pair.credential = credentials.find((c) => c.id === pair.credential.id);
-    return state.saveControls[key] = { catalog, indexing, pairs, credentials,
+    return state.saveControls[key] = { catalog, indexing, pairs, credentials, seededPairs: new Set(Object.keys(pairs).map(Number)),
       connectors: Object.fromEntries(Object.values(pairs).map((p) => [p.connector.id, p.connector])),
       nextProvider: Math.max(0, ...catalog.providers.map((p) => p.id)) + 1,
       nextModel: Math.max(0, ...catalog.providers.flatMap((p) => p.model_configurations.map((m) => m.id))) + 1,
-      nextConnector: 1000, nextPair: 1000, nextCredential: 1000, nextFile: 1000, uploads: {} };
+      nextConnector: Math.max(999, ...Object.values(pairs).map((p) => p.connector.id)) + 1,
+      nextPair: Math.max(999, ...Object.values(pairs).map((p) => p.id)) + 1,
+      nextCredential: Math.max(999, ...credentials.map((c) => c.id)) + 1, nextFile: 1000, uploads: {} };
   };
   // Shared with #27: call this at model resolution time; do not retain a fixture catalog snapshot.
   state.saveControlsProviderCatalog = () => publicCatalog();
@@ -311,7 +313,7 @@ export default function createSaveControls(core) {
         indexing_statuses: g.indexing_statuses.filter((r) => !body.name_filter || r.name.toLowerCase().includes(body.name_filter.toLowerCase())) })));
     } },
   ], transform: {
-    "GET /manage/connector-status": (value) => [...value, ...Object.values(data().pairs).filter((p) => p.id >= 1000)
+    "GET /manage/connector-status": (value) => [...value, ...Object.values(data().pairs).filter((p) => !data().seededPairs.has(p.id))
       .map((p) => ({ source: p.connector.source, status: p.status, has_successful_run: false }))],
   } };
 }

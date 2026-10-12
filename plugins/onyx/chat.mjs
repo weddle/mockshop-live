@@ -17,13 +17,14 @@ export function pickScript(dirs, message, parse, history = [], model = null) {
     for (const f of fs.readdirSync(d).sort()) {
       if (!/\.ya?ml$/.test(f)) continue;
       const s = { ...parse(path.join(d, f)), _file: f };
+      if (s.turn != null) continue; // Exact scripted turns are never a manual-browsing fallback.
       const ctxOk = !s.after || earlier.some((m) => new RegExp(s.after, "i").test(m));
       if (s.match && ctxOk && new RegExp(s.match, "i").test(message)) return withContext(s, history, model);
       if (s.follow_up_default && history.length && !followFallback) followFallback = s;
       if (s.default && !fallback) fallback = s;
     }
   }
-  const s = followFallback || fallback || { answer: "I don't have a scripted answer for that yet. Add one under plugins/onyx/fixtures/base/chat/.", documents: [] };
+  const s = followFallback || fallback || { answer: "No prepared answer is available for this question.", documents: [] };
   return withContext(s, history, model);
 }
 
@@ -230,7 +231,7 @@ export function sessionFromNodes(sess) {
     chat_session_id: sess.id, description: sess.description, persona_id: sess.persona_id,
     persona_name: null, personal_icon_name: null, messages, time_created: sess.created,
     shared_status: sess.shared_status || "private", current_alternate_model: sess.model ?? null, current_temperature_override: sess.temperature ?? null,
-    current_reasoning_effort_override: null, deleted: false, owner_name: sess.owner_name || "Maya Chen",
+    current_reasoning_effort_override: null, deleted: false, owner_name: sess.owner_name || "",
     packets, current_stream: null, incognito: false,
   };
 }

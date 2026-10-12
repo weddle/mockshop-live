@@ -1,0 +1,182 @@
+# #69 conditional native controls; declared/unverified, same minimal Auth artifact.
+name: auth-error-codes
+title: "Independent native conditional #69 unit: auth-error-codes"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required fake logged-out identity; independently cleared cookie.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Fresh fake logged-out cookie; all nine native translated error codes and each of three stale codes independently first restart/second held/Return; actual self-hosted support copy.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: "/auth/login"
+    id: goto-auth-login
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"mode": "logged-out", "auth_profile": null})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script
+  - eval: |
+      (async () => { if ((await fetch('/api/me')).status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Expected fresh fake logged-out cookie and /me401'); })()
+    id: eval-script-2
+  - goto: "/auth/error?error=OAUTH_USER_ALREADY_EXISTS"
+    id: goto-auth-error-error-oauth-user-already-exists
+  - wait: { "text": "An account with this email already exists under a different sign-in method. Sign in the way you first did, or ask your admin to link this provider.", "exact": true }
+    id: wait-an-account-with-this-email-already-exists-under-a-different
+  - shot: "auth-error-code-oauth_user_already_exists"
+    id: shot-auth-error-code-oauth-user-already-exists
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page
+  - wait: { "testid": "email" }
+    id: wait
+  - goto: "/auth/error?error=LOGIN_BAD_CREDENTIALS"
+    id: goto-auth-error-error-login-bad-credentials
+  - wait: { "text": "This account can't sign in. It may be deactivated. Contact your workspace admin.", "exact": true }
+    id: wait-this-account-can-t-sign-in-it-may-be-deactivated-contact-yo
+  - shot: "auth-error-code-login_bad_credentials"
+    id: shot-auth-error-code-login-bad-credentials
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-2
+  - wait: { "testid": "email" }
+    id: wait-2
+  - goto: "/auth/error?error=access_denied"
+    id: goto-auth-error-error-access-denied
+  - wait: { "text": "Access was denied by your identity provider.", "exact": true }
+    id: wait-access-was-denied-by-your-identity-provider
+  - shot: "auth-error-code-access_denied"
+    id: shot-auth-error-code-access-denied
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-3
+  - wait: { "testid": "email" }
+    id: wait-3
+  - goto: "/auth/error?error=login_required"
+    id: goto-auth-error-error-login-required
+  - wait: { "text": "You need to log in with your identity provider first.", "exact": true }
+    id: wait-you-need-to-log-in-with-your-identity-provider-first
+  - shot: "auth-error-code-login_required"
+    id: shot-auth-error-code-login-required
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-4
+  - wait: { "testid": "email" }
+    id: wait-4
+  - goto: "/auth/error?error=consent_required"
+    id: goto-auth-error-error-consent-required
+  - wait: { "text": "Your identity provider requires consent before continuing.", "exact": true }
+    id: wait-your-identity-provider-requires-consent-before-continuing
+  - shot: "auth-error-code-consent_required"
+    id: shot-auth-error-code-consent-required
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-5
+  - wait: { "testid": "email" }
+    id: wait-5
+  - goto: "/auth/error?error=interaction_required"
+    id: goto-auth-error-error-interaction-required
+  - wait: { "text": "Additional interaction with your identity provider is required.", "exact": true }
+    id: wait-additional-interaction-with-your-identity-provider-is-requi
+  - shot: "auth-error-code-interaction_required"
+    id: shot-auth-error-code-interaction-required
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-6
+  - wait: { "testid": "email" }
+    id: wait-6
+  - goto: "/auth/error?error=invalid_scope"
+    id: goto-auth-error-error-invalid-scope
+  - wait: { "text": "The requested permissions are not available.", "exact": true }
+    id: wait-the-requested-permissions-are-not-available
+  - shot: "auth-error-code-invalid_scope"
+    id: shot-auth-error-code-invalid-scope
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-7
+  - wait: { "testid": "email" }
+    id: wait-7
+  - goto: "/auth/error?error=server_error"
+    id: goto-auth-error-error-server-error
+  - wait: { "text": "Your identity provider encountered an error. Please try again.", "exact": true }
+    id: wait-your-identity-provider-encountered-an-error-please-try-agai
+  - shot: "auth-error-code-server_error"
+    id: shot-auth-error-code-server-error
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-8
+  - wait: { "testid": "email" }
+    id: wait-8
+  - goto: "/auth/error?error=temporarily_unavailable"
+    id: goto-auth-error-error-temporarily-unavailable
+  - wait: { "text": "Your identity provider is temporarily unavailable. Please try again later.", "exact": true }
+    id: wait-your-identity-provider-is-temporarily-unavailable-please-tr
+  - shot: "auth-error-code-temporarily_unavailable"
+    id: shot-auth-error-code-temporarily-unavailable
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-9
+  - wait: { "testid": "email" }
+    id: wait-9
+  - eval: |
+      sessionStorage.removeItem('onyx:sso-restart');
+    id: eval-script-3
+  - goto: "/auth/error?error=ACCESS_TOKEN_DECODE_ERROR"
+    id: goto-auth-error-error-access-token-decode-error
+  - wait: { "testid": "email" }
+    id: wait-10
+  - shot: "auth-error-restart-access_token_decode_error"
+    id: shot-auth-error-restart-access-token-decode-error
+  - goto: "/auth/error?error=ACCESS_TOKEN_DECODE_ERROR"
+    id: goto-auth-error-error-access-token-decode-error-2
+  - wait: { "text": "This sign-in link has expired or is no longer valid. Please sign in again.", "exact": true }
+    id: wait-this-sign-in-link-has-expired-or-is-no-longer-valid-please-
+  - shot: "auth-error-held-access_token_decode_error"
+    id: shot-auth-error-held-access-token-decode-error
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-10
+  - wait: { "testid": "email" }
+    id: wait-11
+  - eval: |
+      sessionStorage.removeItem('onyx:sso-restart');
+    id: eval-script-4
+  - goto: "/auth/error?error=ACCESS_TOKEN_ALREADY_EXPIRED"
+    id: goto-auth-error-error-access-token-already-expired
+  - wait: { "testid": "email" }
+    id: wait-12
+  - shot: "auth-error-restart-access_token_already_expired"
+    id: shot-auth-error-restart-access-token-already-expired
+  - goto: "/auth/error?error=ACCESS_TOKEN_ALREADY_EXPIRED"
+    id: goto-auth-error-error-access-token-already-expired-2
+  - wait: { "text": "This sign-in link has expired or is no longer valid. Please sign in again.", "exact": true }
+    id: wait-this-sign-in-link-has-expired-or-is-no-longer-valid-please--2
+  - shot: "auth-error-held-access_token_already_expired"
+    id: shot-auth-error-held-access-token-already-expired
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-11
+  - wait: { "testid": "email" }
+    id: wait-13
+  - eval: |
+      sessionStorage.removeItem('onyx:sso-restart');
+    id: eval-script-5
+  - goto: "/auth/error?error=OAUTH_INVALID_STATE"
+    id: goto-auth-error-error-oauth-invalid-state
+  - wait: { "testid": "email" }
+    id: wait-14
+  - shot: "auth-error-restart-oauth_invalid_state"
+    id: shot-auth-error-restart-oauth-invalid-state
+  - goto: "/auth/error?error=OAUTH_INVALID_STATE"
+    id: goto-auth-error-error-oauth-invalid-state-2
+  - wait: { "text": "This sign-in link has expired or is no longer valid. Please sign in again.", "exact": true }
+    id: wait-this-sign-in-link-has-expired-or-is-no-longer-valid-please--3
+  - shot: "auth-error-held-oauth_invalid_state"
+    id: shot-auth-error-held-oauth-invalid-state
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-12
+  - wait: { "testid": "email" }
+    id: wait-15
+  - goto: "/auth/error"
+    id: goto-auth-error
+  - wait: { "text": "If you continue to experience problems, please reach out to your system administrator for assistance.", "exact": true }
+    id: wait-if-you-continue-to-experience-problems-please-reach-out-to-
+  - shot: "auth-error-self-hosted-support"
+    id: shot-auth-error-self-hosted-support
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

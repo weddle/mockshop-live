@@ -1,0 +1,129 @@
+# Issue #28 independent native proof unit; no acceptance claim.
+# Fresh runner start resets base fixtures, chats and browser; never chain unit outputs.
+
+# Source/core/artifacts frozen; native file inputs only; no generic error allowances.
+name: user-files-paste-drop
+title: Native pasted and dropped files, processing and attachment removal
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Original user-files step 179, source line 236.
+  - goto: /app
+    id: goto-app
+  # Original user-files step 180, source line 237.
+  - eval: location.reload()
+    id: eval-script
+  # Original user-files step 181, source line 238.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  # Original user-files step 182, source line 239.
+  - eval: |
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Disposable fake pasted content.'], 'pasted-notes.txt', {type: 'text/plain'}));
+      document.querySelector('#onyx-chat-input-textbox').dispatchEvent(new ClipboardEvent('paste', {clipboardData: transfer, bubbles: true, cancelable: true}));
+    id: eval-script-2
+  # Original user-files step 183, source line 243.
+  - wait: { text: Processing..., exact: true }
+    id: wait-processing
+  # Original user-files step 184, source line 244.
+  - shot: paste-file-processing
+    id: shot-paste-file-processing
+  # Original user-files step 185, source line 245.
+  - wait_gone: { text: Processing..., exact: true, timeout: 20000 }
+    id: wait-gone-processing
+  # Original user-files step 186, source line 246.
+  - eval: |
+      const composer = document.querySelector('#onyx-chat-input');
+      if ((composer.textContent.match(/pasted-notes.txt/g) || []).length !== 1) throw new Error('Pasted file was lost or uploaded twice by the dropzone');
+    id: eval-script-3
+  # Original user-files step 187, source line 249.
+  - shot: paste-file-ready
+    id: shot-paste-file-ready
+  # Original user-files step 188, source line 250.
+  - hover: { text: pasted-notes.txt, exact: true }
+    id: hover-pasted-notes-txt
+  # Original user-files step 189, source line 251.
+  - click: { selector: '#onyx-chat-input div.relative:has-text("pasted-notes.txt") button[aria-label="Remove"]' }
+    id: click-onyx-chat-input-div-relative-has-text-pasted-notes-txt-but
+  # Original user-files step 190, source line 252.
+  - eval: |
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Disposable fake dropped content.'], 'dropped-notes.txt', {type: 'text/plain'}));
+      document.querySelector('#onyx-chat-input').dispatchEvent(new DragEvent('drop', {dataTransfer: transfer, bubbles: true, cancelable: true}));
+    id: eval-script-4
+  # Original user-files step 191, source line 256.
+  - wait: { text: Processing..., exact: true }
+    id: wait-processing-2
+  # Original user-files step 192, source line 257.
+  - shot: drop-file-processing
+    id: shot-drop-file-processing
+  # Original user-files step 193, source line 258.
+  - wait_gone: { text: Processing..., exact: true, timeout: 20000 }
+    id: wait-gone-processing-2
+  # Original user-files step 194, source line 259.
+  - wait: { text: dropped-notes.txt, exact: true }
+    id: wait-dropped-notes-txt
+  # Original user-files step 195, source line 260.
+  - shot: drop-file-ready
+    id: shot-drop-file-ready
+  # Original user-files step 196, source line 261.
+  - hover: { text: dropped-notes.txt, exact: true }
+    id: hover-dropped-notes-txt
+  # Original user-files step 197, source line 262.
+  - click: { selector: '#onyx-chat-input div.relative:has-text("dropped-notes.txt") button[aria-label="Remove"]' }
+    id: click-onyx-chat-input-div-relative-has-text-dropped-notes-txt-bu
+  # Consumer-visible dirty pasted/dropped catalog before reset.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814
+  # Consumer-visible dirty pasted/dropped catalog before reset.
+  - click: { text: All Recent Files, exact: true }
+    id: click-all-recent-files
+  # Consumer-visible dirty pasted/dropped catalog before reset.
+  - wait: { placeholder: Search files... }
+    id: wait
+  # Consumer-visible dirty pasted/dropped catalog before reset.
+  - wait: { text: pasted-notes.txt, exact: true }
+    id: wait-pasted-notes-txt
+  # Consumer-visible dirty pasted/dropped catalog before reset.
+  - wait: { text: dropped-notes.txt, exact: true }
+    id: wait-dropped-notes-txt-2
+  # Consumer-visible dirty pasted/dropped catalog before reset.
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const result = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, anchor: current.demo_anchor, locale: 'en', keep: false, resetChats: true})});
+        if (!result.ok) throw new Error('File state control failed');
+      })()
+    id: eval-script-5
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - goto: /app
+    id: goto-app-2
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox-2
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814-2
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - click: { text: All Recent Files, exact: true }
+    id: click-all-recent-files-2
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - wait: { placeholder: Search files... }
+    id: wait-2
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - wait: { text: library-reading.txt, exact: true }
+    id: wait-library-reading-txt
+  # Owning dirty/reset outcome discards pasted/dropped records.
+  - eval: |
+      const library = document.querySelector('[role="dialog"]');
+      if (['pasted-notes.txt', 'dropped-notes.txt'].some(name => library.textContent.includes(name)) || !library.textContent.includes('attendance-demo.csv') || !library.textContent.includes('protected-reading.txt')) throw new Error('Fresh reset did not discard native uploads and restore the fictional seed library');
+    id: eval-script-6
+world: ../../../worlds/seaside/world.yaml

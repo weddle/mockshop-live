@@ -1,0 +1,318 @@
+# #65 route-sized native proof: Appearance and Theming aliases.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-theme
+title: Appearance and Theming aliases - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/theme
+    id: goto-admin-theme
+  - shot: inventory-theme-alias
+    id: shot-inventory-theme-alias
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme
+  - shot: inventory-theme-ee
+    id: shot-inventory-theme-ee
+  - goto: /admin/theme
+    id: goto-admin-theme-2
+  - shot: theme-menu-route
+    id: shot-theme-menu-route
+  - click: { selector: 'a[href="/admin/theme"]' }
+    id: click-a-href-admin-theme
+  - shot: theme-sidebar
+    id: shot-theme-sidebar
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme-2
+  - fill: { selector: 'input[data-label="greeting-message-input"]', value: Welcome to the fictional Learning Workshop. }
+    id: fill-input-data-label-greeting-message-input
+  - click: { role: button, name: Apply Changes, exact: true }
+    id: click-apply-changes
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme-3
+  - eval: |
+      if (document.querySelector('input[data-label="greeting-message-input"]')?.value !== 'Welcome to the fictional Learning Workshop.') throw new Error('Theme greeting did not persist');
+    id: eval-script
+  - shot: theme-ee-saved
+    id: shot-theme-ee-saved
+  - scroll: { selector: 'input[data-label="chat-header-input"]' }
+    id: scroll-input-data-label-chat-header-input
+  - shot: theme-native-header-footer-help-loaded
+    id: shot-theme-native-header-footer-help-loaded
+  - fill: { selector: 'input[data-label="chat-header-input"]', value: Fictional workshop header }
+    id: fill-input-data-label-chat-header-input
+  - fill: { selector: 'textarea[data-label="chat-footer-textarea"]', value: Fictional educational footer. No real account or provider. }
+    id: fill-textarea-data-label-chat-footer-textarea
+  - fill: { selector: 'input[data-label="custom-help-link-url-input"]', value: https://learning.example.invalid/help }
+    id: fill-input-data-label-custom-help-link-url-input
+  - fill: { selector: 'input[data-label="custom-help-link-label-input"]', value: Workshop help (fake) }
+    id: fill-input-data-label-custom-help-link-label-input
+  - scroll: { selector: '[data-label="first-visit-notice-toggle"]' }
+    id: scroll-data-label-first-visit-notice-toggle
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+    id: click-data-label-first-visit-notice-toggle
+  - wait: { selector: 'input[data-label="notice-header-input"]' }
+    id: wait-input-data-label-notice-header-input
+  - shot: theme-first-visit-native-conditional-form
+    id: shot-theme-first-visit-native-conditional-form
+  - fill: { selector: 'input[data-label="notice-header-input"]', value: Fictional workshop welcome }
+    id: fill-input-data-label-notice-header-input
+  - fill: { selector: 'textarea[data-label="notice-content-textarea"]', value: Fictional learning environment notice. }
+    id: fill-textarea-data-label-notice-content-textarea
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+    id: click-data-label-require-consent-toggle
+  - wait: { selector: 'textarea[data-label="consent-prompt-textarea"]' }
+    id: wait-textarea-data-label-consent-prompt-textarea
+  - fill: { selector: 'textarea[data-label="consent-prompt-textarea"]', value: I understand this is a fictional workshop. }
+    id: fill-textarea-data-label-consent-prompt-textarea
+  - scroll: { selector: 'textarea[data-label="consent-prompt-textarea"]' }
+    id: scroll-textarea-data-label-consent-prompt-textarea
+  - shot: theme-consent-native-conditional-content
+    id: shot-theme-consent-native-conditional-content
+  - scroll: { selector: '[data-label="system-announcement-toggle"]' }
+    id: scroll-data-label-system-announcement-toggle
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+    id: click-data-label-system-announcement-toggle
+  - fill: { selector: 'input[data-label="system-announcement-header-input"]', value: Fictional workshop announcement }
+    id: fill-input-data-label-system-announcement-header-input
+  - fill: { selector: 'textarea[data-label="system-announcement-content-textarea"]', value: Educational demonstration announcement only. }
+    id: fill-textarea-data-label-system-announcement-content-textarea
+  - click: { selector: '[data-label="system-announcement-popup-toggle"]' }
+    id: click-data-label-system-announcement-popup-toggle
+  - scroll: { selector: '[data-label="system-announcement-popup-toggle"]' }
+    id: scroll-data-label-system-announcement-popup-toggle
+  - shot: theme-announcement-native-conditional-popup
+    id: shot-theme-announcement-native-conditional-popup
+  - click: { selector: '[data-label="system-announcement-popup-toggle"]' }
+    id: click-data-label-system-announcement-popup-toggle-2
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+    id: click-data-label-system-announcement-toggle-2
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+    id: click-data-label-require-consent-toggle-2
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+    id: click-data-label-first-visit-notice-toggle-2
+  - click: { role: button, name: Apply Changes, exact: true }
+    id: click-apply-changes-2
+  - goto: /admin/security
+    id: goto-admin-security-2
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme-4
+  - wait: { selector: 'input[data-label="chat-header-input"][value="Fictional workshop header"]' }
+    id: wait-input-data-label-chat-header-input-value-fictional-workshop
+  - scroll: { selector: 'input[data-label="custom-help-link-url-input"]' }
+    id: scroll-input-data-label-custom-help-link-url-input
+  - eval: |
+      (() => {
+        const expected = { 'chat-footer-textarea': 'Fictional educational footer. No real account or provider.', 'custom-help-link-url-input': 'https://learning.example.invalid/help', 'custom-help-link-label-input': 'Workshop help (fake)' };
+        for (const [label, value] of Object.entries(expected)) if (document.querySelector(`[data-label="${label}"]`)?.value !== value) throw new Error(`Theme lower readback failed: ${label}`);
+      })()
+    id: eval-script-2
+  - shot: theme-header-footer-help-navigation-readback
+    id: shot-theme-header-footer-help-navigation-readback
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+    id: click-data-label-first-visit-notice-toggle-3
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+    id: click-data-label-require-consent-toggle-3
+  - wait: { selector: 'input[data-label="notice-header-input"][value="Fictional workshop welcome"]' }
+    id: wait-input-data-label-notice-header-input-value-fictional-worksh
+  - scroll: { selector: 'textarea[data-label="consent-prompt-textarea"]' }
+    id: scroll-textarea-data-label-consent-prompt-textarea-2
+  - eval: |
+      (() => {
+        if (document.querySelector('[data-label="notice-content-textarea"]')?.value !== 'Fictional learning environment notice.' || document.querySelector('[data-label="consent-prompt-textarea"]')?.value !== 'I understand this is a fictional workshop.') throw new Error('Theme native notice content did not persist');
+      })()
+    id: eval-script-3
+  - shot: theme-notice-content-navigation-readback
+    id: shot-theme-notice-content-navigation-readback
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/ee/admin/theme';
+      })()
+    id: eval-script-4
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="false"]' }
+    id: wait-data-label-first-visit-notice-toggle-aria-checked-false
+  - scroll: { selector: '[data-label="system-announcement-toggle"]' }
+    id: scroll-data-label-system-announcement-toggle-2
+  - wait: { selector: '[data-label="system-announcement-toggle"][aria-checked="false"]' }
+    id: wait-data-label-system-announcement-toggle-aria-checked-false
+  - shot: reset-theme-native-lower-content
+    id: shot-reset-theme-native-lower-content
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+    id: click-data-label-first-visit-notice-toggle-4
+  - fill: { selector: 'input[data-label="notice-header-input"]', value: Fictional published workshop welcome }
+    id: fill-input-data-label-notice-header-input-2
+  - fill: { selector: 'textarea[data-label="notice-content-textarea"]', value: This is an explicitly fictional learning environment notice. }
+    id: fill-textarea-data-label-notice-content-textarea-2
+  - click: { role: button, name: Apply Changes, exact: true }
+    id: click-apply-changes-3
+  - goto: /app
+    id: goto-app
+  - wait: { role: dialog }
+    id: wait
+  - wait: { text: Fictional published workshop welcome, exact: true }
+    id: wait-fictional-published-workshop-welcome
+  - wait: { text: This is an explicitly fictional learning environment notice., exact: true }
+    id: wait-this-is-an-explicitly-fictional-learning-environment-notice
+  - wait_gone: { role: checkbox, name: Consent checkbox, exact: true }
+    id: wait-gone-consent-checkbox
+  - shot: theme-user-first-visit-without-consent
+    id: shot-theme-user-first-visit-without-consent
+  - press: Escape
+    id: press-escape
+  - wait: { text: Fictional published workshop welcome, exact: true }
+    id: wait-fictional-published-workshop-welcome-2
+  - shot: theme-user-notice-native-blocking-dialog
+    id: shot-theme-user-notice-native-blocking-dialog
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme-5
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="true"]' }
+    id: wait-data-label-first-visit-notice-toggle-aria-checked-true
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+    id: click-data-label-require-consent-toggle-4
+  - fill: { selector: 'textarea[data-label="consent-prompt-textarea"]', value: I understand this published workshop is fictional. }
+    id: fill-textarea-data-label-consent-prompt-textarea-2
+  - click: { role: button, name: Apply Changes, exact: true }
+    id: click-apply-changes-4
+  - goto: /app
+    id: goto-app-2
+  - wait: { role: dialog }
+    id: wait-2
+  - wait: { text: I understand this published workshop is fictional., exact: true }
+    id: wait-i-understand-this-published-workshop-is-fictional
+  - shot: theme-user-published-consent-notice
+    id: shot-theme-user-published-consent-notice
+  - click: { selector: '[role="dialog"] button:has-text("Start")' }
+    id: click-role-dialog-button-has-text-start
+  - wait: { text: You need to agree to the terms to access the application., exact: true }
+    id: wait-you-need-to-agree-to-the-terms-to-access-the-application
+  - shot: theme-user-native-consent-required
+    id: shot-theme-user-native-consent-required
+  - click: { role: checkbox, name: Consent checkbox, exact: true }
+    id: click-consent-checkbox
+  - wait: { selector: '[role="checkbox"][aria-label="Consent checkbox"][aria-checked="true"]' }
+    id: wait-role-checkbox-aria-label-consent-checkbox-aria-checked-true
+  - wait_gone: { text: You need to agree to the terms to access the application., exact: true }
+    id: wait-gone-you-need-to-agree-to-the-terms-to-access-the-applicati
+  - shot: theme-user-native-consent-checked
+    id: shot-theme-user-native-consent-checked
+  - click: { selector: '[role="dialog"] button:has-text("Start")' }
+    id: click-role-dialog-button-has-text-start-2
+  - wait_gone: { text: Fictional published workshop welcome, exact: true }
+    id: wait-gone-fictional-published-workshop-welcome
+  - wait: { testid: action-management-toggle }
+    id: wait-3
+  - shot: theme-user-notice-acknowledged
+    id: shot-theme-user-notice-acknowledged
+  - goto: /admin/security
+    id: goto-admin-security-3
+  - goto: /app
+    id: goto-app-3
+  - wait: { testid: action-management-toggle }
+    id: wait-4
+  - wait_gone: { text: Fictional published workshop welcome, exact: true }
+    id: wait-gone-fictional-published-workshop-welcome-2
+  - eval: |
+      if (localStorage.getItem('allUsersInitialPopupFlowCompleted') !== 'true') throw new Error('Native Start did not preserve first-visit acknowledgment');
+    id: eval-script-5
+  - shot: theme-user-notice-ack-navigation-readback
+    id: shot-theme-user-notice-ack-navigation-readback
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme-6
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="true"]' }
+    id: wait-data-label-first-visit-notice-toggle-aria-checked-true-2
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+    id: click-data-label-system-announcement-toggle-3
+  - fill: { selector: 'input[data-label="system-announcement-header-input"]', value: Fictional published workshop announcement }
+    id: fill-input-data-label-system-announcement-header-input-2
+  - fill: { selector: 'textarea[data-label="system-announcement-content-textarea"]', value: Published educational announcement. No real account or provider changed. }
+    id: fill-textarea-data-label-system-announcement-content-textarea-2
+  - click: { selector: '[data-label="system-announcement-popup-toggle"]' }
+    id: click-data-label-system-announcement-popup-toggle-3
+  - click: { role: button, name: Apply Changes, exact: true }
+    id: click-apply-changes-5
+  - goto: /app
+    id: goto-app-4
+  - wait: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+    id: wait-fixed-bottom-2-has-text-fictional-published-workshop-announ
+  - wait: { text: Published educational announcement. No real account or provider changed., exact: true }
+    id: wait-published-educational-announcement-no-real-account-or-provi
+  - shot: theme-user-published-system-announcement
+    id: shot-theme-user-published-system-announcement
+  - click: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement") button[aria-label="Dismiss"]' }
+    id: click-fixed-bottom-2-has-text-fictional-published-workshop-annou
+  - wait_gone: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+    id: wait-gone-fixed-bottom-2-has-text-fictional-published-workshop-a
+  - shot: theme-user-announcement-native-dismissed
+    id: shot-theme-user-announcement-native-dismissed
+  - goto: /admin/security
+    id: goto-admin-security-4
+  - goto: /app
+    id: goto-app-5
+  - wait: { testid: action-management-toggle }
+    id: wait-5
+  - wait_gone: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+    id: wait-gone-fixed-bottom-2-has-text-fictional-published-workshop-a-2
+  - shot: theme-user-announcement-dismiss-navigation-readback
+    id: shot-theme-user-announcement-dismiss-navigation-readback
+  - goto: /ee/admin/theme
+    id: goto-ee-admin-theme-7
+  - wait: { selector: 'input[data-label="system-announcement-header-input"][value="Fictional published workshop announcement"]' }
+    id: wait-input-data-label-system-announcement-header-input-value-fic
+  - scroll: { selector: '[data-label="system-announcement-popup-toggle"]' }
+    id: scroll-data-label-system-announcement-popup-toggle-2
+  - shot: theme-published-announcement-admin-readback
+    id: shot-theme-published-announcement-admin-readback
+  - click: { selector: '[data-label="system-announcement-toggle"]' }
+    id: click-data-label-system-announcement-toggle-4
+  - click: { selector: '[data-label="require-consent-toggle"]' }
+    id: click-data-label-require-consent-toggle-5
+  - click: { selector: '[data-label="first-visit-notice-toggle"]' }
+    id: click-data-label-first-visit-notice-toggle-5
+  - click: { role: button, name: Apply Changes, exact: true }
+    id: click-apply-changes-6
+  - goto: /app
+    id: goto-app-6
+  - wait: { testid: action-management-toggle }
+    id: wait-6
+  - wait_gone: { text: Fictional published workshop welcome, exact: true }
+    id: wait-gone-fictional-published-workshop-welcome-3
+  - wait_gone: { selector: '.fixed.bottom-2:has-text("Fictional published workshop announcement")' }
+    id: wait-gone-fixed-bottom-2-has-text-fictional-published-workshop-a-3
+  - eval: |
+      (async () => {
+        const banner = await fetch('/api/admin/banner').then(r => r.json());
+        const enterprise = await fetch('/api/enterprise-settings').then(r => r.json());
+        if (banner !== null || enterprise.show_first_visit_notice || enterprise.enable_consent_screen) throw new Error('Native unpublish/notice disable did not persist');
+      })()
+    id: eval-script-6
+  - shot: theme-native-announcement-unpublished
+    id: shot-theme-native-announcement-unpublished
+  - id: eval-script-7-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/ee/admin/theme';
+      })()
+    id: eval-script-7
+  - wait: { selector: '[data-label="first-visit-notice-toggle"][aria-checked="false"]' }
+    id: wait-data-label-first-visit-notice-toggle-aria-checked-false-2
+  - wait: { selector: '[data-label="system-announcement-toggle"][aria-checked="false"]' }
+    id: wait-data-label-system-announcement-toggle-aria-checked-false-2
+  - shot: reset-theme-published-notice-announcement
+    id: shot-reset-theme-published-notice-announcement
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

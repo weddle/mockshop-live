@@ -1,0 +1,48 @@
+# Omzo admin walkthrough: Connectors list, Groups (Reliability detail), LLM providers.
+name: omzo-admin
+requires: enterprise
+strict: true
+title: "{{company.name}} admin - connectors, groups and LLM providers"
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: /admin/indexing-status
+    id: goto-admin-indexing-status
+  - wait: { text: Zendesk, exact: true }
+    id: wait-zendesk
+  - shot: omzo-connectors
+    id: shot-omzo-connectors
+  - click: { text: Expand All }
+    id: click-expand-all
+  - wait: { text: "GitHub – omzo/media-platform" }
+    id: wait-github-omzo-media-platform
+  - scroll: { text: Zendesk, exact: true }
+    id: scroll-zendesk
+  - shot: omzo-connectors-expanded
+    id: shot-omzo-connectors-expanded
+  - click: { selector: 'a[href="/admin/groups"]' }
+    id: click-a-href-admin-groups
+  - wait: { text: "{{teams.reliability.name}}", exact: true }
+    id: wait-reliability
+  - shot: omzo-groups
+    id: shot-omzo-groups
+  - click: { role: button, name: View group, exact: true, nth: 0 }
+    id: click-view-group
+  - wait: { placeholder: Search members... }
+    id: wait
+  - shot: omzo-group-reliability
+    id: shot-omzo-group-reliability
+  - scroll: { text: Shared with This Group, exact: true }
+    id: scroll-shared-with-this-group
+  - wait: { text: "Confluence – Engineering Runbooks" }
+    id: wait-confluence-engineering-runbooks
+  - shot: omzo-group-reliability-resources
+    id: shot-omzo-group-reliability-resources
+  - click: { selector: 'a[href="/admin/language-models"]' }
+    id: click-a-href-admin-language-models
+  - wait: { text: "{{company.name}} GPU cluster" }
+    id: wait-omzo-gpu-cluster
+  - shot: omzo-llm-providers
+    id: shot-omzo-llm-providers
+world: ../../../worlds/omzo/world.yaml

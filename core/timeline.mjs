@@ -1,11 +1,11 @@
 // Clip timeline: a structured record of every step with start/end ms relative to the clip start, plus marks.
-// Written next to the MP4 as <scenario>.timeline.json and <scenario>.vtt. Also feeds `mockshop live`.
+// Written next to the MP4 as <script>.timeline.json and <script>.vtt. Also feeds `mockshop live`.
 // The runner calls begin()/end()/mark() around each step; everything here is best-effort and never throws into a step.
 import fs from "node:fs";
 import path from "node:path";
 
 // Step keys that are not the op.
-export const META_KEYS = ["only", "at", "cursor"];
+export const META_KEYS = ["only", "at", "cursor", "id", "author_id", "scene", "origin", "presentation", "_presentation"];
 
 // `at:` -> ms. Accepts 12.5 (seconds), "12.5s", "1500ms", "1:02.5" / "00:12.500". null if unparseable.
 export function parseAt(v) {
@@ -38,8 +38,8 @@ const vttTime = (ms) => `${pad(Math.floor(ms / 3600000))}:${pad(Math.floor(ms / 
 
 export class Timeline {
   // now(): ms on the timeline clock (video time in clips, wall time in live). ready(): false until time 0 exists.
-  constructor({ scenario, plugin, now, ready = () => true }) {
-    this.meta = { scenario, plugin };
+  constructor({ script, plugin, source, inputs, scenes, now, ready = () => true }) {
+    this.meta = { script, plugin, ...(source ? { source } : {}), ...(inputs ? { inputs } : {}), ...(scenes ? { scenes } : {}) };
     this.now = now; this.ready = ready;
     this.actions = []; this.marks = []; this.cur = null;
   }
@@ -55,7 +55,7 @@ export class Timeline {
   }
 
   // Before a step: honour `at:` (wait until that clip time), then record start, target and cursor origin.
-  async begin({ i, op, arg, step, page, loc, cursor }) {
+  async begin({ i, op, arg, step, page, loc, cursor, presentation }) {
     const at = step.at !== undefined ? parseAt(step.at) : null;
     let late_ms;
     if (at !== null && this.ready()) {
@@ -63,6 +63,11 @@ export class Timeline {
       if (wait > 0) await page.waitForTimeout(wait); else late_ms = -wait;
     }
     const a = { step: i, op, start_ms: this.t(), end_ms: null };
+    if (step.id) a.id = step.id;
+    if (step.author_id || step.id) a.step_id = step.author_id || step.id;
+    if (step.scene) a.scene = step.scene;
+    if (step.origin) a.origin = step.origin;
+    if (presentation) a.presentation = presentation;
     if (at !== null) { a.at_ms = at; if (late_ms) a.late_ms = late_ms; }
     const target = op === "shot" ? arg?.hover : arg;
     const sel = describeLoc(op === "move" && Array.isArray(arg) ? null : target);
@@ -96,6 +101,7 @@ export class Timeline {
   mark(arg, step, kind) {
     const m = typeof arg === "string" ? { name: arg } : arg;
     const rec = { name: m.name, ...(m.note ? { note: m.note } : {}), kind, t_ms: this.t(), step };
+    if (this.cur) for (const key of ["id", "step_id", "scene", "origin"]) if (this.cur.a[key] !== undefined) rec[key] = this.cur.a[key];
     this.marks.push(rec);
     if (this.cur) this.cur.a.mark = m.name;
     return rec;

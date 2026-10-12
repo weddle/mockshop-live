@@ -1,0 +1,147 @@
+apps:
+  onyx:
+    fixtures:
+      GET /admin/llm/provider:
+        providers:
+          - id: 34
+            name: Campus Vertex (local fake)
+            provider: vertex_ai
+            api_key: null
+            api_base: null
+            api_version: null
+            custom_config:
+              vertex_auth_method: service_account_json
+              vertex_location: us-central1
+              vertex_credentials: '{"type":"service_account","project_id":"mock-campus-seed-project","client_email":"fictional-vertex@example.invalid","private_key":"mock-only-not-a-secret"}'
+            is_public: true
+            is_auto_mode: false
+            groups: []
+            personas: []
+            deployment_name: null
+            model_configurations:
+              - id: 3401
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 34
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 34
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /llm/provider:
+        providers:
+          - id: 34
+            name: Campus Vertex (local fake)
+            provider: vertex_ai
+            provider_display_name: Gemini
+            model_configurations:
+              - id: 3401
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 34
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 34
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /llm/persona/:id/providers:
+        providers:
+          - id: 34
+            name: Campus Vertex (local fake)
+            provider: vertex_ai
+            provider_display_name: Gemini
+            model_configurations:
+              - id: 3401
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 34
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 34
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /admin/llm/built-in/options/vertex_ai:
+        name: vertex_ai
+        known_models:
+          - id: 3401
+            name: learning-notes-demo
+            display_name: Learning Notes (local fake)
+            is_visible: true
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+        recommended_default_model:
+          name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+      GET /settings:
+        maximum_chat_retention_days: null
+        company_name: "{{company.name}}"
+        company_description: Boutique coastal hotels & resorts (fictional demo company)
+        gpu_enabled: false
+        application_status: active
+        anonymous_user_enabled: false
+        invite_only_enabled: false
+        deep_research_enabled: true
+        multi_model_chat_enabled: true
+        search_ui_enabled: true
+        auto_detect_search_filters: true
+        ee_features_enabled: true
+        tier: enterprise
+        temperature_override_enabled: true
+        reasoning_override_enabled: true
+        hide_provider_grouping: false
+        auto_scroll: false
+        query_history_type: normal
+        hide_query_history_from_admin_panel: false
+        image_extraction_and_analysis_enabled: true
+        image_analysis_max_size_mb: 20
+        user_knowledge_enabled: true
+        user_file_max_upload_size_mb: 100
+        file_token_count_threshold_k: null
+        show_extra_connectors: true
+        disable_default_assistant: false
+        craft_default_enabled: false
+        llm_gateway_enabled: true
+        craft_instructions: null
+        seat_count: null
+        used_seats: null
+        opensearch_indexing_enabled: true
+        oauth_provider_enabled: false
+        notifications: []
+        needs_reindexing: false
+        tenant_id: public
+        onyx_craft_enabled: false
+        onyx_craft_available: false
+        opencode_debugging_enabled: false
+        vector_db_enabled: true
+        hide_onyx_branding: false
+        hooks_enabled: true
+        version: v3.4.0
+        max_allowed_upload_size_mb: 250
+        default_pruning_freq: 86400
+        default_user_file_max_upload_size_mb: 100
+        default_file_token_count_threshold_k: 200
+        is_containerized: true
+        posthog_key: null
+        posthog_host: null

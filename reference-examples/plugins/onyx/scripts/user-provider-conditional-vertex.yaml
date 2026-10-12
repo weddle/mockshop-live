@@ -1,0 +1,325 @@
+# EDITONLY prepared; unexecuted/unaccepted. Fictional local inputs only.
+# Existing #33 first-run/name prerequisite and sole #3 provider store; no real provider calls.
+# Saved-form edit is NOT available in onboarding: connected card navigates /admin/language-models.
+# Cancel reopens a pristine NEW form; saved conditional ADMIN edit remains separate/unverified.
+# VertexAIModal70–79: method changes clear inactive fields;79–85 hooks_enabled gates selector.
+# Required Workload project; service-account upload remains the native FILE control, not a textarea.
+# This conditional slice saves Workload Identity only, not the previously accepted default form.
+# Filtered custom_config contains method/project/location and omits empty vertex_credentials.
+name: user-provider-conditional-vertex
+title: Native onboarding Vertex auth-method conditional project/region controls
+requires: enterprise
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 1000
+steps:
+  - goto: /app
+    id: goto-app
+  - eval: (async () => { const me=await (await fetch('/api/me')).json(); localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`); localStorage.removeItem('allUsersInitialPopupFlowCompleted'); })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait:
+      selector: '[aria-label="onboarding-flow"]'
+    id: wait-aria-label-onboarding-flow
+  - click:
+      role: button
+      name: Let's Go
+      exact: true
+    id: click-let-s-go
+  - wait:
+      placeholder: Your name
+    id: wait
+  - fill:
+      placeholder: Your name
+      value: Jordan Workshop Educator
+    id: fill
+  - settle: 900
+    id: settle
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"]'
+    id: wait-aria-label-onboarding-llm-step
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-2
+  - eval: (async () => { const settings=await (await fetch('/api/settings')).json(); if(settings.hooks_enabled!==true) throw new Error('Native Vertex selector requires opt-in hooks_enabled'); })()
+    id: eval-script-3
+  - click:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Gemini")'
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-gemini
+  - wait:
+      selector: '[role="dialog"]'
+    id: wait-role-dialog
+  - wait:
+      text: Learning Notes (local fake)
+      exact: true
+    id: wait-learning-notes-local-fake
+  - click:
+      selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+    id: click-role-dialog-input-name-custom-config-vertex-auth-method
+  - wait:
+      selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+    id: wait-role-option-has-text-workload-identity-gke
+  - eval: |
+      const rows = [...document.querySelectorAll('[role=option]')];
+      if (['Service Account JSON', 'Workload Identity (GKE)'].some(text => !rows.some(row => row.textContent.includes(text)))) throw new Error('Native Vertex auth option missing');
+    id: eval-script-4
+  - shot: { name: vertex-native-auth-method-menu, full_page: true }
+    id: shot-vertex-native-auth-method-menu
+  - click:
+      selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+    id: click-role-option-has-text-workload-identity-gke
+  - wait:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    id: wait-role-dialog-input-name-custom-config-vertex-project
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_auth_method\"]")?.value !== "Workload Identity (GKE)" || document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_project\"]")?.value !== "" || document.querySelector('[role=dialog] input[type=file]')) throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-5
+  - fill:
+      selector: '[role="dialog"] input[name="custom_config.vertex_location"]'
+      value: us-central1
+    id: fill-role-dialog-input-name-custom-config-vertex-location
+  - press: Tab
+    id: press-tab
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-6
+  - shot:
+      name: vertex-workload-project-required
+      full_page: true
+    id: shot-vertex-workload-project-required
+  - fill:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+      value: mock-canceled-workshop-project
+    id: fill-role-dialog-input-name-custom-config-vertex-project
+  - press: Tab
+    id: press-tab-2
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:enabled:not([aria-disabled="true"])'
+    id: wait-role-dialog-button-type-submit-enabled-not-aria-disabled-tr
+  - shot:
+      name: vertex-workload-conditional-draft
+      full_page: true
+    id: shot-vertex-workload-conditional-draft
+  - click:
+      selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+    id: click-role-dialog-input-name-custom-config-vertex-auth-method-2
+  - click:
+      selector: '[role="option"]:has-text("Service Account JSON")'
+    id: click-role-option-has-text-service-account-json
+  - wait_gone:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    id: wait-gone-role-dialog-input-name-custom-config-vertex-project
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_auth_method\"]")?.value !== "Service Account JSON" || document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_location\"]")?.value !== "us-central1" || document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_project\"]") || !document.querySelector('[role=dialog] input[type=file]')) throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-7
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di-2
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-8
+  - shot:
+      name: vertex-switch-clears-project-requires-file
+      full_page: true
+    id: shot-vertex-switch-clears-project-requires-file
+  - click:
+      selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+    id: click-role-dialog-input-name-custom-config-vertex-auth-method-3
+  - click:
+      selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+    id: click-role-option-has-text-workload-identity-gke-2
+  - wait:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    id: wait-role-dialog-input-name-custom-config-vertex-project-2
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_project\"]")?.value !== "" || document.querySelector('[role=dialog] input[type=file]')) throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-9
+  - fill:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+      value: ''
+    id: fill-role-dialog-input-name-custom-config-vertex-project-2
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di-3
+  - click:
+      selector: '[role="dialog"] button:has-text("Cancel")'
+    id: click-role-dialog-button-has-text-cancel
+  - wait_gone:
+      selector: '[role="dialog"]'
+    id: wait-gone-role-dialog
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-10
+  - shot:
+      name: vertex-cancel-protected
+      full_page: true
+    id: shot-vertex-cancel-protected
+  - click:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Gemini")'
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-gemini-2
+  - wait:
+      selector: '[role="dialog"]'
+    id: wait-role-dialog-2
+  - wait:
+      text: Learning Notes (local fake)
+      exact: true
+    id: wait-learning-notes-local-fake-2
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_auth_method\"]")?.value !== "Service Account JSON" || document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_location\"]")?.value !== "global" || document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_project\"]") || !document.querySelector('[role=dialog] input[type=file]')) throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-11
+  - shot:
+      name: vertex-cancel-reopen-pristine
+      full_page: true
+    id: shot-vertex-cancel-reopen-pristine
+  - click:
+      selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+    id: click-role-dialog-input-name-custom-config-vertex-auth-method-4
+  - click:
+      selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+    id: click-role-option-has-text-workload-identity-gke-3
+  - wait:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    id: wait-role-dialog-input-name-custom-config-vertex-project-3
+  - fill:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+      value: mock-education-vertex-project
+    id: fill-role-dialog-input-name-custom-config-vertex-project-3
+  - fill:
+      selector: '[role="dialog"] input[name="custom_config.vertex_location"]'
+      value: us-central1
+    id: fill-role-dialog-input-name-custom-config-vertex-location-2
+  - press: Tab
+    id: press-tab-3
+  - shot:
+      name: vertex-workload-ready-local-save
+      full_page: true
+    id: shot-vertex-workload-ready-local-save
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:enabled:not([aria-disabled="true"])'
+    id: wait-role-dialog-button-type-submit-enabled-not-aria-disabled-tr-2
+  - click:
+      selector: '[role="dialog"] button[type="submit"]'
+    id: click-role-dialog-button-type-submit
+  - wait_gone:
+      selector: '[role="dialog"]'
+    id: wait-gone-role-dialog-2
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Gemini") svg.stroke-status-success-05'
+    id: wait-aria-label-onboarding-llm-step-role-button-has-text-gemini-
+  - &id001
+    eval: (async () => { const ar=await fetch('/api/admin/llm/provider'),ur=await fetch('/api/llm/provider'); if(!ar.ok || !ur.ok) throw new Error('Conditional provider metadata read failed'); const a=await ar.json(),u=await ur.json(),p=a.providers[0]; if(a.providers.length!==1 || p?.provider!=="vertex_ai" || p.custom_config?.["vertex_auth_method"]!=="workload_identity" || p.custom_config?.["vertex_project"]!=="mock-education-vertex-project" || p.custom_config?.["vertex_location"]!=="us-central1" || Object.hasOwn(p.custom_config || {},"vertex_credentials") || u.providers.length!==1 || u.providers[0].id!==p.id || u.default_text?.provider_id!==p.id || u.default_text?.model_name!=='learning-notes-demo' || !u.providers[0].model_configurations.some(m=>m.name==='learning-notes-demo' && m.is_visible)) throw new Error('Sole saved provider conditional metadata/redaction/default consumer mismatch'); })()
+    id: eval-script-12
+  - shot:
+      name: vertex-native-connected
+      full_page: true
+    id: shot-vertex-native-connected
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next-2
+  - wait:
+      role: button
+      name: Finish Setup
+      exact: true
+    id: wait-finish-setup
+  - click:
+      role: button
+      name: Edit LLM providers
+      exact: true
+    id: click-edit-llm-providers
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Gemini") svg.stroke-status-success-05'
+    id: wait-aria-label-onboarding-llm-step-role-button-has-text-gemini--2
+  - *id001
+  - shot:
+      name: vertex-saved-native-step-navigation
+      full_page: true
+    id: shot-vertex-saved-native-step-navigation
+  - eval: location.reload()
+    id: eval-script-13
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox
+  - *id001
+  - shot:
+      name: vertex-saved-native-reload
+      full_page: true
+    id: shot-vertex-saved-native-reload
+  - id: eval-script-14-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras-first-run--demo-provider-conditional.yaml
+      overlays: []
+  - eval: (async () => { const before=await (await fetch('/api/admin/llm/provider')).json(); if(before.providers.length!==1) throw new Error('Fresh reset lacks genuinely dirty created provider'); const current=await (await fetch('/api/__mockshop/state')).json(); const r=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,locale:'en',anchor:current.demo_anchor,keep:false,resetChats:true})}); if(!r.ok) throw new Error('Conditional provider dirty fresh reset failed'); })()
+    id: eval-script-14
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-15
+  - goto: /app
+    id: goto-app-3
+  - eval: (async () => { const me=await (await fetch('/api/me')).json(); localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`); localStorage.removeItem('allUsersInitialPopupFlowCompleted'); })()
+    id: eval-script-16
+  - goto: /app
+    id: goto-app-4
+  - wait:
+      selector: '[aria-label="onboarding-flow"]'
+    id: wait-aria-label-onboarding-flow-2
+  - click:
+      role: button
+      name: Let's Go
+      exact: true
+    id: click-let-s-go-2
+  - wait:
+      placeholder: Your name
+    id: wait-2
+  - fill:
+      placeholder: Your name
+      value: Jordan Workshop Educator
+    id: fill-2
+  - settle: 900
+    id: settle-2
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next-3
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"]'
+    id: wait-aria-label-onboarding-llm-step-2
+  - click:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Gemini")'
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-gemini-3
+  - wait:
+      selector: '[role="dialog"]'
+    id: wait-role-dialog-3
+  - wait:
+      text: Learning Notes (local fake)
+      exact: true
+    id: wait-learning-notes-local-fake-3
+  - click:
+      selector: '[role="dialog"] input[name="custom_config.vertex_auth_method"]'
+    id: click-role-dialog-input-name-custom-config-vertex-auth-method-5
+  - click:
+      selector: '[role="option"]:has-text("Workload Identity (GKE)")'
+    id: click-role-option-has-text-workload-identity-gke-4
+  - wait:
+      selector: '[role="dialog"] input[name="custom_config.vertex_project"]'
+    id: wait-role-dialog-input-name-custom-config-vertex-project-4
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_project\"]")?.value !== "" || document.querySelector("[role=\"dialog\"] input[name=\"custom_config.vertex_location\"]")?.value !== "global" || document.querySelector('[role=dialog] input[type=file]')) throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-17
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di-4
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-18
+  - shot:
+      name: vertex-dirty-fresh-project-cleared
+      full_page: true
+    id: shot-vertex-dirty-fresh-project-cleared
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-first-run.yaml
+    - ../../../worlds/onyx-overrides/demo-provider-conditional.yaml

@@ -1,0 +1,149 @@
+# #69 conditional native controls; declared/unverified, same minimal Auth artifact.
+name: auth-provider-choices
+title: "Independent native conditional #69 unit: auth-provider-choices"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required fake logged-out identity; independently cleared cookie.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/mockshop\/auth\-anonymous\/authorize\/google\?next=%2Fapp\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^http 400 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/mockshop\/auth-anonymous\/authorize\/google(?:\?.*)?$/'
+    reason: Deliberate fictional provider-start400; native inline error and retry are asserted.
+# Fresh mixed/sso-only/single-provider/first-user metadata; native authorize failures, missing URL, working/retry/local redirect, kill-switch and return-held states. No IdP.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: "/auth/login"
+    id: goto-auth-login
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"mode": "logged-out", "auth_profile": "mixed", "authorize_outcome": "failure"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script
+  - eval: |
+      (async () => { if ((await fetch('/api/me')).status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Expected fresh fake logged-out cookie and /me401'); })()
+    id: eval-script-2
+  - goto: "/auth/login?next=%2Fapp"
+    id: goto-auth-login-next-2fapp
+  - wait: { "testid": "email" }
+    id: wait
+  - eval: |
+      for (const label of ["Workshop Google (fake)", "Workshop OIDC (fake)", "Workshop SAML (fake)"]) { if (![...document.querySelectorAll('button')].some(b => b.textContent.trim() === label)) throw new Error('Missing native provider '+label); }
+    id: eval-script-3
+  - shot: "auth-providers-mixed"
+    id: shot-auth-providers-mixed
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"authorize_outcome": "failure"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-4
+  - click: { "role": "button", "name": "Workshop Google (fake)", "exact": true }
+    id: click-workshop-google-fake
+  - wait: { "text": "Taking you to Workshop Google (fake) to sign in…", "exact": true }
+    id: wait-taking-you-to-workshop-google-fake-to-sign-in
+  - eval: |
+      if (![...document.querySelectorAll('button')].find(b => b.textContent.trim() === "Workshop Google (fake)")?.disabled) throw new Error('Provider must be disabled while redirecting');
+    id: eval-script-5
+  - shot: "auth-provider-google-working"
+    id: shot-auth-provider-google-working
+  - wait: { "text": "Could not start sign-in (status 400)", "exact": true }
+    id: wait-could-not-start-sign-in-status-400
+  - shot: "auth-provider-google-error"
+    id: shot-auth-provider-google-error
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"authorize_outcome": "missing"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-6
+  - click: { "role": "button", "name": "Workshop OIDC (fake)", "exact": true }
+    id: click-workshop-oidc-fake
+  - wait: { "text": "Taking you to Workshop OIDC (fake) to sign in…", "exact": true }
+    id: wait-taking-you-to-workshop-oidc-fake-to-sign-in
+  - eval: |
+      if (![...document.querySelectorAll('button')].find(b => b.textContent.trim() === "Workshop OIDC (fake)")?.disabled) throw new Error('Provider must be disabled while redirecting');
+    id: eval-script-7
+  - shot: "auth-provider-oidc-working"
+    id: shot-auth-provider-oidc-working
+  - wait: { "text": "Sign-in response was missing the authorization URL", "exact": true }
+    id: wait-sign-in-response-was-missing-the-authorization-url
+  - shot: "auth-provider-oidc-error"
+    id: shot-auth-provider-oidc-error
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"authorize_outcome": "redirect"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-8
+  - click: { "role": "button", "name": "Workshop SAML (fake)", "exact": true }
+    id: click-workshop-saml-fake
+  - wait: { "text": "Access was denied by your identity provider.", "exact": true }
+    id: wait-access-was-denied-by-your-identity-provider
+  - shot: "auth-provider-saml-local-redirect"
+    id: shot-auth-provider-saml-local-redirect
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page
+  - wait: { "testid": "email" }
+    id: wait-2
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"auth_profile": "sso-only"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-9
+  - goto: "/auth/login"
+    id: goto-auth-login-2
+  - wait: { "text": "Workshop OIDC (fake)", "exact": true }
+    id: wait-workshop-oidc-fake
+  - eval: |
+      if (document.querySelector('[data-testid="email"]') || [...document.querySelectorAll('a')].some(a => a.textContent.trim() === 'Create an Account')) throw new Error('Password kill switch must hide form/footer');
+    id: eval-script-10
+  - shot: "auth-providers-password-disabled"
+    id: shot-auth-providers-password-disabled
+  - goto: "/auth/signup"
+    id: goto-auth-signup
+  - wait: { "text": "Workshop OIDC (fake)", "exact": true }
+    id: wait-workshop-oidc-fake-2
+  - eval: |
+      if (!location.pathname.endsWith('/auth/login')) throw new Error('Disabled single-tenant signup must redirect');
+    id: eval-script-11
+  - shot: "auth-signup-password-disabled-redirect"
+    id: shot-auth-signup-password-disabled-redirect
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"auth_profile": "auto-sso", "authorize_outcome": "missing"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-12
+  - goto: "/auth/login"
+    id: goto-auth-login-3
+  - wait: { "text": "Sign-in response was missing the authorization URL", "exact": true }
+    id: wait-sign-in-response-was-missing-the-authorization-url-2
+  - shot: "auth-provider-autostart-error"
+    id: shot-auth-provider-autostart-error
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"authorize_outcome": "redirect"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-13
+  - click: { "role": "button", "name": "Workshop OIDC (fake)", "exact": true }
+    id: click-workshop-oidc-fake-2
+  - wait: { "text": "Access was denied by your identity provider.", "exact": true }
+    id: wait-access-was-denied-by-your-identity-provider-2
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page-2
+  - wait: { "text": "Workshop OIDC (fake)", "exact": true }
+    id: wait-workshop-oidc-fake-3
+  - eval: |
+      const provider = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Workshop OIDC (fake)');
+      if (new URLSearchParams(location.search).get('autoRedirectToSso') !== 'false' || !provider || provider.disabled || document.body.innerText.includes('Taking you to')) throw new Error('Error return must hold SSO on its enabled button');
+    id: eval-script-14
+  - shot: "auth-provider-return-held"
+    id: shot-auth-provider-return-held
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"auth_profile": "first-user"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-15
+  - goto: "/auth/login"
+    id: goto-auth-login-4
+  - wait: { "text": "Create account", "exact": true }
+    id: wait-create-account
+  - shot: "auth-first-user-signup"
+    id: shot-auth-first-user-signup
+  - goto: "/auth/login?autoRedirectToSignup=false"
+    id: goto-auth-login-autoredirecttosignup-false
+  - wait: { "testid": "email" }
+    id: wait-3
+  - shot: "auth-first-user-signup-bypass"
+    id: shot-auth-first-user-signup-bypass
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

@@ -1,0 +1,96 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-models-actions
+title: Independent native model picker, multi-model selection and source action controls
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  - goto: /nrf
+    id: goto-nrf
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-5.2")' }
+    id: click-data-testid-model-selector-button-has-text-gpt-5-2
+  - wait: { placeholder: Search models... }
+    id: wait
+  - shot: { name: nrf-model-menu, full_page: true }
+    id: shot-nrf-model-menu
+  - fill: { placeholder: Search models..., value: No fictional matching model }
+    id: fill
+  - wait: { text: No models found, exact: true }
+    id: wait-no-models-found
+  - shot: { name: nrf-model-search-empty, full_page: true }
+    id: shot-nrf-model-search-empty
+  - fill: { placeholder: Search models..., value: GPT-5 mini }
+    id: fill-2
+  - click: { text: GPT-5 mini, exact: true }
+    id: click-gpt-5-mini
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5 mini")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-5-mini
+  - shot: { name: nrf-model-selected, full_page: true }
+    id: shot-nrf-model-selected
+  - click: { role: button, name: Add Model, exact: true }
+    id: click-add-model
+  - fill: { placeholder: Search models..., value: GPT-4.1 }
+    id: fill-3
+  - click: { text: GPT-4.1, exact: true }
+    id: click-gpt-4-1
+  - press: Escape
+    id: press-escape
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1
+  - shot: { name: nrf-multiple-models-selected, full_page: true }
+    id: shot-nrf-multiple-models-selected
+  - click: { role: button, name: Add Model, exact: true }
+    id: click-add-model-2
+  - fill: { placeholder: Search models..., value: GPT-4.1 }
+    id: fill-4
+  - press: Escape
+    id: press-escape-2
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1") .interactive-foreground-icon', last: true }
+    id: click-data-testid-model-selector-button-has-text-gpt-4-1-interac
+  - wait_gone: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-gone-data-testid-model-selector-button-has-text-gpt-4-1
+  - shot: { name: nrf-extra-model-removed, full_page: true }
+    id: shot-nrf-extra-model-removed
+  - click: { testid: action-management-toggle }
+    id: click
+  - wait: { testid: tool-options }
+    id: wait-2
+  - shot: { name: nrf-actions-menu, full_page: true }
+    id: shot-nrf-actions-menu
+  - click: { text: Internal Search, exact: true }
+    id: click-internal-search
+  - wait: { placeholder: Search Filters }
+    id: wait-3
+  - fill: { placeholder: Search Filters, value: Drive }
+    id: fill-5
+  - wait: { role: switch, name: Toggle Google Drive, exact: true }
+    id: wait-toggle-google-drive
+  - shot: { name: nrf-actions-source-search, full_page: true }
+    id: shot-nrf-actions-source-search
+  - fill: { placeholder: Search Filters, value: '' }
+    id: fill-6
+  - click: { text: Disable All Sources, exact: true }
+    id: click-disable-all-sources
+  - wait: { text: Enable All Sources, exact: true }
+    id: wait-enable-all-sources
+  - shot: { name: nrf-actions-sources-disabled, full_page: true }
+    id: shot-nrf-actions-sources-disabled
+  - click: { role: switch, name: Toggle Google Drive, exact: true }
+    id: click-toggle-google-drive
+  - wait: { selector: '[role="switch"][aria-label="Toggle Google Drive"][aria-checked="true"]' }
+    id: wait-role-switch-aria-label-toggle-google-drive-aria-checked-tru
+  - shot: { name: nrf-actions-source-selected, full_page: true }
+    id: shot-nrf-actions-source-selected
+  - click: { text: Disable All Sources, exact: true }
+    id: click-disable-all-sources-2
+  - click: { text: Enable All Sources, exact: true }
+    id: click-enable-all-sources
+  - press: Escape
+    id: press-escape-3
+world: ../../../worlds/seaside/world.yaml

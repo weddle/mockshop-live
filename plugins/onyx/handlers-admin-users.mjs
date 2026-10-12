@@ -20,12 +20,7 @@ export default function createAdminUsersHandlers(core, composition = {}) {
   };
   const getUser = (identity) => {
     const users = acceptedUsers();
-    const direct = users.find((u) => u.id === identity || u.email === identity);
-    if (direct) return direct;
-    // base50's legacy u1 and the current Maya UUID identify the same fictional email.
-    const alias = (core.fixture("GET", "/manage/admin/user-group") || [])
-      .flatMap((g) => g.users || []).find((u) => u.id === identity);
-    return alias ? users.find((u) => u.email === alias.email) : undefined;
+    return users.find((u) => u.id === identity || u.email === identity);
   };
   const members = (group) => {
     seeds();

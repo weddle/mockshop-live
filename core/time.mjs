@@ -2,7 +2,7 @@
 //  - Records (reports, logs, manifests, notes): absolute ISO 8601 with the local offset, e.g. 2026-10-09T07:10:00-04:00.
 //    Zone = $MOCKSHOP_TZ, default America/New_York.
 //  - Demo times (what the mocked UI shows): stay relative ("22 minutes ago"). Fixture templates like {{ago:2h}}
-//    resolve against the demo anchor = the start of the scenario/recording, so a re-run shows the same relative times.
+//    resolve against the demo anchor = the start of the script/recording, so a re-run shows the same relative times.
 const TZ = process.env.MOCKSHOP_TZ || "America/New_York";
 
 // Absolute timestamp for records: local wall time + numeric offset (seconds precision; ms optional).

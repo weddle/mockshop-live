@@ -1,0 +1,54 @@
+includes:
+  - onyx.yaml
+company:
+  name: Riverbend Health Assistant
+  domain: riverbend-health.example
+  description: Fictional riverbend-health demo organization
+people:
+  sam:
+    name: Sam Rivera
+    email: sam.rivera@{{company.domain}}
+    title: Nurse Educator
+teams: {}
+sources:
+  sharepoint:
+    name: sharepoint
+    vendor: sharepoint
+  confluence:
+    name: confluence
+    vendor: confluence
+documents:
+  hc-pol-0142:
+    source: sharepoint
+    title: "Policy IC-142: Hand Hygiene (Inpatient Units)"
+    body: "Placeholder policy text: perform hand hygiene before and after every patient contact; alcohol-based rub unless hands are visibly soiled."
+  hc-conf-edu-88:
+    source: confluence
+    title: Nurse education — infection prevention refresher
+    body: "Placeholder refresher outline: five moments of hand hygiene, glove use, audit schedule."
+conversations:
+  hand-hygiene-policy-update:
+    title: Hand hygiene policy update
+    messages:
+      - role: user
+        text: Hand hygiene policy update
+      - role: assistant
+        text: |
+          The current inpatient hand hygiene policy is **IC-142**, last revised 12 days ago [1]. In short (placeholder text):
+
+          - Clean hands before and after every patient contact, using alcohol-based rub unless hands are visibly soiled [1].
+          - The infection-prevention refresher for nurse educators covers the same five moments and the audit schedule [2].
+        documents:
+          - hc-pol-0142
+          - hc-conf-edu-88
+  badge-reader-not-working-on-4-west:
+    title: Badge reader not working on 4 West
+    messages:
+      - role: user
+        text: The badge reader on 4 West isn't working. What should I do?
+      - role: assistant
+        text: |
+          Placeholder answer: use the manual entry log at the 4 West nurses' station and open an IT ticket marked "Facilities access". The IT Service Desk aims to respond within 2 hours.
+        documents: []
+vars:
+  onyx_template_open: "{{"

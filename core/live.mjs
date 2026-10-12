@@ -1,28 +1,28 @@
-// `mockshop live <plugin>`: stdio JSON-lines control of one browser session, using the same step vocabulary as scenario YAML.
+// `mockshop live <plugin>`: stdio JSON-lines control of one browser session, using the same step vocabulary as script YAML.
 //   stdin : one JSON object per line: a step ({"click":{"text":"Sources"}}) or a command ({"cmd":"save","path":"x.yaml"}).
 //   stdout: one JSON object per line: {"ready":...}, then one result per input line. (Other output goes to stderr.)
-// The session runs through the normal runner (runScenario) with a step stream fed from stdin, so every step behaves exactly
-// as it does in a scenario file, and the accepted steps can be exported as a scenario validated by core/validate.mjs.
+// The session runs through the normal runner (runScript) with a step stream fed from stdin, so every step behaves exactly
+// as it does in a script file, and the accepted steps can be exported as a script validated by core/validate.mjs.
 import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 import YAML from "yaml";
-import { launchBrowser, runScenario } from "./runner.mjs";
-import { check, scenarioSchema, validateScenario } from "./validate.mjs";
+import { launchBrowser, runScript } from "./runner.mjs";
+import { check, scriptSchema, validateScript } from "./validate.mjs";
 
 const out = (o) => process.stdout.write(JSON.stringify(o) + "\n");
 
 export async function runLive(m, { clip = false, name = "live", save = null, locale = null } = {}) {
-  const accepted = [];                     // steps that ran ok, in order (the exported scenario)
+  const accepted = [];                     // steps that ran ok, in order (the exported script)
   const meta = { id: undefined, lastProblems: 0 };
   let ended = false;
-  const schema = scenarioSchema();
+  const schema = scriptSchema();
   const stepSchema = { $ref: "#/$defs/step" };
 
-  function exportScenario(file) {
+  function exportScript(file) {
     const sc = { name, title: `Live session on ${m.name}`, steps: accepted };
     const text = YAML.stringify(sc, { lineWidth: 0 });
-    const v = validateScenario(sc, m);
+    const v = validateScript(sc, m);
     if (file) { fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true }); fs.writeFileSync(file, `# Exported by \`mockshop live ${m.name}\`\n${text}`); }
     return { ok: v.ok, path: file ? path.resolve(file) : undefined, steps: accepted.length, errors: v.errors, warnings: v.warnings, ...(file ? {} : { yaml: text }) };
   }
@@ -37,8 +37,8 @@ export async function runLive(m, { clip = false, name = "live", save = null, loc
       const { id, ...body } = msg;
       meta.id = id;
       if (body.cmd) {
-        if (body.cmd === "save") out({ id, cmd: "save", ...exportScenario(body.path || save || path.join(m.outDir, "live", `${name}.yaml`)) });
-        else if (body.cmd === "export") out({ id, cmd: "export", ...exportScenario(null) });
+        if (body.cmd === "save") out({ id, cmd: "save", ...exportScript(body.path || save || path.join(m.outDir, "live", `${name}.yaml`)) });
+        else if (body.cmd === "export") out({ id, cmd: "export", ...exportScript(null) });
         else if (body.cmd === "end") { ended = true; break; }
         else out({ id, ok: false, error: `unknown cmd "${body.cmd}" (save, export, end)` });
         continue;
@@ -70,8 +70,8 @@ export async function runLive(m, { clip = false, name = "live", save = null, loc
   const browser = await launchBrowser();
   try {
     out({ ready: true, plugin: m.name, session: name, out_dir: path.join(m.outDir, clip ? "clips" : name), clip, ops: Object.keys(schema.$defs.step.properties) });
-    const r = await runScenario(m, null, browser, { clip, live, locale, steps: steps(), scenario: { name, continue_on_error: true } });
-    if (save) exportScenario(save);
+    const r = await runScript(m, null, browser, { clip, live, locale, steps: steps(), script: { name, continue_on_error: true } });
+    if (save) exportScript(save);
     out({ done: true, shots: r.shots, problems: r.problems });
   } finally { await browser.close(); }
   return 0;

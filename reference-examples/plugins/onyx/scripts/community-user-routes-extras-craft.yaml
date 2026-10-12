@@ -1,0 +1,400 @@
+# #34 true-Community per-user-route witness. EDITONLY authored; UNEXECUTED/UNACCEPTED.
+# Parent owns matching physical CE artifact selection, schema validation and complete strict native/image proof.
+# Independent native runner prelude resets unit overlays/clock/locale. Keep uses existing state DSL;
+# fresh tails use existing /api/__mockshop/state keep:false plus native full navigation.
+# No continue_on_error, fixed-settle-only success, private React, clips or acceptance/closure claim.
+# Original row17 /craft and all twelve existing /craft/v1 route branches.
+# Necessary independent enabled ADMIN seed, not anonymous/admin login-200 success.
+# /apps/manage and /apps/admin source-alias to /admin/craft/apps. Callback asserts native query guard.
+# Minimal native library folder write/reopen/keep/fresh; no provider/model/job lifecycle replay.
+name: community-user-routes-extras-craft
+title: True Community Craft root, expanded native routes, admin aliases and small library write
+requires: community
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 1000
+known_errors:
+  - match: /^http 404 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/license$/
+    reason: Compiled self-hosted CE has the native absent license route (base00-core125). AdminSidebar.tsx59-67 calls useLicense.ts14-25, disables retry and derives no license; both actual native Craft ADMIN aliases assert exact404 DTO, canonical route/Add app and protected existing ADMIN/Community flags. No other URI/status is allowed.
+  - match: '/^console: Failed to load resource: the server responded with a status of 404 \(Not Found\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/license\]$/'
+    reason: Exact resource diagnostic of that same native CE no-license state, paired with operable native ADMIN alias and protected existing actor/edition assertions.
+steps:
+  - goto: /app
+    id: goto-app
+  - eval: (async()=>{const [mr,sr]=await Promise.all([fetch('/api/me'),fetch('/api/settings')]); if(!mr.ok||!sr.ok) throw new Error('Existing Community Craft bootstrap read failed'); const m=await mr.json(),v=await sr.json(); if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active'||m.role!=='admin'||!m.is_admin||m.craft_enabled!==true) throw new Error('Existing Craft-enabled fake ADMIN/Community seed prerequisite missing'); localStorage.removeItem('onyx:craftOnboardingSeen:'+m.id);})()
+    id: eval-script
+  - click:
+      selector: a[href="/craft/v1"]
+    id: click-a-href-craft-v1
+  - wait:
+      text: Meet Craft
+      exact: true
+    id: wait-meet-craft
+  - shot:
+      name: ce-craft-menu-native-tour
+      full_page: true
+    id: shot-ce-craft-menu-native-tour
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next-2
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next-3
+  - click:
+      role: button
+      name: Put Craft to work
+      exact: true
+    id: click-put-craft-to-work
+  - wait:
+      selector: '[contenteditable="true"][role="textbox"]'
+    id: wait-contenteditable-true-role-textbox
+  - shot:
+      name: ce-craft-native-tour-completed
+      full_page: true
+    id: shot-ce-craft-native-tour-completed
+  - goto: /craft
+    id: goto-craft
+  - wait:
+      selector: '[contenteditable="true"][role="textbox"]'
+    id: wait-contenteditable-true-role-textbox-2
+  - eval: if(location.pathname!=="/craft/v1") throw new Error('Native route/guard reached the wrong canonical URL');
+    id: eval-script-2
+  - shot:
+      name: ce-craft-original-root-canonical-redirect
+      full_page: true
+    id: shot-ce-craft-original-root-canonical-redirect
+  - goto: /craft/v1
+    id: goto-craft-v1
+  - wait:
+      selector: '[contenteditable="true"][role="textbox"]'
+    id: wait-contenteditable-true-role-textbox-3
+  - shot:
+      name: ce-craft-v1-direct
+      full_page: true
+    id: shot-ce-craft-v1-direct
+  - click:
+      role: button
+      name: Skills
+      exact: true
+    id: click-skills
+  - wait:
+      placeholder: Search skills...
+    id: wait
+  - shot:
+      name: ce-craft-skills-menu
+      full_page: true
+    id: shot-ce-craft-skills-menu
+  - goto: /craft/v1/skills
+    id: goto-craft-v1-skills
+  - wait:
+      text: campus-study-plan
+      exact: true
+    id: wait-campus-study-plan
+  - shot:
+      name: ce-craft-skills-direct
+      full_page: true
+    id: shot-ce-craft-skills-direct
+  - goto: /craft/v1/skills/new
+    id: goto-craft-v1-skills-new
+  - wait:
+      selector: input[name="name"]
+    id: wait-input-name-name
+  - wait:
+      selector: textarea[name="instructions_markdown"]
+    id: wait-textarea-name-instructions-markdown
+  - shot:
+      name: ce-craft-skill-new-native-form
+      full_page: true
+    id: shot-ce-craft-skill-new-native-form
+  - goto: /craft/v1/skills/edit/skill-campus
+    id: goto-craft-v1-skills-edit-skill-campus
+  - wait:
+      selector: textarea[name="description"]
+    id: wait-textarea-name-description
+  - wait:
+      selector: input[name="name"][value="campus-study-plan"]
+    id: wait-input-name-name-value-campus-study-plan
+  - shot:
+      name: ce-craft-skill-existing-native-edit
+      full_page: true
+    id: shot-ce-craft-skill-existing-native-edit
+  - goto: /craft/v1/apps
+    id: goto-craft-v1-apps
+  - wait:
+      placeholder: Search apps...
+    id: wait-2
+  - wait:
+      text: Clinic Learning API
+      exact: true
+    id: wait-clinic-learning-api
+  - shot:
+      name: ce-craft-apps-direct
+      full_page: true
+    id: shot-ce-craft-apps-direct
+  - goto: /craft/v1/apps/manage
+    id: goto-craft-v1-apps-manage
+  - wait:
+      role: button
+      name: Add app
+      exact: true
+    id: wait-add-app
+  - eval: |
+      (async()=>{
+        if(location.pathname!=="/admin/craft/apps"||!document.body.innerText.includes('Add app')) throw new Error('Native Craft ADMIN alias/control missing');
+        const license=await fetch('/api/license');
+        if(license.status!==404||(await license.json()).detail!=='Not Found') throw new Error('Expected native CE no-license404 boundary missing');
+        const [mr,sr]=await Promise.all([fetch('/api/me'),fetch('/api/settings')]);
+        if(!mr.ok||!sr.ok) throw new Error('Existing Community Craft bootstrap read failed');
+        const m=await mr.json(),v=await sr.json();
+        if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active'||m.role!=='admin'||!m.is_admin||m.craft_enabled!==true) throw new Error('License fallback changed protected Community/ADMIN seed');
+      })()
+    id: eval-script-3
+  - shot:
+      name: ce-craft-manage-native-admin-alias
+      full_page: true
+    id: shot-ce-craft-manage-native-admin-alias
+  - goto: /craft/v1/apps/admin
+    id: goto-craft-v1-apps-admin
+  - wait:
+      role: button
+      name: Add app
+      exact: true
+    id: wait-add-app-2
+  - eval: |
+      (async()=>{
+        if(location.pathname!=="/admin/craft/apps"||!document.body.innerText.includes('Add app')) throw new Error('Native Craft ADMIN alias/control missing');
+        const license=await fetch('/api/license');
+        if(license.status!==404||(await license.json()).detail!=='Not Found') throw new Error('Expected native CE no-license404 boundary missing');
+        const [mr,sr]=await Promise.all([fetch('/api/me'),fetch('/api/settings')]);
+        if(!mr.ok||!sr.ok) throw new Error('Existing Community Craft bootstrap read failed');
+        const m=await mr.json(),v=await sr.json();
+        if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active'||m.role!=='admin'||!m.is_admin||m.craft_enabled!==true) throw new Error('License fallback changed protected Community/ADMIN seed');
+      })()
+    id: eval-script-4
+  - shot:
+      name: ce-craft-admin-native-admin-alias
+      full_page: true
+    id: shot-ce-craft-admin-native-admin-alias
+  - goto: /craft/v1/apps/oauth/callback
+    id: goto-craft-v1-apps-oauth-callback
+  - wait:
+      text: Missing code or state in callback URL.
+      exact: true
+    id: wait-missing-code-or-state-in-callback-url
+  - shot:
+      name: ce-craft-native-oauth-callback-query-guard
+      full_page: true
+    id: shot-ce-craft-native-oauth-callback-query-guard
+  - goto: /craft/v1/tasks
+    id: goto-craft-v1-tasks
+  - wait:
+      testid: new-task-button
+    id: wait-3
+  - wait:
+      text: Clinic teaching checklist
+      exact: true
+    id: wait-clinic-teaching-checklist
+  - shot:
+      name: ce-craft-tasks-direct
+      full_page: true
+    id: shot-ce-craft-tasks-direct
+  - click:
+      testid: new-task-button
+    id: click
+  - wait:
+      testid: task-name-input
+    id: wait-4
+  - shot:
+      name: ce-craft-task-new-menu
+      full_page: true
+    id: shot-ce-craft-task-new-menu
+  - goto: /craft/v1/tasks/new
+    id: goto-craft-v1-tasks-new
+  - wait:
+      testid: task-name-input
+    id: wait-5
+  - wait:
+      testid: task-prompt-input
+    id: wait-6
+  - shot:
+      name: ce-craft-task-new-direct
+      full_page: true
+    id: shot-ce-craft-task-new-direct
+  - goto: /craft/v1/tasks/task-clinic
+    id: goto-craft-v1-tasks-task-clinic
+  - wait:
+      testid: run-now-button
+    id: wait-7
+  - wait:
+      text: Clinic teaching checklist
+      exact: true
+    id: wait-clinic-teaching-checklist-2
+  - shot:
+      name: ce-craft-task-existing-detail
+      full_page: true
+    id: shot-ce-craft-task-existing-detail
+  - click:
+      role: link
+      name: Edit
+      exact: true
+    id: click-edit
+  - wait:
+      testid: task-name-input
+    id: wait-8
+  - shot:
+      name: ce-craft-task-existing-edit-menu
+      full_page: true
+    id: shot-ce-craft-task-existing-edit-menu
+  - goto: /craft/v1/tasks/task-clinic/edit
+    id: goto-craft-v1-tasks-task-clinic-edit
+  - wait:
+      selector: '[data-testid="task-name-input"][value="Clinic teaching checklist"]'
+    id: wait-data-testid-task-name-input-value-clinic-teaching-checklist
+  - shot:
+      name: ce-craft-task-existing-edit-direct
+      full_page: true
+    id: shot-ce-craft-task-existing-edit-direct
+  - goto: /craft/v1
+    id: goto-craft-v1-2
+  - wait:
+      selector: '[contenteditable="true"][role="textbox"]'
+    id: wait-contenteditable-true-role-textbox-4
+  - click:
+      role: button
+      name: Open add menu
+      exact: true
+    id: click-open-add-menu
+  - click:
+      text: Library
+      exact: true
+    id: click-library
+  - click:
+      text: Manage library…
+      exact: true
+    id: click-manage-library
+  - wait:
+      role: button
+      name: New folder
+      exact: true
+    id: wait-new-folder
+  - click:
+      role: button
+      name: New folder
+      exact: true
+    id: click-new-folder
+  - fill:
+      placeholder: Enter folder name
+      value: Community route folder
+    id: fill
+  - click:
+      role: button
+      name: Create
+      exact: true
+    id: click-create
+  - wait:
+      text: Community route folder
+      exact: true
+    id: wait-community-route-folder
+  - shot:
+      name: ce-craft-library-native-folder-created
+      full_page: true
+    id: shot-ce-craft-library-native-folder-created
+  - click:
+      role: button
+      name: Done
+      exact: true
+    id: click-done
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft--demo-community-user-routes.yaml
+    id: state
+  - goto: /craft/v1
+    id: goto-craft-v1-3
+  - wait:
+      selector: '[contenteditable="true"][role="textbox"]'
+    id: wait-contenteditable-true-role-textbox-5
+  - click:
+      role: button
+      name: Open add menu
+      exact: true
+    id: click-open-add-menu-2
+  - click:
+      text: Library
+      exact: true
+    id: click-library-2
+  - click:
+      text: Manage library…
+      exact: true
+    id: click-manage-library-2
+  - wait:
+      text: Community route folder
+      exact: true
+    id: wait-community-route-folder-2
+  - shot:
+      name: ce-craft-library-folder-kept-hard-navigation
+      full_page: true
+    id: shot-ce-craft-library-folder-kept-hard-navigation
+  - click:
+      role: button
+      name: Done
+      exact: true
+    id: click-done-2
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft--demo-community-user-routes.yaml
+      overlays: []
+  - eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})}); if(!response.ok) throw new Error('Independent Community dirty-state reset failed');})()
+    id: eval-script-5
+  - goto: /craft/v1
+    id: goto-craft-v1-4
+  - wait:
+      selector: '[contenteditable="true"][role="textbox"]'
+    id: wait-contenteditable-true-role-textbox-6
+  - click:
+      role: button
+      name: Open add menu
+      exact: true
+    id: click-open-add-menu-3
+  - click:
+      text: Library
+      exact: true
+    id: click-library-3
+  - click:
+      text: Manage library…
+      exact: true
+    id: click-manage-library-3
+  - wait:
+      role: button
+      name: New folder
+      exact: true
+    id: wait-new-folder-2
+  - wait_gone:
+      text: Community route folder
+      exact: true
+    id: wait-gone-community-route-folder
+  - shot:
+      name: ce-craft-library-fresh-original-seed
+      full_page: true
+    id: shot-ce-craft-library-fresh-original-seed
+  - click:
+      role: button
+      name: Done
+      exact: true
+    id: click-done-3
+demo_anchor: '2026-10-09T10:00:00-04:00'
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml
+    - ../../../worlds/onyx-overrides/demo-community-user-routes.yaml

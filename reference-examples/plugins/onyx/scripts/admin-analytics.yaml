@@ -1,0 +1,100 @@
+# #65 route-sized native proof: Analytics aliases.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-analytics
+title: Analytics aliases - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/performance/analytics
+    id: goto-admin-performance-analytics
+  - shot: inventory-analytics-alias
+    id: shot-inventory-analytics-alias
+  - goto: /ee/admin/performance/analytics
+    id: goto-ee-admin-performance-analytics
+  - shot: inventory-analytics-ee
+    id: shot-inventory-analytics-ee
+  - goto: /admin/performance/analytics
+    id: goto-admin-performance-analytics-2
+  - shot: analytics-menu-route
+    id: shot-analytics-menu-route
+  - click: { selector: 'a[href="/admin/performance/analytics"]' }
+    id: click-a-href-admin-performance-analytics
+  - shot: analytics-sidebar
+    id: shot-analytics-sidebar
+  - goto: /ee/admin/performance/analytics
+    id: goto-ee-admin-performance-analytics-2
+  - shot: analytics-ee-direct
+    id: shot-analytics-ee-direct
+  - scroll: { text: Slack Channel, exact: true }
+    id: scroll-slack-channel
+  - shot: analytics-slack-native-lower-chart
+    id: shot-analytics-slack-native-lower-chart
+  - scroll: { text: Agent Analytics, exact: true }
+    id: scroll-agent-analytics
+  - wait: { text: Select an agent to view analytics., exact: true }
+    id: wait-select-an-agent-to-view-analytics
+  - shot: analytics-agent-native-unselected
+    id: shot-analytics-agent-native-unselected
+  - click: { role: button, name: Select an agent to display, exact: true }
+    id: click-select-an-agent-to-display
+  - fill: { placeholder: Search agents..., value: Assistant }
+    id: fill
+  - shot: analytics-agent-native-picker
+    id: shot-analytics-agent-native-picker
+  - click: { text: Assistant, exact: true }
+    id: click-assistant
+  - wait: { text: No data found for the selected agent in this time range., exact: true }
+    id: wait-no-data-found-for-the-selected-agent-in-this-time-range
+  - shot: analytics-agent-selected-empty-data
+    id: shot-analytics-agent-selected-empty-data
+  - scroll: { text: Usage reports, exact: true }
+    id: scroll-usage-reports
+  - wait: { text: No reports yet. Pick a period and generate your first one., exact: true }
+    id: wait-no-reports-yet-pick-a-period-and-generate-your-first-one
+  - shot: analytics-usage-reports-empty
+    id: shot-analytics-usage-reports-empty
+  - click: { role: button, name: Generate report, exact: true }
+    id: click-generate-report
+  - shot: analytics-usage-report-native-period-options
+    id: shot-analytics-usage-report-native-period-options
+  - click: { text: All time, exact: true }
+    id: click-all-time
+  - wait: { role: link, name: Download report for All time, exact: true }
+    id: wait-download-report-for-all-time
+  - shot: analytics-usage-report-ready
+    id: shot-analytics-usage-report-ready
+  - click: { role: link, name: Download report for All time, exact: true }
+    id: click-download-report-for-all-time
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /ee/admin/performance/analytics
+    id: goto-ee-admin-performance-analytics-3
+  - scroll: { text: Usage reports, exact: true }
+    id: scroll-usage-reports-2
+  - wait: { role: link, name: Download report for All time, exact: true }
+    id: wait-download-report-for-all-time-2
+  - shot: analytics-usage-report-navigation-readback
+    id: shot-analytics-usage-report-navigation-readback
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/ee/admin/performance/analytics';
+      })()
+    id: eval-script
+  - scroll: { text: Usage reports, exact: true }
+    id: scroll-usage-reports-3
+  - wait: { text: No reports yet. Pick a period and generate your first one., exact: true }
+    id: wait-no-reports-yet-pick-a-period-and-generate-your-first-one-2
+  - shot: reset-analytics-usage-reports-empty
+    id: shot-reset-analytics-usage-reports-empty
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

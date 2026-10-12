@@ -1,0 +1,50 @@
+# #65 route-sized native proof: Craft Access.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-craft-access
+title: Craft Access - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/craft/access
+    id: goto-admin-craft-access
+  - shot: inventory-craft-access
+    id: shot-inventory-craft-access
+  - goto: /admin/llm-gateway
+    id: goto-admin-llm-gateway
+  - click: { selector: 'a[href="/admin/craft/access"]' }
+    id: click-a-href-admin-craft-access
+  - shot: craft-access-menu
+    id: shot-craft-access-menu
+  - goto: /admin/craft/access
+    id: goto-admin-craft-access-2
+  - shot: craft-access-direct
+    id: shot-craft-access-direct
+  - click: { selector: '[role="switch"]', nth: 0 }
+    id: click-role-switch
+  - wait: { role: dialog }
+    id: wait
+  - shot: craft-access-default-confirm
+    id: shot-craft-access-default-confirm
+  - click: { role: button, name: Enable for Everyone, exact: true }
+    id: click-enable-for-everyone
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - click: { selector: '[role="switch"]', nth: 1 }
+    id: click-role-switch-2
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/craft/access
+    id: goto-admin-craft-access-3
+  - eval: |
+      const toggles = [...document.querySelectorAll('[role="switch"]')];
+      if (toggles[0]?.getAttribute('aria-checked') !== 'true' || toggles[1]?.getAttribute('aria-checked') !== 'false') throw new Error('Craft workspace/per-user override did not persist');
+    id: eval-script
+  - shot: craft-access-saved
+    id: shot-craft-access-saved
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

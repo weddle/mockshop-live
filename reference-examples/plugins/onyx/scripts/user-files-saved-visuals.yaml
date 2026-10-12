@@ -1,0 +1,158 @@
+# Issue #28 independent native proof unit; no acceptance claim.
+# Fresh runner start resets base fixtures, chats and browser; never chain unit outputs.
+
+# Source/core/artifacts frozen; native file inputs only; no generic error allowances.
+name: user-files-saved-visuals
+title: Native saved image/table content, downloads, expansion and reload
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Independent native composer entry.
+  - goto: /app
+    id: goto-app
+  # Independent native composer entry.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  # Original user-files step 198, source line 264.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814
+  # Original user-files step 199, source line 265.
+  - click: { text: All Recent Files, exact: true }
+    id: click-all-recent-files
+  # Original user-files step 200, source line 266.
+  - wait: { placeholder: Search files... }
+    id: wait
+  # Original user-files step 201, source line 267.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-diagram.svg")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha
+  # Original user-files step 202, source line 268.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("attendance-demo.csv")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-2
+  # Original user-files step 203, source line 269.
+  - wait: { text: 2 files selected, exact: true }
+    id: wait-2-files-selected
+  # Original user-files step 204, source line 270.
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  # Original user-files step 205, source line 271.
+  - fill: { selector: '#onyx-chat-input-textbox', value: Summarize the fictional diagram and attendance resource. }
+    id: fill-onyx-chat-input-textbox
+  # Original user-files step 206, source line 272.
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  # Original user-files step 207, source line 273.
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("Read, Discuss, Reflect"):has-text("six participants")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-read-discuss-reflect-h
+  # Original user-files step 208, source line 274.
+  - wait: { selector: '#onyx-human-message table:has-text("Reading circle"):has-text("Participants")' }
+    id: wait-onyx-human-message-table-has-text-reading-circle-has-text-p
+  # Original user-files step 209, source line 275.
+  - wait: { selector: '#onyx-human-message #onyx-image img[src="/api/chat/file/demo-diagram"]' }
+    id: wait-onyx-human-message-onyx-image-img-src-api-chat-file-demo-di
+  # Original user-files step 210, source line 276.
+  - wait: { testid: 'AgentMessage/toolbar' }
+    id: wait-2
+  # Original user-files step 211, source line 277.
+  - shot: saved-image-and-tabular-attachments
+    id: shot-saved-image-and-tabular-attachments
+  # Original user-files step 212, source line 278.
+  - click: { selector: '#onyx-human-message #onyx-image [role="button"][aria-label="View the full image"]' }
+    id: click-onyx-human-message-onyx-image-role-button-aria-label-view-
+  # Original user-files step 213, source line 279.
+  - wait: { selector: '[role="dialog"] img[alt="Uploaded attachment"]' }
+    id: wait-role-dialog-img-alt-uploaded-attachment
+  # Original user-files step 214, source line 280.
+  - eval: |
+      const image = document.querySelector('[role="dialog"] img[alt="Uploaded attachment"]');
+      if (!image?.complete || !image.naturalWidth) throw new Error('Saved full-image modal did not decode the synthetic artwork');
+    id: eval-script
+  # Original user-files step 215, source line 283.
+  - shot: saved-image-full-modal
+    id: shot-saved-image-full-modal
+  # Original user-files step 216, source line 284.
+  - press: Escape
+    id: press-escape
+  # Original user-files step 217, source line 285.
+  - hover: { selector: '#onyx-human-message #onyx-image [role="button"]' }
+    id: hover-onyx-human-message-onyx-image-role-button
+  # Original user-files step 218, source line 286.
+  # Parent bounded observer must prove browser download completion/failure and actual bytes; clicks alone are not acceptance.
+  - click: { selector: '#onyx-human-message #onyx-image button' }
+    id: click-onyx-human-message-onyx-image-button
+  # Original user-files step 219, source line 287.
+  # Parent bounded observer must prove browser download completion/failure and actual bytes; clicks alone are not acceptance.
+  - click: { selector: '#onyx-human-message .w-message-default:has-text("attendance-demo.csv") button:has(svg path[d^="M5.08333 10.0833"])' }
+    id: click-onyx-human-message-w-message-default-has-text-attendance-d
+  # Original user-files step 220, source line 288.
+  - click: { selector: '#onyx-human-message .w-message-default:has-text("attendance-demo.csv") button:has(svg path[d^="M10 2H14"])' }
+    id: click-onyx-human-message-w-message-default-has-text-attendance-d-2
+  # Original user-files step 221, source line 289.
+  - wait: { selector: '[role="dialog"] table:has-text("Reading circle"):has-text("Participants")' }
+    id: wait-role-dialog-table-has-text-reading-circle-has-text-particip
+  # Original user-files step 222, source line 290.
+  - shot: saved-table-expanded-preview
+    id: shot-saved-table-expanded-preview
+  # Original user-files step 223, source line 291.
+  - press: Escape
+    id: press-escape-2
+  # Original user-files step 224, source line 292.
+  - click: { selector: '#onyx-human-message .w-message-default:has-text("attendance-demo.csv") button:has(svg path[d="M21 7L7 21M7 7L21 21"])' }
+    id: click-onyx-human-message-w-message-default-has-text-attendance-d-3
+  # Original user-files step 225, source line 293.
+  - wait_gone: { selector: '#onyx-human-message table' }
+    id: wait-gone-onyx-human-message-table
+  # Original user-files step 226, source line 294.
+  - shot: saved-table-hidden
+    id: shot-saved-table-hidden
+  # Original user-files step 227, source line 295.
+  - click: { selector: '#onyx-human-message div:has-text("attendance-demo.csv") button[aria-label="Expand document"]' }
+    id: click-onyx-human-message-div-has-text-attendance-demo-csv-button
+  # Original user-files step 228, source line 296.
+  - wait: { selector: '#onyx-human-message table:has-text("Reading circle"):has-text("Participants")' }
+    id: wait-onyx-human-message-table-has-text-reading-circle-has-text-p-2
+  # Original user-files step 229, source line 297.
+  - shot: saved-table-reopened
+    id: shot-saved-table-reopened
+  # Original user-files step 230, source line 298.
+  - eval: location.reload()
+    id: eval-script-2
+  # Original user-files step 231, source line 299.
+  - wait: { selector: '#onyx-human-message table:has-text("Reading circle"):has-text("Participants")' }
+    id: wait-onyx-human-message-table-has-text-reading-circle-has-text-p-3
+  # Original user-files step 232, source line 300.
+  - wait: { selector: '#onyx-human-message #onyx-image img[src="/api/chat/file/demo-diagram"]' }
+    id: wait-onyx-human-message-onyx-image-img-src-api-chat-file-demo-di-2
+  # Original user-files step 233, source line 301.
+  - shot: saved-visual-attachments-reloaded
+    id: shot-saved-visual-attachments-reloaded
+  # Owning dirty/reset outcome discards native saved-image/table chat.
+  - eval: |
+      const id = new URL(location.href).searchParams.get('chatId');
+      if (!id) throw new Error('Saved visual attachments have no native chat');
+      sessionStorage.setItem('files-visual-chat', id);
+    id: eval-script-3
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Owning dirty/reset outcome discards native saved-image/table chat.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const result = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, anchor: current.demo_anchor, locale: 'en', keep: false, resetChats: true})});
+        if (!result.ok) throw new Error('File state control failed');
+      })()
+    id: eval-script-4
+  # Owning dirty/reset outcome discards native saved-image/table chat.
+  - goto: /app
+    id: goto-app-2
+  # Owning dirty/reset outcome discards native saved-image/table chat.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox-2
+  # Owning dirty/reset outcome discards native saved-image/table chat.
+  - eval: |
+      const id = sessionStorage.getItem('files-visual-chat');
+      if (document.querySelector('#onyx-human-message') || document.querySelector(`a[href="/app?chatId=${id}"]`)) throw new Error('Fresh reset retained the saved visual chat');
+    id: eval-script-5
+world: ../../../worlds/seaside/world.yaml

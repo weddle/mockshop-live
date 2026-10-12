@@ -1,0 +1,68 @@
+# Live org/persona switch (#36): base (Maya, Seaside) -> placeholder healthcare org -> placeholder university -> base,
+# one running instance, overlays swapped with the `state` step (same as `./mockshop switch onyx <overlay>`), page reloaded.
+# Org names and branding come from /enterprise-settings, so they show on the Enterprise runtime only.
+name: org-switch
+title: Switch personas/orgs live via named overlays
+steps:
+  - goto: /app
+    id: goto-app
+  - wait: { text: "{{people.maya.name}}" }
+    id: wait-maya-chen
+  - shot: base-maya
+    id: shot-base-maya
+  - state:
+      world: ../../../worlds/riverbend-health/world.yaml
+    id: state
+  - goto: /app
+    id: goto-app-2
+  - wait: { text: Sam Rivera }
+    id: wait-sam-rivera
+  - settle: 800
+    id: settle
+  - shot: healthcare-home
+    id: shot-healthcare-home
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox
+  - type: { selector: "#onyx-chat-input-textbox", value: "What is the current hand hygiene policy?" }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: "IC-142", timeout: 30000 }
+    id: wait-ic-142
+  - settle: 1500
+    id: settle-2
+  - shot: healthcare-answer
+    id: shot-healthcare-answer
+  - state:
+      world: ../../../worlds/lakeshore-state/world.yaml
+    id: state-2
+  - goto: /app
+    id: goto-app-3
+  - wait: { text: Jordan Lee }
+    id: wait-jordan-lee
+  - settle: 800
+    id: settle-3
+  - shot: university-home
+    id: shot-university-home
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox-2
+  - type: { selector: "#onyx-chat-input-textbox", value: "What are the prerequisites for intro statistics?" }
+    id: type-onyx-chat-input-textbox-2
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { text: "MATH 095", timeout: 30000 }
+    id: wait-math-095
+  - settle: 1500
+    id: settle-4
+  - shot: university-answer
+    id: shot-university-answer
+  - state:
+      world: ../../../worlds/seaside/world.yaml
+    id: state-3
+  - goto: /app
+    id: goto-app-4
+  - wait: { text: "{{people.maya.name}}" }
+    id: wait-maya-chen-2
+  - shot: back-to-base
+    id: shot-back-to-base
+world: ../../../worlds/seaside/world.yaml

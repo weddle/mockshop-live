@@ -1,0 +1,165 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-ownership
+title: Native Extras - ownership
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - click: { role: button, name: Share, exact: true }
+    id: click-share
+  - wait: { text: Learning Team, exact: true }
+    id: wait-learning-team
+  - click: { role: button, name: Copy Link, exact: true }
+    id: click-copy-link
+  - wait: { text: Copied link., exact: true }
+    id: wait-copied-link
+  - click: { label: Update access for Learning Team }
+    id: click-2
+  - click: { selector: '[role="listbox"][aria-label="Update access for Learning Team"] [role="option"]:has(:text-is("View & Chat"))' }
+    id: click-role-listbox-aria-label-update-access-for-learning-team-ro
+  - fill: { placeholder: 'Add users, groups, and accounts', value: Clinical }
+    id: fill
+  - click: { text: Clinical Educators, exact: true }
+    id: click-clinical-educators
+  - click: { label: Select staged permission }
+    id: click-3
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-select-staged-permission-role-opti
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-2
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-2
+  - wait: { text: Clinical Educators, exact: true }
+    id: wait-clinical-educators
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.group_shares.some(s=>s.group_id===330&&s.permission==='VIEWER') || !a.group_shares.some(s=>s.group_id===331&&s.permission==='EDITOR')) throw new Error('Native group choices did not persist');
+      })()
+    id: eval-script
+  - fill: { placeholder: 'Add users, groups, and accounts', value: DEVON }
+    id: fill-2
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example
+  - click: { label: Select staged permission }
+    id: click-4
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-select-staged-permission-role-opti-2
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save-2
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-3
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-3
+  - wait: { text: "{{people.devon.email}}", exact: true }
+    id: wait-devon-ortiz-seasidecollection-example
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.user_shares.some(s=>s.user.id==='u2'&&s.permission==='EDITOR')) throw new Error('Native user sharing choice did not persist');
+      })()
+    id: eval-script-2
+  - click: { role: button, name: Copy Link, exact: true }
+    id: click-copy-link-2
+  - wait: { text: Copied link., exact: true }
+    id: wait-copied-link-2
+  - click: { label: Change sharing scope }
+    id: click-5
+  - click: { text: Anyone in your organization, exact: true }
+    id: click-anyone-in-your-organization
+  - click: { label: Change public permission }
+    id: click-6
+  - click: { selector: '[role="listbox"][aria-label="Change public permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-change-public-permission-role-opti
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save-3
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-4
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-4
+  - click: { label: Update access for Clinical Educators }
+    id: click-7
+  - click: { text: Remove Access, exact: true }
+    id: click-remove-access
+  - shot: { name: extras-44-share-group-remove-draft, full_page: true }
+    id: shot-extras-44-share-group-remove-draft
+  - click: { selector: '[role="dialog"] >> role=button[name="Cancel"]' }
+    id: click-role-dialog-role-button-name-cancel
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-5
+  - wait: { text: Clinical Educators, exact: true }
+    id: wait-clinical-educators-2
+  - shot: { name: extras-45-share-cancel-reopened, full_page: true }
+    id: shot-extras-45-share-cancel-reopened
+  - click: { selector: '[role="dialog"] .min-h-11:has(:text-is("Owner")) button', nth: 0 }
+    id: click-role-dialog-min-h-11-has-text-is-owner-button
+  - wait: { placeholder: Add a user or group }
+    id: wait
+  - shot: { name: extras-46-ownership-transfer-empty, full_page: true }
+    id: shot-extras-46-ownership-transfer-empty
+  - fill: { placeholder: Add a user or group, value: Clinical }
+    id: fill-3
+  - click: { text: Clinical Educators, exact: true }
+    id: click-clinical-educators-2
+  - shot: { name: extras-47-ownership-transfer-group-selected, full_page: true }
+    id: shot-extras-47-ownership-transfer-group-selected
+  - click: { role: button, name: Back, exact: true }
+    id: click-back
+  - click: { selector: '[role="dialog"] .min-h-11:has(:text-is("Owner")) button', nth: 0 }
+    id: click-role-dialog-min-h-11-has-text-is-owner-button-2
+  - fill: { placeholder: Add a user or group, value: "{{people.devon.name}}" }
+    id: fill-4
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example-2
+  - shot: { name: extras-47a-ownership-transfer-user-selected, full_page: true }
+    id: shot-extras-47a-ownership-transfer-user-selected
+  - click: { selector: '[role="dialog"] >> role=button[name="Cancel"]' }
+    id: click-role-dialog-role-button-name-cancel-2
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-6
+  - click: { selector: '[role="dialog"] .min-h-11:has(:text-is("Owner")) button', nth: 0 }
+    id: click-role-dialog-min-h-11-has-text-is-owner-button-3
+  - fill: { placeholder: Add a user or group, value: Clinical }
+    id: fill-5
+  - click: { text: Clinical Educators, exact: true }
+    id: click-clinical-educators-3
+  - click: { selector: '[role="dialog"] >> role=button[name="Transfer"]' }
+    id: click-role-dialog-role-button-name-transfer
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-5
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-7
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if(a.owner || a.owner_group?.id !== 331 || !a.is_public || a.public_permission !== 'EDITOR') throw new Error('Native owner/public choices did not persist');
+      })()
+    id: eval-script-3
+  - shot: { name: extras-48-ownership-transferred-reload, full_page: true }
+    id: shot-extras-48-ownership-transferred-reload
+  - press: Escape
+    id: press-escape
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

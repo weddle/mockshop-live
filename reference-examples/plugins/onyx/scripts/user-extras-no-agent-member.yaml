@@ -1,0 +1,33 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-no-agent-member
+title: Native Extras - no agent member
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras-no-agent-member.yaml
+      overlays: []
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:state.demo_anchor,locale:'en',keep:false})});
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait: { text: No Agent Available, exact: true }
+    id: wait-no-agent-available
+  - shot: { name: extras-27d-empty-home-no-agent-member, full_page: true }
+    id: shot-extras-27d-empty-home-no-agent-member
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-no-agent-member.yaml

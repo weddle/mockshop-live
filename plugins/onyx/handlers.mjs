@@ -21,7 +21,7 @@ import createUserConditional from "./handlers-user-conditional.mjs";
 
 const HTML = { "content-type": "text/html; charset=utf-8" };
 const SOURCE_NAMES = { google_drive: "Google Drive", confluence: "Confluence", slack: "Slack", zoom: "Zoom", notion: "Notion",
-  sharepoint: "SharePoint", jira: "Jira", gmail: "Gmail", web: "Web" };
+  sharepoint: "SharePoint", jira: "Jira", gmail: "Gmail", web: "Web", github: "GitHub", zendesk: "Zendesk", salesforce: "Salesforce", file: "Files" };
 // Pinned UserProvider uses JSON bodies except for these three query-string toggles.
 const PREFERENCE_ROUTES = [
   ["/user/theme-preference", "theme_preference"], ["/user/language", "language"],
@@ -107,6 +107,10 @@ export default function createHandlers(core, fileCompanions = {}) {
   // Dynamic responses bypass fixture transforms; compose defaults on the same readers.
   const providerReads = new Set(["/admin/llm/provider", "/llm/provider", "/llm/persona/:id/providers"]);
   const saveControlRoutes = saveControls.routes.map((route) => {
+    if (route.path === "/manage/admin/connector/indexing-status") return { ...route, handle(ctx) {
+      return route.handle({ ...ctx, send: (status, value, headers) =>
+        ctx.send(status, status === 200 ? screenConnectors(value) : value, headers) });
+    } };
     if (route.method !== "GET" || !providerReads.has(route.path)) return route;
     const key = route.path === "/admin/llm/provider" ? "GET /admin/llm/provider" : "GET /llm/provider";
     return { ...route, handle(ctx) {
@@ -125,9 +129,34 @@ export default function createHandlers(core, fileCompanions = {}) {
       core.fixture("GET", "/manage/user-groups/minimal") || []),
   });
   // Run-local sessions and edits are scoped by org, including identical fixture history ids.
-  const reset = () => { state.chatSessions = {}; state.nextSessionN = 1; state.nextMsgId = 1001; state.edits = {}; state.deletedAll = {}; };
+  const reset = () => { state.chatSessions = {}; state.nextSessionN = 1; state.nextMsgId = 1001; state.edits = {}; state.deletedAll = {}; state.armedTurn = null; state.turns = {}; };
   reset();
   state.org = "";
+  state.screens = {};
+  const screenState = () => state.screens[state.org] || {};
+  const screenConnectors = (groups) => {
+    if (!Array.isArray(groups)) return groups;
+    const selected = screenState().connectors, hidden = new Set(core.fixture("GET", "/mockshop/world-screen")?.hidden_connectors || []);
+    if (!selected && !hidden.size) return groups;
+    const rank = selected ? new Map(selected.map((id, i) => [id, i])) : null;
+    return groups.map((group) => {
+      const rows = group.indexing_statuses.filter((row) => rank ? rank.has(row.cc_pair_id) : !hidden.has(row.cc_pair_id));
+      if (rank) rows.sort((a, b) => rank.get(a.cc_pair_id) - rank.get(b.cc_pair_id));
+      return { ...group, indexing_statuses: rows, summary: { ...group.summary,
+        total_connectors: rows.length, active_connectors: rows.filter((r) => r.cc_pair_status === "ACTIVE").length,
+        public_connectors: rows.filter((r) => r.access_type === "public").length,
+        total_docs_indexed: rows.reduce((n, r) => n + r.docs_indexed, 0) } };
+    }).filter((group) => group.indexing_statuses.length)
+      .sort((a, b) => rank ? rank.get(a.indexing_statuses[0].cc_pair_id) - rank.get(b.indexing_statuses[0].cc_pair_id) : 0);
+  };
+  const preparedTurn = (turn) => {
+    for (const dir of core.layerDirs("chat")) for (const file of fs.readdirSync(dir).sort()) {
+      if (!/\.ya?ml$/.test(file)) continue;
+      const script = core.parseYaml(path.join(dir, file));
+      if (script.turn === turn) return script;
+    }
+    throw new Error(`Armed Onyx reply '${turn}' is missing from the active compiled world`);
+  };
   // Agent configuration belongs to an overlay/org; ordered pins belong to its requesting user.
   // Keep this separate from chat resets and user settings so a live switch can revisit either.
   const resetAgents = () => { state.agentOrgs = {}; };
@@ -289,6 +318,7 @@ export default function createHandlers(core, fileCompanions = {}) {
   const edit = (id) => (state.edits[chatKey(id)] ||= {});
   // #31 owns settings writes and GET /me. Read its lazy preference overlay without seeding or replacing it.
   const defaultChatModel = () => {
+    if (Object.hasOwn(screenState(), "model")) return screenState().model;
     const user = core.fixture("GET", "/me");
     const preferences = state.userSettings?.[`${state.org}:${user.id}`]?.preferences;
     return preferences && Object.hasOwn(preferences, "default_model")
@@ -350,9 +380,12 @@ export default function createHandlers(core, fileCompanions = {}) {
       personalization: { ...user.personalization, ...settings.personalization } };
   };
   const personalConnector = (id) => userSettings().connectors.find((c) => c.federated_connector_id === Number(id));
-  const fixtureSessions = () => sharing.seedSessions(core.fixture("GET", "/chat/get-user-chat-sessions")?.sessions || []);
+  const fixtureSessions = () => sharing.seedSessions((screenState().sidebar
+    ? core.fixture("GET", "/mockshop/conversation-catalog")?.sessions
+    : null) || core.fixture("GET", "/chat/get-user-chat-sessions")?.sessions || []);
   // The sidebar list: live chats of the current org first, then fixture history, with in-run renames/deletes applied.
   const sidebarSessions = (fixtureList = fixtureSessions()) => {
+    if (screenState().sidebar) fixtureList = fixtureSessions();
     // Sharing histories must be listed before detail materialization; explicit empty-sidebar fixtures stay empty.
     const hist = state.deletedAll[state.org] ? [] : fixtureList.length ? sharing.seedSessions(fixtureList) : fixtureList;
     const live = Object.values(state.chatSessions).filter((s) => s.org === state.org && !s.fromFixture &&
@@ -362,12 +395,14 @@ export default function createHandlers(core, fileCompanions = {}) {
       folder_id: null, project_id: s.project_id ?? null,
     }));
 
-    return sharing.decorateSessions([...live, ...hist.map((s) => ({ ...s, time_updated: chatSession(s.id)?.updated || s.time_updated,
+    const all = sharing.decorateSessions([...live, ...hist.map((s) => ({ ...s, time_updated: chatSession(s.id)?.updated || s.time_updated,
       current_alternate_model: chatSession(s.id)?.model ?? s.current_alternate_model ?? null }))]
       .filter((s) => !chatEdit(s.id).deleted)
       .map((s) => projects.decorateChatSession({ ...s, ...(chatEdit(s.id).name ? { name: chatEdit(s.id).name } : {}),
         ...(chatEdit(s.id).shared_status ? { shared_status: chatEdit(s.id).shared_status } : {}),
         ...("project_id" in chatEdit(s.id) ? { project_id: chatEdit(s.id).project_id } : {}) })));
+    const selected = screenState().sidebar;
+    return selected ? selected.map((id) => all.find((s) => s.id === id)).filter(Boolean) : all;
   };
   // Open a Recents (fixture) chat: fixtures/<layer>/history/<session id>.yaml lists its turns
   // ({message, script?: inline chat script}); without a file the session name is replayed as the one question.
@@ -488,25 +523,53 @@ export default function createHandlers(core, fileCompanions = {}) {
 
   const handlers = {
     // a live overlay switch (keep: true) keeps chats; each chat stays with the org/persona overlay it was created under
-    reset(body) {
-      state.org = (body.overlays || []).join(",");
-      if (body.resetChats !== false) reset();
+    reset(body = {}) {
+      body = { resetChats: !body.keep, ...body };
+      if (body.screen) {
+        for (const [key, value] of Object.entries(body.screen)) {
+          const valid = key === "sidebar" ? Array.isArray(value) && value.every((v) => typeof v === "string")
+            : key === "connectors" ? Array.isArray(value) && value.every(Number.isInteger)
+            : key === "agent" ? value === null || Number.isInteger(value)
+            : key === "model" ? value === null || typeof value === "string" : false;
+          if (!valid) throw new Error(`Unsupported Onyx screen.${key} value`);
+        }
+      }
+      const previousOrg = state.org;
+      if (body.overlays || !body.keep) state.org = (body.overlays || []).join(",");
+      if (!body.keep || body.resetChats === true) reset();
+      if (!body.keep) state.screens = {};
+      if (previousOrg !== state.org) state.armedTurn = null;
+      const currentSession = body.session ?? (body.url ? new URL(body.url).searchParams.get("chatId") : null);
+      const seedReset = previousOrg !== state.org ? { ...body, keep: false } : body;
+      if (body.screen) {
+        state.screens[state.org] = { ...screenState(), ...body.screen };
+        for (const sess of Object.values(state.chatSessions)) if (sess.org === state.org && sess.id === currentSession) {
+          if (Object.hasOwn(body.screen, "model")) sess.model = body.screen.model;
+          if (Object.hasOwn(body.screen, "agent")) sess.persona_id = body.screen.agent;
+        }
+      }
+      if (body.turn != null) {
+        state.armedTurn = null;
+        preparedTurn(body.turn);
+        state.armedTurn = { id: body.turn, org: state.org, session: currentSession };
+        state.turns[`${state.org}:${body.turn}`] = { status: "armed", session: state.armedTurn.session };
+      }
       if (!body.keep) resetAgents();
       if (!body.keep) state.userSettings = {};
-      mcp.reset(body);
-      documentSetForms.reset(body);
+      mcp.reset(seedReset);
+      documentSetForms.reset(seedReset);
 
-      extras.reset(body);
+      extras.reset(seedReset);
       saveControls.reset(body);
-      userFiles.reset(body);
-      projects.reset(body);
-      adminGroups.reset(body);
-      adminUsers.reset(body);
-      authAnonymous.reset(body);
-      userConditional.reset(body);
-      browserExtension.reset(body);
-      adminPages.reset(body);
-      craft.reset(body);
+      userFiles.reset(seedReset);
+      projects.reset(seedReset);
+      adminGroups.reset(seedReset);
+      adminUsers.reset(seedReset);
+      authAnonymous.reset(seedReset);
+      userConditional.reset(seedReset);
+      browserExtension.reset(seedReset);
+      adminPages.reset(seedReset);
+      craft.reset(seedReset);
       sharing.reset(body);
     },
 
@@ -693,7 +756,18 @@ export default function createHandlers(core, fileCompanions = {}) {
       // edit of the first message) or a user node (regenerate: reuse that user message, add a sibling answer).
       { method: "POST", path: "/chat/send-chat-message", async handle(ctx) {
         const body = await ctx.body();
-        const sendError = browserExtension.takeSendError(body);
+        const armed = state.armedTurn;
+        let exact = null;
+        if (armed) {
+          if (armed.org !== state.org || (armed.session && armed.session !== body.chat_session_id))
+            return ctx.send(409, { detail: `Prepared reply '${armed.id}' belongs to another conversation` });
+          exact = preparedTurn(armed.id);
+          if (exact.question !== undefined && exact.question !== body.message)
+            return ctx.send(409, { detail: `Prepared reply '${armed.id}' expected a different question` });
+          state.armedTurn = null;
+        }
+        if (exact) state.turns[`${state.org}:${armed.id}`] = { status: "streaming", session: body.chat_session_id || null };
+        const sendError = exact ? null : browserExtension.takeSendError(body);
         if (sendError) {
           await core.streamNdjson(ctx.res, [{ delay: 0, packet: sendError }]);
           return;
@@ -704,8 +778,9 @@ export default function createHandlers(core, fileCompanions = {}) {
         if (!sess && body.chat_session_id) return ctx.send(404, { detail: "Chat session not found" });
         if (!sess) {
           sess = state.chatSessions[chatKey(sid)] = {
-            id: sid, persona_id: info?.persona_id ?? 0, nodes: [], description: info?.description || null,
+            id: sid, persona_id: screenState().agent ?? info?.persona_id ?? 0, nodes: [], description: info?.description || null,
             project_id: info?.project_id ?? null, model: defaultChatModel(), created: nowIso(), org: state.org,
+            owner_name: currentUser(core.fixture("GET", "/me")).personalization?.name || "",
           };
           projects.onSessionCreated(sid, info?.project_id);
         }
@@ -716,9 +791,11 @@ export default function createHandlers(core, fileCompanions = {}) {
         if (!regenerate) sess.nodes.push(userNode);
         const history = historyTo(sess, userNode.parent);
         const llm = answerModel(body.llm_override || modelOverride(sess.model), sess.persona_id);
-        let script = pickScript(core.layerDirs("chat"), userNode.message || "", core.parseYaml, history, llm.model_version);
-        script = userSearch.selectChatScript(script, { ...body, message: userNode.message });
-        script = browserExtension.selectChatScript(script, { ...body, message: userNode.message });
+        let script = exact || pickScript(core.layerDirs("chat"), userNode.message || "", core.parseYaml, history, llm.model_version);
+        if (!exact) {
+          script = userSearch.selectChatScript(script, { ...body, message: userNode.message });
+          script = browserExtension.selectChatScript(script, { ...body, message: userNode.message });
+        }
 
         if (regenerate) {
           const k = sess.nodes.filter((n) => n.parent === userNode.id).length; // answers already there
@@ -726,7 +803,7 @@ export default function createHandlers(core, fileCompanions = {}) {
           if (alt) script = { ...script, answer: alt };
         }
         // Select normal model/context/regeneration first, then ground only the saved known file descriptors.
-        script = userFiles.scriptForFiles(userNode.files) || script;
+        if (!exact) script = userFiles.scriptForFiles(userNode.files) || script;
         if (!sess.description) sess.description = script.title || userNode.message?.slice(0, 60);
         const agent = { id: state.nextMsgId++, type: "assistant", parent: userNode.id, script,
           llm, time: nowIso() };
@@ -749,6 +826,7 @@ export default function createHandlers(core, fileCompanions = {}) {
         }
         await core.streamNdjson(ctx.res, streamWithFiles());
         if (stopped) agent.partial = sofar; // stopped by the user: replayed as a cancelled, partial answer
+        if (exact) state.turns[`${sess.org}:${armed.id}`] = { status: stopped ? "stopped" : "complete", session: sid };
       } },
       { method: "POST", path: "/chat/stop-chat-session/:id", handle(ctx) {
         const sess = chatSession(ctx.params.id);
@@ -824,13 +902,21 @@ export default function createHandlers(core, fileCompanions = {}) {
         const name = (doc?.title || `${id}.md`).replace(/"/g, "");
         ctx.send(200, body, { "content-type": "text/markdown; charset=utf-8", "content-disposition": `inline; filename="${name}"` });
       } },
+      { method: "GET", path: "/mockshop/turn/:id", handle(ctx) {
+        const turn = state.turns[`${state.org}:${ctx.params.id}`];
+        ctx.send(turn ? 200 : 404, turn || { detail: "Prepared turn is not armed in this run" });
+      } },
       // Only sessions belonging to the active org can be replayed.
       { method: "GET", path: "/chat/get-chat-session/:id", handle(ctx) {
         const sess = readSession(ctx.params.id);
         if (!sess || (String(ctx.query.is_shared).toLowerCase() === "true" && !sharing.canReadShared(sess.id)))
           return ctx.send(404, { detail: "Chat session not found" });
+        const screen = screenState();
         ctx.send(200, sharing.decorateDetail(projects.decorateChatSession({ ...sessionFromNodes(sess),
+          ...(Object.hasOwn(screen, "model") ? { current_alternate_model: screen.model } : {}),
+          ...(Object.hasOwn(screen, "agent") ? { persona_id: screen.agent } : {}),
           description: chatEdit(sess.id).name || sess.description,
+          owner_name: sess.owner_name || currentUser(core.fixture("GET", "/me")).personalization?.name || "",
           shared_status: chatEdit(sess.id).shared_status || "private" })));
       } },
     ],
@@ -842,7 +928,8 @@ export default function createHandlers(core, fileCompanions = {}) {
         if (val?.__status === 401) return val;
         const settings = userSettings(), user = currentUser(val);
         const decorated = adminGroups.transform["GET /me"]({ ...user,
-          preferences: { ...user.preferences, pinned_assistants: pinnedAgents() } });
+          preferences: { ...user.preferences, pinned_assistants: pinnedAgents(),
+            ...(Object.hasOwn(screenState(), "model") ? { default_model: screenState().model } : {}) } });
         return decorated?.__status === 401 ? decorated : authAnonymous.currentUser(decorated, settings.personalization);
       },
       // live sessions created during this run go first in the sidebar; in-run renames/deletes apply to history too

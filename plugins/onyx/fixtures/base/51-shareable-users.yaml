@@ -1,7 +1,0 @@
-# Share Agent picker: pinned MinimalUserSnapshot[] (id, email), not /manage/users' envelope.
-# Reuse the accepted fictional users in 50-users-groups.yaml. No API keys or invites.
-# Ordinary path matching serves both ?include_api_keys=true and false.
-GET /users:
-  - { id: "8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11", email: maya.chen@seasidecollection.example }
-  - { id: u2, email: devon.ortiz@seasidecollection.example }
-  - { id: u3, email: priya.raman@seasidecollection.example }

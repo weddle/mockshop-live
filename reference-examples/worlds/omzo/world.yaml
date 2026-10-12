@@ -1,0 +1,228 @@
+includes:
+  - onyx.yaml
+company:
+  name: Omzo
+  domain: omzo.example
+  description: Cloud communications platform (fictional demo company)
+people:
+  dana:
+    name: Dana Reyes
+    email: dana.reyes@{{company.domain}}
+    title: Director of Reliability Engineering
+  kenji:
+    name: Kenji Park
+    email: kenji.park@{{company.domain}}
+  sam:
+    name: Sam Adeyemi
+    email: sam.adeyemi@{{company.domain}}
+  priya:
+    name: Priya Nair
+    email: priya.nair@{{company.domain}}
+  marcus:
+    name: Marcus Cole
+    email: marcus.cole@{{company.domain}}
+  lena:
+    name: Lena Ortiz
+    email: lena.ortiz@{{company.domain}}
+  tomas:
+    name: Tomas Berg
+    email: tomas.berg@{{company.domain}}
+  oncall:
+    name: Oncall Bot
+    email: oncall.bot@{{company.domain}}
+  amara:
+    name: Amara Okoye
+    email: amara.okoye@{{company.domain}}
+  jonas:
+    name: Jonas Weber
+    email: jonas.weber@{{company.domain}}
+  robin:
+    name: Robin Lee
+    email: robin.lee@{{company.domain}}
+teams:
+  reliability:
+    name: Reliability
+    members:
+      - dana
+      - kenji
+      - sam
+  media-platform:
+    name: Media Platform
+    members:
+      - priya
+      - marcus
+  support-engineering:
+    name: Support Engineering
+    members:
+      - lena
+sources:
+  incident-channels:
+    name: "#inc-*, #eng-media"
+    vendor: slack
+  media-platform:
+    name: omzo/media-platform
+    vendor: github
+  postmortems:
+    name: Postmortems
+    vendor: google_drive
+  incidents:
+    name: SRE incidents
+    vendor: jira
+  runbooks:
+    name: Engineering Runbooks
+    vendor: confluence
+  architecture:
+    name: Platform Architecture
+    vendor: confluence
+  support:
+    name: Support escalations
+    vendor: zendesk
+  file:
+    name: Uploaded documents
+    vendor: file
+documents:
+  rollback:
+    source: runbooks
+    title: "Runbook: Media relay rollback & failover"
+    body: |
+      # Runbook: Media relay rollback & failover
+
+      ## Roll back relay scoring
+
+      1. Declare the incident and name a rollback owner.
+      2. Disable the relay-scorer flag in the flag console.
+      3. Confirm p95 allocation latency recovers within **10 minutes**.
+      4. If not, fail over relay allocation to the secondary pool.
+
+      ## Customer updates
+
+      State the impact window, current status and the preventive action. Do not name internal flags or individuals.
+  scorer-pr:
+    source: media-platform
+    title: "PR #4821: relay-scorer-v2 (region-aware relay scoring)"
+    body: "Replaces the static relay scorer. Rolled out behind flag relay-scorer-v2: 10% on Monday, 100% of us-east-1 on Tuesday 14:05 UTC. Missing guard: when the nearest relay pool is saturated, allocation falls back to any region."
+    owners:
+      - marcus
+  rollback-thread:
+    source: incident-channels
+    title: "#inc-meetings-latency: rollback"
+    body: "{{people.sam.name}}: p95 join is 6.8s, relays are being allocated in eu-central-1 for us-east-1 clients. Rolling back flag relay-scorer-v2 now (14:52). Latency is already dropping."
+  incident:
+    source: incidents
+    title: "SRE-2291: Meeting join latency p95 6.8s in us-east-1"
+    body: "Impact: 47 minutes (14:05 to 14:52 UTC), about 38,000 meetings delayed, 2.1% join failures. Severity 2. Root cause: cross-region relay allocation after relay-scorer-v2 reached 100%."
+    owners:
+      - sam
+  postmortem:
+    source: postmortems
+    title: INC-2291 Postmortem (draft).docx
+    body: |
+      # INC-2291 Postmortem (draft)
+
+      **Impact:** 47 minutes (14:05 to 14:52 UTC), about 38,000 meetings delayed, 2.1% join failures.
+
+      ## Contributing factors
+      - No region-affinity guard when the nearest relay pool is saturated.
+      - Flag rolled from 10% to 100% without the staged checklist.
+      - Alert threshold on p99 only, so p95 degradation was detected late.
+
+      ## Follow-ups
+      - Add the region-affinity guard (owner: {{teams.media-platform.name}}).
+      - Enforce staged rollout above 25% traffic.
+      - Alert on p95 join latency.
+
+      Review: Thursday.
+    owners:
+      - dana
+      - kenji
+  rollout-checklist:
+    source: file
+    title: relay-scorer-v2 rollout checklist.md
+    body: |
+      # relay-scorer-v2 rollout checklist
+
+      ## Staged rollout
+
+      | Stage | Traffic | Hold | Gate |
+      |---|---|---|---|
+      | 1 | 5% | 1 hour | p95 join latency within 10% of baseline |
+      | 2 | 25% | 4 hours | no increase in allocation retries |
+      | 3 | 50% | 24 hours | cross-region allocation under 1% |
+      | 4 | 100% | n/a | rollback owner on call |
+
+      ## Rules
+
+      - A named rollback owner is required for every stage.
+      - Flag changes **above 25% traffic** require this checklist.
+      - Rollback: disable the relay-scorer flag, then confirm recovery within 10 minutes.
+  conf-eng-oc-3310:
+    source: runbooks
+    title: "On-call schedule: {{teams.media-platform.name}} (this week)"
+    body: "Primary: {{people.sam.name}}. Secondary: {{people.kenji.name}}. Escalation: {{people.marcus.name}}, then {{people.dana.name}}."
+  slack-c07engmedia-1728480000:
+    source: incident-channels
+    title: "#eng-media: post-rollback health check"
+    body: "{{people.kenji.name}}: us-east-1 join p95 back to 1.3s, allocation errors at baseline. relay-scorer-v2 stays off until the guard lands."
+conversations:
+  postmortem-outline-for-inc-2291:
+    title: Postmortem outline for INC-2291
+    messages:
+      - role: user
+        text: Postmortem outline for INC-2291
+      - role: assistant
+        text: |
+          This is a scripted demo. Ask about the **Tuesday join latency spike**, the **on-call schedule** or the **relay rollback runbook** to see cited answers [1].
+        documents:
+          - rollback
+  relay-rollback-runbook-walkthrough:
+    title: Relay rollback runbook walkthrough
+    messages:
+      - role: user
+        text: Walk me through the relay-scorer rollback runbook.
+      - role: assistant
+        text: |
+          Disable the relay-scorer flag in the flag console, then confirm allocation latency recovers within **10 minutes** [1].
+        documents:
+          - rollback
+  weekend-on-call-handoff-notes:
+    title: Weekend on-call handoff notes
+    messages:
+      - role: user
+        text: Summarize the weekend on-call handoff for media-platform.
+      - role: assistant
+        text: |
+          {{people.sam.name}} is primary and {{people.kenji.name}} is secondary. Escalate to {{people.marcus.name}}, then {{people.dana.name}} [1].
+        documents:
+          - conf-eng-oc-3310
+  q3-relay-capacity-by-region:
+    title: Q3 relay capacity by region
+    messages:
+      - role: user
+        text: Q3 relay capacity by region
+      - role: assistant
+        text: |
+          This is a scripted demo. Ask about the **Tuesday join latency spike**, the **on-call schedule** or the **relay rollback runbook** to see cited answers [1].
+        documents:
+          - rollback
+  draft-release-notes-for-relay-scorer-v2:
+    title: Draft release notes for relay-scorer-v2
+    messages:
+      - role: user
+        text: Draft release notes for relay-scorer-v2
+      - role: assistant
+        text: |
+          This is a scripted demo. Ask about the **Tuesday join latency spike**, the **on-call schedule** or the **relay rollback runbook** to see cited answers [1].
+        documents:
+          - rollback
+  zendesk-escalation-dropped-calls-in-frankfurt:
+    title: "Zendesk escalation: dropped calls in Frankfurt"
+    messages:
+      - role: user
+        text: "Zendesk escalation: dropped calls in Frankfurt"
+      - role: assistant
+        text: |
+          This is a scripted demo. Ask about the **Tuesday join latency spike**, the **on-call schedule** or the **relay rollback runbook** to see cited answers [1].
+        documents:
+          - rollback
+vars:
+  onyx_template_open: "{{"

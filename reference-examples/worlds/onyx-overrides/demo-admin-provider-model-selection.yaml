@@ -1,0 +1,133 @@
+apps:
+  onyx:
+    fixtures:
+      GET /admin/llm/provider:
+        providers:
+          - id: 62
+            name: Campus Models (local fake)
+            provider: portkey
+            api_key: mock-only-not-a-secret
+            api_base: https://campus-models.invalid/messages
+            api_version: null
+            custom_config:
+              portkey_api_mode: messages
+            is_public: true
+            is_auto_mode: false
+            groups: []
+            personas: []
+            deployment_name: null
+            model_configurations:
+              - id: 6201
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+              - id: 6202
+                name: workshop-summary-demo
+                display_name: Workshop Summary (local fake)
+                is_visible: false
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 62
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 62
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /llm/provider:
+        providers:
+          - id: 62
+            name: Campus Models (local fake)
+            provider: portkey
+            provider_display_name: Portkey
+            model_configurations:
+              - id: 6201
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+              - id: 6202
+                name: workshop-summary-demo
+                display_name: Workshop Summary (local fake)
+                is_visible: false
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 62
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 62
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /llm/persona/:id/providers:
+        providers:
+          - id: 62
+            name: Campus Models (local fake)
+            provider: portkey
+            provider_display_name: Portkey
+            model_configurations:
+              - id: 6201
+                name: learning-notes-demo
+                display_name: Learning Notes (local fake)
+                is_visible: true
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+              - id: 6202
+                name: workshop-summary-demo
+                display_name: Workshop Summary (local fake)
+                is_visible: false
+                max_input_tokens: 32768
+                supports_image_input: false
+                supports_reasoning: false
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 62
+          model_name: learning-notes-demo
+        default_vision: null
+        default_chat_naming:
+          provider_id: 62
+          model_name: learning-notes-demo
+        default_craft: null
+      GET /admin/llm/built-in/options/portkey:
+        name: portkey
+        known_models:
+          - id: 6201
+            name: learning-notes-demo
+            display_name: Learning Notes (local fake)
+            is_visible: true
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+          - id: 6202
+            name: workshop-summary-demo
+            display_name: Workshop Summary (local fake)
+            is_visible: false
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+        recommended_default_model:
+          name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+      POST /admin/llm/portkey/available-models:
+        - name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+          max_input_tokens: 32768
+          supports_image_input: false
+          supports_reasoning: false
+        - name: workshop-summary-demo
+          display_name: Workshop Summary (local fake)
+          max_input_tokens: 32768
+          supports_image_input: false
+          supports_reasoning: false

@@ -1,0 +1,193 @@
+# #69 conditional native controls; declared/unverified, same minimal Auth artifact.
+name: auth-referral-signup
+title: "Independent native conditional #69 unit: auth-referral-signup"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required fake logged-out identity; independently cleared cookie.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Fresh multi_tenant metadata (not Cloud compile flag), cleared referral cookie; every native referral choice/menu writes its real fake browser cookie, then native fictional signup reaches pending verification.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: "/auth/login"
+    id: goto-auth-login
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"mode": "logged-out", "auth_profile": "multitenant"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script
+  - eval: |
+      (async () => { if ((await fetch('/api/me')).status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Expected fresh fake logged-out cookie and /me401'); })()
+    id: eval-script-2
+  - eval: |
+      document.cookie='referral_source=; Max-Age=0; Path=/';
+    id: eval-script-3
+  - goto: "/auth/signup"
+    id: goto-auth-signup
+  - wait: { "text": "Complete your sign up", "exact": true }
+    id: wait-complete-your-sign-up
+  - wait: { "text": "How did you hear about us?", "exact": true }
+    id: wait-how-did-you-hear-about-us
+  - shot: "auth-referral-empty"
+    id: shot-auth-referral-empty
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option
+  - wait: { "text": "Search Engine (Google/Bing)", "exact": true }
+    id: wait-search-engine-google-bing
+  - shot: "auth-referral-menu-search"
+    id: shot-auth-referral-menu-search
+  - click: { "text": "Search Engine (Google/Bing)", "exact": true }
+    id: click-search-engine-google-bing
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Search Engine (Google/Bing)" || !document.cookie.split('; ').includes('referral_source=search')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-4
+  - shot: "auth-referral-selected-search"
+    id: shot-auth-referral-selected-search
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-2
+  - wait: { "text": "Friend/Colleague", "exact": true }
+    id: wait-friend-colleague
+  - shot: "auth-referral-menu-friend"
+    id: shot-auth-referral-menu-friend
+  - click: { "text": "Friend/Colleague", "exact": true }
+    id: click-friend-colleague
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Friend/Colleague" || !document.cookie.split('; ').includes('referral_source=friend')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-5
+  - shot: "auth-referral-selected-friend"
+    id: shot-auth-referral-selected-friend
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-3
+  - wait: { "text": "LinkedIn", "exact": true }
+    id: wait-linkedin
+  - shot: "auth-referral-menu-linkedin"
+    id: shot-auth-referral-menu-linkedin
+  - click: { "text": "LinkedIn", "exact": true }
+    id: click-linkedin
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "LinkedIn" || !document.cookie.split('; ').includes('referral_source=linkedin')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-6
+  - shot: "auth-referral-selected-linkedin"
+    id: shot-auth-referral-selected-linkedin
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-4
+  - wait: { "text": "Twitter", "exact": true }
+    id: wait-twitter
+  - shot: "auth-referral-menu-twitter"
+    id: shot-auth-referral-menu-twitter
+  - click: { "text": "Twitter", "exact": true }
+    id: click-twitter
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Twitter" || !document.cookie.split('; ').includes('referral_source=twitter')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-7
+  - shot: "auth-referral-selected-twitter"
+    id: shot-auth-referral-selected-twitter
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-5
+  - wait: { "text": "HackerNews", "exact": true }
+    id: wait-hackernews
+  - shot: "auth-referral-menu-hackernews"
+    id: shot-auth-referral-menu-hackernews
+  - click: { "text": "HackerNews", "exact": true }
+    id: click-hackernews
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "HackerNews" || !document.cookie.split('; ').includes('referral_source=hackernews')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-8
+  - shot: "auth-referral-selected-hackernews"
+    id: shot-auth-referral-selected-hackernews
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-6
+  - wait: { "text": "Reddit", "exact": true }
+    id: wait-reddit
+  - shot: "auth-referral-menu-reddit"
+    id: shot-auth-referral-menu-reddit
+  - click: { "text": "Reddit", "exact": true }
+    id: click-reddit
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Reddit" || !document.cookie.split('; ').includes('referral_source=reddit')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-9
+  - shot: "auth-referral-selected-reddit"
+    id: shot-auth-referral-selected-reddit
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-7
+  - wait: { "text": "YouTube", "exact": true }
+    id: wait-youtube
+  - shot: "auth-referral-menu-youtube"
+    id: shot-auth-referral-menu-youtube
+  - click: { "text": "YouTube", "exact": true }
+    id: click-youtube
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "YouTube" || !document.cookie.split('; ').includes('referral_source=youtube')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-10
+  - shot: "auth-referral-selected-youtube"
+    id: shot-auth-referral-selected-youtube
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-8
+  - wait: { "text": "Podcast", "exact": true }
+    id: wait-podcast
+  - shot: "auth-referral-menu-podcast"
+    id: shot-auth-referral-menu-podcast
+  - click: { "text": "Podcast", "exact": true }
+    id: click-podcast
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Podcast" || !document.cookie.split('; ').includes('referral_source=podcast')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-11
+  - shot: "auth-referral-selected-podcast"
+    id: shot-auth-referral-selected-podcast
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-9
+  - wait: { "text": "Article/Blog", "exact": true }
+    id: wait-article-blog
+  - shot: "auth-referral-menu-blog"
+    id: shot-auth-referral-menu-blog
+  - click: { "text": "Article/Blog", "exact": true }
+    id: click-article-blog
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Article/Blog" || !document.cookie.split('; ').includes('referral_source=blog')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-12
+  - shot: "auth-referral-selected-blog"
+    id: shot-auth-referral-selected-blog
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-10
+  - wait: { "text": "Advertisements", "exact": true }
+    id: wait-advertisements
+  - shot: "auth-referral-menu-ads"
+    id: shot-auth-referral-menu-ads
+  - click: { "text": "Advertisements", "exact": true }
+    id: click-advertisements
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Advertisements" || !document.cookie.split('; ').includes('referral_source=ads')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-13
+  - shot: "auth-referral-selected-ads"
+    id: shot-auth-referral-selected-ads
+  - click: { "selector": "[aria-label=\"Select an option\"]" }
+    id: click-aria-label-select-an-option-11
+  - wait: { "text": "Other", "exact": true }
+    id: wait-other
+  - shot: "auth-referral-menu-other"
+    id: shot-auth-referral-menu-other
+  - click: { "text": "Other", "exact": true }
+    id: click-other
+  - eval: |
+      if (document.querySelector('[aria-label="Select an option"]')?.value !== "Other" || !document.cookie.split('; ').includes('referral_source=other')) throw new Error('Native referral selection/cookie mismatch');
+    id: eval-script-14
+  - shot: "auth-referral-selected-other"
+    id: shot-auth-referral-selected-other
+  - fill: { "testid": "email", "value": "robin.guest@workshop.example" }
+    id: fill
+  - fill: { "testid": "password", "value": "MockOnly-Workshop1!" }
+    id: fill-2
+  - click: { "role": "button", "name": "Create Account", "exact": true }
+    id: click-create-account
+  - wait: { "text": "here", "exact": true }
+    id: wait-here
+  - shot: "auth-referral-signup-pending"
+    id: shot-auth-referral-signup-pending
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

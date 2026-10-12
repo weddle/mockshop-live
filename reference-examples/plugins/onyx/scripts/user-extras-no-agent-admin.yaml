@@ -1,0 +1,49 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-no-agent-admin
+title: Native Extras - no agent admin
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras-no-agent.yaml
+      overlays: []
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:state.demo_anchor,locale:'en',keep:false})});
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait: { text: No Agent Available, exact: true }
+    id: wait-no-agent-available
+  - shot: { name: extras-27a-empty-home-no-agent-admin, full_page: true }
+    id: shot-extras-27a-empty-home-no-agent-admin
+  - click: { role: link, name: Re-enable Default Chat, exact: true }
+    id: click-re-enable-default-chat
+  - eval: "if(location.pathname !== '/admin/chat-preferences') throw new Error('Native re-enable default chat link did not reach its settings owner')"
+    id: eval-script-2
+  - shot: { name: extras-27b-no-agent-default-chat-target, full_page: true }
+    id: shot-extras-27b-no-agent-default-chat-target
+  - goto: /app
+    id: goto-app-3
+  - wait: { text: No Agent Available, exact: true }
+    id: wait-no-agent-available-2
+  - click: { role: link, name: Configure a New Agent, exact: true }
+    id: click-configure-a-new-agent
+  - eval: "if(location.pathname !== '/admin/agents') throw new Error('Native configure-agent link did not reach its catalog owner')"
+    id: eval-script-3
+  - shot: { name: extras-27c-no-agent-configure-agent-target, full_page: true }
+    id: shot-extras-27c-no-agent-configure-agent-target
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-no-agent.yaml

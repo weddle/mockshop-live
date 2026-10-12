@@ -1,0 +1,370 @@
+# #31: real settings clicks, navigation/reload persistence, and consumer-visible reset isolation.
+# All tokens and the Gmail account are fictional/local. No OAuth or outbound account actions.
+name: user-settings
+title: User preferences, memories, fake access tokens, personal connectors and usage
+strict: true
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /app/settings
+    id: goto-app-settings
+  - wait: { placeholder: Your name }
+    id: wait
+  - shot: settings-initial
+    id: shot-settings-initial
+  - fill: { placeholder: Your name, value: "{{people.maya.name}} Learning" }
+    id: fill
+  - press: Enter
+    id: press-enter
+  - fill: { placeholder: Your role, value: Education coordinator }
+    id: fill-2
+  - press: Enter
+    id: press-enter-2
+  - click: { selector: 'label:has-text("Color Mode") input' }
+    id: click-label-has-text-color-mode-input
+  - click: { role: option, name: Aa Dark, exact: true }
+    id: click-aa-dark
+  - settle: 600
+    id: settle
+  - goto: /app
+    id: goto-app
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - eval: |
+      if (document.querySelector('input[placeholder="Your name"]')?.value !== '{{people.maya.name}} Learning' ||
+          document.querySelector('input[placeholder="Your role"]')?.value !== 'Education coordinator' ||
+          !document.documentElement.classList.contains('dark')) throw new Error('Profile/theme did not persist after navigation');
+    id: eval-script
+  - shot: general-persisted-dark
+    id: shot-general-persisted-dark
+  # Use the settings navigation, then verify with a direct page load too.
+  - click: { selector: 'a[href="/app/settings/chat-preferences"]' }
+    id: click-a-href-app-settings-chat-preferences
+  - wait: { text: Default Model }
+    id: wait-default-model
+  - click: { selector: 'label:has-text("Default Model") input' }
+    id: click-label-has-text-default-model-input
+  - click: { role: button, name: OpenAI, exact: true }
+    id: click-openai
+  - click: { text: GPT-5 mini, exact: true }
+    id: click-gpt-5-mini
+  - click: { selector: 'label:has-text("Chat Auto-scroll") [role="switch"]' }
+    id: click-label-has-text-chat-auto-scroll-role-switch
+  - wait: { selector: 'label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-tr
+  - click: { selector: 'label:has-text("Collapse Large Pastes") [role="switch"]' }
+    id: click-label-has-text-collapse-large-pastes-role-switch
+  - fill: { placeholder: Describe how you want the system to behave and the tone it should use., value: Use concise educational examples and plain language. }
+    id: fill-3
+  - press: Tab
+    id: press-tab
+  - click: { selector: 'label:has-text("Auto-Send on Pause") [role="switch"]' }
+    id: click-label-has-text-auto-send-on-pause-role-switch
+  - click: { selector: 'label:has-text("Reference Stored Memories") [role="switch"]' }
+    id: click-label-has-text-reference-stored-memories-role-switch
+  - click: { selector: 'label:has-text("Update Memories") [role="switch"]' }
+    id: click-label-has-text-update-memories-role-switch
+  # Both memory toggles off still leave the add control while the UI updates; turn update back on to add.
+  - click: { selector: 'label:has-text("Update Memories") [role="switch"]' }
+    id: click-label-has-text-update-memories-role-switch-2
+  - click: { role: button, name: Add memory, exact: true }
+    id: click-add-memory
+  - fill: { placeholder: Type or paste in a personal note or memory, value: I prepare learning materials for community workshops. }
+    id: fill-4
+  - press: Enter
+    id: press-enter-3
+  - settle: 600
+    id: settle-2
+  - shot: memory-created
+    id: shot-memory-created
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /app
+    id: goto-app-2
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences
+  - wait: { selector: 'label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-tr-2
+  - wait: { selector: 'label:has-text("Collapse Large Pastes") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-collapse-large-pastes-role-switch-aria-check
+  - wait: { selector: 'label:has-text("Auto-Send on Pause") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-auto-send-on-pause-role-switch-aria-checked-
+  - wait: { selector: 'label:has-text("Reference Stored Memories") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-reference-stored-memories-role-switch-aria-c
+  - eval: |
+      const model = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Default Model'))?.querySelector('input');
+      const preferences = document.querySelector('textarea[placeholder="Describe how you want the system to behave and the tone it should use."]');
+      if (model?.value !== 'GPT-5 mini' || preferences?.value !== 'Use concise educational examples and plain language.') throw new Error('Default model/personal preferences did not persist');
+    id: eval-script-2
+  - shot: chat-preferences-persisted
+    id: shot-chat-preferences-persisted
+  - click: { text: View/Add, exact: true }
+    id: click-view-add
+  - wait: { placeholder: Type or paste in a personal note or memory }
+    id: wait-2
+  - eval: |
+      if (![...document.querySelectorAll('textarea')].some(el => el.value === 'I prepare learning materials for community workshops.')) throw new Error('Memory did not persist');
+    id: eval-script-3
+  # Edit the saved note, not an unsaved draft.
+  - fill: { selector: 'textarea[placeholder="Type or paste in a personal note or memory"]:not(:placeholder-shown)', value: I prefer accessible workshop handouts. }
+    id: fill-textarea-placeholder-type-or-paste-in-a-personal-note-or-me
+  - press: Enter
+    id: press-enter-4
+  - settle: 600
+    id: settle-3
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - goto: /app/settings/general
+    id: goto-app-settings-general-2
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-2
+  - click: { text: View/Add, exact: true }
+    id: click-view-add-2
+  - eval: |
+      if (![...document.querySelectorAll('textarea')].some(el => el.value === 'I prefer accessible workshop handouts.')) throw new Error('Edited memory did not persist');
+    id: eval-script-4
+  - shot: memory-edited-persisted
+    id: shot-memory-edited-persisted
+  - click: { selector: 'button[aria-label="Remove Line"]:not(:disabled)' }
+    id: click-button-aria-label-remove-line-not-disabled
+  - settle: 600
+    id: settle-4
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close-3
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+  - goto: /app/settings/general
+    id: goto-app-settings-general-3
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-3
+  - wait: { role: button, name: Add memory, exact: true }
+    id: wait-add-memory
+  - click: { role: button, name: Add memory, exact: true }
+    id: click-add-memory-2
+  - fill: { placeholder: Type or paste in a personal note or memory, value: Keep workshop examples accessible. }
+    id: fill-5
+  - press: Enter
+    id: press-enter-5
+  - settle: 600
+    id: settle-5
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close-4
+  - wait_gone: { role: dialog }
+    id: wait-gone-4
+  # A fake token is displayed once, then only its metadata survives navigation.
+  # The preferences pane is scrolled to memories; bring navigation into view before clicking.
+  - scroll: { selector: 'a[href="/app/settings/accounts-access"]' }
+    id: scroll-a-href-app-settings-accounts-access
+  - click: { selector: 'a[href="/app/settings/accounts-access"]' }
+    id: click-a-href-app-settings-accounts-access
+  - wait: { role: button, name: New Access Token }
+    id: wait-new-access-token
+  - click: { role: button, name: New Access Token }
+    id: click-new-access-token
+  - fill: { placeholder: Name your token, value: Workshop notes demo }
+    id: fill-6
+  - click: { role: button, name: Create Token, exact: true }
+    id: click-create-token
+  - wait: { text: mockshop-not-a-real-token-0001 }
+    id: wait-mockshop-not-a-real-token-0001
+  - shot: fake-token-created
+    id: shot-fake-token-created
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close-5
+  - wait_gone: { role: dialog }
+    id: wait-gone-5
+  - goto: /app
+    id: goto-app-3
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - wait: { text: Workshop notes demo }
+    id: wait-workshop-notes-demo
+  - shot: fake-token-persisted
+    id: shot-fake-token-persisted
+  - click: { role: button, name: New Access Token }
+    id: click-new-access-token-2
+  - fill: { placeholder: Name your token, value: Disposable workshop demo }
+    id: fill-7
+  - click: { role: button, name: Create Token, exact: true }
+    id: click-create-token-2
+  - wait: { text: mockshop-not-a-real-token-0002 }
+    id: wait-mockshop-not-a-real-token-0002
+  - click: { selector: '[role="dialog"] button[aria-label="Close"]' }
+    id: click-role-dialog-button-aria-label-close-6
+  - wait_gone: { role: dialog }
+    id: wait-gone-6
+  - click: { role: button, name: Delete token Disposable workshop demo, exact: true }
+    id: click-delete-token-disposable-workshop-demo
+  - click: { role: button, name: Revoke, exact: true }
+    id: click-revoke
+  - wait_gone: { text: Disposable workshop demo, exact: true }
+    id: wait-gone-disposable-workshop-demo
+  - goto: /app/settings/general
+    id: goto-app-settings-general-4
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-2
+  - wait: { text: Workshop notes demo }
+    id: wait-workshop-notes-demo-2
+  - eval: |
+      if (document.body.innerText.includes('Disposable workshop demo')) throw new Error('Revoked token returned after navigation');
+    id: eval-script-5
+  - shot: fake-token-revoked
+    id: shot-fake-token-revoked
+  # Gmail is the only personal (federated) card; indexed organization cards are read-only.
+  - scroll: { selector: 'a[href="/app/settings/connectors"]' }
+    id: scroll-a-href-app-settings-connectors
+  - click: { selector: 'a[href="/app/settings/connectors"]' }
+    id: click-a-href-app-settings-connectors
+  - wait: { text: Gmail, exact: true }
+    id: wait-gmail
+  - click: { selector: '.opal-card:has-text("Gmail") button' }
+    id: click-opal-card-has-text-gmail-button
+  - wait: { role: button, name: Disconnect, exact: true }
+    id: wait-disconnect
+  - click: { role: button, name: Disconnect, exact: true }
+    id: click-disconnect
+  - wait: { text: Not connected, exact: true }
+    id: wait-not-connected
+  - goto: /app/settings/general
+    id: goto-app-settings-general-5
+  - goto: /app/settings/connectors
+    id: goto-app-settings-connectors
+  - wait: { text: Not connected, exact: true }
+    id: wait-not-connected-2
+  - shot: personal-connector-disconnected-persisted
+    id: shot-personal-connector-disconnected-persisted
+  # Follow the real Connect link in this tab for its smoke shot; its URL is a mock-only local simulation.
+  - eval: |
+      const link = document.querySelector('a[href="/api/mockshop/personal-connectors/901/connect"]');
+      if (!link) throw new Error('Local personal connector link missing');
+      link.removeAttribute('target');
+    id: eval-script-6
+  - click: { selector: 'a[href="/api/mockshop/personal-connectors/901/connect"]' }
+    id: click-a-href-api-mockshop-personal-connectors-901-connect
+  - wait: { role: button, name: Connect fake Gmail account, exact: true }
+    id: wait-connect-fake-gmail-account
+  - shot: local-fake-connection-confirmation
+    id: shot-local-fake-connection-confirmation
+  - click: { role: button, name: Connect fake Gmail account, exact: true }
+    id: click-connect-fake-gmail-account
+  - wait: { selector: '.opal-card:has-text("Gmail"):has-text("Connected")' }
+    id: wait-opal-card-has-text-gmail-has-text-connected
+  - wait_gone: { text: Not connected, exact: true }
+    id: wait-gone-not-connected
+  - goto: /app/settings/general
+    id: goto-app-settings-general-6
+  - goto: /app/settings/connectors
+    id: goto-app-settings-connectors-2
+  - wait: { selector: '.opal-card:has-text("Gmail"):has-text("Connected")' }
+    id: wait-opal-card-has-text-gmail-has-text-connected-2
+  - eval: |
+      if (document.querySelector('a[href="/api/mockshop/personal-connectors/901/connect"]')) throw new Error('Personal connection did not persist');
+    id: eval-script-7
+  - shot: personal-connector-reconnected-persisted
+    id: shot-personal-connector-reconnected-persisted
+  - scroll: { selector: 'a[href="/app/settings/usage"]' }
+    id: scroll-a-href-app-settings-usage
+  - click: { selector: 'a[href="/app/settings/usage"]' }
+    id: click-a-href-app-settings-usage
+  - wait: { text: Usage this period, exact: true }
+    id: wait-usage-this-period
+  - wait: { text: '$0.42 spent', exact: true }
+    id: wait-0-42-spent
+  - wait: { text: '$9.58 remaining', exact: true }
+    id: wait-9-58-remaining
+  - wait: { text: Model prices, exact: true }
+    id: wait-model-prices
+  - shot: usage-models-budget-prices
+    id: shot-usage-models-budget-prices
+  - goto: /app/settings/usage
+    id: goto-app-settings-usage
+  - wait: { text: '$0.42 spent', exact: true }
+    id: wait-0-42-spent-2
+  - shot: usage-direct-link
+    id: shot-usage-direct-link
+  # Same pinned tier policy in both editions: gateway settings on Business+, General on Community.
+  - goto: /app/settings/llm-gateway
+    id: goto-app-settings-llm-gateway
+  - settle: 800
+    id: settle-6
+  - eval: |
+      (async () => {
+        const settings = await (await fetch('/api/settings')).json();
+        if (['business', 'enterprise'].includes(settings.tier)) {
+          if (!document.body.innerText.includes('Gateway URL') || !document.body.innerText.includes('Models')) throw new Error('Gateway settings did not render');
+        } else if (!location.pathname.endsWith('/general') || !document.querySelector('input[placeholder="Your name"]')) {
+          throw new Error('Community gateway tier redirect did not render General');
+        }
+      })()
+    id: eval-script-8
+  - shot: gateway-tier-policy
+    id: shot-gateway-tier-policy
+  # Leave the connector different from its seed so reset proves isolation, not a coincidental Connected state.
+  - goto: /app/settings/connectors
+    id: goto-app-settings-connectors-3
+  - wait: { text: Gmail, exact: true }
+    id: wait-gmail-2
+  - click: { selector: '.opal-card:has-text("Gmail") button' }
+    id: click-opal-card-has-text-gmail-button-2
+  - click: { role: button, name: Disconnect, exact: true }
+    id: click-disconnect-2
+  - wait: { text: Not connected, exact: true }
+    id: wait-not-connected-3
+  - id: eval-script-9-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Fresh-run reset: same API the runner uses before each scenario; preserve fixed demo time and English UI.
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, locale: 'en', anchor: '2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh-run reset failed');
+      })()
+    id: eval-script-9
+  - goto: /app/settings/general
+    id: goto-app-settings-general-7
+  - eval: |
+      if (document.querySelector('input[placeholder="Your name"]')?.value !== '{{people.maya.name}}' ||
+          document.querySelector('input[placeholder="Your role"]')?.value !== '{{people.maya.title}}' ||
+          !document.documentElement.classList.contains('light')) throw new Error('Reset leaked profile/theme from the previous run');
+    id: eval-script-10
+  - shot: reset-general-isolated
+    id: shot-reset-general-isolated
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-4
+  - wait: { selector: 'label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-fa
+  - wait: { selector: 'label:has-text("Collapse Large Pastes") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-collapse-large-pastes-role-switch-aria-check-2
+  - wait: { selector: 'label:has-text("Auto-Send on Pause") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-auto-send-on-pause-role-switch-aria-checked--2
+  - wait: { selector: 'label:has-text("Reference Stored Memories") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-reference-stored-memories-role-switch-aria-c-2
+  - wait: { role: button, name: Add memory, exact: true }
+    id: wait-add-memory-2
+  - eval: |
+      const preferences = document.querySelector('textarea[placeholder="Describe how you want the system to behave and the tone it should use."]');
+      const model = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Default Model'))?.querySelector('input');
+      if (preferences?.value !== '' || model?.value !== 'Global Default') throw new Error('Reset leaked personal preferences/default model');
+    id: eval-script-11
+  - shot: reset-chat-preferences-isolated
+    id: shot-reset-chat-preferences-isolated
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-3
+  - wait: { text: No access tokens created., exact: true }
+    id: wait-no-access-tokens-created
+  - shot: reset-tokens-isolated
+    id: shot-reset-tokens-isolated
+  - goto: /app/settings/connectors
+    id: goto-app-settings-connectors-4
+  - wait: { text: Gmail, exact: true }
+    id: wait-gmail-3
+  - eval: |
+      if (document.body.innerText.includes('Not connected') || document.querySelector('a[href="/api/mockshop/personal-connectors/901/connect"]')) throw new Error('Reset did not restore personal connector fixture');
+    id: eval-script-12
+  - shot: reset-connectors-isolated
+    id: shot-reset-connectors-isolated
+world: ../../../worlds/seaside/world.yaml

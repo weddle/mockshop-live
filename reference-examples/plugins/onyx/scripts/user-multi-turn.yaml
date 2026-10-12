@@ -1,0 +1,82 @@
+# End user: context-aware multi-turn chat (#22). First question -> fixed-wording follow-up whose answer
+# references the first -> regenerate the follow-up (2nd answer, 2/2 switcher) -> edit the follow-up ->
+# a slow answer stopped mid-stream -> reload: the whole tree (branches, stopped answer) replays from the mock.
+# Follow-up wording is configured in fixtures/base/chat/11-follow-up-summary.yaml.
+name: user-multi-turn
+title: Follow-ups, regenerate, edit and stop
+steps:
+  - goto: /app
+    id: goto-app
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox
+  - type: { selector: "#onyx-chat-input-textbox", value: "What does the company do?" }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait
+  - settle: 1200
+    id: settle
+  - type: { selector: "#onyx-chat-input-textbox", value: "Follow-up: summarize that in one sentence" }
+    id: type-onyx-chat-input-textbox-2
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { text: "Follow-up to your first question", timeout: 30000 }
+    id: wait-follow-up-to-your-first-question
+  - settle: 1500
+    id: settle-2
+  - shot: follow-up-references-first
+    id: shot-follow-up-references-first
+  - click: { testid: AgentMessage/regenerate, last: true }
+    id: click
+  - settle: 600
+    id: settle-3
+  - shot: regenerate-model-menu
+    id: shot-regenerate-model-menu
+  - click: { text: "GPT-5 mini", exact: true }
+    id: click-gpt-5-mini
+  - wait: { text: "Regenerated follow-up", timeout: 30000 }
+    id: wait-regenerated-follow-up
+  - settle: 1500
+    id: settle-4
+  - shot: regenerated
+    id: shot-regenerated
+  - hover: { text: "Follow-up: summarize that in one sentence", last: true }
+    id: hover-follow-up-summarize-that-in-one-sentence
+  - click: { testid: HumanMessage/edit-button, last: true }
+    id: click-2
+  - fill: { selector: "textarea:focus", value: "Follow-up: summarise that, please" }
+    id: fill-textarea-focus
+  - shot: editing
+    id: shot-editing
+  - click: { role: button, name: Submit }
+    id: click-submit
+  - wait: { text: "Follow-up to your first question", timeout: 30000 }
+    id: wait-follow-up-to-your-first-question-2
+  - settle: 1500
+    id: settle-5
+  - shot: edited
+    id: shot-edited
+  - type: { selector: "#onyx-chat-input-textbox", value: "Placeholder: long answer please" }
+    id: type-onyx-chat-input-textbox-3
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button-3
+  - wait: { text: "deliberately long", timeout: 30000 }
+    id: wait-deliberately-long
+  - wait: 1500
+    id: wait-2
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button-4
+  - settle: 1200
+    id: settle-6
+  - shot: stopped
+    id: shot-stopped
+  - eval: "location.reload()"
+    id: eval-script
+  - wait: { text: "Placeholder: long answer please", timeout: 30000 }
+    id: wait-placeholder-long-answer-please
+  - settle: 1500
+    id: settle-7
+  - shot: reloaded-tree
+    id: shot-reloaded-tree
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,234 @@
+# #4: native #27 picker/answer attribution selectors and #22 regenerate/edit controls.
+# No injected model writes. Read-only API assertions inspect the same persisted answer tree.
+name: model-answer-variants
+title: Canonical model answers, branches, common fallback and fresh reset
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /app
+    id: goto-app
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5.2")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-5-2
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'Plan a community learning workshop.' }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: 'Ask each learner to name a practical learning goal.', timeout: 30000 }
+    id: wait-ask-each-learner-to-name-a-practical-learning-goal
+  - wait: { selector: '[data-testid="AgentMessage/regenerate"]:has-text("GPT-5.2")' }
+    id: wait-data-testid-agentmessage-regenerate-has-text-gpt-5-2
+  - settle: 1800
+    id: settle
+  - eval: |
+      (async () => {
+        const id = new URL(location.href).searchParams.get('chatId');
+        if (!id) throw new Error('Workshop chat was not created');
+        sessionStorage.setItem('model-answer-chat', id);
+        const detail = await (await fetch(`/api/chat/get-chat-session/${id}`)).json();
+        const answer = detail.messages.filter(m => m.message_type === 'assistant');
+        if (answer.length !== 1 || !answer[0].message.includes('individual next-step card') || answer[0].overridden_model !== 'gpt-5.2' || answer[0].model_display_name !== 'GPT-5.2') throw new Error('Resolved default did not select planning content and metadata');
+      })()
+    id: eval-script
+  - hover: { testid: 'AgentMessage/regenerate' }
+    id: hover
+  - shot: default-planning-answer
+    id: shot-default-planning-answer
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-5.2")' }
+    id: click-data-testid-model-selector-button-has-text-gpt-5-2
+  - wait: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+    id: wait-role-dialog-text-is-gpt-4-1
+  - shot: openai-model-choices
+    id: shot-openai-model-choices
+  - click: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+    id: click-role-dialog-text-is-gpt-4-1
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'Plan a community learning workshop.' }
+    id: fill-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { text: 'Use a quiet reflection break', timeout: 30000 }
+    id: wait-use-a-quiet-reflection-break
+  - wait: { selector: '[data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")' }
+    id: wait-data-testid-agentmessage-regenerate-has-text-gpt-4-1
+  - settle: 1800
+    id: settle-2
+  - eval: |
+      (async () => {
+        const detail = await (await fetch(`/api/chat/get-chat-session/${sessionStorage.getItem('model-answer-chat')}`)).json();
+        const answers = detail.messages.filter(m => m.message_type === 'assistant');
+        const questions = detail.messages.filter(m => m.message_type === 'user');
+        if (questions.length !== 2 || questions[0].message !== questions[1].message || answers.length !== 2) throw new Error('Same-prompt comparison was not preserved');
+        if (!answers[0].message.includes('individual next-step card') || !answers[1].message.includes('quiet reflection break') || answers[0].message === answers[1].message) throw new Error('Model switch changed only metadata');
+        if (answers[0].overridden_model !== 'gpt-5.2' || answers[1].overridden_model !== 'gpt-4.1' || answers[1].model_display_name !== 'GPT-4.1') throw new Error('Selected content and model snapshots disagree');
+        if (answers[1].context_docs?.[0]?.document_id !== 'community-workshop-facilitation' || answers[1].citations?.['1'] !== 'community-workshop-facilitation') throw new Error('Variant sources/citations were not selected');
+      })()
+    id: eval-script-2
+  - shot: same-prompt-facilitation-answer
+    id: shot-same-prompt-facilitation-answer
+  - click: { testid: 'AgentMessage/regenerate', last: true }
+    id: click
+  # The first answer already has a GPT-5.2 footer; select only inside the native popover.
+  - wait: { selector: '[role="dialog"] :text-is("GPT-5.2")' }
+    id: wait-role-dialog-text-is-gpt-5-2
+  - click: { selector: '[role="dialog"] :text-is("GPT-5.2")' }
+    id: click-role-dialog-text-is-gpt-5-2
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-2
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("Planning revision after Workshop planning guide")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-planning-revision-afte
+  - settle: 1800
+    id: settle-3
+  - eval: |
+      (async () => {
+        const detail = await (await fetch(`/api/chat/get-chat-session/${sessionStorage.getItem('model-answer-chat')}`)).json();
+        const answers = detail.messages.filter(m => m.message_type === 'assistant');
+        const revision = answers.at(-1);
+        if (answers.length !== 3 || revision.parent_message !== answers[1].parent_message || revision.overridden_model !== 'gpt-5.2' || revision.model_display_name !== 'GPT-5.2' || !revision.message.includes('Planning revision after Workshop planning guide') || revision.message.includes('{{')) throw new Error('Regenerate did not resolve its own selected model before context expansion');
+      })()
+    id: eval-script-3
+  - shot: regenerated-planning-branch
+    id: shot-regenerated-planning-branch
+  # Select the edit's model explicitly; regenerate's model is an answer-level override.
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT")' }
+    id: click-data-testid-model-selector-button-has-text-gpt
+  - wait: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+    id: wait-role-dialog-text-is-gpt-4-1-2
+  - click: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+    id: click-role-dialog-text-is-gpt-4-1-2
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-3
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1-2
+  - hover: { text: 'Plan a community learning workshop.', last: true }
+    id: hover-plan-a-community-learning-workshop
+  - click: { testid: 'HumanMessage/edit-button', last: true }
+    id: click-2
+  - fill: { selector: '#onyx-human-message textarea', value: 'Plan a community learning workshop with accessible activities.' }
+    id: fill-onyx-human-message-textarea
+  - shot: editing-workshop-question
+    id: shot-editing-workshop-question
+  - click: { selector: '#onyx-human-message button:has-text("Submit")' }
+    id: click-onyx-human-message-button-has-text-submit
+  - wait: { selector: '#onyx-human-message:has-text("Plan a community learning workshop with accessible activities.")' }
+    id: wait-onyx-human-message-has-text-plan-a-community-learning-works
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("Use a quiet reflection break") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-use-a-quiet-reflection
+  - settle: 1800
+    id: settle-4
+  - eval: |
+      (async () => {
+        const detail = await (await fetch(`/api/chat/get-chat-session/${sessionStorage.getItem('model-answer-chat')}`)).json();
+        const answer = detail.messages.filter(m => m.message_type === 'assistant').at(-1);
+        if (answer.overridden_model !== 'gpt-4.1' || answer.model_display_name !== 'GPT-4.1' || !answer.message.includes('quiet reflection break')) throw new Error('Edited branch lost its selected composer model/content');
+      })()
+    id: eval-script-4
+  - shot: edited-facilitation-branch
+    id: shot-edited-facilitation-branch
+  - goto: /app
+    id: goto-app-2
+  - click: { testid: ChatButton, has_text: Workshop planning guide }
+    id: click-3
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1-3
+  - eval: location.reload()
+    id: eval-script-5
+  - wait: { selector: '#onyx-human-message:has-text("Plan a community learning workshop with accessible activities.")' }
+    id: wait-onyx-human-message-has-text-plan-a-community-learning-works-2
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("Use a quiet reflection break") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-use-a-quiet-reflection-2
+  - eval: |
+      (async () => {
+        const id = sessionStorage.getItem('model-answer-chat');
+        if (new URL(location.href).searchParams.get('chatId') !== id) throw new Error('Sidebar reopened a different chat');
+        const detail = await (await fetch(`/api/chat/get-chat-session/${id}`)).json();
+        const answers = detail.messages.filter(m => m.message_type === 'assistant');
+        const models = ['gpt-5.2', 'gpt-4.1', 'gpt-5.2', 'gpt-4.1'];
+        if (detail.current_alternate_model !== 'OpenAI__openai__gpt-4.1__mc:3' || answers.length !== 4 || !models.every((model, i) => answers[i].overridden_model === model)) throw new Error('Reload changed answer-tree model snapshots');
+        if (!answers[0].message.includes('individual next-step card') || !answers[1].message.includes('quiet reflection break') || !answers[2].message.includes('Planning revision after Workshop planning guide') || !answers[3].message.includes('quiet reflection break')) throw new Error('Reload replaced stored branch content');
+        if (detail.packets.length !== answers.length) throw new Error('Branch replay packets missing');
+      })()
+    id: eval-script-6
+  - shot: reloaded-selected-answer-tree
+    id: shot-reloaded-selected-answer-tree
+  - eval: "location.href = '/api/mockshop/source/community-workshop-facilitation'"
+    id: eval-script-7
+  - wait: { selector: '[data-testid="mockshop-source"]' }
+    id: wait-data-testid-mockshop-source
+  - wait: { text: Community workshop facilitation notes, exact: true }
+    id: wait-community-workshop-facilitation-notes
+  - shot: variant-source-viewer
+    id: shot-variant-source-viewer
+  - eval: location.assign(`/app?chatId=${sessionStorage.getItem('model-answer-chat')}`)
+    id: eval-script-8
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1-4
+  - wait: { selector: '#onyx-human-message:has-text("Plan a community learning workshop with accessible activities.")' }
+    id: wait-onyx-human-message-has-text-plan-a-community-learning-works-3
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("Use a quiet reflection break") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-use-a-quiet-reflection-3
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: click-data-testid-model-selector-button-has-text-gpt-4-1
+  - wait: { selector: '[role="dialog"] :text-is("GPT-5 mini")' }
+    id: wait-role-dialog-text-is-gpt-5-mini
+  - click: { selector: '[role="dialog"] :text-is("GPT-5 mini")' }
+    id: click-role-dialog-text-is-gpt-5-mini
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-4
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5 mini")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-5-mini
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'Plan a community learning workshop.' }
+    id: fill-onyx-chat-input-textbox-3
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-3
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("This common fixture response is used when the selected model has no override.") [data-testid="AgentMessage/regenerate"]:has-text("GPT-5 mini")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-this-common-fixture-re
+  - settle: 1800
+    id: settle-5
+  - eval: |
+      (async () => {
+        const detail = await (await fetch(`/api/chat/get-chat-session/${sessionStorage.getItem('model-answer-chat')}`)).json();
+        const answer = detail.messages.filter(m => m.message_type === 'assistant').at(-1);
+        if (answer.overridden_model !== 'gpt-5-mini' || answer.model_display_name !== 'GPT-5 mini' || !answer.message.includes('This common fixture response') || answer.context_docs?.length) throw new Error('Unmapped model did not use the common response');
+      })()
+    id: eval-script-9
+  - shot: unmapped-model-common-answer
+    id: shot-unmapped-model-common-answer
+  - id: eval-script-10-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, locale: 'en', resetChats: true, anchor: '2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh-run reset failed');
+      })()
+    id: eval-script-10
+  - goto: /app
+    id: goto-app-3
+  - eval: location.reload()
+    id: eval-script-11
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5.2")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-5-2-2
+  - eval: |
+      (async () => {
+        const list = await (await fetch('/api/chat/get-user-chat-sessions')).json();
+        if (list.sessions.some(s => s.id === sessionStorage.getItem('model-answer-chat'))) throw new Error('Reset retained the live model-answer tree');
+      })()
+    id: eval-script-12
+  - shot: reset-model-answer-seeds
+    id: shot-reset-model-answer-seeds
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'Plan a community learning workshop.' }
+    id: fill-onyx-chat-input-textbox-4
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-4
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("Ask each learner to name a practical learning goal.") [data-testid="AgentMessage/regenerate"]:has-text("GPT-5.2")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-ask-each-learner-to-na
+  - settle: 1800
+    id: settle-6
+  - shot: reset-default-planning-answer
+    id: shot-reset-default-planning-answer
+world: ../../../worlds/seaside/world.yaml

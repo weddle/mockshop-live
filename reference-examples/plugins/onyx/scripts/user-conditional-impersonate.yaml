@@ -1,0 +1,242 @@
+# #34 EDITONLY prepared native unit; no execution/acceptance claim. CE/other locales unverified.
+# Fictional LOCAL inputs only. Every run independently resets the same sole Auth owner.
+name: user-conditional-impersonate
+title: User Conditional Impersonate
+requires: enterprise
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 900
+overlays:
+  - edition-enterprise
+known_errors:
+  - match: '/^http 401 GET http:\/\/127\.0\.0\.1:3328\/api\/me$/'
+    reason: Required native logged-out guard uses the sole Auth69 cleared fake identity; protected login UI, absent form,401 and cleared synthetic cookie are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/127\.0\.0\.1:3328\/api\/me\]$/'
+    reason: Exact deliberately cleared fake identity diagnostic during the native logged-out guard, not an unknown-error waiver.
+  - match: /^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/tenants\/impersonate$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/tenants\/impersonate\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: '/^console: \[Toast\] LOCAL FAKE DEMO — fictional impersonation rejected; identity unchanged\. \[source: http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/0se759_ajj-mw\.js\]$/'
+    reason: Exact native fake-key error string and accepted physical artifact Toast logger source. This unit asserts visible rejection, unchanged sole fictional actor and unchanged impersonation receipt before recovery.
+steps:
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-conditional--demo-user-conditional-impersonate.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Conditional independent reset failed');
+        const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+        if (Object.keys(receipt.callbacks).length || Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered) throw new Error('Conditional reset retained dirty receipts');
+        const me = await (await fetch('/api/me')).json();
+        if (me.email !== '{{people.alex-learner.email}}' || !me.password_configured || !me.is_cloud_superuser) throw new Error('Sole Auth owner did not restore the named fictional impersonation actor');
+      })()
+    id: eval-script
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Sole Auth protected logged-out staging failed');
+      })()
+    id: eval-script-2
+  - goto: /auth/impersonate
+    id: goto-auth-impersonate
+  - wait: { testid: email }
+    id: wait
+  - eval: |
+      (async () => {
+        const me = await fetch('/api/me');
+        const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+        if (location.pathname !== '/auth/login' || document.querySelector('input[name="apiKey"]') || me.status !== 401 || document.cookie.includes('fastapiusersauth=') || receipt.impersonated) throw new Error('Native logged-out impersonation guard or protected state missing');
+      })()
+    id: eval-script-3
+  - shot: { name: conditional-impersonate-logged-out-protected, delay: 0 }
+    id: shot-conditional-impersonate-logged-out-protected
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'member',email:'robin.guest@workshop.example'})});
+        if (!r.ok) throw new Error('Sole Auth protected member staging failed');
+      })()
+    id: eval-script-4
+  - goto: /auth/impersonate
+    id: goto-auth-impersonate-2
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+        if (location.pathname !== '/app' || document.querySelector('input[name="apiKey"]') || me.email !== 'robin.guest@workshop.example' || me.is_cloud_superuser || receipt.impersonated) throw new Error('Native non-superuser impersonation guard or protected state missing');
+      })()
+    id: eval-script-5
+  - shot: { name: conditional-impersonate-member-protected, delay: 0 }
+    id: shot-conditional-impersonate-member-protected
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'member',email:'{{people.alex-learner.email}}'})});
+        if (!r.ok) throw new Error('Named fictional impersonation actor staging failed');
+      })()
+    id: eval-script-6
+  - goto: /auth/impersonate
+    id: goto-auth-impersonate-3
+  - wait:
+      selector: input[name="apiKey"]
+    id: wait-input-name-apikey
+  - wait:
+      text: 'Note: This feature is only available for @onyx.app administrators'
+      exact: true
+    id: wait-note-this-feature-is-only-available-for-onyx-app-administra
+  - shot:
+      name: conditional-impersonate-empty
+      delay: 0
+    id: shot-conditional-impersonate-empty
+  - click:
+      role: button
+      name: Impersonate User
+      exact: true
+    id: click-impersonate-user
+  - eval: if (!document.body.innerText.includes('Required')) throw new Error('Native required field validation missing');
+    id: eval-script-7
+  - shot:
+      name: conditional-impersonate-required
+      delay: 0
+    id: shot-conditional-impersonate-required
+  - fill:
+      selector: input[name="email"]
+      value: not-an-email
+    id: fill-input-name-email
+  - press: Tab
+    id: press-tab
+  - wait:
+      text: Invalid email
+      exact: true
+    id: wait-invalid-email
+  - shot:
+      name: conditional-impersonate-invalid-email
+      delay: 0
+    id: shot-conditional-impersonate-invalid-email
+  - fill:
+      selector: input[name="email"]
+      value: robin.guest@workshop.example
+    id: fill-input-name-email-2
+  - fill:
+      selector: input[name="apiKey"]
+      value: MockOnly-Rejected-Key
+    id: fill-input-name-apikey
+  - click:
+      role: button
+      name: Impersonate User
+      exact: true
+    id: click-impersonate-user-2
+  - wait:
+      selector: button[type="submit"]:disabled
+    id: wait-button-type-submit-disabled
+  - shot:
+      name: conditional-impersonate-rejected-pending
+      delay: 0
+    id: shot-conditional-impersonate-rejected-pending
+  - wait:
+      text: LOCAL FAKE DEMO — fictional impersonation rejected; identity unchanged.
+      exact: true
+    id: wait-local-fake-demo-fictional-impersonation-rejected-identity-u
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(!r.impersonated)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-8
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (me.email !== '{{people.alex-learner.email}}' || !me.is_cloud_superuser) throw new Error('Rejected fake key changed the sole fictional impersonation actor');
+      })()
+    id: eval-script-9
+  - shot:
+      name: conditional-impersonate-error-protected
+      delay: 0
+    id: shot-conditional-impersonate-error-protected
+  - fill:
+      selector: input[name="apiKey"]
+      value: MockOnly-Conditional-Key
+    id: fill-input-name-apikey-2
+  - click:
+      role: button
+      name: Impersonate User
+      exact: true
+    id: click-impersonate-user-3
+  - wait:
+      selector: button[type="submit"]:disabled
+    id: wait-button-type-submit-disabled-2
+  - shot:
+      name: conditional-impersonate-pending
+      delay: 0
+    id: shot-conditional-impersonate-pending
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox-2
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(r.impersonated)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-10
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (me.email !== 'robin.guest@workshop.example' || me.is_cloud_superuser) throw new Error('Successful fake impersonation did not restore the sole supported target member');
+      })()
+    id: eval-script-11
+  - shot:
+      name: conditional-impersonate-app-return
+      delay: 0
+    id: shot-conditional-impersonate-app-return
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-2
+  - wait:
+      text: robin.guest@workshop.example
+      exact: true
+    id: wait-robin-guest-workshop-example
+  - shot:
+      name: conditional-impersonate-existing-auth-readback
+      delay: 0
+    id: shot-conditional-impersonate-existing-auth-readback
+  - eval: location.reload()
+    id: eval-script-12
+  - wait:
+      text: robin.guest@workshop.example
+      exact: true
+    id: wait-robin-guest-workshop-example-2
+  - shot:
+      name: conditional-impersonate-reload
+      delay: 0
+    id: shot-conditional-impersonate-reload
+  - id: eval-script-13-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-conditional--demo-user-conditional-impersonate.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Conditional independent reset failed');
+        const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+        if (Object.keys(receipt.callbacks).length || Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered) throw new Error('Conditional reset retained dirty receipts');
+        const me = await (await fetch('/api/me')).json();
+        if (me.email !== '{{people.alex-learner.email}}' || !me.password_configured || !me.is_cloud_superuser) throw new Error('Sole Auth owner did not restore the named fictional impersonation actor');
+      })()
+    id: eval-script-13
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-3
+  - wait:
+      text: "{{people.alex-learner.email}}"
+      exact: true
+    id: wait-alex-learner-workshop-example
+  - shot:
+      name: conditional-impersonate-fresh-reset
+      delay: 0
+    id: shot-conditional-impersonate-fresh-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-conditional.yaml
+    - ../../../worlds/onyx-overrides/demo-user-conditional-impersonate.yaml

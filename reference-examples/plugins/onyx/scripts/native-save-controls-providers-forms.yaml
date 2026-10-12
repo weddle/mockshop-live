@@ -1,0 +1,197 @@
+# Issue #3 independent native proof unit; edit-only declaration, acceptance PENDING.
+# Fresh runner start resets the same Enterprise/demo-mcp-admin fixtures and browser context.
+# No previous unit outputs; native dirty/reset prerequisites are local to this file.
+
+# Entry: Direct /admin/language-models; native provider Add cards.
+# Outcome: Vertex/Bedrock/OpenRouter/LiteLLM/Portkey/Vercel/Nebius/Bifrost/Ollama/LM Studio/OpenAI-Compatible/Custom modal entry/Escape; native GPT-4.1 default dirty setup then GPT-5.2 reset.
+name: native-save-controls-providers-forms
+title: "Every remaining native provider Add form and independent dirty default/reset"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Independent native prerequisite/reset: Independent direct provider entry.
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  # Independent native prerequisite/reset: Wait for seeded configured cards before native modal inventory.
+  - wait:
+      text: On-prem GPU cluster
+      exact: true
+    id: wait-on-prem-gpu-cluster
+  # Preserved source step 60 (line 69).
+  - click: { selector: '[aria-label="Add Google Cloud Vertex AI Gemini"]' }
+    id: click-aria-label-add-google-cloud-vertex-ai-gemini
+  # Preserved source step 61 (line 70).
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog
+  # Preserved source step 62 (line 71).
+  - shot: provider-vertex-form
+    id: shot-provider-vertex-form
+  # Preserved source step 63 (line 72).
+  - press: Escape
+    id: press-escape
+  # Preserved source step 64 (line 73).
+  - click: { selector: '[aria-label="Add AWS Amazon Bedrock"]' }
+    id: click-aria-label-add-aws-amazon-bedrock
+  # Preserved source step 65 (line 74).
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-2
+  # Preserved source step 66 (line 75).
+  - shot: provider-bedrock-form
+    id: shot-provider-bedrock-form
+  # Preserved source step 67 (line 76).
+  - press: Escape
+    id: press-escape-2
+  # Preserved source step 68 (line 77).
+  - click: { selector: '[aria-label="Add OpenRouter OpenRouter"]' }
+    id: click-aria-label-add-openrouter-openrouter
+  # Preserved source step 69 (line 78).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base
+  # Preserved source step 70 (line 79).
+  - shot: provider-openrouter-form
+    id: shot-provider-openrouter-form
+  # Preserved source step 71 (line 80).
+  - press: Escape
+    id: press-escape-3
+  # Preserved source step 72 (line 81).
+  - click: { selector: '[aria-label="Add LiteLLM Proxy LiteLLM Proxy"]' }
+    id: click-aria-label-add-litellm-proxy-litellm-proxy
+  # Preserved source step 73 (line 82).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-2
+  # Preserved source step 74 (line 83).
+  - shot: provider-litellm-form
+    id: shot-provider-litellm-form
+  # Preserved source step 75 (line 84).
+  - press: Escape
+    id: press-escape-4
+  # Preserved source step 76 (line 85).
+  - click: { selector: '[aria-label="Add Portkey Portkey"]' }
+    id: click-aria-label-add-portkey-portkey
+  # Preserved source step 77 (line 86).
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-3
+  # Preserved source step 78 (line 87).
+  - shot: provider-portkey-form
+    id: shot-provider-portkey-form
+  # Preserved source step 79 (line 88).
+  - press: Escape
+    id: press-escape-5
+  # Preserved source step 80 (line 89).
+  - click: { selector: '[aria-label="Add Vercel Vercel AI Gateway"]' }
+    id: click-aria-label-add-vercel-vercel-ai-gateway
+  # Preserved source step 81 (line 90).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-3
+  # Preserved source step 82 (line 91).
+  - shot: provider-vercel-form
+    id: shot-provider-vercel-form
+  # Preserved source step 83 (line 92).
+  - press: Escape
+    id: press-escape-6
+  # Preserved source step 84 (line 93).
+  - click: { selector: '[aria-label="Add Nebius Nebius TokenFactory"]' }
+    id: click-aria-label-add-nebius-nebius-tokenfactory
+  # Preserved source step 85 (line 94).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-4
+  # Preserved source step 86 (line 95).
+  - shot: provider-nebius-form
+    id: shot-provider-nebius-form
+  # Preserved source step 87 (line 96).
+  - press: Escape
+    id: press-escape-7
+  # Preserved source step 88 (line 97).
+  - click: { selector: '[aria-label="Add Bifrost Bifrost"]' }
+    id: click-aria-label-add-bifrost-bifrost
+  # Preserved source step 89 (line 98).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-5
+  # Preserved source step 90 (line 99).
+  - shot: provider-bifrost-form
+    id: shot-provider-bifrost-form
+  # Preserved source step 91 (line 100).
+  - press: Escape
+    id: press-escape-8
+  # Preserved source step 92 (line 101).
+  - click: { selector: '[aria-label="Add Ollama Ollama"]' }
+    id: click-aria-label-add-ollama-ollama
+  # Preserved source step 93 (line 102).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-6
+  # Preserved source step 94 (line 103).
+  - shot: provider-ollama-form
+    id: shot-provider-ollama-form
+  # Preserved source step 95 (line 104).
+  - press: Escape
+    id: press-escape-9
+  # Preserved source step 96 (line 105).
+  - click: { selector: '[aria-label="Add LM Studio LM Studio"]' }
+    id: click-aria-label-add-lm-studio-lm-studio
+  # Preserved source step 97 (line 106).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-7
+  # Preserved source step 98 (line 107).
+  - shot: provider-lm-studio-form
+    id: shot-provider-lm-studio-form
+  # Preserved source step 99 (line 108).
+  - press: Escape
+    id: press-escape-10
+  # Preserved source step 100 (line 109).
+  - click: { selector: '[aria-label="Add OpenAI-Compatible OpenAI-Compatible"]' }
+    id: click-aria-label-add-openai-compatible-openai-compatible
+  # Preserved source step 101 (line 110).
+  - wait: { selector: 'input[name="api_base"]' }
+    id: wait-input-name-api-base-8
+  # Preserved source step 102 (line 111).
+  - shot: provider-openai-compatible-form
+    id: shot-provider-openai-compatible-form
+  # Preserved source step 103 (line 112).
+  - press: Escape
+    id: press-escape-11
+  # Preserved source step 104 (line 113).
+  - click: { text: Custom Models, exact: true }
+    id: click-custom-models
+  # Preserved source step 105 (line 114).
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-4
+  # Preserved source step 106 (line 115).
+  - shot: provider-custom-form
+    id: shot-provider-custom-form
+  # Preserved source step 107 (line 116).
+  - press: Escape
+    id: press-escape-12
+  # Independent native prerequisite/reset: Native default selection dirties provider state without any prior unit or direct product API.
+  - press: Escape
+    id: press-escape-13
+  # Independent native prerequisite/reset: Native default selection dirties provider state without any prior unit or direct product API.
+  - click: { selector: '.opal-input-single-select', nth: 0 }
+    id: click-opal-input-single-select
+  # Independent native prerequisite/reset: Native default selection dirties provider state without any prior unit or direct product API.
+  - click: { text: GPT-4.1, exact: true }
+    id: click-gpt-4-1
+  # Independent native prerequisite/reset: Consumer-visible native dirty prerequisite.
+  - shot: provider-forms-default-dirty
+    id: shot-provider-forms-default-dirty
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  # Independent native prerequisite/reset: Fresh reset after this unit native dirty writes; hard navigation clears browser caches.
+  - eval: fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays})}).then(()=>window.location.assign("/admin/language-models"))
+    id: eval-script
+  # Independent native prerequisite/reset: This unit reset restores native provider/default seeds after its own dirty selection.
+  - wait: { text: On-prem GPU cluster, exact: true }
+    id: wait-on-prem-gpu-cluster-2
+  # Independent native prerequisite/reset: This unit reset restores native provider/default seeds after its own dirty selection.
+  - wait: { selector: '.opal-input-single-select input[value="GPT-5.2"]' }
+    id: wait-opal-input-single-select-input-value-gpt-5-2
+  # Independent native prerequisite/reset: Independent consumer-visible dirty default reset.
+  - shot: provider-forms-reset
+    id: shot-provider-forms-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

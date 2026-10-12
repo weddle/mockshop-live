@@ -70,7 +70,7 @@ export function loadPlugin(name = DEFAULT_PLUGIN, { edition } = {}) {
     workdir: rel(m.workdir),
     runtimeDir: rel(m.runtime?.dir),
     fixturesDir: rel(m.mock?.fixtures || "fixtures"),
-    scenariosDir: rel("scenarios"),
+    scriptsDir: rel("scripts"),
     handlersFile: m.mock?.handlers ? rel(m.mock.handlers) : null,
     patchesDir: rel(m.build?.patches),
     overlayDir: rel(m.build?.overlay),

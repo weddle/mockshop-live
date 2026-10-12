@@ -1,0 +1,74 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-forgot
+title: "Independent native #69 unit: auth-forgot"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/forgot-password$/'
+    reason: Only this unit’s deliberately staged native endpoint400; the visible error and recovery are required.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/forgot\-password\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^console: \[Toast\] LOCAL FAKE DEMO — staged email\-link failure; no email sent\. \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/0se759_ajj\-mw\.js\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+# Independent prerequisites: Fresh logged-out Alex is the registered fixture address; native required/invalid/failure/success unsent reset link.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /auth/forgot-password
+    id: goto-auth-forgot-password
+  - wait: { selector: 'input[name="email"]' }
+    id: wait-input-name-email
+  - shot: auth-forgot-direct-empty
+    id: shot-auth-forgot-direct-empty
+  - click: { role: button, name: Reset Password, exact: true }
+    id: click-reset-password
+  - wait: { text: email is a required field }
+    id: wait-email-is-a-required-field
+  - shot: auth-forgot-required
+    id: shot-auth-forgot-required
+  - fill: { selector: 'input[name="email"]', value: invalid }
+    id: fill-input-name-email
+  - press: Tab
+    id: press-tab
+  - shot: auth-forgot-validation
+    id: shot-auth-forgot-validation
+  - fill: { selector: 'input[name="email"]', value: staged.failure@workshop.example }
+    id: fill-input-name-email-2
+  - click: { role: button, name: Reset Password, exact: true }
+    id: click-reset-password-2
+  - wait: { text: 'LOCAL FAKE DEMO — staged email-link failure; no email sent.' }
+    id: wait-local-fake-demo-staged-email-link-failure-no-email-sent
+  - shot: auth-forgot-error
+    id: shot-auth-forgot-error
+  - fill: { selector: 'input[name="email"]', value: "{{people.alex-learner.email}}" }
+    id: fill-input-name-email-3
+  - shot: auth-forgot-ready
+    id: shot-auth-forgot-ready
+  - click: { role: button, name: Reset Password, exact: true }
+    id: click-reset-password-3
+  - wait: { text: Password reset email sent. Please check your inbox. }
+    id: wait-password-reset-email-sent-please-check-your-inbox
+  - shot: auth-forgot-success
+    id: shot-auth-forgot-success
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

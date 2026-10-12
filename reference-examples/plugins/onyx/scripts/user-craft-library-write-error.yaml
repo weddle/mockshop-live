@@ -1,0 +1,89 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-library-write-error
+title: "Craft native Library new-folder action error"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+known_errors:
+  - match: "/^http 500 POST http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/user-library\\/directories$/"
+    reason: "Only this independently staged native Create-folder rejection: original587 asserts the exact action error; no state changes. Exact status, verb, loopback port field and native path/query only; all other HTTP problems, console errors and failed steps remain strict."
+  - match: "/^console: Failed to load resource: the server responded with a status of 500 \\(Internal Server Error\\) \\[source: http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/user-library\\/directories\\]$/"
+    reason: "Actual 12.2s scoped DEV observed this native console source URL alongside the exact staged POST500 and positive unchanged-state action error. Only this unit/status/message/owned-port/path; unlocated or other-source console remains strict."
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - eval: |
+      (async () => {
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/build/user-library/tree',state:'loaded'})});
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/build/user-library/directories',state:'error'})});
+      })()
+    id: eval-script-2
+  - goto: /craft/v1
+    id: goto-craft-v1
+  - click: { role: button, name: Open add menu, exact: true }
+    id: click-open-add-menu
+  - click: { text: Library, exact: true }
+    id: click-library
+  - click: { text: Manage library…, exact: true }
+    id: click-manage-library
+  - click: { role: button, name: New folder, exact: true }
+    id: click-new-folder
+  - fill: { placeholder: Enter folder name, value: Fictional rejected folder }
+    id: fill
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { text: Intentional fictional Craft action error; no state changed., exact: true }
+    id: wait-intentional-fictional-craft-action-error-no-state-changed
+  - shot: craft-library-write-error
+    id: shot-craft-library-write-error
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-3
+  - goto: "/craft/v1"
+    id: goto-craft-v1-2
+  - wait: { "selector": "[contenteditable=\"true\"][role=\"textbox\"]" }
+    id: wait-contenteditable-true-role-textbox
+  - click: { role: button, name: Open add menu, exact: true }
+    id: click-open-add-menu-2
+  - click: { text: Library, exact: true }
+    id: click-library-2
+  - click: { text: Manage library…, exact: true }
+    id: click-manage-library-2
+  - wait: { text: Library, exact: true }
+    id: wait-library
+  - wait: { "text": "Teaching", "exact": true }
+    id: wait-teaching
+  - shot: "craft-unit-library-write-error-reset"
+    id: shot-craft-unit-library-write-error-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

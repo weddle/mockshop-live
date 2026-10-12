@@ -1,0 +1,105 @@
+# #69 conditional native controls; declared/unverified, same minimal Auth artifact.
+name: auth-sso-discovery
+title: "Independent native conditional #69 unit: auth-sso-discovery"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required fake logged-out identity; independently cleared cookie.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/sso\/discover\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/sso\/discover$/'
+    reason: Deliberate local lookup400; native inline error asserted before recovery.
+# Fresh multi_tenant metadata in the non-cloud artifact, native lookup validation/empty/error/found providers and local Google/IdP navigation; no Cloud flag claim.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: "/auth/login"
+    id: goto-auth-login
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"mode": "logged-out", "auth_profile": "multitenant"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script
+  - eval: |
+      (async () => { if ((await fetch('/api/me')).status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Expected fresh fake logged-out cookie and /me401'); })()
+    id: eval-script-2
+  - goto: "/auth/login"
+    id: goto-auth-login-2
+  - click: { "role": "button", "name": "Sign in with SSO", "exact": true }
+    id: click-sign-in-with-sso
+  - wait: { "testid": "sso-email" }
+    id: wait
+  - eval: |
+      if (!document.querySelector('button[type="submit"]')?.disabled) throw new Error('Empty lookup must not submit');
+    id: eval-script-3
+  - shot: "auth-sso-lookup-empty"
+    id: shot-auth-sso-lookup-empty
+  - fill: { "testid": "sso-email", "value": "not-an-email" }
+    id: fill
+  - press: "Tab"
+    id: press-tab
+  - wait: { "text": "Enter a valid email address", "exact": true }
+    id: wait-enter-a-valid-email-address
+  - shot: "auth-sso-lookup-invalid"
+    id: shot-auth-sso-lookup-invalid
+  - fill: { "testid": "sso-email", "value": "staged.failure@workshop.example" }
+    id: fill-2
+  - click: { "role": "button", "name": "Continue", "exact": true }
+    id: click-continue
+  - wait: { "text": "No SSO sign-in is set up for that address. Try Google or your password below.", "exact": true }
+    id: wait-no-sso-sign-in-is-set-up-for-that-address-try-google-or-you
+  - shot: "auth-sso-lookup-no-providers"
+    id: shot-auth-sso-lookup-no-providers
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"discovery_outcome": "failure"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-4
+  - fill: { "testid": "sso-email", "value": "{{people.alex-learner.email}}" }
+    id: fill-3
+  - click: { "role": "button", "name": "Continue", "exact": true }
+    id: click-continue-2
+  - wait: { "text": "LOCAL FAKE DEMO — staged SSO lookup failure; no workspace queried.", "exact": true }
+    id: wait-local-fake-demo-staged-sso-lookup-failure-no-workspace-quer
+  - shot: "auth-sso-lookup-error"
+    id: shot-auth-sso-lookup-error
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"discovery_outcome": "providers", "authorize_outcome": "missing"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-5
+  - click: { "role": "button", "name": "Continue", "exact": true }
+    id: click-continue-3
+  - wait: { "text": "Workshop OIDC (fake)", "exact": true }
+    id: wait-workshop-oidc-fake
+  - shot: "auth-sso-lookup-providers"
+    id: shot-auth-sso-lookup-providers
+  - click: { "role": "button", "name": "Workshop OIDC (fake)", "exact": true }
+    id: click-workshop-oidc-fake
+  - wait: { "text": "Sign-in response was missing the authorization URL", "exact": true }
+    id: wait-sign-in-response-was-missing-the-authorization-url
+  - shot: "auth-sso-discovered-provider-error"
+    id: shot-auth-sso-discovered-provider-error
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({"authorize_outcome": "redirect"})}); if (!r.ok) throw new Error('Local fake staging failed'); })()
+    id: eval-script-6
+  - click: { "role": "button", "name": "Workshop OIDC (fake)", "exact": true }
+    id: click-workshop-oidc-fake-2
+  - wait: { "text": "Access was denied by your identity provider.", "exact": true }
+    id: wait-access-was-denied-by-your-identity-provider
+  - shot: "auth-sso-discovered-provider-local-redirect"
+    id: shot-auth-sso-discovered-provider-local-redirect
+  - click: { "role": "link", "name": "Return to Login Page", "exact": true }
+    id: click-return-to-login-page
+  - wait: { "testid": "email" }
+    id: wait-2
+  - click: { "role": "link", "name": "Continue with Google", "exact": true }
+    id: click-continue-with-google
+  - wait: { "text": "Access was denied by your identity provider.", "exact": true }
+    id: wait-access-was-denied-by-your-identity-provider-2
+  - shot: "auth-google-local-redirect"
+    id: shot-auth-google-local-redirect
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

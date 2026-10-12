@@ -1,0 +1,54 @@
+includes:
+  - onyx.yaml
+company:
+  name: Lakeshore Campus Assistant
+  domain: lakeshore-state.example
+  description: Fictional lakeshore-state demo organization
+people:
+  jordan:
+    name: Jordan Lee
+    email: jordan.lee@{{company.domain}}
+    title: Academic Advisor
+teams: {}
+sources:
+  sharepoint:
+    name: sharepoint
+    vendor: sharepoint
+  confluence:
+    name: confluence
+    vendor: confluence
+documents:
+  edu-cat-stat101:
+    source: sharepoint
+    title: "Course catalog: STAT 101 Introduction to Statistics"
+    body: "Placeholder catalog entry: prerequisite MATH 095 or placement score; 4 credits; offered fall and spring."
+  edu-conf-adv-12:
+    source: confluence
+    title: Advising handbook — placement exceptions
+    body: "Placeholder handbook text: advisors may approve a prerequisite waiver with department sign-off."
+conversations:
+  intro-statistics-prerequisites:
+    title: Intro statistics prerequisites
+    messages:
+      - role: user
+        text: Intro statistics prerequisites
+      - role: assistant
+        text: |
+          **STAT 101 Introduction to Statistics** requires MATH 095 or a qualifying placement score [1]. Placeholder text:
+
+          - It's 4 credits and offered in fall and spring [1].
+          - Advisors can request a prerequisite waiver with department sign-off [2].
+        documents:
+          - edu-cat-stat101
+          - edu-conf-adv-12
+  lms-gradebook-not-syncing:
+    title: LMS gradebook not syncing
+    messages:
+      - role: user
+        text: My LMS gradebook isn't syncing to the registrar. Any fix?
+      - role: assistant
+        text: |
+          Placeholder answer: re-run "Sync final grades" from the course settings page; if it still fails after 30 minutes, open a ticket with the Campus IT Service Desk and include the course section number.
+        documents: []
+vars:
+  onyx_template_open: "{{"

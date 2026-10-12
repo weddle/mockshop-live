@@ -3,8 +3,8 @@
 
 GET /settings:
   maximum_chat_retention_days: null
-  company_name: Seaside Collection
-  company_description: Boutique coastal hotels & resorts (fictional demo company)
+  company_name: Workspace
+  company_description: ""
   gpu_enabled: false
   application_status: active
   anonymous_user_enabled: false

@@ -1,0 +1,157 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Existing source pin f858083d6cbe37c4146834d379e39511260a9879; actual #28 files / sole chat joins frozen.
+# Entry: /app?projectId=2 → native title rename and default chat move.
+# Outcome: Project chat delete warning/cancel/reopen/confirm/reload; keep/fresh deleted chat.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-chat-delete
+title: Project chat delete warning/cancel/reopen/confirm/reload; keep/fresh deleted chat
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Independent setup / outcome: Independent native rename empty project2 for original deletion entry.
+  - goto: /app?projectId=2
+    id: goto-app-projectid-2
+  # Independent setup / outcome: Independent native rename empty project2 for original deletion entry.
+  - click: { selector: '.opal-content-xl [title="Revision Workshop"]' }
+    id: click-opal-content-xl-title-revision-workshop
+  # Independent setup / outcome: Independent native rename empty project2 for original deletion entry.
+  - fill: { selector: '.opal-content-xl-input', value: Literacy Circle }
+    id: fill-opal-content-xl-input
+  # Independent setup / outcome: Independent native rename empty project2 for original deletion entry.
+  - press: Enter
+    id: press-enter
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+    id: hover-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000-
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+    id: click-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000-
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - click: { role: menuitem, name: Rename, exact: true }
+    id: click-rename
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - fill: { selector: '.opal-sidebar-tab input', value: Study circle welcome notes }
+    id: fill-opal-sidebar-tab-input
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - press: Enter
+    id: press-enter-2
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+    id: hover-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000--2
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+    id: click-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000--2
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+    id: click-move-to-project
+  # Independent setup / outcome: Native prerequisite replay: default chat rename and move to Literacy Circle.
+  - fill: { placeholder: Search Projects, value: Literacy Circle }
+    id: fill
+  # Independent setup / outcome: Native prerequisite replay: move to Literacy Circle.
+  - click: { role: menuitem, name: Literacy Circle, exact: true }
+    id: click-literacy-circle
+  # Original user-projects step 258 (source line 362): Preserved native journey.
+  - goto: /app
+    id: goto-app
+  # Original user-projects step 259 (source line 363): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab button[aria-label="Literacy Circle"]' }
+    id: click-opal-sidebar-tab-button-aria-label-literacy-circle
+  # Original user-projects step 260 (source line 364): Preserved native journey.
+  - hover: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]:not(.opal-sidebar-tab a)' }
+    id: hover-a-href-app-chatid-11111111-0000-4000-8000-000000000005-not
+  # Original user-projects step 261 (source line 365): Preserved native journey.
+  - click: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000005"] button[aria-label="Chat options"]' }
+    id: click-a-href-app-chatid-11111111-0000-4000-8000-000000000005-but
+  # Original user-projects step 262 (source line 366): Preserved native journey.
+  - click: { role: menuitem, name: Delete, exact: true }
+    id: click-delete
+  # Original user-projects step 263 (source line 367): Preserved native journey.
+  - wait: { text: Delete Chat, exact: true }
+    id: wait-delete-chat
+  # Original user-projects step 264 (source line 368): Preserved native journey.
+  - shot: { name: project-chat-delete-confirmation, full_page: true }
+    id: shot-project-chat-delete-confirmation
+  # Original user-projects step 265 (source line 369): Preserved native journey.
+  - press: Escape
+    id: press-escape
+  # Independent outcome: cancelling retains the actual native project chat.
+  - wait: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]:not(.opal-sidebar-tab a)' }
+    id: wait-a-href-app-chatid-11111111-0000-4000-8000-000000000005-not-
+  - shot: { name: project-chat-delete-cancelled, full_page: true }
+    id: shot-project-chat-delete-cancelled
+  # Original user-projects step 266 (source line 370): Preserved native journey.
+  - hover: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]:not(.opal-sidebar-tab a)' }
+    id: hover-a-href-app-chatid-11111111-0000-4000-8000-000000000005-not-2
+  # Original user-projects step 267 (source line 371): Preserved native journey.
+  - click: { selector: 'a[href="/app?chatId=11111111-0000-4000-8000-000000000005"] button[aria-label="Chat options"]' }
+    id: click-a-href-app-chatid-11111111-0000-4000-8000-000000000005-but-2
+  # Original user-projects step 268 (source line 372): Preserved native journey.
+  - click: { role: menuitem, name: Delete, exact: true }
+    id: click-delete-2
+  # Original user-projects step 269 (source line 373): Preserved native journey.
+  - click: { role: button, name: Delete, exact: true }
+    id: click-delete-3
+  # Original user-projects step 270 (source line 374): Preserved native journey.
+  - wait: { text: No chats yet., exact: true }
+    id: wait-no-chats-yet
+  # Original user-projects step 271 (source line 375): Preserved native journey.
+  - goto: /app
+    id: goto-app-2
+  # Original user-projects step 272 (source line 376): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab button[aria-label="Literacy Circle"]' }
+    id: click-opal-sidebar-tab-button-aria-label-literacy-circle-2
+  # Original user-projects step 273 (source line 377): Preserved native journey.
+  - wait: { text: No chats yet., exact: true }
+    id: wait-no-chats-yet-2
+  # Original user-projects step 274 (source line 378): Preserved native journey.
+  - eval: |
+      if (document.querySelector('a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]')) throw new Error('Deleted project chat returned');
+    id: eval-script
+  # Original user-projects step 275 (source line 380): Preserved native journey.
+  - shot: { name: project-chat-deleted-reload, full_page: true }
+    id: shot-project-chat-deleted-reload
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state:
+      world: ../../../worlds/seaside/world.yaml
+    id: state
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=2
+    id: goto-app-projectid-2-2
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+    id: wait-set-instructions
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (!document.body.textContent.includes('No chats yet.') || document.querySelector('a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]')) throw new Error('Keep restored deleted chat');
+    id: eval-script-2
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-chat-delete-keep, full_page: true }
+    id: shot-project-chat-delete-keep
+  - id: eval-script-3-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+    id: eval-script-3
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=2
+    id: goto-app-projectid-2-3
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+    id: wait-set-instructions-2
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (!document.body.textContent.includes('Revision Workshop') || !document.querySelector('.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]') || document.body.textContent.includes('Literacy Circle')) throw new Error('Reset lost original project/chat seeds');
+    id: eval-script-4
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-chat-delete-fresh-reset, full_page: true }
+    id: shot-project-chat-delete-fresh-reset
+world: ../../../worlds/seaside/world.yaml

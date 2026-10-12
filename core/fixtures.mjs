@@ -5,14 +5,14 @@ import path from "node:path";
 import YAML from "yaml";
 
 const UNIT = { s: 1e3, m: 6e4, h: 36e5, d: 864e5, w: 6048e5 };
-// Demo anchor: the instant a scenario/recording starts (set by the runner via POST /__mockshop/state).
+// Demo anchor: the instant a script/recording starts (set by the runner via POST /__mockshop/state).
 // {{now}} {{ago:2h}} {{in:3d}} resolve against it, so the UI shows the same relative times ("2 hours ago")
 // on every run instead of drifting with wall-clock time while fixtures sit loaded.
-// The anchor can be a fixed instant (scenario/manifest `demo_anchor`); the browser clock is shifted to match.
+// The anchor can be a fixed instant (script/manifest `demo_anchor`); the browser clock is shifted to match.
 let anchorMs = Date.now(), anchorSetAt = Date.now();
 export function setAnchor(t) { const ms = typeof t === "number" ? t : Date.parse(t); anchorMs = Number.isFinite(ms) ? ms : Date.now(); anchorSetAt = Date.now(); return anchorMs; }
 export const getAnchor = () => anchorMs;
-// "Now" on the demo clock: anchor + real time elapsed since the scenario started (for things created live, e.g. chats).
+// "Now" on the demo clock: anchor + real time elapsed since the script started (for things created live, e.g. chats).
 export const demoNow = () => anchorMs + (Date.now() - anchorSetAt);
 export function tmpl(str) {
   return str
@@ -22,7 +22,8 @@ export function tmpl(str) {
 }
 
 export function parseYaml(file) {
-  return YAML.parse(tmpl(fs.readFileSync(file, "utf8")), { maxAliasCount: -1, merge: true }) || {};
+  try { return YAML.parse(tmpl(fs.readFileSync(file, "utf8")), { maxAliasCount: -1, merge: true }) || {}; }
+  catch (e) { throw new Error(`${file}: ${e.message}`, { cause: e }); }
 }
 
 export function compilePattern(pattern) {
@@ -55,9 +56,11 @@ function loadDir(dir) {
 export class FixtureTable {
   constructor(fixturesDir) { this.dir = fixturesDir; this.overlays = []; this.routes = []; }
   reload(overlays = this.overlays) {
-    this.overlays = overlays;
+    // Publish the new table only after every file parsed successfully.
     // Highest layer first; inside a layer, more specific (fewer params, no wildcard) first.
-    this.routes = layerDirs(this.dir, overlays).flatMap((d) => loadDir(d).sort((a, b) => a.specificity - b.specificity));
+    const routes = layerDirs(this.dir, overlays).flatMap((d) => loadDir(d).sort((a, b) => a.specificity - b.specificity));
+    this.overlays = overlays;
+    this.routes = routes;
     return this.routes.length;
   }
   find(method, p) {

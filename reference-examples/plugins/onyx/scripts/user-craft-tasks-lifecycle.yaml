@@ -1,0 +1,244 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-tasks-lifecycle
+title: "Craft complete task schedule, preapproval, lifecycle and run-history inventory"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: "/admin/craft/apps?tab=mcp"
+    id: goto-admin-craft-apps-tab-mcp
+  - click: { selector: '[aria-label="Enable {{company.name}} PMS (internal MCP)"]' }
+    id: click-aria-label-enable-seaside-pms-internal-mcp
+  - wait: { "selector": "[aria-label=\"Disable {{company.name}} PMS (internal MCP)\"]" }
+    id: wait-aria-label-disable-seaside-pms-internal-mcp
+  - goto: "/craft/v1/skills"
+    id: goto-craft-v1-skills
+  - wait: { "placeholder": "Search skills..." }
+    id: wait
+  - click: { role: button, name: Scheduled Tasks, exact: true }
+    id: click-scheduled-tasks
+  - wait: { selector: '[data-testid="new-task-button"]' }
+    id: wait-data-testid-new-task-button
+  - shot: craft-tasks-menu-entry
+    id: shot-craft-tasks-menu-entry
+  - goto: /craft/v1/tasks
+    id: goto-craft-v1-tasks
+  - wait: { selector: '[data-testid="new-task-button"]' }
+    id: wait-data-testid-new-task-button-2
+  - shot: craft-tasks-direct
+    id: shot-craft-tasks-direct
+  - click: { selector: '.table-footer button:has(svg path[d="M6 12L10 8L6 4"])' }
+    id: click-table-footer-button-has-svg-path-d-m6-12l10-8l6-4
+  - shot: craft-tasks-pagination-next
+    id: shot-craft-tasks-pagination-next
+  - click: { selector: '.table-footer button:has(svg path[d="M10 12L6 8L10 4"])' }
+    id: click-table-footer-button-has-svg-path-d-m10-12l6-8l10-4
+  - shot: craft-tasks-pagination-return
+    id: shot-craft-tasks-pagination-return
+  - goto: /craft/v1/tasks/new
+    id: goto-craft-v1-tasks-new
+  - wait: { selector: '[data-testid="task-name-input"]' }
+    id: wait-data-testid-task-name-input
+  - shot: craft-task-new-pristine
+    id: shot-craft-task-new-pristine
+  - click: { selector: '[data-testid="task-name-input"]' }
+    id: click-data-testid-task-name-input
+  - click: { selector: '[data-testid="task-prompt-input"]' }
+    id: click-data-testid-task-prompt-input
+  - click: { selector: '[data-testid="task-name-input"]' }
+    id: click-data-testid-task-name-input-2
+  - shot: craft-task-required-errors
+    id: shot-craft-task-required-errors
+  - fill: { selector: '[data-testid="task-name-input"]', value: Fictional workshop reminder }
+    id: fill-data-testid-task-name-input
+  - fill: { selector: '[data-testid="task-prompt-input"]', value: /campus }
+    id: fill-data-testid-task-prompt-input
+  - shot: craft-task-skill-picker
+    id: shot-craft-task-skill-picker
+  - press: Escape
+    id: press-escape
+  - fill: { selector: '[data-testid="task-prompt-input"]', value: Prepare a fictional accessible workshop checklist. }
+    id: fill-data-testid-task-prompt-input-2
+  - click: { selector: '[role="combobox"]' }
+    id: click-role-combobox
+  - click: { text: minutes, exact: true }
+    id: click-minutes
+  - fill: { selector: '[data-testid="interval-every"]', value: '60' }
+    id: fill-data-testid-interval-every
+  - shot: craft-task-interval-invalid
+    id: shot-craft-task-interval-invalid
+  - fill: { selector: '[data-testid="interval-every"]', value: '15' }
+    id: fill-data-testid-interval-every-2
+  - shot: craft-task-interval-minutes
+    id: shot-craft-task-interval-minutes
+  - click: { selector: '[role="combobox"]' }
+    id: click-role-combobox-2
+  - click: { text: hours, exact: true }
+    id: click-hours
+  - fill: { selector: '[data-testid="interval-every"]', value: '2' }
+    id: fill-data-testid-interval-every-3
+  - shot: craft-task-interval-hours
+    id: shot-craft-task-interval-hours
+  - click: { text: Daily / Weekly, exact: true }
+    id: click-daily-weekly
+  - fill: { selector: '[data-testid="daily-weekly-time"]', value: '09:30' }
+    id: fill-data-testid-daily-weekly-time
+  - click: { selector: '[data-testid="weekday-1"]' }
+    id: click-data-testid-weekday-1
+  - click: { selector: '[data-testid="weekday-2"]' }
+    id: click-data-testid-weekday-2
+  - click: { selector: '[data-testid="weekday-3"]' }
+    id: click-data-testid-weekday-3
+  - click: { selector: '[data-testid="weekday-4"]' }
+    id: click-data-testid-weekday-4
+  - click: { selector: '[data-testid="weekday-5"]' }
+    id: click-data-testid-weekday-5
+  - shot: craft-task-daily-all-days
+    id: shot-craft-task-daily-all-days
+  - click: { selector: '[data-testid="weekday-1"]' }
+    id: click-data-testid-weekday-1-2
+  - click: { selector: '[data-testid="weekday-3"]' }
+    id: click-data-testid-weekday-3-2
+  - click: { selector: '[data-testid="pre-approval-app-7001"] label' }
+    id: click-data-testid-pre-approval-app-7001-label
+  - shot: craft-task-weekly-preapproved
+    id: shot-craft-task-weekly-preapproved
+  - click: { selector: '[data-testid="save-and-run-now"]' }
+    id: click-data-testid-save-and-run-now
+  # Native create-and-run returns to the list, not the detail. The appended
+  # created row is on page2 of the existing twenty-row native table.
+  - click: { selector: '.table-footer button:has(svg path[d="M6 12L10 8L6 4"])' }
+    id: click-table-footer-button-has-svg-path-d-m6-12l10-8l6-4-2
+  - click: { text: Fictional workshop reminder, exact: true }
+    id: click-fictional-workshop-reminder
+  - wait: { selector: '[data-testid="run-now-button"]' }
+    id: wait-data-testid-run-now-button
+  - eval: sessionStorage.setItem('craft-created-task', location.pathname.split('/').pop())
+    id: eval-script-2
+  - shot: craft-task-created-run-result
+    id: shot-craft-task-created-run-result
+  - click: { role: button, name: Pause, exact: true }
+    id: click-pause
+  - shot: craft-task-paused
+    id: shot-craft-task-paused
+  # The native created/paused toast stack covers the toolbar's Resume pointer target until expiry.
+  - wait: { selector: 'body:not(:has([data-testid="toast-container"] .opal-toast)) button[data-testid="status-toggle"]:has-text("Resume"):enabled:not([data-disabled="true"])' }
+    id: wait-body-not-has-data-testid-toast-container-opal-toast-button-
+  - click: { role: button, name: Resume, exact: true }
+    id: click-resume
+  - wait: { text: Active, exact: true }
+    id: wait-active
+  - shot: craft-task-resumed
+    id: shot-craft-task-resumed
+  - click: { role: link, name: Edit, exact: true }
+    id: click-edit
+  - wait: { selector: '[data-testid="task-name-input"]' }
+    id: wait-data-testid-task-name-input-2
+  - shot: craft-task-edit-existing
+    id: shot-craft-task-edit-existing
+  - fill: { selector: '[data-testid="task-name-input"]', value: Fictional workshop reminder revised }
+    id: fill-data-testid-task-name-input-2
+  - fill: { selector: '[data-testid="task-prompt-input"]', value: Offer plain-language notes and quiet reflection time. }
+    id: fill-data-testid-task-prompt-input-3
+  - click: { selector: '[data-testid="save-task"]' }
+    id: click-data-testid-save-task
+  - wait: { text: Fictional workshop reminder revised, exact: true }
+    id: wait-fictional-workshop-reminder-revised
+  - eval: location.href = '/craft/v1/tasks/' + sessionStorage.getItem('craft-created-task') + '/edit'
+    id: eval-script-3
+  - wait: { selector: '[data-testid="task-name-input"]' }
+    id: wait-data-testid-task-name-input-3
+  - eval: if (document.querySelector('[data-testid="task-name-input"]').value !== 'Fictional workshop reminder revised') throw new Error('Task edit did not survive reload');
+    id: eval-script-4
+  - shot: craft-task-edit-reopened
+    id: shot-craft-task-edit-reopened
+  - eval: location.href = '/craft/v1/tasks/' + sessionStorage.getItem('craft-created-task')
+    id: eval-script-5
+  - wait: { selector: '[data-testid="run-now-button"]' }
+    id: wait-data-testid-run-now-button-2
+  - click: { selector: '[data-testid="run-now-button"]' }
+    id: click-data-testid-run-now-button
+  - shot: craft-task-manual-run
+    id: shot-craft-task-manual-run
+  - click: { selector: ':nth-match([data-run-status="SUCCEEDED"], 1)' }
+    id: click-nth-match-data-run-status-succeeded-1
+  # Keep the original scheduled-session banner visible after the native queued-run toast expires.
+  - wait: { selector: 'body:not(:has([data-testid="toast-container"] .opal-toast)) [data-testid="scheduled-run-banner"] [data-testid="back-to-task-button"][aria-label*="Fictional workshop reminder revised"]' }
+    id: wait-body-not-has-data-testid-toast-container-opal-toast-data-te
+  - shot: craft-task-scheduled-session-banner
+    id: shot-craft-task-scheduled-session-banner
+  - goto: /craft/v1/tasks/task-clinic
+    id: goto-craft-v1-tasks-task-clinic
+  - wait: { selector: '[data-run-status="FAILED"]' }
+    id: wait-data-run-status-failed
+  - shot: craft-task-run-status-inventory
+    id: shot-craft-task-run-status-inventory
+  - hover: { selector: '[data-run-status="SKIPPED"]' }
+    id: hover-data-run-status-skipped
+  - shot: craft-task-skipped-not-openable
+    id: shot-craft-task-skipped-not-openable
+  - click: { role: button, name: Load more, exact: true }
+    id: click-load-more
+  - shot: craft-task-run-history-more
+    id: shot-craft-task-run-history-more
+  - eval: location.href = '/craft/v1/tasks/' + sessionStorage.getItem('craft-created-task')
+    id: eval-script-6
+  - wait: { selector: '[data-testid="delete-button"]' }
+    id: wait-data-testid-delete-button
+  - click: { selector: '[data-testid="delete-button"]' }
+    id: click-data-testid-delete-button
+  - shot: craft-task-delete-confirmation
+    id: shot-craft-task-delete-confirmation
+  - click: { selector: '[data-testid="confirm-delete-task"]' }
+    id: click-data-testid-confirm-delete-task
+  - wait: { selector: '[data-testid="new-task-button"]' }
+    id: wait-data-testid-new-task-button-3
+  - eval: |
+      (async () => {
+        const tasks = await (await fetch('/api/build/scheduled-tasks')).json();
+        if (tasks.items.some(t => t.id === sessionStorage.getItem('craft-created-task'))) throw new Error('Task delete did not persist');
+      })()
+    id: eval-script-7
+  - shot: craft-task-deleted
+    id: shot-craft-task-deleted
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-8
+  - goto: "/craft/v1/tasks"
+    id: goto-craft-v1-tasks-2
+  - wait: { text: Clinic teaching checklist, exact: true }
+    id: wait-clinic-teaching-checklist
+  - shot: "craft-unit-tasks-lifecycle-reset"
+    id: shot-craft-unit-tasks-lifecycle-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

@@ -1,0 +1,131 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-skills-import-ownership
+title: "Craft bundle replacement, editor import, read-only and ownership conditions"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: /craft/v1/skills/edit/skill-campus
+    id: goto-craft-v1-skills-edit-skill-campus
+  - wait: { selector: 'input[type="file"][aria-label="Add supporting files"]', state: attached }
+    id: wait-input-type-file-aria-label-add-supporting-files
+  - eval: |
+      const input = document.querySelector('input[type="file"][aria-label="Add supporting files"]');
+      const files = new DataTransfer();
+      files.items.add(new File(['---\nname: campus-study-plan\ndescription: Fictional replacement teaching bundle\n---\n# Fictional replacement\nOffer readable notes.\n'], 'SKILL.md', {type:'text/markdown'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-2
+  - wait: { text: Replace skill content?, exact: true }
+    id: wait-replace-skill-content
+  - shot: craft-skill-replace-content-confirmation
+    id: shot-craft-skill-replace-content-confirmation
+  - click: { role: button, name: Replace content, exact: true }
+    id: click-replace-content
+  - wait: { selector: 'textarea[name="instructions_markdown"]' }
+    id: wait-textarea-name-instructions-markdown
+  - shot: craft-skill-replaced-content
+    id: shot-craft-skill-replaced-content
+  - goto: /craft/v1/skills/new
+    id: goto-craft-v1-skills-new
+  - fill: { selector: 'input[name="name"]', value: fictional-unsaved-guide }
+    id: fill-input-name-name
+  - eval: |
+      const input = document.querySelector('input[type="file"][aria-label="Import existing skill"]');
+      if (!input) throw new Error('Native editor skill import input missing');
+      const files = new DataTransfer();
+      files.items.add(new File(['---\nname: campus-study-plan\ndescription: Fictional teaching bundle\n---\n# Fictional study plan\nReadable notes.\n'], 'SKILL.md', {type:'text/markdown'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-3
+  - wait: { text: Import this skill?, exact: true }
+    id: wait-import-this-skill
+  - shot: craft-skill-editor-import-confirmation
+    id: shot-craft-skill-editor-import-confirmation
+  - click: { role: button, name: Import skill, exact: true }
+    id: click-import-skill
+  - shot: craft-skill-editor-import-prefilled
+    id: shot-craft-skill-editor-import-prefilled
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - click: { selector: '[role="dialog"] button:has-text("Discard changes")' }
+    id: click-role-dialog-button-has-text-discard-changes
+  - goto: /craft/v1/skills/edit/skill-viewer
+    id: goto-craft-v1-skills-edit-skill-viewer
+  - wait: { text: Edit skill, exact: true }
+    id: wait-edit-skill
+  - shot: craft-skill-viewer-read-only
+    id: shot-craft-skill-viewer-read-only
+  - goto: /craft/v1/skills/edit/skill-vacant
+    id: goto-craft-v1-skills-edit-skill-vacant
+  - click: { role: button, name: Edit sharing, exact: true }
+    id: click-edit-sharing
+  - shot: craft-skill-vacant-owner
+    id: shot-craft-skill-vacant-owner
+  - click: { selector: '[role="dialog"] .min-h-11.w-full:has-text("Owner") button' }
+    id: click-role-dialog-min-h-11-w-full-has-text-owner-button
+  - shot: craft-skill-transfer-pristine
+    id: shot-craft-skill-transfer-pristine
+  - fill: { placeholder: Add a user or group, value: devon }
+    id: fill
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example
+  - shot: craft-skill-transfer-user-selected
+    id: shot-craft-skill-transfer-user-selected
+  - click: { role: button, name: Back, exact: true }
+    id: click-back
+  - shot: craft-skill-transfer-back
+    id: shot-craft-skill-transfer-back
+  - click: { selector: '[role="dialog"] .min-h-11.w-full:has-text("Owner") button' }
+    id: click-role-dialog-min-h-11-w-full-has-text-owner-button-2
+  - fill: { placeholder: Add a user or group, value: devon }
+    id: fill-2
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example-2
+  - click: { role: button, name: Transfer, exact: true }
+    id: click-transfer
+  - click: { role: button, name: Edit sharing, exact: true }
+    id: click-edit-sharing-2
+  - shot: craft-skill-transferred-owner-reopened
+    id: shot-craft-skill-transferred-owner-reopened
+  - press: Escape
+    id: press-escape
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-4
+  - goto: "/craft/v1/skills"
+    id: goto-craft-v1-skills
+  - wait: { "text": "campus-study-plan", "exact": true }
+    id: wait-campus-study-plan
+  - shot: "craft-unit-skills-import-ownership-reset"
+    id: shot-craft-unit-skills-import-ownership-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

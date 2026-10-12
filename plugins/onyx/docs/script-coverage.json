@@ -1,0 +1,2712 @@
+{
+  "format_version": 1,
+  "scope": {
+    "plugin": "onyx",
+    "historical_source_directory": "plugins/onyx/scenarios/",
+    "scripts_read": 227,
+    "underscore_scripts_read": 2,
+    "coverage": "Every historical YAML body plus vocabulary/existing docs; hand-authored semantic mappings to public operating contracts."
+  },
+  "evidence": "Source-derived, not a fresh browser revalidation. Historical filenames and source hashes are provenance only. Original script steps, selectors, eval bodies, fictional content, world payloads and screenshot recipes remain under reference-examples/, not this index.",
+  "classifications": {
+    "unique": "Contributes at least one distinct operation, prerequisite, native control/state or boundary; not necessarily the sole historical occurrence.",
+    "redundant": "Reuses documented contracts or a composite/smoke/example story; any particular locator/assertion is retained separately.",
+    "regression": "Contains deliberate invariants, errors, empty states, persistence/reset, gating or presentation assertions; these are expectations, not an executed pass."
+  },
+  "scripts": [
+    {
+      "historical_filename": "_admin-agent-curation-original.yaml",
+      "source_sha256": "6f1e4390b3426d737721fe6daa834083a3cce3f38a8105e399322298739485f0",
+      "classification": [
+        "redundant",
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation",
+        "script-admin.md#persistence-and-evidence-boundaries"
+      ],
+      "retained_knowledge": "Archived underscore composite duplicates focused curation units; retain original ordering and assertions as provenance, not independent current acceptance."
+    },
+    {
+      "historical_filename": "_probe.yaml",
+      "source_sha256": "622cd6548d1507ec130ce7a3b301c231639d6f0fd55a3d0f62b222917cb12f69",
+      "classification": [
+        "redundant",
+        "regression"
+      ],
+      "guides": [
+        "script-authoring.md#navigation-and-locator-discipline",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Underscore probe visits connector catalog/add/indexing/pair detail, language models and gallery with continue_on_error; route screenshots only, no independent mutations or current acceptance."
+    },
+    {
+      "historical_filename": "admin-agent-create.yaml",
+      "source_sha256": "05acd189757ef154822d1bbd63b73ebaf85fe5d42365a61897488d39b02abaf3",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation",
+        "script-agents-settings.md#agent-gallery-and-editor",
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Shared admin-query editor creates persona then saves drafted shares on returned ID and opens the actual created agent."
+    },
+    {
+      "historical_filename": "admin-agent-curation-editor.yaml",
+      "source_sha256": "0a0ddc4b9f498ac6c1d833d4c3f4e76ee1569a0f74608602745e76225154bce8",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation",
+        "script-agents-settings.md#agent-gallery-and-editor"
+      ],
+      "retained_knowledge": "Native editor fields/feature-share draft/save and cancel semantics; same persona DTO as user editor, not separate admin agent model."
+    },
+    {
+      "historical_filename": "admin-agent-curation-feature.yaml",
+      "source_sha256": "5e09a2dec361f50319e6d2c416d20e0a71e20fe5222cbc4b2986fe76471ef072",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation"
+      ],
+      "retained_knowledge": "Feature/Unfeature confirmation/cancel persists to gallery featured section."
+    },
+    {
+      "historical_filename": "admin-agent-curation-order-reset.yaml",
+      "source_sha256": "f4a81c603d709c6f478f9a48874e5533b0339de20de57d4ab9ac40a871421dda",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation",
+        "script-authoring.md#state-keep-and-reset",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "Real reorder-handle pointer drag writes priority map; dirty order/feature/list/pins then fresh seed restoration."
+    },
+    {
+      "historical_filename": "admin-agent-curation-visibility.yaml",
+      "source_sha256": "5d7a84178f9455842e2841e2d34c13d73592ded46d7609863a6efeabf56fb2b1",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation"
+      ],
+      "retained_knowledge": "List/Unlist changes discovery but retains owned/pinned/direct consumers; editor warning is not access revocation."
+    },
+    {
+      "historical_filename": "admin-agents.yaml",
+      "source_sha256": "6e0ad3080b0b4f4d172ef875d5a8505e7789101f4015accdb91a95a624e7e9dd",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#admin-agent-curation"
+      ],
+      "retained_knowledge": "Admin search/Created By/Actions/Name sort and one-page four-record footer, menu and own-record edit; no native label-column filter or row Start Chat/detail link."
+    },
+    {
+      "historical_filename": "admin-analytics.yaml",
+      "source_sha256": "782f7aca78f189bf62829aa35ef61e0cdbfcb4fe0c8815a5bb4cfb7a7380b4d9",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#analytics-reports-and-custom-script"
+      ],
+      "retained_knowledge": "Date/agent filters, empty/populated query/user/Slack charts and canned Generate Report; route navigation resets client selection."
+    },
+    {
+      "historical_filename": "admin-billing-cloud-details.yaml",
+      "source_sha256": "94a7d271136746430e5ea1e7bc13d81cb781639261ef2a70a584e50bcc73e867",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#license-and-cloud-billing",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Tier-correct details, changed/unchanged/min seats, confirm versus cancel, users handoff and read-only local Manage Plan receipt."
+    },
+    {
+      "historical_filename": "admin-billing-cloud-plans.yaml",
+      "source_sha256": "4bd250008c3c3e59d805d9150d5d64a320adf112f0e7955c8569ae42b46ba8bb",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#license-and-cloud-billing",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Genuine Cloud plan/annual-monthly/seat minima/draft cancellation and deliberate native invalid-checkout response; no purchase or fake external success."
+    },
+    {
+      "historical_filename": "admin-billing-cloud-statuses.yaml",
+      "source_sha256": "e680c1e31c89e3f39c7be46e8ab6ec9d5906bda6e5edeba136e3a7145d9119c0",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#license-and-cloud-billing",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Trial/active/canceling/annual/expired display branches and local end-trial metadata are not billing authorization or subscription charging."
+    },
+    {
+      "historical_filename": "admin-billing.yaml",
+      "source_sha256": "6ad57e643283e0c35f57ef7e0247d4a90e4782c0e39258d92dc425c4d5fd4d6e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#license-and-cloud-billing"
+      ],
+      "retained_knowledge": "Self-hosted fake license upload/update/refresh changes display without real validation; Cloud gates are not fixture tier text."
+    },
+    {
+      "historical_filename": "admin-chat-preferences.yaml",
+      "source_sha256": "baff7e02c5a99bfa81c4261fa9fe66de6c94e11f04897c79238f485ed0dcb779",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#chat-preferences-and-gateway"
+      ],
+      "retained_knowledge": "Team-name blur, auto-scroll switch and Modify Prompt modal persist workspace/default-assistant records; Cancel protects committed prompt."
+    },
+    {
+      "historical_filename": "admin-code-interpreter.yaml",
+      "source_sha256": "f44ef29ba0b12a0196b52e8fd3af8f2bd0c87b094a079d130eb6bbbac601dc8a",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#search-voice-image-tracing-and-code-execution-configuration"
+      ],
+      "retained_knowledge": "Native reconnect/enable saves boolean while health is an independent fixture; no interpreter process starts."
+    },
+    {
+      "historical_filename": "admin-connectors.yaml",
+      "source_sha256": "08150bfc5ca4d414f850d6a7f5d2dc2ac55532fd35d89eb5941e33c743d63d82",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-admin.md#connector-creation-credentials-and-binding",
+        "script-admin.md#indexing-details-and-permission-sync"
+      ],
+      "retained_knowledge": "Connector catalog/indexing/source expansion and selected detail use pair identity; older composite is not indexing-worker evidence."
+    },
+    {
+      "historical_filename": "admin-craft-access.yaml",
+      "source_sha256": "a575235189700248f111fb03bbf7f09d3f5108dfd13626845f8a5f0907803674",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#craft-administration",
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Workspace default, Enable All confirmation and per-user true/false/null overrides update real shared settings flags."
+    },
+    {
+      "historical_filename": "admin-craft-apps.yaml",
+      "source_sha256": "f972f7bf811ea674778312c69701bc15dc108fcf3042d85061c889bf8a30fd70",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-admin.md#craft-administration",
+        "script-craft.md#admin-apps-association-and-policies"
+      ],
+      "retained_knowledge": "Admin builtin/custom app configuration and shared catalog/skill associations; full user-facing connection/capability behavior in Craft units."
+    },
+    {
+      "historical_filename": "admin-craft-mcp-policies.yaml",
+      "source_sha256": "d2ad02e83ba6f6966fee4018415ef21aa2aeb2a4f96cb6ad0a22eddbe62c6b83",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#craft-administration",
+        "script-admin.md#mcp-and-openapi-actions"
+      ],
+      "retained_knowledge": "Craft availability and bulk/read/write/per-tool policy overrides persist MCP metadata into current user catalog, not real execution grants."
+    },
+    {
+      "historical_filename": "admin-craft-preferences.yaml",
+      "source_sha256": "2c7390e2615ad018bb63434dd9ac31a362686d704f0bb56f9fbe3cd0c4223262",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#craft-administration"
+      ],
+      "retained_knowledge": "Native Craft instruction/preferences Save/reopen uses workspace settings and user consumer rather than a separate simulated page."
+    },
+    {
+      "historical_filename": "admin-custom-analytics-enabled.yaml",
+      "source_sha256": "a1b019c9196cf8bcdb11fd3f97855d5eacfd90e808c48cecb6735a1fb531c778",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#analytics-reports-and-custom-script",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Physical build/server secret prerequisite, direct native form and JSON-string response/SWR patch; harmless stored script only, no collector verification."
+    },
+    {
+      "historical_filename": "admin-discord-bot.yaml",
+      "source_sha256": "c77b50db64a70fdf6729176fb1964d0d1a2a731f8b55def998989454aa09ee08",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#hooks-slack-discord-and-standard-answers"
+      ],
+      "retained_knowledge": "Fake bot configuration and pending guild registration key, cancel/confirm removal; no actual server registration."
+    },
+    {
+      "historical_filename": "admin-discord-channels.yaml",
+      "source_sha256": "8b1f2d8b923d2a6cd026b00221c1bb37608e2e9c0c8ce1f594a1f348ddf570bc",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#hooks-slack-discord-and-standard-answers"
+      ],
+      "retained_knowledge": "Existing seeded guild channel bulk Enable/Disable and Update Configuration; pending registration cannot manufacture discovered channels."
+    },
+    {
+      "historical_filename": "admin-document-processing.yaml",
+      "source_sha256": "8e269d64875a7b454cdd4352eed5ac5776622cdcad44246d10d95b8a71e94e77",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#index-settings-and-document-processing"
+      ],
+      "retained_knowledge": "Native unstructured key Save/Delete stores only configured boolean; no parser/service or retained secret."
+    },
+    {
+      "historical_filename": "admin-document-sets.yaml",
+      "source_sha256": "b5055b40f62e0109bc8c164f257698eedd2c4436b68a45e42a7be3e08cb7bebf",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-admin.md#document-sets"
+      ],
+      "retained_knowledge": "List/read/edit/delete native set entry; later form unit supplies complete validation/public/private association contract."
+    },
+    {
+      "historical_filename": "admin-documents-explorer.yaml",
+      "source_sha256": "c0e2afd340e002d3bb6ffc7d82165f3567c210e8a3c434b8537ebe951af5f365",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves"
+      ],
+      "retained_knowledge": "Default-empty versus explicit loaded fresh-reset admin corpus, query, boost edit/save and Hidden flag; not User Search index."
+    },
+    {
+      "historical_filename": "admin-documents-feedback.yaml",
+      "source_sha256": "62d6d5fa7faace4ca76aea15d80f8eb26b09e08d8d0722d89aed7f0a09270b31",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves"
+      ],
+      "retained_knowledge": "Liked/disliked admin document ordering reads same boost/hidden store, not live user chat votes."
+    },
+    {
+      "historical_filename": "admin-export-logs.yaml",
+      "source_sha256": "c53a8c821a7b666cab71b7db428194e8800ddee3bd36dc5afd2c1b5141c6a47c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves"
+      ],
+      "retained_knowledge": "Native local export ready/no-logs receipt; intended ZIP has generic Buffer serializer caveat, so no byte-validity claim from click alone."
+    },
+    {
+      "historical_filename": "admin-federated-detail.yaml",
+      "source_sha256": "cb057fdef408c187e0929a25620846e6b3cc491680e110f147e00216c987a556",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves",
+        "script-auth-extension.md#provider-callbacks"
+      ],
+      "retained_knowledge": "Literal seeded federated detail/edit uses narrow local metadata store and does not update general federated list/personal OAuth status."
+    },
+    {
+      "historical_filename": "admin-groups.yaml",
+      "source_sha256": "c642ae41536b0bf6aabdd31abfca1e31821ea7f9b335aa739390c2c0da40a026",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#groups-memberships-resources-and-limits"
+      ],
+      "retained_knowledge": "Aliases/create/member/resource/manager/permissions/incognito/limits CRUD, confirm-delete/empty/missing and fixture-only agent/connector join boundaries."
+    },
+    {
+      "historical_filename": "admin-hooks.yaml",
+      "source_sha256": "bf05f7ffd5c347976f64e5d01dcea6aec009092ae8a27672680b084c18f2912f",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#hooks-slack-discord-and-standard-answers"
+      ],
+      "retained_knowledge": "Connect/configure/validate log, activate/deactivate, disconnected-only delete affordance and confirmation; no outbound hook request."
+    },
+    {
+      "historical_filename": "admin-image-generation.yaml",
+      "source_sha256": "1f72d7604bc83afd232a0f709240ebd1a148c9e1c7200d7122c258af0ed57489",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#search-voice-image-tracing-and-code-execution-configuration"
+      ],
+      "retained_knowledge": "Provider config/default/unset/delete and actual saved credential lookup; no generated image implied."
+    },
+    {
+      "historical_filename": "admin-index-settings.yaml",
+      "source_sha256": "6a750c4704133bd66ceb484df2b2d5d61aba05351c645de0c6faaf6e741520f2",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#index-settings-and-document-processing"
+      ],
+      "retained_knowledge": "Embedding model/dim connect, apply/reindex metadata, quantization/contextual/caption/model sliders and Revert; no indexing worker."
+    },
+    {
+      "historical_filename": "admin-llm-and-agent-editor.yaml",
+      "source_sha256": "c32aa87b5bca6ddcee7830afd9e5a41d6f057f365616a78eb7ecef9a82cac3de",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-admin.md#provider-setup-and-existing-provider-edits",
+        "script-admin.md#admin-agent-curation"
+      ],
+      "retained_knowledge": "Older composite opens actual provider and shared agent editors; focused units own conditional form and mutation coverage."
+    },
+    {
+      "historical_filename": "admin-llm-gateway.yaml",
+      "source_sha256": "d1905ddd7cda348f068e65f769759b23c944ed0ee29c2ca622403a1d52c84515",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#chat-preferences-and-gateway",
+        "script-agents-settings.md#access-tokens-and-gateway"
+      ],
+      "retained_knowledge": "Workspace enable switch is separate from user tab permission/edition/PAT scope gates; no real inference proxy deployment."
+    },
+    {
+      "historical_filename": "admin-oauth-test.yaml",
+      "source_sha256": "00d11e7cf7a3716ec5b5de1328b02c55c99f02dd590e70c41b11d3b7662d1205",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves"
+      ],
+      "retained_knowledge": "Native No Snapshot condition is the supported seeded view; no fabricated OAuth success snapshot."
+    },
+    {
+      "historical_filename": "admin-openapi-actions.yaml",
+      "source_sha256": "27a487e4f5040a66768ec17dc30caf996bf4bc93a1bae755f4062deab303540c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#mcp-and-openapi-actions"
+      ],
+      "retained_knowledge": "Definition JSON parsed into operations, native OAuth configuration and saved selectable tool metadata; no action execution or full spec validator."
+    },
+    {
+      "historical_filename": "admin-permission-sync.yaml",
+      "source_sha256": "63d0f07f0a12a3d7599c3f2a9ea4ad50bb440fda60d0ec87f660b6c0de83a93c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#indexing-details-and-permission-sync"
+      ],
+      "retained_knowledge": "Per-source document/group sync applicability, inline ACL exception, empty/not-started/failed histories and details/full-trace controls."
+    },
+    {
+      "historical_filename": "admin-provider-bedrock-edit.yaml",
+      "source_sha256": "a62c9a13a2105d72ca25cbc4a6606bfe515b0370920367e63b4f9795827d064c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#conditional-provider-forms"
+      ],
+      "retained_knowledge": "Existing Bedrock auth modes, region toggle-clear, credential clearing, incomplete refetch hiding and reopened fake fields."
+    },
+    {
+      "historical_filename": "admin-provider-model-access.yaml",
+      "source_sha256": "5f7ca980c41ccf5587fb77c38226cc0711c8d06a10fb8e0f966c53e9f15bfde9",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#model-visibility-naming-and-capability-settings",
+        "script-admin.md#provider-setup-and-existing-provider-edits"
+      ],
+      "retained_knowledge": "Public/group/persona access selections persist provider metadata into catalog consumers; not full server authorization."
+    },
+    {
+      "historical_filename": "admin-provider-model-rename.yaml",
+      "source_sha256": "e2d55fc83d5e0c9702c20be5a5ce7e68c0447147a707d9561814c08f49b56721",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#model-visibility-naming-and-capability-settings",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Trimmed custom label Enter/blur, Escape/empty fallback and enclosing Update before public picker changes; raw model ID retained."
+    },
+    {
+      "historical_filename": "admin-provider-model-selection.yaml",
+      "source_sha256": "91c424c38522729233c927b409dbdf4ff846e47afa53b829ab49f2010dd9baa1",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#model-visibility-naming-and-capability-settings"
+      ],
+      "retained_knowledge": "Individual/Space/bulk visibility, zero-selected Update guard, first-visible test model and provider-specific Auto Update absence."
+    },
+    {
+      "historical_filename": "admin-provider-model-settings.yaml",
+      "source_sha256": "f927eb551a68740e5012d88c8595e1340cab5a38ed4ba28064dadfcd206be172",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#model-visibility-naming-and-capability-settings"
+      ],
+      "retained_knowledge": "Capability popup reasoning bounds/default clamp and keyboard range, reasoning temperature disable, ordinary slider/null and read-only unknown context."
+    },
+    {
+      "historical_filename": "admin-provider-portkey-edit.yaml",
+      "source_sha256": "c096c40754f8fa0e9d980d3e9d08bdd48af6eb022cef113a5eb7ed9f51b4703d",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#conditional-provider-forms"
+      ],
+      "retained_knowledge": "Existing Portkey mode-specific defaults/custom base preservation/restore and absence of unsupported gateway fields."
+    },
+    {
+      "historical_filename": "admin-provider-vertex-edit.yaml",
+      "source_sha256": "8d6f8841943180b7b602debc481e742585163e5ad3ec9724fc108eecd0cf2282",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#conditional-provider-forms",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "Existing Vertex native FileReader JSON, workload/project/location prerequisites, cleared inactive fields and no persisted file-input filename."
+    },
+    {
+      "historical_filename": "admin-query-history.yaml",
+      "source_sha256": "b1b7115aa624ef66a1a8e35c57fe9d63d3a0da4e622e1769038d11a57543f679",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves",
+        "script-admin.md#analytics-reports-and-custom-script"
+      ],
+      "retained_knowledge": "Fixture history/detail plus finite export metadata are separate from chats sent in this run; canned report is not a live audit feed."
+    },
+    {
+      "historical_filename": "admin-scim.yaml",
+      "source_sha256": "7225bf701739f37704b049e5675f3394c075bab0692b9beeca83157e8506b70c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#security-service-accounts-sso-and-scim"
+      ],
+      "retained_knowledge": "Generate/regenerate fake token metadata replaces a single record; no directory sync."
+    },
+    {
+      "historical_filename": "admin-security.yaml",
+      "source_sha256": "cb60f91362e9a4090248a3d61ab99424509123e504a07911428ca228d5c9ac8c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#security-service-accounts-sso-and-scim"
+      ],
+      "retained_knowledge": "Password/security switches plus lower JWT URL/audience/issuer commit native fields; saved policy metadata does not implement security behavior."
+    },
+    {
+      "historical_filename": "admin-service-accounts.yaml",
+      "source_sha256": "5bd8b03f9ba183f0a0652fdec210157e34a450e109f8517ee353e4429e65022f",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#security-service-accounts-sso-and-scim"
+      ],
+      "retained_knowledge": "One-time fake API key create/regenerate, rename/groups and confirmed delete; omitted group payload can clear associations."
+    },
+    {
+      "historical_filename": "admin-slack-bots.yaml",
+      "source_sha256": "0e2a258d98c66767ec020f5ddfd18e50320291bb7390fedf438d439752bf31e8",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#hooks-slack-discord-and-standard-answers"
+      ],
+      "retained_knowledge": "Native bot create/edit/enable/delete local metadata and channel cascade; no Slack auth or messages."
+    },
+    {
+      "historical_filename": "admin-slack-channels.yaml",
+      "source_sha256": "eb8c4068ec0987218d5c0a34309cb050da83a75f4528ef58d4b7dcfb875fbc2f",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#hooks-slack-discord-and-standard-answers"
+      ],
+      "retained_knowledge": "Channel create/edit native agent/set/response configuration and immediate row removal use current local bot catalog."
+    },
+    {
+      "historical_filename": "admin-sso-providers.yaml",
+      "source_sha256": "8418f3ca17bb9d6ba94da65570a5afda04f0bd162c18a6f5c71dfe73d0be28ff",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#security-service-accounts-sso-and-scim"
+      ],
+      "retained_knowledge": "Google/OIDC/SAML required and conditional fields, disabled saved slug, scope chips and enable flag; fake certificates/secrets/no IdP or DNS verification."
+    },
+    {
+      "historical_filename": "admin-standard-answers.yaml",
+      "source_sha256": "8e717127ca54c17ade349b2e33b20b7d2d940c1efb3fafa61268e7a0685d9fbe",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#hooks-slack-discord-and-standard-answers"
+      ],
+      "retained_knowledge": "Keyword/answer/category native Create!/Update!/delete and category projection; no automatic chat reply matcher integration."
+    },
+    {
+      "historical_filename": "admin-systeminfo.yaml",
+      "source_sha256": "1060311d95313094726549502c8347bae63e928831c0281660e6991574d63238",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-admin.md#document-explorer-feedback-and-read-only-leaves"
+      ],
+      "retained_knowledge": "Read-only version/system metadata route; no editable operation or live service health claim."
+    },
+    {
+      "historical_filename": "admin-theme.yaml",
+      "source_sha256": "b940064f9801713f9937c7c9fb2ff046343058db719014f38d75b3aba3c26cc0",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#theme-consent-and-announcements",
+        "script-agents-settings.md#onboarding-empty-states-and-branding",
+        "script-agents-settings.md#notifications-and-banners"
+      ],
+      "retained_knowledge": "Enterprise labels/lower-page fields, conditional required notice and published announcement apply/consume/dismiss/unpublish; browser consent separate from store reset."
+    },
+    {
+      "historical_filename": "admin-tracing.yaml",
+      "source_sha256": "5d7c4b7a6a048b98e7149ce775f1cd3541253349a044cc52201538352148b787",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#search-voice-image-tracing-and-code-execution-configuration",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Edition-gated native tracing project/key/test/config status with fake markers; no trace collector or arbitrary new provider type."
+    },
+    {
+      "historical_filename": "admin-usage-spending-limits.yaml",
+      "source_sha256": "4e3c9a400780cf2477eec361f387ffe84aaac5c5d489b81715b165003f5ed8f7",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#groups-memberships-resources-and-limits",
+        "script-agents-settings.md#usage-and-spending-display"
+      ],
+      "retained_knowledge": "Workspace/user/group token-cost-period limit records and report consumers; saved metadata does not meter, throttle or schedule resets."
+    },
+    {
+      "historical_filename": "admin-users-account-status.yaml",
+      "source_sha256": "35414db0e48bebc2b908d805e35b16bdc458e330859c225c4a5db01ae8636150",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Activate/deactivate/delete native dialogs mutate accepted rows and membership; cancel and visible status counts are separate assertions."
+    },
+    {
+      "historical_filename": "admin-users-cloud.yaml",
+      "source_sha256": "f224f178308b4dc941ac0f3426afa9f2fbe6ef1594d4a2714cac0000b42da8c4",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Compiled Cloud Pending/Approve moves pending to invited with local feedback, not accepted account provisioning."
+    },
+    {
+      "historical_filename": "admin-users-craft-access.yaml",
+      "source_sha256": "a09a6f7cee24da54b55d3c70542db2beaed974df585bf52183791cbd1f40bbbe",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access",
+        "script-admin.md#craft-administration"
+      ],
+      "retained_knowledge": "Per-user Craft enable belongs on native Craft Access, not user-row menu; explicit/implicit workspace flags reflected in accepted user and viewer."
+    },
+    {
+      "historical_filename": "admin-users-filters.yaml",
+      "source_sha256": "ba6e0c6d215c40f09a574993cbef8356afe91bb40f8e63c1e735236d1032a60c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Account-type/status/group filtering with varied finite rows; UI view filtering is not backend query pagination."
+    },
+    {
+      "historical_filename": "admin-users-groups.yaml",
+      "source_sha256": "b71b07cc1b0b77881e50a6b8fdc271898a3882ce7fc803fbb4de6a235f61792a",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access",
+        "script-admin.md#groups-memberships-resources-and-limits"
+      ],
+      "retained_knowledge": "User/group views share canonical membership and user deletion cleanup; connector/resource selection must not be erased by member-only writes."
+    },
+    {
+      "historical_filename": "admin-users-invitations.yaml",
+      "source_sha256": "5653e678f0b94e8a92a58308c90de9c3efe569b63eb01386677dc86876929b7e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Email tag validity/dedup, cancel protection, submitted toast versus invited records and invitation revoke; no email delivery."
+    },
+    {
+      "historical_filename": "admin-users-list.yaml",
+      "source_sha256": "45ae45e075fb511d4a61e739663ff2a9ed7ec2ef0b910a2fa56aba626bc6643f",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Accepted/invited/pending collections and native sorting/search/pagination/counts must be staged independently."
+    },
+    {
+      "historical_filename": "admin-users-password.yaml",
+      "source_sha256": "0e031cbd7ea5c16e261303cfcc15a4a4984ebc24cb1a7d1d43f4f391b04dec15",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Reset-password dialog generates/displays/copies fake string only; no actual password storage change."
+    },
+    {
+      "historical_filename": "admin-users-roles.yaml",
+      "source_sha256": "f89ca0133c9d8927a14d64e63c082a1ad07762cf8a608b6441bbb521bdb04178",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#users-invitations-roles-and-craft-access"
+      ],
+      "retained_knowledge": "Row admin-role save/readback changes accepted metadata but does not rewrite current /me permission tokens."
+    },
+    {
+      "historical_filename": "admin-voice.yaml",
+      "source_sha256": "f93e303bf2357087f0bfb499317eed6fd065ef67a3947a2dc93185cb41c6fae6",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#search-voice-image-tracing-and-code-execution-configuration"
+      ],
+      "retained_knowledge": "STT versus TTS model/default choices and disconnect save separate flags; static voice-status and no audio-service boundary."
+    },
+    {
+      "historical_filename": "admin-web-search.yaml",
+      "source_sha256": "42c4d783adcfa3cdefb6475efca2d686d27b933328dcfabdb8e8b09356431054",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#search-voice-image-tracing-and-code-execution-configuration"
+      ],
+      "retained_knowledge": "Search versus content provider config/test/activation stores, same-category default clearing and crawler reset-default; no network retrieval."
+    },
+    {
+      "historical_filename": "auth-anonymous-branches.yaml",
+      "source_sha256": "6d5c819f4f7587af8258b02b2fea4c108d22290083ba1641bc37d745de25a412",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#anonymous-guest-chat",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Anonymous human edits, assistant regeneration and branch switch/reopen retain the same tree semantics and model attribution."
+    },
+    {
+      "historical_filename": "auth-anonymous-composer.yaml",
+      "source_sha256": "1152c2bbcf8f1181b2783203656cca3f827c9f05e5ef1ce04f84a6a6d7ea328f",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#anonymous-guest-chat",
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#composer-models-answer-models-and-branches",
+        "script-files-projects.md#upload-paste-drop-and-readiness",
+        "script-chat.md#search-mode-and-filters"
+      ],
+      "retained_knowledge": "Guest composer models/actions/uploads/source filters/stop share the member chat engine, not a separate mocked surface."
+    },
+    {
+      "historical_filename": "auth-anonymous-entry.yaml",
+      "source_sha256": "d0e96f7094bc411bb873e667d37e60432623af44d789aaeaffcfaac846ee8a6c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#anonymous-guest-chat",
+        "script-auth-extension.md#authentication-state-and-entry-routes"
+      ],
+      "retained_knowledge": "Configured anonymous path POST/cookie uses ordinary app; invalid path native signup error and Login/Continue-as-guest entry."
+    },
+    {
+      "historical_filename": "auth-anonymous-feedback.yaml",
+      "source_sha256": "ff37e556f9af8a9e90c951148149453d091414cdca71ed53cafe735d92b511ec",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#anonymous-guest-chat",
+        "script-chat.md#copy-and-feedback"
+      ],
+      "retained_knowledge": "Guest copy/vote modal rules and feedback persistence use ordinary local feedback owner."
+    },
+    {
+      "historical_filename": "auth-anonymous-reset-fresh.yaml",
+      "source_sha256": "a8643816b7427c5d06aec73b907c1feb7e53b031d9a455c1acd2ba94d1b7dc5f",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#anonymous-guest-chat",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Independent fresh context asserts no retained guest turns/cookies; New Chat alone is not reset evidence."
+    },
+    {
+      "historical_filename": "auth-anonymous-reset.yaml",
+      "source_sha256": "ead9c7f2be45f5d8dff59d34893475ef2b68fc07c76f5a66bd28c73e06a2ee01",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#anonymous-guest-chat",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Same-context keep/fresh dirty guest chat/auth/mailbox restoration is separate from clearing client cookie/storage state."
+    },
+    {
+      "historical_filename": "auth-cloud-support.yaml",
+      "source_sha256": "9cb526253b90ae67649e13ee90a4ef40cc46648d3fd7f010cbc6d957afd167b8",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#sso-referral-and-auth-errors",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Physical Cloud support copy and Google-denied callback need loopback TLS under production CSP; mailto is handoff, not sent support email."
+    },
+    {
+      "historical_filename": "auth-create-account.yaml",
+      "source_sha256": "8d28e4c7569ae9f739814ad0d71383c46c85fe5c7b1adb4ee686710c358c7ba0",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#password-login-signup-and-join"
+      ],
+      "retained_knowledge": "Explanatory signup-choice page and same-origin registration CTA use local redirect support; no organization provisioning."
+    },
+    {
+      "historical_filename": "auth-error-codes.yaml",
+      "source_sha256": "dd983330cbb99dfb6b542a98ec8694e21412e5f944df4d0c91cc92ceca43dd26",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#sso-referral-and-auth-errors"
+      ],
+      "retained_knowledge": "OAuth/account/login and standard denial/interaction/server codes; stale access-token/state and first-user/sole-SSO return guards have different retry navigation."
+    },
+    {
+      "historical_filename": "auth-error.yaml",
+      "source_sha256": "9092fc8055795eb186b3761bd89836d47033808830295a872d46f764c01d5112",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#sso-referral-and-auth-errors"
+      ],
+      "retained_knowledge": "Auth error route, explicit Return to Login and session-storage loop guard distinguish first restart from held error."
+    },
+    {
+      "historical_filename": "auth-forgot.yaml",
+      "source_sha256": "0a03e1a8f00b6f59aba9c3093525cdf719372ec52508a814244f83b6c2a94048",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#authentication-state-and-entry-routes",
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox"
+      ],
+      "retained_knowledge": "Compiled forgot-password gate, valid email and finite reset-mail issuance/error; use issued local mailbox link rather than forged token."
+    },
+    {
+      "historical_filename": "auth-join.yaml",
+      "source_sha256": "3ef274a6b321b03ce21f686cac1824d01f8dc4062117c6905ed97800bb7544f2",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#password-login-signup-and-join"
+      ],
+      "retained_knowledge": "Join email query prefill and shared password validation; no team-name rendering, invitation backend, team selector, Cancel or footer control."
+    },
+    {
+      "historical_filename": "auth-login.yaml",
+      "source_sha256": "bcef963843e7a24cd40352140ad8a34ec378c054ca7f0251d69aaef8e52faae3",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#authentication-state-and-entry-routes",
+        "script-auth-extension.md#password-login-signup-and-join"
+      ],
+      "retained_knowledge": "Logged-out stage clears HTTP-only mock auth through handler; native email/password validation, finite login failure/success and sign-up/forgot links."
+    },
+    {
+      "historical_filename": "auth-member-redirects.yaml",
+      "source_sha256": "0775a507514ff99f9ac3dfe61c4bdf593a431b883bcee87cf50f270628f73e6e",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#authentication-state-and-entry-routes",
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox"
+      ],
+      "retained_knowledge": "Authenticated member redirects away from login/signup/join/verification/waiting; native protection must not be bypassed by fixture text."
+    },
+    {
+      "historical_filename": "auth-provider-choices.yaml",
+      "source_sha256": "148f52c73908c181a3bb5a9dc95f8db30cd24a72fa8aca487797367a5b088500",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#sso-referral-and-auth-errors"
+      ],
+      "retained_knowledge": "Mixed versus SSO-only/auto-SSO auth DTOs, disabled pending provider controls, missing URL/error/local denied callback; no real IdP."
+    },
+    {
+      "historical_filename": "auth-referral-signup.yaml",
+      "source_sha256": "fdc1ee55046a3fba1d047a41a010ac6fd03d5febf01474cd386748a92017e3d6",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#sso-referral-and-auth-errors"
+      ],
+      "retained_knowledge": "Multitenant referral option catalog and browser cookie, independent of compiled Cloud and not a translation acceptance matrix."
+    },
+    {
+      "historical_filename": "auth-reset-password.yaml",
+      "source_sha256": "3fe1b69f537721d191fa7122013f462b44782299665e46a66984e7169eba41a0",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox"
+      ],
+      "retained_knowledge": "Current-run issued token, required/matching/min-length form, finite error/success flag and transient redirect toast; no stored password secret."
+    },
+    {
+      "historical_filename": "auth-signup.yaml",
+      "source_sha256": "2bdf53c272dac20896fc164ce7649a8b5f9041d4ed59aa986f7f1ba59508df2d",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#password-login-signup-and-join",
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox"
+      ],
+      "retained_knowledge": "Native two-field email/password form, short/duplicate/invalid branches and local unverified-account/mailbox issuance; no name/confirm fields or email delivery."
+    },
+    {
+      "historical_filename": "auth-sso-discovery.yaml",
+      "source_sha256": "5f3f994043a16a30c56c03612eea069bcdabc0b6d0786e993b64bf368af7e05f",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#sso-referral-and-auth-errors"
+      ],
+      "retained_knowledge": "Multitenant email discovery POST with no tenant/error/found branches and actual native provider link."
+    },
+    {
+      "historical_filename": "auth-verification.yaml",
+      "source_sha256": "657d807aa3bbd62bb1625998d43eb93b56ce6d32cb5d3fcc9baabf62b95b2e1b",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox",
+        "script-authoring.md#completion-waits-and-transient-states"
+      ],
+      "retained_knowledge": "Issued verify token, invalid/missing error, resend, verified flag/cookie and redirect; pulsing logo settling can outlast transient toast."
+    },
+    {
+      "historical_filename": "auth-waiting.yaml",
+      "source_sha256": "0c019fe17739567263ebafb4a33ba6382b3cbd732f4b30ed3d2c340234648abd",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox"
+      ],
+      "retained_knowledge": "Waiting page native here resend/count and member/logged-out guards; no invented Back/Cancel controls."
+    },
+    {
+      "historical_filename": "browser-extension-chat.yaml",
+      "source_sha256": "45c3ecffddb2ffd9137d17d86254a0b498243156d83fd91b275fb66536b00013",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-auth-extension.md#side-panel-trust-turns-and-reset",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "NRF ordinary engine turn/stop/edit/regenerate with native branch callback parity and finite error-recovery; no second chat implementation."
+    },
+    {
+      "historical_filename": "browser-extension-files.yaml",
+      "source_sha256": "f5081b75fa550dd65dbb5957d24691706322f2c447916be4b2ff846859628c5c",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-files-projects.md#upload-paste-drop-and-readiness",
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Extension upload/picker/preview uses shared file catalog and readiness gates with actual native inputs."
+    },
+    {
+      "historical_filename": "browser-extension-logged-out.yaml",
+      "source_sha256": "583516d523de97cf11a6eada56606ce58e93fe5393ec40a3cf31e0e387ae3917",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-auth-extension.md#authentication-state-and-entry-routes"
+      ],
+      "retained_knowledge": "Protected new-tab/side-panel entry follows native blank/login behavior; no invented extension-specific auth form."
+    },
+    {
+      "historical_filename": "browser-extension-models-actions.yaml",
+      "source_sha256": "fa9213c2b40107843eaa6d7117d5f6d2c106a7f8eafe1260468e1b034a27c6d6",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-chat.md#composer-models-answer-models-and-branches",
+        "script-chat.md#search-mode-and-filters"
+      ],
+      "retained_knowledge": "Model search/no-match/Add Model/removable chips and Internal Search; multiple labels do not imply parallel real models."
+    },
+    {
+      "historical_filename": "browser-extension-no-provider.yaml",
+      "source_sha256": "f51f52f73d99024ec11fcfc2f2e373b72153f740abe8b4d732bf4d80e8ef239e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-admin.md#provider-setup-and-existing-provider-edits"
+      ],
+      "retained_knowledge": "Disabled composer and Setup LLM handoff require actual empty provider data; native pointer patch/build prerequisites remain real."
+    },
+    {
+      "historical_filename": "browser-extension-search.yaml",
+      "source_sha256": "f5538358c3c036d4f5b9f5d267b4a70a85b2f4be34d02e42c9c4dce7b21fc89e",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-chat.md#search-mode-and-filters"
+      ],
+      "retained_knowledge": "NRF finite search/filter state follows ordinary search contract rather than a live retrieval engine."
+    },
+    {
+      "historical_filename": "browser-extension-settings.yaml",
+      "source_sha256": "5fa08c7bbe390cbfe735fd38d044bd2661148781d67a4a83723ed65ce86e4f46",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#new-tab-extension-surface",
+        "script-agents-settings.md#general-settings-language-and-background"
+      ],
+      "retained_knowledge": "Native extension settings, off confirmation Cancel versus Turn Off and browser-local useOnyx preference survive backend reset."
+    },
+    {
+      "historical_filename": "browser-extension-side-panel.yaml",
+      "source_sha256": "7f9604730b2059ed012fbe65b7ee4bc6fe04265c5f1e4f0dcad6d61b4c1ada3e",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#side-panel-trust-turns-and-reset"
+      ],
+      "retained_knowledge": "Compact no-Settings UI, Read This Tab waiting, source+chrome-extension origin trust guard and separate fake backend tab context; HTTP postMessage is rejected."
+    },
+    {
+      "historical_filename": "byo-model-on-prem.yaml",
+      "source_sha256": "23389c474f09441c4d35609fc792d2d568dce4f3326b8bc7361d970624593d70",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-chat.md#composer-models-answer-models-and-branches",
+        "script-admin.md#provider-setup-and-existing-provider-edits"
+      ],
+      "retained_knowledge": "Configured compatible/on-prem catalog model uses the same native picker and finite reply resolver; no inference server is contacted."
+    },
+    {
+      "historical_filename": "chat-model-persistence.yaml",
+      "source_sha256": "5010f40af9bcdbebfa0e55600df4aded92ee2cea76186cb7de40c56c14966d56",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#composer-models-answer-models-and-branches",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Viewer default affects new sessions, per-session alternate model survives reopen, and old assistant attribution remains frozen across model changes and reset."
+    },
+    {
+      "historical_filename": "community-user-routes-app.yaml",
+      "source_sha256": "1e3e2beee69f063f8dd026eebbe57c626693cf13a4632fd5d453e78b8d3b8837",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#search-mode-and-filters",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Community route audit preserves actual app/saved-chat/shared/project entry conditions and compiled absence of Enterprise mode controls."
+    },
+    {
+      "historical_filename": "community-user-routes-auth-conditional.yaml",
+      "source_sha256": "7b43cf308b25d608025f96a2bf7e079c692b16f9d347612cc38d7f15aba6a0bc",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#conditional-password-and-impersonation",
+        "script-auth-extension.md#provider-callbacks",
+        "script-auth-extension.md#oauth-consent-and-protected-states",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Conditional auth/callback/consent routes need explicit source flags and guard states; route audit is not successful provider authorization."
+    },
+    {
+      "historical_filename": "community-user-routes-auth.yaml",
+      "source_sha256": "5dcc4eec704a1e2a660be9c968a856d5278f69ff80bc1abe8c84b2927e1b41c1",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#authentication-state-and-entry-routes",
+        "script-auth-extension.md#password-login-signup-and-join",
+        "script-auth-extension.md#recovery-verification-and-the-fake-mailbox",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Community auth route inventory checks native redirects/forms under staged logged-out state; does not add a separate auth engine."
+    },
+    {
+      "historical_filename": "community-user-routes-extras-craft.yaml",
+      "source_sha256": "16e3c19ae1c0927e702863f4ce7ddccb8701abe82dfa3ab2757a84ab518c4569",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#entry-tour-model-and-provider-prerequisites",
+        "script-craft.md#loading-errors-usage-limit-and-reset",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Craft route/gate audit distinguishes native redirect or unavailable UI from a supported Enterprise Craft operation."
+    },
+    {
+      "historical_filename": "community-user-routes-extras.yaml",
+      "source_sha256": "9e286403ea9db0eb0b988bf7616c19077a1d954aba95d6309868412c15cac689",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-gallery-and-editor",
+        "script-agents-settings.md#agent-labels-avatars-and-analytics",
+        "script-agents-settings.md#onboarding-empty-states-and-branding",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Agent/onboarding/extras route availability in the actual Community build; fixture metadata cannot create compiled-only surfaces."
+    },
+    {
+      "historical_filename": "community-user-routes-settings.yaml",
+      "source_sha256": "749c625886987fc590f7231960f5925be0b58d1e9a75769a21fb35e1f9709739",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#general-settings-language-and-background",
+        "script-agents-settings.md#chat-preferences-and-memories",
+        "script-agents-settings.md#access-tokens-and-gateway",
+        "script-agents-settings.md#connected-apps-and-personal-connectors",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Community settings route audit retains native redirects and absence of gated Gateway/default-mode controls."
+    },
+    {
+      "historical_filename": "connector-details.yaml",
+      "source_sha256": "c3f595753de087d748100210b068de2387fc723c08a8bb574702fba3dbc95a63",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#indexing-details-and-permission-sync",
+        "script-admin.md#connector-creation-credentials-and-binding"
+      ],
+      "retained_knowledge": "Native pair metadata/configuration, advanced attempts/errors/credentials/frequency panels; preserve source-specific tab applicability."
+    },
+    {
+      "historical_filename": "coverage-cc101.yaml",
+      "source_sha256": "3e226cb3faaf1f261ae0bb82b6dbcfa35dbd7b3477886b302148ada4dafbdf64",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#indexing-details-and-permission-sync",
+        "script-authoring.md#navigation-and-locator-discipline"
+      ],
+      "retained_knowledge": "Seeded pair101 detail locator/tab sweep preserves collapse and error-modal context; not proof all connectors share those capabilities."
+    },
+    {
+      "historical_filename": "coverage-cursor.yaml",
+      "source_sha256": "8017abfa0a54cb4145a8b93c42781336f87ccd600e38bb789f87eb6301caa003",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-authoring.md#navigation-and-locator-discipline",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Cursor-surface sweep is a presentation regression assertion, not proof that every visited feature writes or persists."
+    },
+    {
+      "historical_filename": "cursor-demo.yaml",
+      "source_sha256": "0709cf6fb949b1f8e22f8e370fb8fb3bc63e9ddd48c707c95393e8b5c2bff748",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-authoring.md#navigation-and-locator-discipline",
+        "script-authoring.md#completion-waits-and-transient-states"
+      ],
+      "retained_knowledge": "Cursor profile, approach/click choreography, holds and meaningful end state are presentation controls separate from world data; motion needs clip playback evidence."
+    },
+    {
+      "historical_filename": "document-set-forms.yaml",
+      "source_sha256": "6678e630ec69c395147fb583faabe9aa08d04ed007ced49c98154abebeff8adc",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#document-sets"
+      ],
+      "retained_knowledge": "Label-driven public toggle, required connector/federated membership, private group chips, native create/edit/cancel/immediate delete and missing ID."
+    },
+    {
+      "historical_filename": "locale-smoke.yaml",
+      "source_sha256": "97a240f70b67d889d8ecf840d2a6cf70728853eee1ccf4ece9c3b341a16f67da",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#general-settings-language-and-background",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Locale switch and native route smoke distinguish translated UI from unchanged authored English fixture text; no all-locale matrix claim."
+    },
+    {
+      "historical_filename": "mcp-actions.yaml",
+      "source_sha256": "25ff6525213a2f3453e0a80f0b57ff8c5ca4a9228d927db857c551c6b2282db9",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#mcp-and-openapi-actions",
+        "script-admin.md#craft-administration"
+      ],
+      "retained_knowledge": "MCP tool refresh/toggle, server metadata/access/status/delete, None/API/OAuth config/local auth receipt and projected Craft tool availability."
+    },
+    {
+      "historical_filename": "model-answer-variants.yaml",
+      "source_sha256": "1c7c4ba8db4dd1ef1ab8d9e5dc9615e5f509f1afebc9fd41d3899d00450b77f9",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Prepared per-model answer variants, regeneration siblings and human-edit branching; answer model override is separate from composer/default model."
+    },
+    {
+      "historical_filename": "native-save-controls-confluence-create.yaml",
+      "source_sha256": "e7225a8126eb57430cb8153fd803299dc837034f5df6c8750d212aeba592108e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#connector-creation-credentials-and-binding"
+      ],
+      "retained_knowledge": "Required name/wiki/space/account gating; native connector create then credential binding yields distinct pair ID and indexing row."
+    },
+    {
+      "historical_filename": "native-save-controls-existing-connector.yaml",
+      "source_sha256": "d7de08551acba4302f9c46a7193d7226bd859a572f72d94187245825e39c39ea",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#connector-creation-credentials-and-binding"
+      ],
+      "retained_knowledge": "Pair rename and nested credential save/outer close, refresh-minutes/pruning-hours validation and seconds persistence/reopen/reset."
+    },
+    {
+      "historical_filename": "native-save-controls-file.yaml",
+      "source_sha256": "b6299632e74fbf5b7e42ae5d4455b7ba2467c35cf9bab16e579ddb500d1df75e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#file-and-website-connectors",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "Native multi-file upload/binding, staged inline add/remove, FileList patch prerequisite and confirm/save fake run-once metadata."
+    },
+    {
+      "historical_filename": "native-save-controls-local-account.yaml",
+      "source_sha256": "fc1ad4220b826005335c48983550660b489ea02796d746adc789c38e8df6f8d9",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#connector-creation-credentials-and-binding"
+      ],
+      "retained_knowledge": "Local OAuth account landing GET is read-only; explicit Stage fake account POST allocates credential and returns to native connector form."
+    },
+    {
+      "historical_filename": "native-save-controls-providers-configure.yaml",
+      "source_sha256": "0ce970c89524bb1f6b6d9ac1f14adc4085d669cdc2b82a297d601a1ccaf24faf",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#provider-setup-and-existing-provider-edits",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Real Test/PUT edit/default operations with redacted fictional keys, preserved IDs, public/agent catalog projection and native consumer readback."
+    },
+    {
+      "historical_filename": "native-save-controls-providers-forms.yaml",
+      "source_sha256": "c5adc9ac032b19e22d4de56b08417d35ba9886e9f173dc38742d48343bfdecb7",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#provider-setup-and-existing-provider-edits",
+        "script-admin.md#conditional-provider-forms"
+      ],
+      "retained_knowledge": "Fourteen distinct provider Add form required fields, Azure URI/deployment/custom-model branch and compatible model lists; no live connections."
+    },
+    {
+      "historical_filename": "native-save-controls-sites.yaml",
+      "source_sha256": "b761290574184d9cbeabb5f251ab62b7d6e0f20a92c7515dbaa9e8cf5b912ae6",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-admin.md#file-and-website-connectors"
+      ],
+      "retained_knowledge": "Base URL versus archive mode required inputs, multiple-file archive control and URL-preferred created-row label; no crawl/unpack engine."
+    },
+    {
+      "historical_filename": "omzo-admin.yaml",
+      "source_sha256": "ab478d639f3f7fa4e7fc95ed3a7a0151f488cde1ae5f266662f9d2995a3d22ef",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-admin.md#connector-creation-credentials-and-binding",
+        "script-admin.md#admin-agent-curation",
+        "script-admin.md#theme-consent-and-announcements"
+      ],
+      "retained_knowledge": "Organization-branded admin walkthrough reuses provider/connector/agent controls; does not introduce a second settings backend."
+    },
+    {
+      "historical_filename": "omzo-followup.yaml",
+      "source_sha256": "d3499be1ac2cd0d9749f7369c6b0df5c1c3082a31e6b60fd932da0dca169a609",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-authoring.md#build-a-fresh-world-and-script",
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Retained follow-up scene uses its own authored reply and viewer context; identical prompt text need not share a global canned response."
+    },
+    {
+      "historical_filename": "omzo-incident.yaml",
+      "source_sha256": "93fd50c5774e303cfe3054652e0375732e678258b2dcb37f44c29564f764f4ed",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-authoring.md#build-a-fresh-world-and-script",
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#sources-citations-and-document-viewers"
+      ],
+      "retained_knowledge": "Retained exact-turn scene example: adjacent authored question/reply/cites plus company/person/source references; not a dependency for writing a new incident story."
+    },
+    {
+      "historical_filename": "omzo-walkthrough.yaml",
+      "source_sha256": "50f63f23443a25709d1988dc7f75236bf8c280ed375f8b38da13a549623455ea",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-authoring.md#build-a-fresh-world-and-script",
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#sources-citations-and-document-viewers",
+        "script-admin.md#connector-creation-credentials-and-binding"
+      ],
+      "retained_knowledge": "Composite narrative combines native chat/source and admin navigation patterns; fictional names are content, not required feature contracts."
+    },
+    {
+      "historical_filename": "org-switch.yaml",
+      "source_sha256": "1d83905c10a56b69750140ce76b60c995a4237fe054f79f84192f37fcd74f568",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-authoring.md#state-keep-and-reset",
+        "script-chat.md#agents-recents-and-chat-membership"
+      ],
+      "retained_knowledge": "Whole staged organization/world transition changes viewer/catalog/history; keep behavior is store-specific and is not real tenant login switching."
+    },
+    {
+      "historical_filename": "share-agent-users.yaml",
+      "source_sha256": "ff4070307deae257a3f75c2f7d2f293c157c017dfde7f2507636ec32a671c59c",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Case-insensitive user/email share search and staged recipients; older picker-only script does not demonstrate saved access."
+    },
+    {
+      "historical_filename": "sharing-feedback-navigation.yaml",
+      "source_sha256": "7cdbe73ea9b8684128f7c1f3f0db9772c4c421a2a30bcf9b50f8ee7c36f25382",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#share-links-and-privacy",
+        "script-chat.md#copy-and-feedback",
+        "script-chat.md#agents-recents-and-chat-membership"
+      ],
+      "retained_knowledge": "Open sharing from correct sidebar/header context, revisit saved public conversation and return via Start a new chat without inventing edit controls."
+    },
+    {
+      "historical_filename": "sharing-feedback-privacy.yaml",
+      "source_sha256": "06ac70212d5c10cc42d3219604e8d02ab727052caba548205ba4aa0149b7759a",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#share-links-and-privacy"
+      ],
+      "retained_knowledge": "Private/public drafts, disabled never-shared private submit, cancel protection, make-private failure rollback and revoked/missing/empty public states."
+    },
+    {
+      "historical_filename": "sharing-feedback-reset.yaml",
+      "source_sha256": "ab3ffee770fe8dbaea082d85ad9d388cb163d85adb0af5d3e2e82138e4a44de6",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#share-links-and-privacy",
+        "script-chat.md#copy-and-feedback",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Dirty publication, vote and future turns before fresh reset; verify original private/feedback/tree state, not only a clean heading."
+    },
+    {
+      "historical_filename": "sharing-feedback-shared-files.yaml",
+      "source_sha256": "21e7c197159cbbde257edcebbd0321e3460777bf2c66e288306c8f11eaa5c693",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#share-links-and-privacy",
+        "script-chat.md#copy-and-feedback",
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Read-only shared human/assistant copy, image/table content and saved file preview/download are distinct consumers; no public editable composer or feedback toolbar."
+    },
+    {
+      "historical_filename": "sharing-feedback-sources.yaml",
+      "source_sha256": "81653da5a40dc9df17547d8031aab7bd7c5b963daada5a1fd7670afd56a2cf06",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#share-links-and-privacy",
+        "script-chat.md#sources-citations-and-document-viewers"
+      ],
+      "retained_knowledge": "Public saved citations do not imply ordinary Sources sidebar; local source viewer/navigation and read-only model attribution remain limited."
+    },
+    {
+      "historical_filename": "sharing-feedback-votes.yaml",
+      "source_sha256": "7e96f3a5b58a33c582e15e028de846af6436e515afe569ddb025e2f201c24d0d",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#copy-and-feedback"
+      ],
+      "retained_knowledge": "Positive optional feedback, trimmed required negative text, cancel/reopen draft, vote replacement/removal and finite failure rollback preserve committed vote."
+    },
+    {
+      "historical_filename": "sharing-feedback.yaml",
+      "source_sha256": "81ef63cd564f7b7b7268f6ca51510751136b9b97c03d3652c57168a4b0cf78ab",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#share-links-and-privacy",
+        "script-chat.md#copy-and-feedback"
+      ],
+      "retained_knowledge": "Publication draft/commit, local public URL, answer copy and positive/negative feedback use separate native controls and state owners."
+    },
+    {
+      "historical_filename": "single-provider.yaml",
+      "source_sha256": "bace93619b7a3489de5451c0869623548ded19551311135dbb278d093df3def2",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "One-provider catalog flattens picker groups and must resolve selected/default model through both ordinary and agent-provider catalog projections."
+    },
+    {
+      "historical_filename": "smoke-all-screens.yaml",
+      "source_sha256": "986b31f504a38931f8a1a91e1e8da97268b94bffd995fb7076e3918f95edb559",
+      "classification": [
+        "redundant",
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#routes-aliases-and-locator-context",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Aggregate native route sweep; retained locators and prerequisites supplement feature units but do not certify all controls or editions."
+    },
+    {
+      "historical_filename": "user-agent-and-model.yaml",
+      "source_sha256": "beccafb0b434d975c8c16d5f876548086951ec1f28d0da582e4e7b1733f03a23",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#composer-models-answer-models-and-branches",
+        "script-agents-settings.md#agent-gallery-and-editor"
+      ],
+      "retained_knowledge": "Agent selection and provider-group expansion change the composer model context, not previous message attribution; scope the composer picker."
+    },
+    {
+      "historical_filename": "user-agents.yaml",
+      "source_sha256": "7d3a23f16477b30e18018e7b6ee44df778ab57b6dd146f6a962843df10647bb9",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-gallery-and-editor",
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Gallery/editor/share navigation establishes primary native entry locators; later focused units supply write and permission persistence contracts."
+    },
+    {
+      "historical_filename": "user-ask-with-citations.yaml",
+      "source_sha256": "8c600f6f0a1b37caef1d6a5c4aef7da16ec991320335307a53a82369c443c089",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#sources-citations-and-document-viewers"
+      ],
+      "retained_knowledge": "Manual composer send must match prepared reply; await completed answer, ordered citations and conditional Sources, not the first streaming message node."
+    },
+    {
+      "historical_filename": "user-conditional-consent-protected.yaml",
+      "source_sha256": "2f4aa2707058ad3d752bf744f83802ced5fda137f24470b8ec21a9b71c7830cd",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-auth-extension.md#oauth-consent-and-protected-states",
+        "script-auth-extension.md#authentication-state-and-entry-routes"
+      ],
+      "retained_knowledge": "401 next-preserving login, 403 forbidden, 404 without Retry, 503 Retry recovery and missing/invalid-request guard distinctions."
+    },
+    {
+      "historical_filename": "user-conditional-consent.yaml",
+      "source_sha256": "5dedc2ef60e580de4ce7b3406bca75d783cf3fcbcf7c22488eae1fed221df894",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#oauth-consent-and-protected-states"
+      ],
+      "retained_knowledge": "Finite request ID/CSRF, client/scope disclosure, Allow/Deny, pending disabled controls and local receipt; no real OAuth issuance."
+    },
+    {
+      "historical_filename": "user-conditional-federated-callback.yaml",
+      "source_sha256": "188aa36c516a67d678da7e1b90cfd82966818e0ecef6624ed04a4ea61bd564f2",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#provider-callbacks"
+      ],
+      "retained_knowledge": "Missing/canceled and named mapped errors, processing delay, service receipt and Back/countdown local return are distinct callback states."
+    },
+    {
+      "historical_filename": "user-conditional-impersonate.yaml",
+      "source_sha256": "121b595fb46ce85c9b10001b9506b0546dc7482e639437cd9ebb841e385368d3",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#conditional-password-and-impersonation",
+        "script-auth-extension.md#authentication-state-and-entry-routes"
+      ],
+      "retained_knowledge": "Superuser-only native form, logged-out/member guards, fake Bearer key and narrow viewer/email readback; no real tenant security operation."
+    },
+    {
+      "historical_filename": "user-conditional-mcp-callback.yaml",
+      "source_sha256": "87b979cd52da652866f33a1b1531cb2d7452a69b6c377fc87505e7626e00cdee",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#provider-callbacks"
+      ],
+      "retained_knowledge": "Expired state/timeout/exchange/server errors and exact server_id/server_name/message/redirect receipt; Continue and automatic local return."
+    },
+    {
+      "historical_filename": "user-conditional-oauth-config-callback.yaml",
+      "source_sha256": "e7850f90e46f00a09a9cbe1cc02bfe9fe510b84db56d0a33a869a280f9021f55",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#provider-callbacks"
+      ],
+      "retained_knowledge": "OAuth-config callback uses a different handler from MCP/federated; body/missing/cancel/error, pending and service countdown receipt."
+    },
+    {
+      "historical_filename": "user-conditional-password.yaml",
+      "source_sha256": "a2dad119ae9bf3590b88249c529a6915cefc6cc72a7ad974816739d0fad8de59",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-auth-extension.md#conditional-password-and-impersonation"
+      ],
+      "retained_knowledge": "password_configured controls presence; current/new/confirm validity disables Update without invented sentences, finite fake change result and reset."
+    },
+    {
+      "historical_filename": "user-craft-apps-builtin-mcp.yaml",
+      "source_sha256": "5ab1ed3974f7b898bb6b2317204e7e43e7a9e2895f3b8b20fe88241fac9effac",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#admin-apps-association-and-policies",
+        "script-craft.md#app-connections-and-callbacks"
+      ],
+      "retained_knowledge": "Builtin required config and bulk/advanced policies, optional skill step, managed hidden config and admin MCP availability reflected in user tab."
+    },
+    {
+      "historical_filename": "user-craft-apps-connections.yaml",
+      "source_sha256": "1651a7ad44210ac103f46d5253d11c8eb89bcedcc1d7010f400017a0215afd4c",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#app-connections-and-callbacks",
+        "script-craft.md#skill-imports-sharing-and-ownership"
+      ],
+      "retained_knowledge": "User apps search, required credential fields, connect warning/Review skills enable, Disconnect and manage/admin redirects consume shared catalog."
+    },
+    {
+      "historical_filename": "user-craft-apps-custom.yaml",
+      "source_sha256": "e73558ed424fcbd35b327b8c2423c0218b55c4b82d9b6bd9605d728e81621867",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#admin-apps-association-and-policies",
+        "script-craft.md#skill-imports-sharing-and-ownership"
+      ],
+      "retained_knowledge": "Pattern/header/credential draft rows, unsaved cancel, live skill association/public promotion, unlink/delete retains disabled skills and existing-session stale Reload."
+    },
+    {
+      "historical_filename": "user-craft-apps-empty.yaml",
+      "source_sha256": "7e7f656d9cd4450ca682f9c0c7e5eab1347f4243f112dab67d29775f5639dc50",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#app-connections-and-callbacks",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Native empty user Apps/MCP projection is staged independently from ordinary search no-match."
+    },
+    {
+      "historical_filename": "user-craft-apps-read-error.yaml",
+      "source_sha256": "ca251063f75c60deb178d25e0c4b4563e96307ce697384ca527c66a556f08c46",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#app-connections-and-callbacks",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Apps read-error fallback condition is native behavior, not a claimed successful connection/catalog."
+    },
+    {
+      "historical_filename": "user-craft-connection-callback.yaml",
+      "source_sha256": "4699b69d797752199727633278439c5c688e3adb920a4a589d3c73c70c5af1d4",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#app-connections-and-callbacks"
+      ],
+      "retained_knowledge": "Exact local code/state callback, canceled/missing/exchanging/returned target and current credential-state readback; no provider contacted."
+    },
+    {
+      "historical_filename": "user-craft-entry-library.yaml",
+      "source_sha256": "1d4dfdc17379d2a432ee2f696a27231bfff2540ab23eba579b4f54e455d4f9eb",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#entry-tour-model-and-provider-prerequisites",
+        "script-craft.md#library-files-and-folders"
+      ],
+      "retained_knowledge": "Native tour storage/back/next, model group/route alias, library search/folders/real uploads/fictional ZIP/nested delete and fresh restoration."
+    },
+    {
+      "historical_filename": "user-craft-library-empty.yaml",
+      "source_sha256": "12cfa6667dd396dc18e2e47924a93859c8d5e74acab9816ec01eac397eee2bc2",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#library-files-and-folders",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Empty library preserves native upload/drop affordance; explicit staging and restored loaded state."
+    },
+    {
+      "historical_filename": "user-craft-library-read-error.yaml",
+      "source_sha256": "afb3ae201b0dc7cb29f038f5c7e14dd0ba6fd0dc460c6562630af1530917ca00",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#library-files-and-folders",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Library tree read error remains a native error view, distinct from empty upload state."
+    },
+    {
+      "historical_filename": "user-craft-library-write-error.yaml",
+      "source_sha256": "adbf71b86bd47cd6389ce69511cafa30e315aad63cebea168fe2dd429e14a4b7",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#library-files-and-folders",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "New-folder native Create fails through action-error staging without mutating library; restore and reset."
+    },
+    {
+      "historical_filename": "user-craft-output-file-error.yaml",
+      "source_sha256": "0eb4350e88577ea18d91d57ad88b32263319ea6472a0903e728b733982005edd",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#output-panel-artifacts-and-previews",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Actual artifact-file error after selecting a real tree item is not empty Files; restore staged route and reset panel state."
+    },
+    {
+      "historical_filename": "user-craft-output-states.yaml",
+      "source_sha256": "af461b763c74d1a3529681612ff9e6ce26231ca65b49435758ac77a234b47f40",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#entry-tour-model-and-provider-prerequisites",
+        "script-craft.md#output-panel-artifacts-and-previews",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Starting preview, no-session No files yet (requires no provider), saved empty directory/artifacts and disabled Preview are separate native conditions."
+    },
+    {
+      "historical_filename": "user-craft-provider-conditions.yaml",
+      "source_sha256": "fb4321dfafbf5ec156f26459b4e7e3da0898f93b9030d30fb2278bec626767ca",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#entry-tour-model-and-provider-prerequisites",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "No supported provider differentiates admin setup versus basic/nonadmin copy; nonadmin Manage absence is asserted."
+    },
+    {
+      "historical_filename": "user-craft-reset.yaml",
+      "source_sha256": "1c31f062e1e60732f68e7fcb0d1f3e8273b88019f789b3e9c4624db08ce08cd5",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#loading-errors-usage-limit-and-reset",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Non-vacuous native skill/app/task/library creation plus readback before fresh reset; assert each generated record disappears."
+    },
+    {
+      "historical_filename": "user-craft-session-output.yaml",
+      "source_sha256": "349a5bef74c3bd7a23d5bd895b902927662f4cc8cfb06fe35a00ee37d2c74bba",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#sessions-queued-turns-and-approvals",
+        "script-craft.md#output-panel-artifacts-and-previews"
+      ],
+      "retained_knowledge": "Saved session rename/reopen and tooltip-only closed-panel toggle; complete markdown/CSV/image/PDF/PPTX/artifact/archive/preview/share inventory with distinct readiness."
+    },
+    {
+      "historical_filename": "user-craft-skills-editor.yaml",
+      "source_sha256": "b241a2e4c9759d322ff46168644fa0337bd5b2040d3d076f5951dc3451f40882",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#skill-catalog-and-editor",
+        "script-craft.md#skill-imports-sharing-and-ownership"
+      ],
+      "retained_knowledge": "Object-shaped builtins/customs catalog, enable-name conflict switch, required editor/raw-rendered preview, unsaved confirmation, supporting-file add/remove and delete."
+    },
+    {
+      "historical_filename": "user-craft-skills-empty.yaml",
+      "source_sha256": "359eac6928fcc87d9ea45631c092d11b3921e7efcbbd6ed7226ca9b33a05f472",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#skill-catalog-and-editor",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Empty skills object retains correct builtins/customs shape and native empty affordance."
+    },
+    {
+      "historical_filename": "user-craft-skills-import-ownership.yaml",
+      "source_sha256": "f0312c6c1c432bf44813cf6ac4291065141294d17a68c8496f443123df89353b",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#skill-imports-sharing-and-ownership"
+      ],
+      "retained_knowledge": "Bundle replacement/name matching, dirty editor Import confirmation, read-only/vacant-owner conditions and user-only transfer Back/commit."
+    },
+    {
+      "historical_filename": "user-craft-skills-loading.yaml",
+      "source_sha256": "346e2c3119892c26781cde0fc92a729e3fb257609bd1d3a5e41303b98e1b518d",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#loading-errors-usage-limit-and-reset",
+        "script-authoring.md#completion-waits-and-transient-states"
+      ],
+      "retained_knowledge": "Staged 25-second loading must outlast bounded navigation/loader settling and positively show Loading before completed catalog."
+    },
+    {
+      "historical_filename": "user-craft-skills-read-error.yaml",
+      "source_sha256": "3a2882cdb5fda297d97e67ab7e30573f61ea065f0195918bcc135f025f78c892",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#skill-catalog-and-editor",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Skills GET failure native error, explicit recovery/reset; not a loaded grid renamed error."
+    },
+    {
+      "historical_filename": "user-craft-skills-sharing.yaml",
+      "source_sha256": "9d325cd3976b15fb2ed83b306fb5800f8d283cf647004e740a7a96d44e1d4287",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#skill-imports-sharing-and-ownership"
+      ],
+      "retained_knowledge": "Organization scope/Editor plus staged user/group recipients, row permission/remove access and Save/reopen persistence."
+    },
+    {
+      "historical_filename": "user-craft-skills-upload-github.yaml",
+      "source_sha256": "5320511c610ecf24876df47f36e7d5623ee4cf68d79bea96cbf21e9a352d3b6f",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#skill-imports-sharing-and-ownership"
+      ],
+      "retained_knowledge": "Native bundle Review/duplicate Create anyway and offline exact repository preview, partial/select-all import and per-item results; no clone."
+    },
+    {
+      "historical_filename": "user-craft-task-history-error.yaml",
+      "source_sha256": "bfe1eae6b5e148e6dda087e3ffe21066a0ee87d1abef293704f52e2d36b19199",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#scheduled-tasks-and-history",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Run-history error leaves task detail distinct from failed task-list; Try again reads restored history."
+    },
+    {
+      "historical_filename": "user-craft-tasks-empty.yaml",
+      "source_sha256": "38ba39deb13ace67ca5fd2dccf43c0239f1c62343aa4926b41401cceff7ec6f0",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#scheduled-tasks-and-history",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Empty list versus empty run history versus legacy advanced edit condition; these require separate staged records."
+    },
+    {
+      "historical_filename": "user-craft-tasks-lifecycle.yaml",
+      "source_sha256": "cc2ff0d5d17a166f336ef93b287e2daa49875d6830c6a70dc3a116c1491f4a49",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#scheduled-tasks-and-history",
+        "script-craft.md#sessions-queued-turns-and-approvals"
+      ],
+      "retained_knowledge": "Minute/hour bounds, daily/weekday/preapproval, real list-page-two create-and-run, toast-covered Resume, edit/reopen, manual run/banner, history statuses/paging and delete."
+    },
+    {
+      "historical_filename": "user-craft-tasks-read-error.yaml",
+      "source_sha256": "53a5f7023ca22e0eabdbece723b2d95de63af16bee90feed86121888aa0e742a",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-craft.md#scheduled-tasks-and-history",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Task-list error and Try again after explicit loaded restoration, not automatic recovery."
+    },
+    {
+      "historical_filename": "user-craft-turns-approvals.yaml",
+      "source_sha256": "eabd1a882b2f820180d8d603e7f111a24bdbed198172c0ba9310101d5b8a4250",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#sessions-queued-turns-and-approvals"
+      ],
+      "retained_knowledge": "Slash picker, actual attachment, running/queued-removal, subagent read-only view, approval once/session/reject, interruption and confirmed session delete."
+    },
+    {
+      "historical_filename": "user-craft-usage-limit.yaml",
+      "source_sha256": "c52ab2eacf734c8e53278734b1eb3ac8795c68f997b34db88b19b4225009d629",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-craft.md#sessions-queued-turns-and-approvals",
+        "script-craft.md#loading-errors-usage-limit-and-reset"
+      ],
+      "retained_knowledge": "Native send gets a finite recoverable usage-limit banner independent of admin budget metadata or a real usage engine."
+    },
+    {
+      "historical_filename": "user-extras-analytics.yaml",
+      "source_sha256": "bbfbf5f0aeba3d4c393b1be5ed1e0610ec7795e8a51426d2be8105c4df4a521d",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-labels-avatars-and-analytics",
+        "script-agents-settings.md#usage-and-spending-display"
+      ],
+      "retained_knowledge": "Inclusive seeded daily range, 1D/7D/1M/3M/custom calendars, empty/populated summaries, hover series and Back; no live collector/export."
+    },
+    {
+      "historical_filename": "user-extras-avatar-labels.yaml",
+      "source_sha256": "64f170345f4dd1c1461d2012956a483e2006efdd00baefa2f77087536ec2437d",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-labels-avatars-and-analytics"
+      ],
+      "retained_knowledge": "Create label then attach via persona Save; native default/icon/image avatar picker and actual file upload/readback are separate operations."
+    },
+    {
+      "historical_filename": "user-extras-branding.yaml",
+      "source_sha256": "265a8acd983ce7a90c1ecef57d98caaaeddb26b8da0967a2c7b8a734e8af1aa5",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding",
+        "script-admin.md#theme-consent-and-announcements"
+      ],
+      "retained_knowledge": "Enterprise name/logo/greeting/disclaimer plus required first-visit checkbox/Start; browser-local consent is separate from backend settings reset."
+    },
+    {
+      "historical_filename": "user-extras-delete.yaml",
+      "source_sha256": "e506738f3a302590c297e95ca8f713c65309b8ca029c15e5de4b528107d3e87a",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Native deletion confirmation/cancel, saved catalog/pin removal and scoped entity identity."
+    },
+    {
+      "historical_filename": "user-extras-empty.yaml",
+      "source_sha256": "002441628031306410817016d67e492cf439723dc8a1b094f54f2fd11c06cc18",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding"
+      ],
+      "retained_knowledge": "Explicit empty chats/pins/custom agents/notifications retains built-in Assistant unless separately disabled."
+    },
+    {
+      "historical_filename": "user-extras-gallery.yaml",
+      "source_sha256": "540fe1d20ad7211880c470b20a26c7ae1e711b476fdbdf0fc8b64adece72f2b8",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-gallery-and-editor"
+      ],
+      "retained_knowledge": "All/Your tabs, creator/actions chips, name/label search, preview detail/action expansion and Start Chat/pin consumers."
+    },
+    {
+      "historical_filename": "user-extras-member.yaml",
+      "source_sha256": "d13b9dc0053d7892ff3cc4eb54d0b2e656d31f7018c5a67fae1c8f5f97c56835",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding",
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Member name-only completion and permission-dependent gallery/editor controls differ from admin onboarding/repair."
+    },
+    {
+      "historical_filename": "user-extras-no-agent-admin.yaml",
+      "source_sha256": "01ae1c89897ca7c691c63ec036a86427a4c8826d4c758244acd727c43cab2113",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding"
+      ],
+      "retained_knowledge": "Admin no-agent state exposes Re-enable Default Chat and Configure New Agent handoffs with real settings/catalog routes."
+    },
+    {
+      "historical_filename": "user-extras-no-agent-member.yaml",
+      "source_sha256": "fcbf5347a727b5e6ad80f802de6916c63bb3f337a36d27162a0258a1cdfab655",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding"
+      ],
+      "retained_knowledge": "Member no-agent screen lacks admin repair controls; metadata/role prerequisite, not a hidden-button click workaround."
+    },
+    {
+      "historical_filename": "user-extras-notifications.yaml",
+      "source_sha256": "913ca74dc55071c0161c3652bc3a55a7f9247d17642b56f48f8dc3b2ca3733b3",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#notifications-and-banners"
+      ],
+      "retained_knowledge": "Unread/pinned groups, row mark-read/open/dismiss, mark-all and rotating warning banner; SWR header count can remain stale until reload."
+    },
+    {
+      "historical_filename": "user-extras-onboarding-complete.yaml",
+      "source_sha256": "d4f77671988387d7cdff7a699b9edceae1749f987372cbe92918c2d4c360c602",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding"
+      ],
+      "retained_knowledge": "Name personalization, one fictional provider save, connected-card admin handoff and viewer-keyed onboarding completion storage."
+    },
+    {
+      "historical_filename": "user-extras-onboarding-forms.yaml",
+      "source_sha256": "f5e52bbee0fc711a96a962edf4ad8d6c108c26beed3b57dd33146e0b1b1fc1f8",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#onboarding-empty-states-and-branding",
+        "script-admin.md#provider-setup-and-existing-provider-edits",
+        "script-admin.md#conditional-provider-forms"
+      ],
+      "retained_knowledge": "Fourteen distinct provider form shapes during native onboarding; opening forms is not configuring/testing each provider."
+    },
+    {
+      "historical_filename": "user-extras-ownership.yaml",
+      "source_sha256": "7800cd9b4a36fc6797497535766b3d9e43eee8bcfdc7115fbea5bc8fcbb546ee",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Owner transfer supports user or group; Back/Cancel versus Transfer and reopened owner label, not real production authorization proof."
+    },
+    {
+      "historical_filename": "user-extras-remove-label-avatar.yaml",
+      "source_sha256": "76abed1dbf642c94ea9bfbb869885e7036b86f8c9bfbc9ae05dd14d9905c5b6a",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-labels-avatars-and-analytics"
+      ],
+      "retained_knowledge": "Removing a label chip or resetting avatar must be saved and reopened; a local selected tile is not persisted state."
+    },
+    {
+      "historical_filename": "user-extras-reset.yaml",
+      "source_sha256": "6bbc4f3b968bd7d4f0b5fcdf403bceaabb162aab3fbdd278a55560c7f76b5603",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-authoring.md#state-keep-and-reset",
+        "script-agents-settings.md#agent-gallery-and-editor",
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion",
+        "script-agents-settings.md#agent-labels-avatars-and-analytics",
+        "script-agents-settings.md#notifications-and-banners"
+      ],
+      "retained_knowledge": "Dirty persona metadata/shares/pins/avatar/labels and notification state must restore from seed, while browser-local acknowledgement has another lifetime."
+    },
+    {
+      "historical_filename": "user-extras-self-access.yaml",
+      "source_sha256": "711067a6e1fc0e4e3f93a7cacc60e0c37f6eb58c86e75060a8d3815fd42a237e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Remove my access deletes only current viewer share and changes accessible gallery, not the persona globally."
+    },
+    {
+      "historical_filename": "user-extras-sharing.yaml",
+      "source_sha256": "d99381d67855cd73e39910d267006dd44de93eedf3feb17dc08e6fbe39b27317",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#agent-sharing-ownership-and-deletion"
+      ],
+      "retained_knowledge": "Public/private and View & Chat/Editor user/group shares are draft until Save; cancel, copy link and reopen target the actual persona record."
+    },
+    {
+      "historical_filename": "user-files-delete-history.yaml",
+      "source_sha256": "247d6ae30b9425cacc26e744943f62b856483dc650d87685398cf3a708835af1",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#saved-file-grounding-and-deletion",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Immediate deletion spinner, assistant/project association protection, native unlink prerequisite, preserved saved-chat citations and catalog keep/fresh restoration."
+    },
+    {
+      "historical_filename": "user-files-documents.yaml",
+      "source_sha256": "f3f3c0e3765cf9f03db192dbc3b49de5261b1193957d715c810e01ca42c670dd",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Word, workbook sheet/empty/truncated content, legacy download-only and deliberately broken-document error branches."
+    },
+    {
+      "historical_filename": "user-files-images.yaml",
+      "source_sha256": "f7acf278d69b3f7eb6ef1d888af53f02d366a840cc20a5a0ad0f0321b09ff69b",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Loaded image natural dimensions, zoom/reset/download and SVG-versus-extension caveat; img existence alone is insufficient."
+    },
+    {
+      "historical_filename": "user-files-library.yaml",
+      "source_sha256": "045344561a75a8a61344f5e1f04787d8280be5d6a11ed0995cb5213d8235d38b",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#recent-files-and-the-full-library",
+        "script-files-projects.md#upload-paste-drop-and-readiness",
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Three-item quick list versus full library threshold; searchable selectable rows, selected-only/deselect-all, eye preview and immediate trash are distinct targets."
+    },
+    {
+      "historical_filename": "user-files-paste-drop.yaml",
+      "source_sha256": "bfcdfc70e13790d9a4406237414d3e0f88628b8144f06d71384876870fc495a4",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#upload-paste-drop-and-readiness",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "ClipboardEvent/DataTransfer and dragenter/dragover/drop target native handlers; combined selection persists through ready processing, not direct file-store insertion."
+    },
+    {
+      "historical_filename": "user-files-rejections.yaml",
+      "source_sha256": "d984048b10a5433ac15387260ff327b92e93396132f6f1ae2b9830dccd2001a9",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#upload-paste-drop-and-readiness",
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Actual oversize guard, rejected upload/FAILED processing toast and optimistic item removal; unsupported/missing preview is not fabricated success."
+    },
+    {
+      "historical_filename": "user-files-saved-visuals.yaml",
+      "source_sha256": "b0a23cb6cf6b9c2ec3e1bdb45a81c07fae260a945daa452acdaefb5cf42a292c",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#saved-file-grounding-and-deletion",
+        "script-files-projects.md#preview-formats-and-downloads",
+        "script-chat.md#share-links-and-privacy"
+      ],
+      "retained_knowledge": "Saved visual human/assistant attachments reopen independently of current composer selection and retain preview/download metadata in shared history."
+    },
+    {
+      "historical_filename": "user-files-text-data-pdf.yaml",
+      "source_sha256": "2bced8cb368ad97ca75165f358f4507de6db8ecf6eceeb7be47abf01794a442b",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#preview-formats-and-downloads"
+      ],
+      "retained_knowledge": "Markdown/plain/code/JSON/CSV and real PDF payload assertions distinguish text copy, filename, byte signature and native preview readiness."
+    },
+    {
+      "historical_filename": "user-files-upload-answer.yaml",
+      "source_sha256": "ebb966714a495de7ad16b000f56b7af9082bb7c23f6b535e814e9a22a5637a7b",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#upload-paste-drop-and-readiness",
+        "script-files-projects.md#saved-file-grounding-and-deletion",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Real native upload input, pending/ready send gate, two-file persisted descriptors and model-resolved authored answer; reload empties composer without erasing saved attachments."
+    },
+    {
+      "historical_filename": "user-multi-turn.yaml",
+      "source_sha256": "03c721b8520497efea0f95c5ff10be83316dc9bc29fe44ccf7f48e356651ab79",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#compose-stream-and-stop",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Follow-up questions resolve authored context/history cases and save a continuing message tree; canned continuity does not demonstrate arbitrary reasoning."
+    },
+    {
+      "historical_filename": "user-open-cited-source.yaml",
+      "source_sha256": "1497c7283f023ceeba761baa3c7529fe2ce0fa592e1a942ccd544abaf07eee06",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#sources-citations-and-document-viewers",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "Source-chip tooltip, source panel and local body view; historical window.open interception changes capture navigation and is not evidence of native new-tab or upstream-vendor success."
+    },
+    {
+      "historical_filename": "user-permission-aware.yaml",
+      "source_sha256": "b0fd5b6fa0ed770fbce5874df0a77ee98f2995c519859ca62c752dcbc7e4a1d8",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#search-mode-and-filters",
+        "script-chat.md#sources-citations-and-document-viewers"
+      ],
+      "retained_knowledge": "Restricted scripted document list and fallback answer demonstrate authored source availability, not a production ACL evaluation."
+    },
+    {
+      "historical_filename": "user-projects-chat-delete.yaml",
+      "source_sha256": "8d039099d2e82d18bda1d7d1b6b81b2f2db97db702a7842347d76a85f81467f5",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#project-chat-membership",
+        "script-chat.md#agents-recents-and-chat-membership"
+      ],
+      "retained_knowledge": "Confirmed chat deletion tombstones the global engine record and removes both project and sidebar consumers."
+    },
+    {
+      "historical_filename": "user-projects-chat-membership.yaml",
+      "source_sha256": "3794dbecb6e81139547d63c9d83f8463b9c8ce5b5abd60687bba9de4fecb4fab",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#project-chat-membership",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "Move-to-project picker, unmatched Create prefill, custom-agent warning/suppression, native pointer drop and return-to-Recents mutate one saved conversation."
+    },
+    {
+      "historical_filename": "user-projects-create-chat.yaml",
+      "source_sha256": "e92b3edfd2ed2fcbaf0a326d63678d2578ed209402a6e50f55a1933d1ffe0cdd",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#project-home-creation-and-instructions",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Required project-name creation, cancel, discovered project ID, first chat without preexisting model picker and saved default-model inheritance."
+    },
+    {
+      "historical_filename": "user-projects-delete-reset.yaml",
+      "source_sha256": "c71aa41e0f4ea2ac0179c97b31c16270551a8b14697bac1c11aea7b16fbbc8e3",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#project-home-creation-and-instructions",
+        "script-files-projects.md#project-file-membership",
+        "script-files-projects.md#project-chat-membership",
+        "script-files-projects.md#project-search-folded-sidebar-and-reset"
+      ],
+      "retained_knowledge": "Project deletion preserves files/chats but removes membership; non-vacuous rename/instructions/file/chat dirty state and fresh reset restore the complete seeded tree."
+    },
+    {
+      "historical_filename": "user-projects-file-reference.yaml",
+      "source_sha256": "c269a4957e37fec5bc6264919b93c35caa2e369b2d03df11b64c3aab54b0419f",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-files-projects.md#project-file-membership",
+        "script-files-projects.md#saved-file-grounding-and-deletion"
+      ],
+      "retained_knowledge": "Project chat readback must retain both intended file descriptors and authored references; visible file cards alone are not grounding evidence."
+    },
+    {
+      "historical_filename": "user-projects-files.yaml",
+      "source_sha256": "f89b73e083c56d9ea5f533cbe34d6de929c74fc1cecfb63dee4384488f1633e3",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#project-file-membership",
+        "script-files-projects.md#saved-file-grounding-and-deletion"
+      ],
+      "retained_knowledge": "Project card/modal unlink preserves global library; linked project blocks global deletion, while instructions/files persist to native consumers."
+    },
+    {
+      "historical_filename": "user-projects-home.yaml",
+      "source_sha256": "7e2faabe3ecd1b3c06235fafcec031279b823d3a82b710c08dbf98117bf88eec",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#project-home-creation-and-instructions",
+        "script-files-projects.md#project-search-folded-sidebar-and-reset"
+      ],
+      "retained_knowledge": "Project title/sidebar rename, Enter versus Escape, instruction save/cancel/clear and collapsed-tree selection differ from Recents membership."
+    },
+    {
+      "historical_filename": "user-projects-picker-upload.yaml",
+      "source_sha256": "f5ef7fecce2dd43667dbbc47575887583e05c9f76770395d5e79fb148224eea1",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#project-file-membership",
+        "script-files-projects.md#upload-paste-drop-and-readiness"
+      ],
+      "retained_knowledge": "Project Add Files shares native full-library selection, association/unselection and processing/upload/drop callbacks."
+    },
+    {
+      "historical_filename": "user-projects-search.yaml",
+      "source_sha256": "4b0db9e77f84c272efcaaf105358b1e610f2e33d65f47d94d14a6918fc4f64b0",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-files-projects.md#project-search-folded-sidebar-and-reset"
+      ],
+      "retained_knowledge": "Folded ProjectsPopover searches project/chat titles; Search Chats Projects filter requires more than three projects, demonstrated through native fourth creation."
+    },
+    {
+      "historical_filename": "user-provider-conditional-bedrock.yaml",
+      "source_sha256": "09fa447d27228137dffd0d66e6120e212d746ea11ddb0b88f96dce3218a9384f",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#conditional-provider-forms"
+      ],
+      "retained_knowledge": "User/provider surface reaches native Bedrock conditional auth/region branches; inactive credentials and model-refetch prerequisites match admin editor."
+    },
+    {
+      "historical_filename": "user-provider-conditional-portkey.yaml",
+      "source_sha256": "2da0e264b3349cb0423ab46a45503ce704e71927cfbeeed242744e1179d0149b",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#conditional-provider-forms"
+      ],
+      "retained_knowledge": "Native Portkey mode/base default-versus-custom behavior and missing unsupported controls retained outside admin-only route sweep."
+    },
+    {
+      "historical_filename": "user-provider-conditional-vertex.yaml",
+      "source_sha256": "aa45027dc9b7ae1bd357cc74e2d714a76ca8f4e97df27102a0fd454621b3d3b9",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#conditional-provider-forms",
+        "script-authoring.md#direct-evaluation-and-files"
+      ],
+      "retained_knowledge": "Vertex hooks flag, FileReader service-account JSON and workload identity conditional fields; saved input filename is not credential persistence."
+    },
+    {
+      "historical_filename": "user-recents.yaml",
+      "source_sha256": "acf9c80bfb6322c5c2ee09254b969dc2358f2bb9de208f3568f0b2391c0962d0",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-chat.md#agents-recents-and-chat-membership",
+        "script-files-projects.md#project-chat-membership"
+      ],
+      "retained_knowledge": "Open saved recents, row-scoped rename/Enter and confirmed deletion; sidebar/search consumers must match persisted session IDs."
+    },
+    {
+      "historical_filename": "user-search.yaml",
+      "source_sha256": "1a607f540b856591a98d8ebb2427c508836d557f2ff6278f175def6b5aa6e70e",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-chat.md#search-mode-and-filters",
+        "script-authoring.md#completion-waits-and-transient-states"
+      ],
+      "retained_knowledge": "Native mode switch on /app, source/time/tag filtering, tag-remount loading, pagination, no-match/error/recovery and deep-link chat filters; no /search or Auto option."
+    },
+    {
+      "historical_filename": "user-settings-controls-connected-apps.yaml",
+      "source_sha256": "4b40e0344f8804ecdd5dc3470e0aec596159e6136fa7a113c6c526262665ba1e",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#connected-apps-and-personal-connectors"
+      ],
+      "retained_knowledge": "OAuth-provider flag/member prerequisite, grant disconnect cancel/confirm, native empty state and independent personal-connectors fake-connect landing."
+    },
+    {
+      "historical_filename": "user-settings-controls-defaults.yaml",
+      "source_sha256": "e25af36fe68fa4516bc4489fe871b1563a2074d609e826b33f5d0f10f3619c96",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#chat-preferences-and-memories",
+        "script-chat.md#composer-models-answer-models-and-branches"
+      ],
+      "retained_knowledge": "Default model/new-chat scope, scroll/paste/temperature/reasoning flags, cookie streaming, voice preferences, blur personalization and independent memory flags/list edits."
+    },
+    {
+      "historical_filename": "user-settings-controls-gateway.yaml",
+      "source_sha256": "1d593c785292994d2aa33ca467a72b9106d0919a31d2fa9566f4e8d371c0f270",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#access-tokens-and-gateway",
+        "script-admin.md#chat-preferences-and-gateway"
+      ],
+      "retained_knowledge": "Business/permission-gated tab, Community redirect, copied base/model IDs and LLM Gateway Use scope in shared PAT store; no real inference."
+    },
+    {
+      "historical_filename": "user-settings-controls-shortcuts.yaml",
+      "source_sha256": "680aeeabcb876b810f45623e5b9abba9643e63d8131dac60d417c9b64ccd9d3c",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#prompt-shortcuts"
+      ],
+      "retained_knowledge": "Toggle query flag; complete row POST, existing PATCH, DELETE, blur commit and incomplete trailing-draft validation without overwriting saved prompt."
+    },
+    {
+      "historical_filename": "user-settings-controls-tokens.yaml",
+      "source_sha256": "3527210a5f51c88fc58a8d8c82210d01c4384d709771c6d73136b983c5a2d421",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#access-tokens-and-gateway"
+      ],
+      "retained_knowledge": "Name/expiry/limited scopes, write-implies-read and empty-scope disable; one-time fake PAT/copy check and confirmed revoke/readback."
+    },
+    {
+      "historical_filename": "user-settings-controls-usage.yaml",
+      "source_sha256": "7df8e12745b316dd31d8337e5974d3cb3c3d446c0725fb01f5858d29aaa29f8b",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#usage-and-spending-display"
+      ],
+      "retained_knowledge": "Date presets/custom range normalize/disable future days; more-than-three model expansion, unknown-price boundary and route-local date reset."
+    },
+    {
+      "historical_filename": "user-settings-general-background.yaml",
+      "source_sha256": "22f69f37eeb59c9f5fa520b789cb5b06c923a8270cd976fcfcaa88d8fc0865e6",
+      "classification": [
+        "unique",
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#general-settings-language-and-background"
+      ],
+      "retained_knowledge": "Immediate wallpaper/theme writes across six backgrounds; None clears image without reverting theme and no Save/Cancel exists."
+    },
+    {
+      "historical_filename": "user-settings-general-language-fresh-start.yaml",
+      "source_sha256": "fdbbf2ef53b5a66ff0a37eeba1cbbc5937b7e50bce224da8e402738161821ec6",
+      "classification": [
+        "regression"
+      ],
+      "guides": [
+        "script-agents-settings.md#general-settings-language-and-background",
+        "script-authoring.md#state-keep-and-reset"
+      ],
+      "retained_knowledge": "Separate fresh browser context restores default English; backend reset or document.cookie cannot alone clear native HTTP-only locale state."
+    },
+    {
+      "historical_filename": "user-settings-general-language.yaml",
+      "source_sha256": "abb69bfb2f60891e6c71e9715197d7b36c2c7e03c1a55cf283baa1a69fe9da18",
+      "classification": [
+        "unique"
+      ],
+      "guides": [
+        "script-agents-settings.md#general-settings-language-and-background",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Nine endonym picker, Escape/current-option no-op, English-to-Spanish PATCH/HTTP-only locale cookie and router refresh."
+    },
+    {
+      "historical_filename": "user-settings.yaml",
+      "source_sha256": "117884ad12e9ccfff6431b7453a8e9c4a873ed8e0ef1746f68c2712edb2ed051",
+      "classification": [
+        "redundant"
+      ],
+      "guides": [
+        "script-agents-settings.md#general-settings-language-and-background",
+        "script-agents-settings.md#chat-preferences-and-memories"
+      ],
+      "retained_knowledge": "Settings entry/general redirect and ordinary native preference controls; focused settings units retain mutations and conditional branches."
+    },
+    {
+      "historical_filename": "user-smoke-routes.yaml",
+      "source_sha256": "0481f7e9a5d2cca6423d2b94961f0e55e56af2e447818bd83a382db741d7f238",
+      "classification": [
+        "redundant",
+        "regression"
+      ],
+      "guides": [
+        "script-admin.md#routes-aliases-and-locator-context",
+        "script-authoring.md#edition-locale-and-evidence"
+      ],
+      "retained_knowledge": "Shallow user-route readiness inventory only; does not exercise full form, persistence or permissions behavior."
+    }
+  ]
+}

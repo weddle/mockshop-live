@@ -1,4 +1,4 @@
-// Mockshop clip recording: human-paced replay of a scenario, a visible cursor overlay, and a CDP screencast
+// Mockshop clip recording: human-paced replay of a script, a visible cursor overlay, and a CDP screencast
 // (JPEG frames with arrival times) encoded to H.264 MP4 with ffmpeg. Used by runner.mjs in clip mode.
 import fs from "node:fs";
 import path from "node:path";
@@ -6,26 +6,26 @@ import { execFileSync, spawn } from "node:child_process";
 
 let seed = 7;
 
-// Scenario-level `clip:` options (all optional).
+// Script-level `clip:` options (all optional).
 export function clipDefaults(o = {}) {
   seed = 7; // same jitter on every recording
   return {
-    viewport: null,          // [w, h]; default = scenario/manifest viewport (1440x900). [1920,1080] also works
+    viewport: null,          // [w, h]; default = script/manifest viewport (1440x900). [1920,1080] also works
     type_delay_ms: 55,       // per keystroke when type_ms is null
     type_ms: 2500,           // total time to type one `type` step (text is inserted in small bursts); null = per-keystroke
     nav_fade: 450,           // ms crossfade between page navigations (load time is cut from the clip); 0 = hard cut
     fade_ms: 450,            // crossfade for click steps marked `fade: true` (e.g. a side panel opening)
     after_type_ms: 700,      // beat after typing finishes
-    // move_ms: set it to force a fixed cursor glide time (back-compat; see the scenario `cursor:` block, docs/cursor.md)
+    // move_ms: set it to force a fixed cursor glide time (see the script `cursor:` block, docs/cursor.md)
     pre_click_ms: 220,       // hover before clicking (cursor.pre_click_ms overrides)
     after_click_ms: 600,     // beat after each click (plus normal settle)
-    settle_cap_ms: 300,      // clip mode caps scenario `settle:` waits (screenshots keep the full value)
+    settle_cap_ms: 300,      // clip mode caps script `settle:` waits (screenshots keep the full value)
     idle_timeout_ms: 1500,   // clip mode: max wait for network idle after a click/settle (screenshots: 8000)
     hold_ms: 2200,           // how long a `shot` step holds in the clip
     end_hold_ms: 2500,       // hold on the final frame
     title: null,             // { title, subtitle } card over the first page, or a string
     title_ms: 3200,
-    cursor: true,            // back-compat: false hides the overlay; the scenario `cursor:` block configures it
+    cursor: true,            // false hides the overlay; the script `cursor:` block configures it
     fps: 30, crf: 18, preset: "slow",
     ...o,
     title: typeof o.title === "string" ? { title: o.title } : o.title ?? null,

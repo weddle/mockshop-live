@@ -1,0 +1,109 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-onboarding-forms
+title: Native Extras - onboarding forms
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app
+    id: goto-app
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`);
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait: { selector: '[aria-label="onboarding-flow"]' }
+    id: wait-aria-label-onboarding-flow
+  - shot: { name: extras-01-onboarding-welcome, full_page: true }
+    id: shot-extras-01-onboarding-welcome
+  - click: { role: button, name: "Let's Go", exact: true }
+    id: click-let-s-go
+  - wait: { placeholder: Your name }
+    id: wait
+  - shot: { name: extras-02-onboarding-name-required, full_page: true }
+    id: shot-extras-02-onboarding-name-required
+  - fill: { placeholder: Your name, value: Jordan Educator }
+    id: fill
+  - settle: 900
+    id: settle
+  - click: { role: button, name: Next, exact: true }
+    id: click-next
+  - wait: { selector: '[aria-label="onboarding-llm-step"]' }
+    id: wait-aria-label-onboarding-llm-step
+  - shot: { name: extras-03-onboarding-provider-choices, full_page: true }
+    id: shot-extras-03-onboarding-provider-choices
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Claude")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-claude
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog
+  - shot: { name: extras-04-onboarding-anthropic-form, full_page: true }
+    id: shot-extras-04-onboarding-anthropic-form
+  - press: Escape
+    id: press-escape
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Azure OpenAI")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-azure-
+  - wait: { selector: 'input[name="target_uri"]' }
+    id: wait-input-name-target-uri
+  - shot: { name: extras-05-onboarding-azure-form, full_page: true }
+    id: shot-extras-05-onboarding-azure-form
+  - press: Escape
+    id: press-escape-2
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Gemini")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-gemini
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-2
+  - shot: { name: extras-06-onboarding-vertex-form, full_page: true }
+    id: shot-extras-06-onboarding-vertex-form
+  - press: Escape
+    id: press-escape-3
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Amazon Bedrock")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-amazon
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-3
+  - shot: { name: extras-07-onboarding-bedrock-form, full_page: true }
+    id: shot-extras-07-onboarding-bedrock-form
+  - press: Escape
+    id: press-escape-4
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("OpenRouter")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-openro
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-4
+  - shot: { name: extras-08-onboarding-openrouter-form, full_page: true }
+    id: shot-extras-08-onboarding-openrouter-form
+  - press: Escape
+    id: press-escape-5
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("LiteLLM Proxy")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-litell
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-5
+  - shot: { name: extras-09-onboarding-litellm-form, full_page: true }
+    id: shot-extras-09-onboarding-litellm-form
+  - press: Escape
+    id: press-escape-6
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Portkey")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-portke
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-6
+  - shot: { name: extras-10-onboarding-portkey-form, full_page: true }
+    id: shot-extras-10-onboarding-portkey-form
+  - press: Escape
+    id: press-escape-7
+  - click: { selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Vercel AI Gateway")' }
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-vercel
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog-7
+  - shot: { name: extras-11-onboarding-vercel-form, full_page: true }
+    id: shot-extras-11-onboarding-vercel-form
+  - press: Escape
+    id: press-escape-8
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-first-run.yaml

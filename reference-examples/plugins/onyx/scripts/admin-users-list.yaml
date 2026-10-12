@@ -1,0 +1,56 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-list
+title: Native Users entries, counts, sort, paging and search
+strict: true
+requires: enterprise
+locale: en
+steps:
+  - goto: /admin/documents/sets
+    id: goto-admin-documents-sets
+  - click: { selector: 'a[href="/admin/users"]' }
+    id: click-a-href-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  - wait: { text: "{{people.iris.email}}", exact: true }
+    id: wait-iris-ward-learning-lab-example
+  - shot: users-menu
+    id: shot-users-menu
+  - goto: /admin/users
+    id: goto-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests-2
+  - shot: users-direct
+    id: shot-users-direct
+  - click: { text: Name, exact: true }
+    id: click-name
+  - shot: users-sort-name
+    id: shot-users-sort-name
+  - click: { text: Name, exact: true }
+    id: click-name-2
+  - click: { role: button, name: Filter by active users, exact: true }
+    id: click-filter-by-active-users
+  - shot: users-active-filter
+    id: shot-users-active-filter
+  - click: { role: button, name: Filter by active users, exact: true }
+    id: click-filter-by-active-users-2
+  - click: { role: button, name: Filter by pending invites, exact: true }
+    id: click-filter-by-pending-invites
+  - shot: users-invited-summary-filter
+    id: shot-users-invited-summary-filter
+  - click: { role: button, name: Filter by pending invites, exact: true }
+    id: click-filter-by-pending-invites-2
+  - click: { role: button, name: '2', exact: true }
+    id: click-2
+  - shot: users-page-two
+    id: shot-users-page-two
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+    id: fill-input-placeholder-search-users
+  - wait: { text: "{{people.devon.name}}", exact: true }
+    id: wait-devon-ortiz
+  - shot: users-search
+    id: shot-users-search
+  - fill: { selector: 'input[placeholder="Search users..."]', value: no-matching-fictional-user }
+    id: fill-input-placeholder-search-users-2
+  - shot: users-empty
+    id: shot-users-empty
+world: ../../../worlds/seaside/world.yaml

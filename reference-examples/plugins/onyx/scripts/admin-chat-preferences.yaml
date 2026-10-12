@@ -1,0 +1,55 @@
+# #65 route-sized native proof: Chat Preferences.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-chat-preferences
+title: Chat Preferences - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/chat-preferences
+    id: goto-admin-chat-preferences
+  - shot: inventory-chat-preferences
+    id: shot-inventory-chat-preferences
+  - goto: /admin/code-interpreter
+    id: goto-admin-code-interpreter
+  - click: { selector: 'a[href="/admin/chat-preferences"]' }
+    id: click-a-href-admin-chat-preferences
+  - wait: { text: Team Name, exact: true }
+    id: wait-team-name
+  - shot: chat-preferences-menu
+    id: shot-chat-preferences-menu
+  - goto: /admin/chat-preferences
+    id: goto-admin-chat-preferences-2
+  - fill: { placeholder: Enter team name, value: Learning Workshop }
+    id: fill
+  - press: Tab
+    id: press-tab
+  - click: { selector: 'label:has-text("Chat Auto-Scroll") [role="switch"]' }
+    id: click-label-has-text-chat-auto-scroll-role-switch
+  - click: { role: button, name: Modify Prompt, exact: true }
+    id: click-modify-prompt
+  - wait: { role: dialog }
+    id: wait
+  - fill: { placeholder: Enter your system prompt..., value: Use accessible examples for fictional learning workshops. }
+    id: fill-2
+  - shot: chat-preferences-prompt-dialog
+    id: shot-chat-preferences-prompt-dialog
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+    id: click-role-dialog-button-has-text-save
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/code-interpreter
+    id: goto-admin-code-interpreter-2
+  - goto: /admin/chat-preferences
+    id: goto-admin-chat-preferences-3
+  - eval: |
+      if (document.querySelector('input[placeholder="Enter team name"]')?.value !== 'Learning Workshop') throw new Error('Admin team name did not persist');
+    id: eval-script
+  - shot: chat-preferences-saved
+    id: shot-chat-preferences-saved
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

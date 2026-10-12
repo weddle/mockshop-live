@@ -1,0 +1,42 @@
+# #65 route-sized native proof: Document Processing.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-document-processing
+title: Document Processing - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/document-processing
+    id: goto-admin-document-processing
+  - shot: inventory-document-processing
+    id: shot-inventory-document-processing
+  - goto: /admin/document-processing
+    id: goto-admin-document-processing-2
+  - wait: { placeholder: Enter API Key }
+    id: wait
+  - shot: document-processing-direct-empty
+    id: shot-document-processing-direct-empty
+  - fill: { placeholder: Enter API Key, value: mock-only-not-a-secret }
+    id: fill
+  - click: { role: button, name: Save API Key, exact: true }
+    id: click-save-api-key
+  - goto: /admin/index-settings
+    id: goto-admin-index-settings
+  - goto: /admin/document-processing
+    id: goto-admin-document-processing-3
+  - wait: { text: Delete API Key, exact: true }
+    id: wait-delete-api-key
+  - shot: document-processing-saved
+    id: shot-document-processing-saved
+  - click: { role: button, name: Delete API Key, exact: true }
+    id: click-delete-api-key
+  - wait: { placeholder: Enter API Key }
+    id: wait-2
+  - shot: document-processing-deleted
+    id: shot-document-processing-deleted
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

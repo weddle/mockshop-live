@@ -1,0 +1,277 @@
+# #65 route-sized native proof: SSO Providers.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-sso-providers
+title: SSO Providers - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers
+  - shot: inventory-sso-providers
+    id: shot-inventory-sso-providers
+  - goto: /admin/security
+    id: goto-admin-security
+  - click: { selector: 'a[href="/admin/sso-providers"]' }
+    id: click-a-href-admin-sso-providers
+  - wait: { text: No SSO providers yet, exact: true }
+    id: wait-no-sso-providers-yet
+  - shot: sso-menu-empty
+    id: shot-sso-menu-empty
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers-2
+  - click: { role: button, name: Add Provider, exact: true }
+    id: click-add-provider
+  - wait: { role: dialog }
+    id: wait
+  - fill: { selector: 'input[name="name"]', value: workshop-demo }
+    id: fill-input-name-name
+  - fill: { selector: 'input[name="display_name"]', value: Workshop SSO (fake) }
+    id: fill-input-name-display-name
+  - fill: { selector: 'input[name="config.client_id"]', value: mock-only-client }
+    id: fill-input-name-config-client-id
+  - fill: { selector: 'input[name="config.client_secret"]', value: mock-only-not-a-secret }
+    id: fill-input-name-config-client-secret
+  - shot: sso-create-dialog
+    id: shot-sso-create-dialog
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/security
+    id: goto-admin-security-2
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers-3
+  - wait: { text: Workshop SSO (fake), exact: true }
+    id: wait-workshop-sso-fake
+  - shot: sso-created-disabled
+    id: shot-sso-created-disabled
+  - click: { selector: '[role="switch"]' }
+    id: click-role-switch
+  - shot: sso-enabled-local-only
+    id: shot-sso-enabled-local-only
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+      })()
+    id: eval-script
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers-4
+  - wait: { text: No SSO providers yet, exact: true }
+    id: wait-no-sso-providers-yet-2
+  - shot: reset-sso-seed
+    id: shot-reset-sso-seed
+  # Pinned lib/sso/utils.ts:19–175 supplies three real types, not Google-only coverage.
+  # SSOProviderModal.tsx:69–125,353–493 plus InputVertical's Formik errors own these states.
+  - click: { role: button, name: Add Provider, exact: true }
+    id: click-add-provider-2
+  - wait: { role: dialog }
+    id: wait-2
+  - wait: { selector: '[role="dialog"] input[placeholder="Select a provider type"][value="Google"]' }
+    id: wait-role-dialog-input-placeholder-select-a-provider-type-value-
+  - click: { selector: '[role="dialog"] input[placeholder="Select a provider type"]' }
+    id: click-role-dialog-input-placeholder-select-a-provider-type
+  - wait: { text: OIDC, exact: true }
+    id: wait-oidc
+  - wait: { text: SAML, exact: true }
+    id: wait-saml
+  - shot: sso-provider-type-options
+    id: shot-sso-provider-type-options
+  - click: { text: OIDC, exact: true }
+    id: click-oidc
+  - wait: { selector: 'input[name="config.openid_config_url"]' }
+    id: wait-input-name-config-openid-config-url
+  - shot: sso-oidc-form
+    id: shot-sso-oidc-form
+  - click: { selector: 'input[name="config.openid_config_url"]' }
+    id: click-input-name-config-openid-config-url
+  - press: Tab
+    id: press-tab
+  - wait: { text: OpenID Configuration URL is required, exact: true }
+    id: wait-openid-configuration-url-is-required
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled' }
+    id: wait-role-dialog-button-type-submit-disabled
+  - shot: sso-oidc-required-error
+    id: shot-sso-oidc-required-error
+  - fill: { selector: 'input[name="name"]', value: workshop-oidc }
+    id: fill-input-name-name-2
+  - fill: { selector: 'input[name="display_name"]', value: Workshop OIDC (fake) }
+    id: fill-input-name-display-name-2
+  - fill: { selector: 'input[name="config.client_id"]', value: mock-only-oidc-client }
+    id: fill-input-name-config-client-id-2
+  - fill: { selector: 'input[name="config.client_secret"]', value: mock-only-not-an-oidc-secret }
+    id: fill-input-name-config-client-secret-2
+  - fill: { selector: 'input[name="config.openid_config_url"]', value: 'https://workshop-idp.example.invalid/.well-known/openid-configuration' }
+    id: fill-input-name-config-openid-config-url
+  - click: { selector: 'label:has-text("Require Verified Email Claim") [role="switch"]' }
+    id: click-label-has-text-require-verified-email-claim-role-switch
+  - click: { selector: 'label:has-text("Enable PKCE") [role="switch"]' }
+    id: click-label-has-text-enable-pkce-role-switch
+  - fill: { placeholder: 'Add a scope (e.g. openid)', value: workshop-read }
+    id: fill
+  - press: Enter
+    id: press-enter
+  - scroll: { placeholder: 'Add a scope (e.g. openid)' }
+    id: scroll
+  - wait: { selector: 'label:has-text("Require Verified Email Claim") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-require-verified-email-claim-role-switch-ari
+  - wait: { selector: 'label:has-text("Enable PKCE") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-enable-pkce-role-switch-aria-checked-true
+  - wait: { text: workshop-read, exact: true }
+    id: wait-workshop-read
+  - shot: sso-oidc-conditional-fields-filled
+    id: shot-sso-oidc-conditional-fields-filled
+  - wait: { selector: '[role="dialog"] button[type="submit"]:not(:disabled)' }
+    id: wait-role-dialog-button-type-submit-not-disabled
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - goto: /admin/security
+    id: goto-admin-security-3
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers-5
+  - wait: { text: Workshop OIDC (fake), exact: true }
+    id: wait-workshop-oidc-fake
+  # Card's native Copy/switch/Edit order: select its last button, not a guessed tooltip name.
+  - click: { selector: '.opal-card:has-text("Workshop OIDC (fake)") button', last: true }
+    id: click-opal-card-has-text-workshop-oidc-fake-button
+  - wait: { role: dialog }
+    id: wait-3
+  - wait: { selector: '[role="dialog"] input[placeholder="Select a provider type"][value="OIDC"]' }
+    id: wait-role-dialog-input-placeholder-select-a-provider-type-value--2
+  - eval: |
+      (() => {
+        const input = name => document.querySelector(`[role="dialog"] input[name="${name}"]`);
+        if (input('config.openid_config_url').value !== 'https://workshop-idp.example.invalid/.well-known/openid-configuration') throw new Error('OIDC discovery metadata did not persist');
+        if (!input('name').disabled) throw new Error('Saved provider slug must be disabled');
+        for (const title of ['Require Verified Email Claim', 'Enable PKCE']) {
+          const label = [...document.querySelectorAll('[role="dialog"] label')].find(el => el.textContent.includes(title));
+          if (label.querySelector('[role="switch"]').getAttribute('aria-checked') !== 'true') throw new Error('OIDC switch did not persist');
+        }
+        if (!document.querySelector('[role="dialog"]').textContent.includes('workshop-read')) throw new Error('OIDC scope did not persist');
+      })()
+    id: eval-script-2
+  - scroll: { placeholder: 'Add a scope (e.g. openid)' }
+    id: scroll-2
+  - shot: sso-oidc-navigation-readback
+    id: shot-sso-oidc-navigation-readback
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+  - click: { role: button, name: Add Provider, exact: true }
+    id: click-add-provider-3
+  - wait: { role: dialog }
+    id: wait-4
+  - click: { selector: '[role="dialog"] input[placeholder="Select a provider type"]' }
+    id: click-role-dialog-input-placeholder-select-a-provider-type-2
+  - click: { text: SAML, exact: true }
+    id: click-saml
+  - wait: { selector: 'input[name="config.idp_entity_id"]' }
+    id: wait-input-name-config-idp-entity-id
+  - shot: sso-saml-form
+    id: shot-sso-saml-form
+  - click: { selector: 'textarea[name="config.idp_x509_cert"]' }
+    id: click-textarea-name-config-idp-x509-cert
+  - press: Tab
+    id: press-tab-2
+  - wait: { text: IdP X.509 Certificate is required, exact: true }
+    id: wait-idp-x-509-certificate-is-required
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled' }
+    id: wait-role-dialog-button-type-submit-disabled-2
+  - shot: sso-saml-required-error
+    id: shot-sso-saml-required-error
+  - fill: { selector: 'input[name="name"]', value: workshop-saml }
+    id: fill-input-name-name-3
+  - fill: { selector: 'input[name="display_name"]', value: Workshop SAML (fake) }
+    id: fill-input-name-display-name-3
+  - fill: { selector: 'input[name="config.idp_entity_id"]', value: 'https://workshop-idp.example.invalid/entity' }
+    id: fill-input-name-config-idp-entity-id
+  - fill: { selector: 'input[name="config.idp_sso_url"]', value: 'https://workshop-idp.example.invalid/sso' }
+    id: fill-input-name-config-idp-sso-url
+  - fill: { selector: 'textarea[name="config.idp_x509_cert"]', value: MOCK-ONLY-NOT-A-CERTIFICATE }
+    id: fill-textarea-name-config-idp-x509-cert
+  - fill: { selector: 'input[name="config.sp_entity_id"]', value: mock-only-workshop-sp }
+    id: fill-input-name-config-sp-entity-id
+  - scroll: { selector: 'input[name="config.sp_entity_id"]' }
+    id: scroll-input-name-config-sp-entity-id
+  - shot: sso-saml-required-fields-filled
+    id: shot-sso-saml-required-fields-filled
+  - fill: { selector: 'textarea[name="config.sp_x509_cert"]', value: MOCK-ONLY-NOT-AN-SP-CERTIFICATE }
+    id: fill-textarea-name-config-sp-x509-cert
+  - fill: { selector: 'input[name="config.sp_private_key"]', value: MOCK-ONLY-NOT-A-PRIVATE-KEY }
+    id: fill-input-name-config-sp-private-key
+  - fill: { selector: 'input[name="config.email_attribute"]', value: workshop_email }
+    id: fill-input-name-config-email-attribute
+  - scroll: { selector: 'input[name="config.email_attribute"]' }
+    id: scroll-input-name-config-email-attribute
+  - shot: sso-saml-optional-fields-filled
+    id: shot-sso-saml-optional-fields-filled
+  - wait: { selector: '[role="dialog"] button[type="submit"]:not(:disabled)' }
+    id: wait-role-dialog-button-type-submit-not-disabled-2
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit-3
+  - wait_gone: { role: dialog }
+    id: wait-gone-4
+  - goto: /admin/security
+    id: goto-admin-security-4
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers-6
+  - wait: { text: Workshop SAML (fake), exact: true }
+    id: wait-workshop-saml-fake
+  - click: { selector: '.opal-card:has-text("Workshop SAML (fake)") button', last: true }
+    id: click-opal-card-has-text-workshop-saml-fake-button
+  - wait: { role: dialog }
+    id: wait-5
+  - wait: { selector: '[role="dialog"] input[placeholder="Select a provider type"][value="SAML"]' }
+    id: wait-role-dialog-input-placeholder-select-a-provider-type-value--3
+  - eval: |
+      (() => {
+        const expected = { 'config.idp_entity_id': 'https://workshop-idp.example.invalid/entity', 'config.idp_sso_url': 'https://workshop-idp.example.invalid/sso', 'config.sp_entity_id': 'mock-only-workshop-sp', 'config.email_attribute': 'workshop_email' };
+        for (const [name, value] of Object.entries(expected)) {
+          if (document.querySelector(`[role="dialog"] input[name="${name}"]`).value !== value) throw new Error('SAML metadata did not persist');
+        }
+        if (!document.querySelector('[role="dialog"] input[name="name"]').disabled) throw new Error('Saved SAML slug must be disabled');
+        for (const name of ['config.idp_x509_cert', 'config.sp_x509_cert']) {
+          if (document.querySelector(`[role="dialog"] textarea[name="${name}"]`).value !== 'mock-only-not-a-secret') throw new Error('SAML certificate bytes must be replaced with the fake marker');
+        }
+      })()
+    id: eval-script-3
+  - scroll: { selector: 'input[name="config.sp_entity_id"]' }
+    id: scroll-input-name-config-sp-entity-id-2
+  - shot: sso-saml-navigation-readback
+    id: shot-sso-saml-navigation-readback
+  - scroll: { text: 'ACS (Reply) URL', exact: true }
+    id: scroll-acs-reply-url
+  - shot: sso-saml-acs-optional-content
+    id: shot-sso-saml-acs-optional-content
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-5
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+      })()
+    id: eval-script-4
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers-7
+  - wait: { text: No SSO providers yet, exact: true }
+    id: wait-no-sso-providers-yet-3
+  - shot: reset-sso-provider-types
+    id: shot-reset-sso-provider-types
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

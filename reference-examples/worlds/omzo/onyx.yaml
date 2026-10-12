@@ -1,0 +1,3346 @@
+apps:
+  onyx:
+    viewer: dana
+    people:
+      dana:
+        id: 8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11
+      kenji:
+        id: u2
+      sam:
+        id: u6
+      priya:
+        id: u3
+      marcus:
+        id: u4
+      lena:
+        id: u5
+      tomas:
+        id: u7
+      oncall:
+        id: u8
+    agents:
+      assistant:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 0
+        name: Assistant
+        description: Your everyday assistant, grounded in {{company.name}}'s connected knowledge.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 2
+            name: web_search
+            display_name: Web Search
+            description: Search the public web.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: WebSearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 4
+            name: python
+            display_name: Code Interpreter
+            description: Run Python to analyze data and build charts.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: PythonTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 3
+            name: image_generation
+            display_name: Image Generation
+            description: Generate images from a text prompt.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: ImageGenerationTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 0
+        is_featured: true
+        builtin_persona: true
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: null
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      sre-copilot:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: null
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 11
+        name: SRE Copilot
+        description: Incident timelines, root causes and runbooks for {{company.name}} Meetings, Phone and Rooms.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 31
+            name: get_oncall_schedule
+            display_name: On-call schedule
+            description: Look up who is on call for a service this week, with escalation order.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 32
+            name: get_service_status
+            display_name: Service status
+            description: Check current health and open incidents for a service or region.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Latency spike
+            message: Why did meeting join latency spike on Tuesday?
+          - name: On-call now
+            message: Who is on call for media-platform this week, and how healthy is us-east-1 right now?
+        document_sets:
+          - id: 21
+            name: Runbooks & Postmortems
+            description: Operational runbooks, architecture docs and incident postmortems
+            cc_pair_summaries:
+              - id: 102
+                name: Confluence – Engineering Runbooks
+                source: confluence
+                access_type: public
+              - id: 103
+                name: Google Drive – Postmortems
+                source: google_drive
+                access_type: sync
+              - id: 108
+                name: Confluence – Platform Architecture
+                source: confluence
+                access_type: sync
+            is_up_to_date: true
+            is_public: true
+            users: []
+            groups: []
+            permissions:
+              edit: true
+              manage_access: true
+              delete: true
+              publish: true
+            federated_connector_summaries: []
+        is_public: false
+        is_listed: true
+        display_priority: 1
+        is_featured: true
+        builtin_persona: false
+        labels:
+          - id: 1
+            name: "{{teams.reliability.name}}"
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Activity
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: |
+          You are the SRE Copilot for {{company.name}}. Answer questions about incidents, root causes,
+          rollbacks and runbooks using GitHub, #inc-* Slack, Jira, Confluence runbooks and
+          postmortems. Always cite sources, state impact in numbers, and suggest a next step.
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      incident-commander:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 12
+        name: Incident Commander
+        description: "Runs the incident checklist: rollbacks, status updates and postmortem follow-ups."
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Rollback runbook
+            message: Walk me through the relay-scorer rollback runbook.
+          - name: Status update
+            message: Draft the customer status update for INC-2291.
+        document_sets:
+          - id: 22
+            name: Platform Code & Incidents
+            description: Pull requests, commits and incident tickets for the media platform
+            cc_pair_summaries:
+              - id: 101
+                name: GitHub – omzo/media-platform
+                source: github
+                access_type: sync
+              - id: 105
+                name: Jira – SRE incidents
+                source: jira
+                access_type: public
+            is_up_to_date: true
+            is_public: true
+            users: []
+            groups: []
+            permissions:
+              edit: true
+              manage_access: true
+              delete: true
+              publish: true
+            federated_connector_summaries: []
+        is_public: true
+        is_listed: true
+        display_priority: 2
+        is_featured: true
+        builtin_persona: false
+        labels:
+          - id: 2
+            name: Incident Response
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BooksStack
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      capacity-analyst:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 13
+        name: Capacity Analyst
+        description: Pulls relay and media-server capacity data and runs quick analyses in Python.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 4
+            name: python
+            display_name: Code Interpreter
+            description: Run Python to analyze data and build charts.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: PythonTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 3
+        is_featured: false
+        builtin_persona: false
+        labels:
+          - id: 1
+            name: "{{teams.reliability.name}}"
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BarChart
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      support-escalation-helper:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 14
+        name: Support Escalation Helper
+        description: Matches customer escalations to known incidents and suggested replies.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 2
+            name: web_search
+            display_name: Web Search
+            description: Search the public web.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: WebSearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 4
+        is_featured: false
+        builtin_persona: false
+        labels:
+          - id: 3
+            name: Support
+          - id: 2
+            name: Incident Response
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Terminal
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+    sources:
+      incident-channels:
+        id: 104
+        connector_id: 304
+        credential_id: 204
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 204
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          slack:
+            workspace: omzo
+            channels:
+              - eng-media
+              - inc-2291-join-latency
+            channel_regex_enabled: true
+            index_private_channels: false
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: "{{vars.onyx_template_open}}ago:6m}}"
+          last_permission_sync_attempt_status: success
+          permission_syncing: false
+          last_permission_sync_attempt_finished: "{{vars.onyx_template_open}}ago:6m}}"
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 164300
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:8m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 104
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:8m}}"
+          docs_indexed: 164300
+          latest_index_attempt_docs_indexed: 1240
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10401
+              new_docs_indexed: 1240
+              total_docs_indexed: 1240
+              time_started: "{{vars.onyx_template_open}}ago:15m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:8m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10402
+              new_docs_indexed: 620
+              total_docs_indexed: 620
+              time_started: "{{vars.onyx_template_open}}ago:45m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:38m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10403
+              new_docs_indexed: 162440
+              total_docs_indexed: 162440
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        credential_by_vendor:
+          slack:
+            credential_json:
+              slack_bot_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      media-platform:
+        id: 101
+        connector_id: 301
+        credential_id: 201
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 201
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          github:
+            repo_owner: omzo
+            repositories: media-platform
+            include_prs: true
+            include_issues: true
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 18420
+          number_of_index_attempts: 640
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:14m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 101
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:14m}}"
+          docs_indexed: 18420
+          latest_index_attempt_docs_indexed: 96
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10101
+              new_docs_indexed: 96
+              total_docs_indexed: 96
+              time_started: "{{vars.onyx_template_open}}ago:19m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:14m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10102
+              new_docs_indexed: 41
+              total_docs_indexed: 41
+              time_started: "{{vars.onyx_template_open}}ago:49m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:44m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10103
+              new_docs_indexed: 18283
+              total_docs_indexed: 18283
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        errors:
+          total_items: 0
+          items: []
+        permission_sync:
+          applicable: false
+          total_items: 0
+          items: []
+        group_sync:
+          applicable: false
+          total_items: 0
+          items: []
+        credential_by_vendor:
+          github:
+            credential_json:
+              github_access_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      postmortems:
+        id: 103
+        connector_id: 303
+        credential_id: 203
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 203
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          google_drive:
+            shared_drive_urls:
+              - https://docs.google.example/drive/folders/omzo-postmortems
+            include_shared_drives: true
+            include_my_drive: false
+            include_files_shared_with_me: false
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: "{{vars.onyx_template_open}}ago:10m}}"
+          last_permission_sync_attempt_status: success
+          permission_syncing: false
+          last_permission_sync_attempt_finished: "{{vars.onyx_template_open}}ago:10m}}"
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 1286
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:12m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 103
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:12m}}"
+          docs_indexed: 1286
+          latest_index_attempt_docs_indexed: 9
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10301
+              new_docs_indexed: 9
+              total_docs_indexed: 9
+              time_started: "{{vars.onyx_template_open}}ago:16m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:12m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10302
+              new_docs_indexed: 4
+              total_docs_indexed: 4
+              time_started: "{{vars.onyx_template_open}}ago:46m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:42m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10303
+              new_docs_indexed: 1273
+              total_docs_indexed: 1273
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        credential_by_vendor:
+          google_drive:
+            credential_json:
+              google_tokens: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      incidents:
+        id: 105
+        connector_id: 305
+        credential_id: 205
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: public
+          credential_ids:
+            - 205
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          jira:
+            jira_base_url: https://omzo.atlassian.example
+            project_key: SRE
+            comment_email_blacklist: []
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: public
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 14870
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:22m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 105
+          access_type: public
+          last_success: "{{vars.onyx_template_open}}ago:22m}}"
+          docs_indexed: 14870
+          latest_index_attempt_docs_indexed: 31
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10501
+              new_docs_indexed: 31
+              total_docs_indexed: 31
+              time_started: "{{vars.onyx_template_open}}ago:27m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:22m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10502
+              new_docs_indexed: 18
+              total_docs_indexed: 18
+              time_started: "{{vars.onyx_template_open}}ago:57m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:52m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10503
+              new_docs_indexed: 14821
+              total_docs_indexed: 14821
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        credential_by_vendor:
+          jira:
+            credential_json:
+              jira_user_email: svc-onyx@{{company.domain}}
+              jira_api_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      runbooks:
+        id: 102
+        connector_id: 302
+        credential_id: 202
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: public
+          credential_ids:
+            - 202
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          confluence:
+            wiki_base: https://omzo.atlassian.example/wiki
+            space: RUN
+            is_cloud: true
+            page_id: ""
+            index_recursively: true
+            cql_query: null
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: public
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: true
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 41.7
+          supports_targeted_reindex: true
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: Space RUN · page 412 of ~560 · last cursor {{vars.onyx_template_open}}ago:970m}}
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 2940
+          number_of_index_attempts: 412
+          last_index_attempt_status: in_progress
+          last_indexed: "{{vars.onyx_template_open}}ago:31m}}"
+        row:
+          in_progress: true
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: in_progress
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 102
+          access_type: public
+          last_success: "{{vars.onyx_template_open}}ago:31m}}"
+          docs_indexed: 2940
+          latest_index_attempt_docs_indexed: 412
+        attempts:
+          total_items: 5
+          items:
+            - id: 10201
+              status: in_progress
+              from_beginning: false
+              new_docs_indexed: 412
+              docs_removed_from_index: 0
+              total_docs_indexed: 412
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              time_started: "{{vars.onyx_template_open}}ago:6m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:10s}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 2
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10202
+              new_docs_indexed: 37
+              total_docs_indexed: 37
+              time_started: "{{vars.onyx_template_open}}ago:37m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:31m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10203
+              new_docs_indexed: 12
+              total_docs_indexed: 12
+              time_started: "{{vars.onyx_template_open}}ago:67m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:64m}}"
+            - id: 10204
+              status: completed_with_errors
+              from_beginning: false
+              new_docs_indexed: 54
+              docs_removed_from_index: 0
+              total_docs_indexed: 54
+              error_msg: 2 pages could not be fetched (403 Forbidden)
+              error_count: 2
+              full_exception_trace: null
+              time_started: "{{vars.onyx_template_open}}ago:97m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:93m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10205
+              new_docs_indexed: 2874
+              total_docs_indexed: 2874
+              time_started: "{{vars.onyx_template_open}}ago:2835h}}"
+              time_updated: "{{vars.onyx_template_open}}ago:2832h}}"
+        credential_by_vendor:
+          confluence:
+            credential_json:
+              confluence_username: svc-onyx@{{company.domain}}
+              confluence_access_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      architecture:
+        id: 108
+        connector_id: 308
+        credential_id: 208
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 208
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          confluence:
+            wiki_base: https://omzo.atlassian.example/wiki
+            space: ARCH
+            is_cloud: true
+            page_id: ""
+            index_recursively: true
+            cql_query: null
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: "{{vars.onyx_template_open}}ago:18m}}"
+          last_permission_sync_attempt_status: success
+          permission_syncing: false
+          last_permission_sync_attempt_finished: "{{vars.onyx_template_open}}ago:18m}}"
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 1744
+          number_of_index_attempts: 96
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:44m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 108
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:44m}}"
+          docs_indexed: 1744
+          latest_index_attempt_docs_indexed: 12
+        attempts:
+          total_items: 4
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10801
+              new_docs_indexed: 12
+              total_docs_indexed: 12
+              time_started: "{{vars.onyx_template_open}}ago:49m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:44m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10802
+              new_docs_indexed: 3
+              total_docs_indexed: 3
+              time_started: "{{vars.onyx_template_open}}ago:79m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:75m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 1
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10803
+              new_docs_indexed: 21
+              total_docs_indexed: 21
+              time_started: "{{vars.onyx_template_open}}ago:109m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:104m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10804
+              new_docs_indexed: 1708
+              total_docs_indexed: 1708
+              time_started: "{{vars.onyx_template_open}}ago:2160h}}"
+              time_updated: "{{vars.onyx_template_open}}ago:2158h}}"
+        credential_by_vendor:
+          confluence:
+            credential_json:
+              confluence_username: svc-onyx@{{company.domain}}
+              confluence_access_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      support:
+        id: 106
+        connector_id: 306
+        credential_id: 206
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 206
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          zendesk:
+            content_type: tickets
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 22415
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:1h}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 106
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:1h}}"
+          docs_indexed: 22415
+          latest_index_attempt_docs_indexed: 58
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10601
+              new_docs_indexed: 58
+              total_docs_indexed: 58
+              time_started: "{{vars.onyx_template_open}}ago:65m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:60m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10602
+              new_docs_indexed: 42
+              total_docs_indexed: 42
+              time_started: "{{vars.onyx_template_open}}ago:125m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:120m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10603
+              new_docs_indexed: 22315
+              total_docs_indexed: 22315
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        errors:
+          total_items: 0
+          items: []
+        permission_sync:
+          applicable: true
+          total_items: 1
+          items:
+            - id: 10611
+              status: success
+              error_message: null
+              full_exception_trace: null
+              total_docs_synced: 22415
+              docs_with_permission_errors: 0
+              time_created: "{{vars.onyx_template_open}}ago:1h}}"
+              time_started: "{{vars.onyx_template_open}}ago:1h}}"
+              time_finished: "{{vars.onyx_template_open}}ago:58m}}"
+        group_sync:
+          applicable: false
+          total_items: 0
+          items: []
+        credential_by_vendor:
+          zendesk:
+            credential_json:
+              zendesk_subdomain: omzo-support
+              zendesk_email: svc-onyx@{{company.domain}}
+              zendesk_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      file:
+        visible: false
+    documents:
+      rollback:
+        id: CONF-ENG-RB-5521
+        blurb: Operational runbook for media relay incidents.
+        updated: "{{vars.onyx_template_open}}ago:21d}}"
+      scorer-pr:
+        id: GITHUB-omzo-media-platform-pr-4821
+        blurb: "Replaces the static relay scorer. Rolled out behind flag relay-scorer-v2: 10% on Monday, 100% of us-east-1 on Tuesday 14:05 UTC. Missing guard: when the nearest relay pool is saturated, allocation falls back to any region."
+        updated: "{{vars.onyx_template_open}}ago:4d}}"
+      rollback-thread:
+        id: SLACK-C07INCLATENCY-1728396720
+        blurb: "{{people.sam.name}}: p95 join is 6.8s, relays are being allocated in eu-central-1 for us-east-1 clients. Rolling back flag relay-scorer-v2 now (14:52). Latency is already dropping."
+        updated: "{{vars.onyx_template_open}}ago:3d}}"
+      incident:
+        id: JIRA-SRE-2291
+        blurb: "Impact: 47 minutes (14:05 to 14:52 UTC), about 38,000 meetings delayed, 2.1% join failures. Severity 2. Root cause: cross-region relay allocation after relay-scorer-v2 reached 100%."
+        updated: "{{vars.onyx_template_open}}ago:3d}}"
+      postmortem:
+        id: GDRIVE-1xINC2291POSTMORTEM
+        blurb: "Draft. Contributing factors: no region-affinity guard, no staged rollout above 25%, alert threshold on p99 only. Review scheduled Thursday."
+        updated: "{{vars.onyx_template_open}}ago:2d}}"
+      rollout-checklist:
+        id: FILE__relay-scorer-v2-rollout-checklist
+        blurb: "Staged rollout: 5% for 1h, 25% for 4h, 50% for 24h, then 100%. Each stage needs a p95 join latency check and a named rollback owner."
+        updated: "{{vars.onyx_template_open}}ago:9d}}"
+      conf-eng-oc-3310:
+        id: CONF-ENG-OC-3310
+        blurb: "Primary: {{people.sam.name}}. Secondary: {{people.kenji.name}}. Escalation: {{people.marcus.name}}, then {{people.dana.name}}."
+        updated: "{{vars.onyx_template_open}}ago:1d}}"
+      slack-c07engmedia-1728480000:
+        id: SLACK-C07ENGMEDIA-1728480000
+        blurb: "{{people.kenji.name}}: us-east-1 join p95 back to 1.3s, allocation errors at baseline. relay-scorer-v2 stays off until the guard lands."
+        updated: "{{vars.onyx_template_open}}ago:2d}}"
+    conversations:
+      postmortem-outline-for-inc-2291:
+        id: 11111111-0000-4000-8000-000000000001
+        time_created: "{{vars.onyx_template_open}}ago:3h}}"
+        time_updated: "{{vars.onyx_template_open}}ago:3h}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: sre-copilot
+        turns:
+          - message: "{{conversations.postmortem-outline-for-inc-2291.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://omzo.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.postmortem-outline-for-inc-2291.messages.1.text}}"
+      relay-rollback-runbook-walkthrough:
+        id: 11111111-0000-4000-8000-000000000002
+        time_created: "{{vars.onyx_template_open}}ago:1d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:1d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: incident-commander
+        turns:
+          - message: "{{conversations.relay-rollback-runbook-walkthrough.messages.0.text}}"
+            script:
+              title: Relay rollback runbook walkthrough
+              queries:
+                - Media relay rollback and failover runbook
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://omzo.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: To roll back relay scoring, disable the relay-scorer flag in the flag console and confirm allocation latency recovers within 10 minutes.
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.relay-rollback-runbook-walkthrough.messages.1.text}}"
+      weekend-on-call-handoff-notes:
+        id: 11111111-0000-4000-8000-000000000003
+        time_created: "{{vars.onyx_template_open}}ago:2d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:2d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: incident-commander
+        turns:
+          - message: "{{conversations.weekend-on-call-handoff-notes.messages.0.text}}"
+            script:
+              title: Weekend on-call handoff notes
+              queries:
+                - "{{teams.media-platform.name}} on-call handoff"
+              documents:
+                - id: "{{apps.onyx.documents.conf-eng-oc-3310.id}}"
+                  title: "{{documents.conf-eng-oc-3310.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://omzo.atlassian.example/wiki/spaces/ENG/pages/3310/Media+Platform+on-call
+                  blurb: "{{apps.onyx.documents.conf-eng-oc-3310.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-eng-oc-3310.updated}}"
+              answer: "{{conversations.weekend-on-call-handoff-notes.messages.1.text}}"
+      q3-relay-capacity-by-region:
+        id: 11111111-0000-4000-8000-000000000004
+        time_created: "{{vars.onyx_template_open}}ago:4d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:4d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: capacity-analyst
+        turns:
+          - message: "{{conversations.q3-relay-capacity-by-region.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://omzo.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.q3-relay-capacity-by-region.messages.1.text}}"
+      draft-release-notes-for-relay-scorer-v2:
+        id: 11111111-0000-4000-8000-000000000005
+        time_created: "{{vars.onyx_template_open}}ago:6d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:6d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: assistant
+        turns:
+          - message: "{{conversations.draft-release-notes-for-relay-scorer-v2.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://omzo.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.draft-release-notes-for-relay-scorer-v2.messages.1.text}}"
+      zendesk-escalation-dropped-calls-in-frankfurt:
+        id: 11111111-0000-4000-8000-000000000006
+        time_created: "{{vars.onyx_template_open}}ago:9d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:9d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: support-escalation-helper
+        turns:
+          - message: "{{conversations.zendesk-escalation-dropped-calls-in-frankfurt.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://omzo.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.zendesk-escalation-dropped-calls-in-frankfurt.messages.1.text}}"
+    replies:
+      99-default:
+        default: true
+        title: "{{company.name}} reliability question"
+        chunk_delay_ms: 50
+        queries:
+          - "{{company.name}} reliability knowledge"
+        text: |
+          This is a scripted demo. Ask about the **Tuesday join latency spike**, the **on-call schedule** or the **relay rollback runbook** to see cited answers [1].
+        cites:
+          - rollback
+      10-join-latency-spike:
+        match: join latency|latency.*spike|spike.*latency|latency spike
+        title: Why meeting join latency spiked on Tuesday
+        chunk_delay_ms: 55
+        reasoning: |
+          The user wants the cause of Tuesday's join latency spike. I should check recent merges and flag rollouts in GitHub, the incident channel in Slack, the Jira incident ticket, the relay runbook and the postmortem draft, then state impact in numbers and a next step.
+        queries:
+          - Meeting join latency spike Tuesday us-east-1
+          - relay-scorer-v2 rollout pull request 4821
+          - INC-2291 incident timeline and impact
+        text: |
+          Join latency spiked because **relay-scorer-v2 reached 100% of us-east-1 traffic** and started allocating TURN relays in the wrong region, which made clients retry [1][2].
+
+          **What happened (Tuesday, UTC)**
+          - **14:05** The flag hit 100% and p95 join latency climbed from **1.2s to 6.8s** [1][3].
+          - **14:31** Incident declared in #inc-meetings-latency. The saturated nearby relay pool pushed allocations to eu-central-1 [1][2].
+          - **14:52** {{people.sam.name}} rolled the flag back, and latency recovered within minutes [2][4].
+
+          **Impact:** about **38,000 meetings delayed** and **2.1% join failures** over 47 minutes [3][5].
+
+          **Next steps**
+          1. Add a region-affinity guard before the scorer is re-enabled [1][5].
+          2. Require the staged rollout above 25% traffic: 5%, 25%, 50%, then 100% [4][6].
+          3. Alert on p95 join latency, not only p99, and review the postmortem draft on Thursday [5].
+        cites:
+          - scorer-pr
+          - rollback-thread
+          - incident
+          - rollback
+          - postmortem
+          - rollout-checklist
+      20-status-update:
+        match: status update|status page
+        title: Customer status update for INC-2291
+        chunk_delay_ms: 45
+        reasoning: |
+          The user wants a customer-facing status update. I should reuse the incident facts, keep it factual, avoid blame and say what is changing.
+        queries:
+          - INC-2291 customer communication guidelines
+        text: |
+          Here's a draft status update, written for customers [1][2]:
+
+          > **Resolved: slower joins for {{company.name}} Meetings in the US East region**
+          >
+          > Between **14:05 and 14:52 UTC on Tuesday**, some participants in the US East region experienced slow or failed meeting joins. About **2.1% of join attempts failed** during this window.
+          >
+          > The issue was caused by a recent change to how media relays are selected. We reverted the change at 14:52 UTC and joins returned to normal.
+          >
+          > We're adding safeguards to staged rollouts so a change like this is caught before it reaches all customers. A full summary will follow within five business days.
+
+          I left out the internal flag name and individual names, per the runbook's guidance for customer updates [2].
+        cites:
+          - incident
+          - rollback
+      30-on-call:
+        match: on.call|oncall
+        title: Media-platform on-call and us-east-1 health
+        chunk_delay_ms: 50
+        reasoning: |
+          The user wants the current on-call and service health. I should use the on-call schedule and the service status tool, then summarize.
+        queries:
+          - media-platform on-call schedule this week
+          - us-east-1 service status
+        text: |
+          **On call for media-platform this week** [1]
+          - Primary: **{{people.sam.name}}**
+          - Secondary: **{{people.kenji.name}}**
+          - Escalation: {{people.marcus.name}}, then {{people.dana.name}}
+
+          **us-east-1 right now:** healthy. Join p95 is back to **1.3s** and relay allocation errors are at baseline. relay-scorer-v2 stays off until the region-affinity guard lands [2].
+        cites:
+          - conf-eng-oc-3310
+          - slack-c07engmedia-1728480000
+      98-follow-up:
+        follow_up_default: true
+        title: "{{vars.onyx_template_open}}prev.title}}"
+        chunk_delay_ms: 50
+        queries: []
+        text: |
+          This is a scripted demo follow-up. Try asking for a **customer status update** for INC-2291.
+        cites: []
+      40-rollback-runbook:
+        match: runbook|rollback
+        title: Relay-scorer rollback runbook
+        chunk_delay_ms: 50
+        reasoning: |
+          The user wants the rollback steps. I should pull the relay rollback runbook and the rollout checklist.
+        queries:
+          - Media relay rollback and failover runbook
+        text: |
+          **Rolling back relay scoring** [1]
+          1. Declare the incident and name a rollback owner.
+          2. In the flag console, **disable the relay-scorer flag**.
+          3. Watch p95 join latency; it should recover within **10 minutes**.
+          4. If it doesn't, fail over relay allocation to the secondary pool.
+
+          **Before re-enabling:** use the staged rollout of 5%, 25%, 50%, then 100%, with a latency check at each stage [2].
+        cites:
+          - rollback
+          - rollout-checklist
+    fixtures:
+      GET /manage/admin/user-group:
+        - cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+          id: 1
+          name: "{{teams.reliability.name}}"
+          users:
+            - id: "{{apps.onyx.people.dana.id}}"
+              email: "{{people.dana.email}}"
+            - id: "{{apps.onyx.people.kenji.id}}"
+              email: "{{people.kenji.email}}"
+            - id: "{{apps.onyx.people.sam.id}}"
+              email: "{{people.sam.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.dana.id}}"
+        - cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+          id: 2
+          name: "{{teams.media-platform.name}}"
+          users:
+            - id: "{{apps.onyx.people.priya.id}}"
+              email: "{{people.priya.email}}"
+            - id: "{{apps.onyx.people.marcus.id}}"
+              email: "{{people.marcus.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.marcus.id}}"
+        - cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+          id: 3
+          name: "{{teams.support-engineering.name}}"
+          users:
+            - id: "{{apps.onyx.people.lena.id}}"
+              email: "{{people.lena.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.lena.id}}"
+      GET /manage/user-groups/minimal:
+        - id: 1
+          name: "{{teams.reliability.name}}"
+        - id: 2
+          name: "{{teams.media-platform.name}}"
+        - id: 3
+          name: "{{teams.support-engineering.name}}"
+      GET /manage/users:
+        accepted:
+          - id: "{{apps.onyx.people.dana.id}}"
+            email: "{{people.dana.email}}"
+          - id: "{{apps.onyx.people.kenji.id}}"
+            email: "{{people.kenji.email}}"
+          - id: "{{apps.onyx.people.priya.id}}"
+            email: "{{people.priya.email}}"
+          - id: "{{apps.onyx.people.marcus.id}}"
+            email: "{{people.marcus.email}}"
+          - id: "{{apps.onyx.people.lena.id}}"
+            email: "{{people.lena.email}}"
+          - id: "{{apps.onyx.people.sam.id}}"
+            email: "{{people.sam.email}}"
+        invited: []
+        slack_users: []
+        accepted_pages: 1
+        invited_pages: 0
+        slack_users_pages: 0
+      GET /user/projects:
+        - id: 1
+          name: Q4 {{teams.reliability.name}} Review
+          description: null
+          created_at: "{{vars.onyx_template_open}}ago:7d}}"
+          user_id: "{{apps.onyx.people.dana.id}}"
+          instructions: Use plain, numeric language. Cite incident tickets, runbooks and the attached capacity data.
+          chat_sessions: []
+          chat_session_ids:
+            - 11111111-0000-4000-8000-000000000001
+          file_ids:
+            - uf-demo-reading
+            - uf-demo-guide
+            - uf-demo-diagram
+            - uf-demo-protected
+            - uf-demo-attendance
+        - id: 2
+          name: Relay Migration
+          description: null
+          created_at: "{{vars.onyx_template_open}}ago:2d}}"
+          user_id: "{{apps.onyx.people.dana.id}}"
+          instructions: null
+          chat_sessions: []
+          chat_session_ids: []
+          file_ids: []
+      GET /mockshop/admin-groups/seeds:
+        groups:
+          - id: 1
+            name: "{{teams.reliability.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.dana.id}}"
+            cc_pair_ids:
+              - 102
+              - 103
+              - 105
+            document_set_ids:
+              - 21
+              - 22
+            agent_ids:
+              - 11
+              - 12
+            enabled_permissions:
+              - add:agents
+              - read:query_history
+              - create:user_api_keys
+            token_limits:
+              - token_id: 601
+                enabled: true
+                token_budget: 500
+                period_hours: 24
+                cost_budget_cents: 2500
+          - id: 2
+            name: "{{teams.media-platform.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.marcus.id}}"
+            cc_pair_ids:
+              - 101
+              - 108
+            document_set_ids:
+              - 22
+            agent_ids:
+              - 13
+            enabled_permissions:
+              - add:agents
+            token_limits: []
+          - id: 3
+            name: "{{teams.support-engineering.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.lena.id}}"
+            cc_pair_ids:
+              - 104
+              - 106
+            document_set_ids: []
+            agent_ids:
+              - 14
+            enabled_permissions: []
+            token_limits: []
+        connectors:
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 101
+            name: GitHub – omzo/media-platform
+            connector:
+              id: 301
+              name: GitHub – omzo/media-platform
+              source: github
+            groups:
+              - id: 2
+                name: "{{teams.media-platform.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 102
+            name: Confluence – Engineering Runbooks
+            connector:
+              id: 302
+              name: Confluence – Engineering Runbooks
+              source: confluence
+            groups:
+              - id: 1
+                name: "{{teams.reliability.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 103
+            name: Google Drive – Postmortems
+            connector:
+              id: 303
+              name: Google Drive – Postmortems
+              source: google_drive
+            groups:
+              - id: 1
+                name: "{{teams.reliability.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 104
+            name: "Slack – #inc-*, #eng-media"
+            connector:
+              id: 304
+              name: "Slack – #inc-*, #eng-media"
+              source: slack
+            groups:
+              - id: 3
+                name: "{{teams.support-engineering.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 105
+            name: Jira – SRE incidents
+            connector:
+              id: 305
+              name: Jira – SRE incidents
+              source: jira
+            groups:
+              - id: 1
+                name: "{{teams.reliability.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 106
+            name: Zendesk – Support escalations
+            connector:
+              id: 306
+              name: Zendesk – Support escalations
+              source: zendesk
+            groups:
+              - id: 3
+                name: "{{teams.support-engineering.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 108
+            name: Confluence – Platform Architecture
+            connector:
+              id: 308
+              name: Confluence – Platform Architecture
+              source: confluence
+            groups:
+              - id: 2
+                name: "{{teams.media-platform.name}}"
+            access_type: private
+        resource_permissions:
+          manage: true
+          manage_members: true
+          delete: true
+          edit_permissions: true
+          edit_token_limits: true
+        create_defaults:
+          manager_ids: []
+          cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+      GET /manage/admin/permissions/registry:
+        - id: manage_llms
+          display_name: Manage Language Models
+          description: Configure language model providers and defaults.
+          permissions:
+            - manage:llms
+          group: 1
+        - id: manage_connectors_and_document_sets
+          display_name: Manage Connectors and Document Sets
+          description: Organize connectors and document sets for knowledge access.
+          permissions:
+            - manage:connectors
+            - manage:document_sets
+          group: 1
+        - id: manage_actions
+          display_name: Manage Actions
+          description: Configure tools and MCP servers.
+          permissions:
+            - manage:actions
+          group: 1
+        - id: manage_groups
+          display_name: Manage Groups
+          description: Organize groups and memberships.
+          permissions:
+            - manage:user_groups
+          group: 1
+        - id: manage_service_accounts
+          display_name: Manage Service Accounts
+          description: Configure service account API keys.
+          permissions:
+            - manage:service_account_api_keys
+          group: 1
+        - id: manage_bots
+          display_name: Manage Bots
+          description: Configure Slack and Discord bots.
+          permissions:
+            - manage:bots
+          group: 1
+        - id: create_agents
+          display_name: Create Agents
+          description: Create agents for the team.
+          permissions:
+            - add:agents
+          group: 2
+        - id: manage_agents
+          display_name: Manage Agents
+          description: Edit and curate team agents.
+          permissions:
+            - manage:agents
+          group: 2
+        - id: view_agent_analytics
+          display_name: View Agent Analytics
+          description: View agent usage summaries.
+          permissions:
+            - read:agent_analytics
+          group: 2
+        - id: view_query_history
+          display_name: View Query History
+          description: View query history.
+          permissions:
+            - read:query_history
+          group: 2
+        - id: create_user_access_token
+          display_name: Create User Access Tokens
+          description: Create personal access tokens.
+          permissions:
+            - create:user_api_keys
+          group: 2
+      GET /persona/labels:
+        - id: 1
+          name: "{{teams.reliability.name}}"
+        - id: 2
+          name: Incident Response
+        - id: 3
+          name: Support
+      GET /tool:
+        - id: 1
+          name: internal_search
+          display_name: Internal Search
+          description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+          definition: null
+          custom_headers: []
+          in_code_tool_id: SearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 2
+          name: web_search
+          display_name: Web Search
+          description: Search the public web.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: WebSearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 3
+          name: image_generation
+          display_name: Image Generation
+          description: Generate images from a text prompt.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: ImageGenerationTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 4
+          name: python
+          display_name: Code Interpreter
+          description: Run Python to analyze data and build charts.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: PythonTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 31
+          name: get_oncall_schedule
+          display_name: On-call schedule
+          description: Look up who is on call for a service this week, with escalation order.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 32
+          name: get_service_status
+          display_name: Service status
+          description: Check current health and open incidents for a service or region.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+      GET /user/pinned-assistants:
+        - 0
+        - 11
+        - 12
+      GET /manage/document-set:
+        - id: 21
+          name: Runbooks & Postmortems
+          description: On-call runbooks, architecture docs and incident postmortems
+          cc_pair_summaries:
+            - id: 102
+              name: Confluence – Engineering Runbooks
+              source: confluence
+              access_type: public
+            - id: 103
+              name: Google Drive – Postmortems
+              source: google_drive
+              access_type: sync
+            - id: 108
+              name: Confluence – Platform Architecture
+              source: confluence
+              access_type: sync
+          is_up_to_date: true
+          is_public: true
+          users: []
+          groups: []
+          permissions:
+            edit: true
+            manage_access: true
+            delete: true
+            publish: true
+          federated_connector_summaries: []
+        - id: 22
+          name: Platform Code & Incidents
+          description: Media platform source code and SRE incident tickets
+          cc_pair_summaries:
+            - id: 101
+              name: GitHub – omzo/media-platform
+              source: github
+              access_type: sync
+            - id: 105
+              name: Jira – SRE incidents
+              source: jira
+              access_type: public
+          is_up_to_date: true
+          is_public: true
+          users: []
+          groups: []
+          permissions:
+            edit: true
+            manage_access: true
+            delete: true
+            publish: true
+          federated_connector_summaries: []
+      GET /mcp/servers:
+        mcp_servers:
+          - id: 1
+            name: "{{company.name}} On-call (internal MCP)"
+            description: Read-only access to the on-call schedule and live service status.
+            server_url: https://oncall-mcp.{{company.domain}}/mcp
+            owner: "{{people.dana.email}}"
+            transport: STREAMABLE_HTTP
+            auth_type: NONE
+            auth_performer: ADMIN
+            oauth_provider_mode: AUTO_DISCOVERY
+            user_can_authenticate: true
+            status: CONNECTED
+            is_public: true
+            groups: []
+            users: []
+            available_in_craft: false
+            tool_count: 2
+            last_refreshed_at: "{{vars.onyx_template_open}}ago:1d}}"
+            permissions:
+              edit: true
+              delete: true
+              authenticate: true
+              manage_status: true
+      GET /mcp/servers/persona/11:
+        assistant_id: "11"
+        mcp_servers:
+          - id: 1
+            name: "{{company.name}} On-call (internal MCP)"
+            description: Read-only access to the on-call schedule and live service status.
+            server_url: https://oncall-mcp.{{company.domain}}/mcp
+            owner: "{{people.dana.email}}"
+            transport: STREAMABLE_HTTP
+            auth_type: NONE
+            auth_performer: ADMIN
+            oauth_provider_mode: AUTO_DISCOVERY
+            user_can_authenticate: true
+            status: CONNECTED
+            is_public: true
+            groups: []
+            users: []
+            available_in_craft: false
+            tool_count: 2
+            last_refreshed_at: "{{vars.onyx_template_open}}ago:1d}}"
+            permissions:
+              edit: true
+              delete: true
+              authenticate: true
+              manage_status: true
+      GET /admin/mcp/servers:
+        mcp_servers:
+          - id: 1
+            name: "{{company.name}} On-call (internal MCP)"
+            description: Read-only access to the on-call schedule and live service status.
+            server_url: https://oncall-mcp.{{company.domain}}/mcp
+            owner: "{{people.dana.email}}"
+            transport: STREAMABLE_HTTP
+            auth_type: NONE
+            auth_performer: ADMIN
+            oauth_provider_mode: AUTO_DISCOVERY
+            user_can_authenticate: true
+            status: CONNECTED
+            is_public: true
+            groups: []
+            users: []
+            available_in_craft: false
+            tool_count: 2
+            last_refreshed_at: "{{vars.onyx_template_open}}ago:1d}}"
+            permissions:
+              edit: true
+              delete: true
+              authenticate: true
+              manage_status: true
+      GET /admin/mcp/server/1/tools/snapshots:
+        - id: 31
+          name: get_oncall_schedule
+          display_name: On-call schedule
+          description: Look up who is on call for a service this week, with escalation order.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 32
+          name: get_service_status
+          display_name: Service status
+          description: Check current health and open incidents for a service or region.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+      GET /admin/mcp/mock-creation:
+        fake_credential: mock-only-not-a-secret
+        auth_feedback: Simulated authentication saved for this run only. No provider, key or external MCP server was used.
+        server:
+          name: "{{company.name}} Status Board (fake MCP)"
+          description: Fictional demo resources. Authentication and tools are simulated for this run only.
+          server_url: https://status-board.{{company.domain}}/mcp
+          owner: "{{people.dana.email}}"
+          transport: STREAMABLE_HTTP
+          auth_type: OAUTH
+          auth_performer: PER_USER
+          oauth_provider_mode: AUTO_DISCOVERY
+          auth_template:
+            headers: {}
+            required_fields: []
+          admin_credentials: {}
+          user_credentials: {}
+          user_can_authenticate: true
+          status: CREATED
+          is_public: true
+          groups: []
+          users: []
+          available_in_craft: false
+          tool_count: 0
+          last_refreshed_at: null
+          permissions:
+            edit: true
+            delete: true
+            authenticate: true
+            manage_status: true
+        tools:
+          - id: 31
+            name: get_status_board
+            display_name: Status board (fake)
+            description: Simulated read-only status board; no MCP execution.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 32
+            name: get_maintenance_windows
+            display_name: Maintenance windows (fake)
+            description: Simulated maintenance calendar; no external server is contacted.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+      GET /manage/admin/index-attempt/10101/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10102/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10103/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10201/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10202/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10203/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10204/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10205/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10801/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10802/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10803/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10804/stage-metrics:
+        stages: []
+      GET /connector/oauth/details/github:
+        oauth_enabled: false
+        additional_kwargs: []
+      GET /connector/oauth/details/zendesk:
+        oauth_enabled: false
+        additional_kwargs: []
+      GET /federated/oauth-status:
+        - federated_connector_id: 901
+          source: gmail
+          name: "{{company.name}} notes (fake personal account)"
+          has_oauth_token: true
+          oauth_token_expires_at: null
+          authorize_url: /api/mockshop/personal-connectors/901/connect
+      GET /mockshop/user-files:
+        upload_delay_ms: 1800
+        processing_delay_ms: 3600
+        delete_delay_ms: 1000
+        preview_delay_ms: 1200
+        rejection_reason: Offline demo accepts only the fictional filenames listed in the omzo overlay; no caller bytes are stored.
+        answer_title: Attached file summary
+        answer_intro: "This is a scripted demonstration, not an analysis of uploaded bytes. The attached synthetic files suggest:"
+        seed_ids:
+          - reading-note
+          - study-guide
+          - activity-diagram
+          - protected-reading
+          - attendance
+        catalog:
+          - key: reading-note
+            id: uf-demo-reading
+            file_id: demo-reading
+            name: oncall-handoff.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 42
+            chunk_count: 1
+            preview: |
+              Synthetic on-call handoff note
+              Media-platform primary: {{people.sam.name}}. Secondary: {{people.kenji.name}}.
+              Escalate relay allocation errors to {{people.marcus.name}}'s team.
+            answer: Escalate relay allocation errors to the {{teams.media-platform.name}} on-call.
+          - key: study-guide
+            id: uf-demo-guide
+            file_id: demo-guide
+            name: incident-timeline-INC-2291.md
+            file_type: text/markdown
+            chat_file_type: plain_text
+            token_count: 48
+            chunk_count: 1
+            preview: |
+              # INC-2291 timeline (synthetic)
+              - 14:05 UTC join latency p95 climbs from 1.2s
+              - 14:31 incident declared
+              - 14:52 relay-scorer-v2 flag rolled back
+            answer: Join latency climbed at 14:05 UTC and recovered after the 14:52 rollback.
+          - key: activity-diagram
+            id: uf-demo-diagram
+            file_id: demo-diagram
+            name: relay-topology.svg
+            file_type: image/svg+xml
+            chat_file_type: image
+            token_count: 0
+            chunk_count: 0
+            preview: <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#eaf1ff"/><text x="40" y="60" font-size="26" fill="#0b2a66">Relay topology (fictional)</text><rect x="60" y="120" width="140" height="70" rx="10" fill="#0b5cff"/><text x="86" y="162" font-size="18" fill="#fff">us-east-1</text><rect x="250" y="120" width="140" height="70" rx="10" fill="#3b82f6"/><text x="276" y="162" font-size="18" fill="#fff">us-west-2</text><rect x="440" y="120" width="140" height="70" rx="10" fill="#93b4ff"/><text x="466" y="162" font-size="18" fill="#0b2a66">eu-central-1</text></svg>
+            answer: Relay traffic is spread across us-east-1, us-west-2 and eu-central-1.
+          - key: protected-reading
+            id: uf-demo-protected
+            file_id: demo-protected
+            name: sla-credits-policy.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 24
+            chunk_count: 1
+            assistant_names:
+              - SRE Copilot
+            preview: Synthetic SLA credit policy. The demo agent association prevents library deletion.
+            answer: Keep the SLA credit policy available to the SRE Copilot.
+          - key: workshop-notes
+            id: uf-demo-workshop
+            file_id: demo-workshop
+            name: workshop-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 55
+            chunk_count: 1
+            preview: |
+              Synthetic workshop notes
+              Begin with a five-minute welcome circle.
+              Offer large-print instructions and quiet reflection time.
+              End with one question from each learner.
+              This preview is fixture text, not uploaded content.
+            answer: Begin with a five-minute welcome circle, offer large-print instructions, and end with one question from each learner.
+          - key: reflection
+            id: uf-demo-reflection
+            file_id: demo-reflection
+            name: reflection.md
+            file_type: text/markdown
+            chat_file_type: plain_text
+            token_count: 32
+            chunk_count: 1
+            preview: |
+              # Synthetic reflection exercise
+              Ask each learner to name one new idea and one next step.
+              This is editable fictional demo content.
+            answer: Ask each learner to name one new idea and one next step.
+          - key: attendance
+            id: uf-demo-attendance
+            file_id: demo-attendance
+            name: relay-capacity-q3.csv
+            file_type: text/csv
+            chat_file_type: tabular
+            token_count: 1200
+            chunk_count: 1
+            preview: |
+              Region,Peak relays used,Capacity
+              us-east-1,812,1000
+              us-west-2,604,900
+              eu-central-1,455,700
+            answer: us-east-1 peaked at 812 of 1,000 relays, the highest utilization of the three regions.
+          - key: unsupported-preview
+            id: uf-demo-unsupported
+            file_id: demo-unsupported
+            name: demo-resource.bin
+            file_type: application/octet-stream
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic download-only resource. No caller bytes are retained.
+            answer: Treat this fictional resource as a download-only attachment.
+          - key: failed-upload
+            id: uf-demo-failed
+            file_id: demo-failed
+            name: failed-demo.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            final_status: FAILED
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic failure-stage demonstration.
+            answer: This failed file is not ready to attach.
+          - key: rejected-upload
+            id: uf-demo-rejected
+            file_id: demo-rejected
+            name: rejected-demo.exe
+            reject: true
+            file_type: application/octet-stream
+            chat_file_type: document
+            preview: Rejected demo fixture; never stored as a user file.
+          - key: code-example
+            id: uf-demo-code
+            file_id: demo-code
+            name: learning-example.py
+            file_type: text/x-python
+            chat_file_type: plain_text
+            token_count: 12
+            chunk_count: 1
+            preview: |
+              print('Welcome every learner')
+            answer: The fictional Python example welcomes every learner.
+          - key: structured-data
+            id: uf-demo-data
+            file_id: demo-data
+            name: learning-demo.json
+            file_type: application/json
+            chat_file_type: plain_text
+            token_count: 12
+            chunk_count: 1
+            preview: '{"activity":"Reading circle","participants":6,"synthetic":true}'
+            answer: The fictional reading-circle data has six participants.
+          - key: learning-pdf
+            id: uf-demo-pdf
+            file_id: demo-pdf
+            name: learning-handout.pdf
+            file_type: application/pdf
+            chat_file_type: document
+            token_count: 20
+            chunk_count: 1
+            answer: The synthetic learning handout welcomes every learner.
+            preview_base64: JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggMTMwID4+CnN0cmVhbQpCVCAvRjEgMjAgVGYgNTAgNzIwIFRkIChTeW50aGV0aWMgbGVhcm5pbmcgaGFuZG91dCkgVGogMCAtNDAgVGQgL0YxIDEyIFRmIChXZWxjb21lIGV2ZXJ5IGxlYXJuZXIuIFRoaXMgaXMgZml4dHVyZSBjb250ZW50LikgVGogRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1OCAwMDAwMCBuIAowMDAwMDAwMTE1IDAwMDAwIG4gCjAwMDAwMDAyNDEgMDAwMDAgbiAKMDAwMDAwMDMxMSAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjQ5MQolJUVPRgo=
+          - key: learning-docx
+            id: uf-demo-docx
+            file_id: demo-docx
+            name: learning-handout.docx
+            file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            chat_file_type: document
+            token_count: 20
+            chunk_count: 1
+            answer: Offer quiet reflection time in the synthetic learning handout.
+            preview_base64: UEsDBBQAAAAIAAAAIVz3S4B1wgAAAHYBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbH2QuQ7CMAyGX6XKiqgRAwOiLMAKDLyAlbptRC7FLsfbk3INCBjt//gsLw7XSFxcnPVcqU4kzgFYd+SQyxDJZ6UJyaHkMbUQUR+xJZhOJjPQwQt5GcvQoZaLNTXYWyk2l7xmE3ylEllWxephHFiVwhit0ShZh5OvPyjjJ6HMybuHOxN5lA0KvhIG5TfgmdudKCVTU7HHJFt02QXnkGqog+5dTpb/a77cGZrGaHrnh7aYgiZm41tny7fi0PjX/XB/9/IGUEsDBBQAAAAIAAAAIVxhey9DiQAAAPIAAAALAAAAX3JlbHMvLnJlbHONzzsOAiEQBuCrEA6ws1pYGKCy2dZ4AQLDIy6PDBj19lJYrMbCcuaffH9GnHHVPZbcQqyNPdKam+Sh93oEaCZg0m0qFfNIXKGk+xjJQ9Xmqj3Cfp4PQFuDK7E12WIlp8XuOLs8K/5jF+eiwVMxt4S5/6j4uhiyJo9d8nshC/a9ngbLQQn4eFG9AFBLAwQUAAAACAAAACFcrbHWouAAAAB9AQAAEQAAAHdvcmQvZG9jdW1lbnQueG1sbVBBasQwDPyKyQPWadiWEtL8YKGwh569jhIbbMuVlabp62snhEDpZTyj0UhY3dIOqGcPgcW3dyG1y1tlmGMrZdIGvEoXjBCyNyJ5xVnSJBekIRJqSMmGyTvZ1PWL9MqGqu+W9oHDWt5YgApwf18DG2CrhQNFIceEUWHAmTtZ/IK0Yfwb/QCn0YOAL6B1jwOJHBY4jpl9zhZYEIwONFsMgq2Hy79jU+5438bG6f4jlvLdp6a51lXmJvPn18zl3nBTlKuMMdevewvZyfApH8iM/tQOxsOV29JjnzyOIs+D979QSwECFAMUAAAACAAAACFc90uAdcIAAAB2AQAAEwAAAAAAAAAAAAAAgAEAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAxQAAAAIAAAAIVxhey9DiQAAAPIAAAALAAAAAAAAAAAAAACAAfMAAABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAAAAIVytsdai4AAAAH0BAAARAAAAAAAAAAAAAACAAaUBAAB3b3JkL2RvY3VtZW50LnhtbFBLBQYAAAAAAwADALkAAAC0AgAAAAA=
+          - key: learning-workbook
+            id: uf-demo-xlsx
+            file_id: demo-xlsx
+            name: learning-workbook.xlsx
+            file_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+            chat_file_type: tabular
+            token_count: 20
+            chunk_count: 1
+            answer: The synthetic workbook records six reading-circle participants.
+            parsed_preview:
+              sheets:
+                - name: Learning
+                  csv: |
+                    Activity,Participants
+                    Reading circle,6
+                  truncated: false
+                - name: Empty reflection
+                  csv: ""
+                  truncated: false
+                - name: Truncated demonstration
+                  csv: ""
+                  truncated: true
+            preview_base64: UEsDBBQAAAAIAAAAIVwcdPw42AAAAPYBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbK2RvU4DMQzHX+WUtWpcGDqgXhfKCgy8gJvz9aLLl2K3XN++uVAYUIGFyUr+Hz9L3rydE3EzeRe4VYNIegBgM5BH1jFRKEofs0cpz3yAhGbEA8H9arUGE4NQkKXMHWq72VGPRyfN01S+2cbQqkyOVfP4YZxZrcKUnDUoRYdT6L5RlleCLsnq4cEmXhSDgpuEWfkZcM29nChn21Hzilme0RcXTA7eYx73MY7695IbW8a+t4a6aI6+RDSnTNjxQCTe6Tq1RxsWf/OrmaGOu39e5Kv/cw+o595eAFBLAwQUAAAACAAAACFc/luGcooAAADwAAAACwAAAF9yZWxzLy5yZWxzjc8xDsIwDAXQq1Q+QF0YGFDaiaUr4gImddqqTRw5QZTbk7EgBkbrf70vmyuvlGcJaZpjqja/htTClHM8IyY7sadUS+RQEifqKZdTR4xkFxoZj01zQt0b0Jm9WfVDC9oPB6hur8j/2OLcbPki9uE55B8TX40ik46cW9hWfIoud5GlLihgZ/Djwe4NUEsDBBQAAAAIAAAAIVzlp8WJkwAAAOYAAAAPAAAAeGwvd29ya2Jvb2sueG1sjY8xDoMwDEWvgnyAGjp0QMDUBamXSMGQCGJHdqr2+EVQ9k72/19+X27eostTZCk+cWVrweecakQbPEVnF0nEWzKJRpc3qTNaUnKjeaIcV7yW5Q2jCwwHodZ/GDJNYaC7DK9InA+I0upyEDYfkkHX7A32mwW7SC08yCkHnqHY3X5soYJC67At2o8VYNfgeYjnb90XUEsDBBQAAAAIAAAAIVy2VKrPjgAAAPEAAAAaAAAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHONzz0OwjAMBeCrVDlA3TIwoCYTS1fEBaLUbaI2P7KNgNsTMaAiMTBZfpa+Jw8X3KyEnNiHws0jbom18iLlBMDOY7Tc5oKpXuZM0UpdaYFi3WoXhEPXHYH2hjLD3mzGSSsap14112fBf+w8z8HhObtbxCQ/KuCeaWWPKBW1tKBo9YkY3qNvq6rADPD1oXkBUEsDBBQAAAAIAAAAIVwXDT8nswAAACkBAAAYAAAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1sdZA7DsIwDIavEuUAmHbogNJIIE5ATxCCoVHzqByrwO1JOlQwMFiyf9ufH+qZaMojIotX8DH3cmSeDwDZjhhM3qUZY8ncEwXDJaQH5JnQ3Nam4KHd7zsIxkWp1aqdDRutKD0F9bIpqq3OsZGCe+midxEHpqK7rBXr4R15RHZWeDQUXXyIutM1pUkBawW1DGyxgty47cZt/3AvZccKs46sx1/U2nmqjEV3CpbvAfB1BGzf0R9QSwECFAMUAAAACAAAACFcHHT8ONgAAAD2AQAAEwAAAAAAAAAAAAAAgAEAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAxQAAAAIAAAAIVz+W4ZyigAAAPAAAAALAAAAAAAAAAAAAACAAQkBAABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAAAAIVzlp8WJkwAAAOYAAAAPAAAAAAAAAAAAAACAAbwBAAB4bC93b3JrYm9vay54bWxQSwECFAMUAAAACAAAACFctlSqz44AAADxAAAAGgAAAAAAAAAAAAAAgAF8AgAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHNQSwECFAMUAAAACAAAACFcFw0/J7MAAAApAQAAGAAAAAAAAAAAAAAAgAFCAwAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1sUEsFBgAAAAAFAAUARQEAACsEAAAAAA==
+          - key: legacy-word
+            id: uf-demo-doc
+            file_id: demo-doc
+            name: legacy-handout.doc
+            file_type: application/msword
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic legacy-format download-only demonstration.
+            answer: Download the synthetic legacy resource to view it.
+          - key: word-preview-error
+            id: uf-demo-broken-docx
+            file_id: demo-broken-docx
+            name: broken-demo.docx
+            file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic deliberately invalid DOCX, for the native preview error state.
+            answer: This synthetic resource demonstrates the native preview error message.
+          - key: pasted-notes
+            id: uf-demo-paste
+            file_id: demo-paste
+            name: pasted-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 15
+            chunk_count: 1
+            preview: "Synthetic pasted learning note: allow time for reflection."
+            answer: Allow time for reflection in the learning circle.
+          - key: dropped-notes
+            id: uf-demo-drop
+            file_id: demo-drop
+            name: dropped-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 15
+            chunk_count: 1
+            preview: "Synthetic dropped learning note: provide accessible instructions."
+            answer: Provide accessible instructions for every learner.
+          - key: preview-unavailable
+            id: uf-demo-unavailable
+            file_id: demo-unavailable
+            name: unavailable-demo.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 0
+            chunk_count: 0
+            preview_error: true
+            preview: Synthetic unavailable-preview demonstration.
+            answer: This fictional file demonstrates the native unavailable-preview state.
+      GET /manage/admin/connector/status:
+        - cc_pair_id: 101
+          name: GitHub – omzo/media-platform
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 301
+            name: GitHub – omzo/media-platform
+            source: github
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 102
+          name: Confluence – Engineering Runbooks
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 302
+            name: Confluence – Engineering Runbooks
+            source: confluence
+          access_type: public
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 103
+          name: Google Drive – Postmortems
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 303
+            name: Google Drive – Postmortems
+            source: google_drive
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 104
+          name: "Slack – #inc-*, #eng-media"
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 304
+            name: "Slack – #inc-*, #eng-media"
+            source: slack
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 105
+          name: Jira – SRE incidents
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 305
+            name: Jira – SRE incidents
+            source: jira
+          access_type: public
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 106
+          name: Zendesk – Support escalations
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 306
+            name: Zendesk – Support escalations
+            source: zendesk
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 108
+          name: Confluence – Platform Architecture
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 308
+            name: Confluence – Platform Architecture
+            source: confluence
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+      GET /me:
+        id: "{{apps.onyx.people.dana.id}}"
+        email: "{{people.dana.email}}"
+        is_active: true
+        is_superuser: true
+        is_verified: true
+        role: admin
+        account_type: STANDARD
+        is_admin: true
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - admin
+          - basic
+        admin_capabilities:
+          - admin
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 11
+            - 12
+          default_model: null
+          recent_assistants:
+            - 0
+            - 11
+            - 12
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.dana.name}}"
+          role: "{{people.dana.title}}"
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /llm/provider:
+        providers:
+          - id: 1
+            name: OpenAI
+            provider: openai
+            provider_display_name: OpenAI
+            model_configurations:
+              - id: 1
+                name: gpt-5.2
+                display_name: GPT-5.2
+                is_visible: true
+                max_input_tokens: 400000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                is_recommended_default: true
+                vendor: openai
+              - id: 2
+                name: gpt-5-mini
+                display_name: GPT-5 mini
+                is_visible: true
+                max_input_tokens: 400000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                vendor: openai
+              - id: 3
+                name: gpt-4.1
+                display_name: GPT-4.1
+                is_visible: true
+                max_input_tokens: 1000000
+                supports_image_input: true
+                supports_reasoning: false
+                vendor: openai
+            next_model_configuration_offset: null
+          - id: 2
+            name: Anthropic
+            provider: anthropic
+            provider_display_name: Anthropic
+            model_configurations:
+              - id: 11
+                name: claude-sonnet-4-5
+                display_name: Claude Sonnet 4.5
+                is_visible: true
+                max_input_tokens: 200000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                is_recommended_default: true
+                vendor: anthropic
+              - id: 12
+                name: claude-haiku-4-5
+                display_name: Claude Haiku 4.5
+                is_visible: true
+                max_input_tokens: 200000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                vendor: anthropic
+            next_model_configuration_offset: null
+          - id: 3
+            name: "{{company.name}} GPU cluster"
+            provider: ollama_chat
+            provider_display_name: Ollama
+            model_configurations:
+              - id: 21
+                name: llama3.3:70b
+                display_name: Llama 3.3 70B
+                is_visible: true
+                max_input_tokens: 128000
+                supports_image_input: false
+                supports_reasoning: false
+              - id: 22
+                name: qwen3:32b
+                display_name: Qwen3 32B
+                is_visible: true
+                max_input_tokens: 128000
+                supports_image_input: false
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 1
+          model_name: gpt-5.2
+        default_vision:
+          provider_id: 1
+          model_name: gpt-5.2
+        default_chat_naming:
+          provider_id: 1
+          model_name: gpt-5-mini
+        default_craft: null
+      GET /llm/persona/:id/providers:
+        providers:
+          - id: 1
+            name: OpenAI
+            provider: openai
+            provider_display_name: OpenAI
+            model_configurations:
+              - id: 1
+                name: gpt-5.2
+                display_name: GPT-5.2
+                is_visible: true
+                max_input_tokens: 400000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                is_recommended_default: true
+                vendor: openai
+              - id: 2
+                name: gpt-5-mini
+                display_name: GPT-5 mini
+                is_visible: true
+                max_input_tokens: 400000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                vendor: openai
+              - id: 3
+                name: gpt-4.1
+                display_name: GPT-4.1
+                is_visible: true
+                max_input_tokens: 1000000
+                supports_image_input: true
+                supports_reasoning: false
+                vendor: openai
+            next_model_configuration_offset: null
+          - id: 2
+            name: Anthropic
+            provider: anthropic
+            provider_display_name: Anthropic
+            model_configurations:
+              - id: 11
+                name: claude-sonnet-4-5
+                display_name: Claude Sonnet 4.5
+                is_visible: true
+                max_input_tokens: 200000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                is_recommended_default: true
+                vendor: anthropic
+              - id: 12
+                name: claude-haiku-4-5
+                display_name: Claude Haiku 4.5
+                is_visible: true
+                max_input_tokens: 200000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                vendor: anthropic
+            next_model_configuration_offset: null
+          - id: 3
+            name: "{{company.name}} GPU cluster"
+            provider: ollama_chat
+            provider_display_name: Ollama
+            model_configurations:
+              - id: 21
+                name: llama3.3:70b
+                display_name: Llama 3.3 70B
+                is_visible: true
+                max_input_tokens: 128000
+                supports_image_input: false
+                supports_reasoning: false
+              - id: 22
+                name: qwen3:32b
+                display_name: Qwen3 32B
+                is_visible: true
+                max_input_tokens: 128000
+                supports_image_input: false
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 1
+          model_name: gpt-5.2
+        default_vision:
+          provider_id: 1
+          model_name: gpt-5.2
+        default_chat_naming:
+          provider_id: 1
+          model_name: gpt-5-mini
+        default_craft: null
+      GET /admin/llm/provider:
+        providers:
+          - id: 1
+            name: OpenAI
+            provider: openai
+            api_key: sk-••••••••••••3f9a
+            api_base: null
+            api_version: null
+            custom_config: null
+            is_public: true
+            is_auto_mode: true
+            groups: []
+            personas: []
+            deployment_name: null
+            model_configurations:
+              - id: 1
+                name: gpt-5.2
+                display_name: GPT-5.2
+                is_visible: true
+                max_input_tokens: 400000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                is_recommended_default: true
+                vendor: openai
+              - id: 2
+                name: gpt-5-mini
+                display_name: GPT-5 mini
+                is_visible: true
+                max_input_tokens: 400000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                vendor: openai
+              - id: 3
+                name: gpt-4.1
+                display_name: GPT-4.1
+                is_visible: true
+                max_input_tokens: 1000000
+                supports_image_input: true
+                supports_reasoning: false
+                vendor: openai
+            next_model_configuration_offset: null
+          - id: 2
+            name: Anthropic
+            provider: anthropic
+            api_key: sk-ant-••••••••••••a71c
+            api_base: null
+            api_version: null
+            custom_config: null
+            is_public: true
+            is_auto_mode: true
+            groups: []
+            personas: []
+            deployment_name: null
+            model_configurations:
+              - id: 11
+                name: claude-sonnet-4-5
+                display_name: Claude Sonnet 4.5
+                is_visible: true
+                max_input_tokens: 200000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                is_recommended_default: true
+                vendor: anthropic
+              - id: 12
+                name: claude-haiku-4-5
+                display_name: Claude Haiku 4.5
+                is_visible: true
+                max_input_tokens: 200000
+                supports_image_input: true
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+                vendor: anthropic
+            next_model_configuration_offset: null
+          - id: 3
+            name: "{{company.name}} GPU cluster"
+            provider: ollama_chat
+            api_key: null
+            api_base: http://gpu-01.{{company.domain}}:11434
+            api_version: null
+            custom_config: null
+            is_public: true
+            is_auto_mode: false
+            groups: []
+            personas: []
+            deployment_name: null
+            model_configurations:
+              - id: 21
+                name: llama3.3:70b
+                display_name: Llama 3.3 70B
+                is_visible: true
+                max_input_tokens: 128000
+                supports_image_input: false
+                supports_reasoning: false
+              - id: 22
+                name: qwen3:32b
+                display_name: Qwen3 32B
+                is_visible: true
+                max_input_tokens: 128000
+                supports_image_input: false
+                supports_reasoning: true
+                supported_reasoning_efforts:
+                  - low
+                  - medium
+                  - high
+            next_model_configuration_offset: null
+        default_text:
+          provider_id: 1
+          model_name: gpt-5.2
+        default_vision:
+          provider_id: 1
+          model_name: gpt-5.2
+        default_chat_naming:
+          provider_id: 1
+          model_name: gpt-5-mini
+        default_craft: null
+      GET /chat/max-selected-document-tokens:
+        max_tokens: 128000
+      GET /chat/available-context-tokens/:id:
+        available_tokens: 128000
+      GET /users:
+        - id: "{{apps.onyx.people.dana.id}}"
+          email: "{{people.dana.email}}"
+        - id: "{{apps.onyx.people.kenji.id}}"
+          email: "{{people.kenji.email}}"
+        - id: "{{apps.onyx.people.priya.id}}"
+          email: "{{people.priya.email}}"
+        - id: "{{apps.onyx.people.marcus.id}}"
+          email: "{{people.marcus.email}}"
+        - id: "{{apps.onyx.people.lena.id}}"
+          email: "{{people.lena.email}}"
+        - id: "{{apps.onyx.people.sam.id}}"
+          email: "{{people.sam.email}}"
+      GET /manage/users/accepted/all:
+        - account_type: STANDARD
+          is_admin: true
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.dana.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.reliability.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.dana.id}}"
+          email: "{{people.dana.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.kenji.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.reliability.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.kenji.id}}"
+          email: "{{people.kenji.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.priya.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 2
+              name: "{{teams.media-platform.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.priya.id}}"
+          email: "{{people.priya.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.marcus.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 2
+              name: "{{teams.media-platform.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.marcus.id}}"
+          email: "{{people.marcus.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.lena.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 3
+              name: "{{teams.support-engineering.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.lena.id}}"
+          email: "{{people.lena.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.sam.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.reliability.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.sam.id}}"
+          email: "{{people.sam.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: false
+          password_configured: true
+          personal_name: "{{people.tomas.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: null
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.tomas.id}}"
+          email: "{{people.tomas.email}}"
+        - account_type: BOT
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: On-call Bot
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.oncall.id}}"
+          email: "{{people.oncall.email}}"
+      GET /manage/users/invited:
+        - email: "{{people.amara.email}}"
+        - email: "{{people.jonas.email}}"
+      GET /tenants/users/pending:
+        - email: "{{people.robin.email}}"
+      GET /manage/users/counts:
+        account_type_counts:
+          STANDARD: 7
+          BOT: 1
+        status_counts:
+          active: 7
+          inactive: 1
+      GET /manage/users/mock-feedback:
+        simulated: true
+        invite_message: Simulated invitation only; no email is sent and no account is created.
+        reset_password: DEMO-ONLY-NOT-A-CREDENTIAL
+      GET /mockshop/sharing-feedback/seeds:
+        errors:
+          share: Fictional share-link creation failed for this attempt.
+          private: Fictional privacy change failed for this attempt.
+          feedback: Fictional feedback submission failed for this attempt.
+          remove: Fictional feedback removal failed for this attempt.
+        sessions: []
+    teams:
+      reliability:
+        id: 1
+        managers:
+          - dana
+      media-platform:
+        id: 2
+        managers:
+          - marcus
+      support-engineering:
+        id: 3
+        managers:
+          - lena

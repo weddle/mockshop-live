@@ -1,0 +1,4 @@
+apps:
+  onyx:
+    fixtures:
+      GET /mockshop/admin-pages/billing-case: canceling

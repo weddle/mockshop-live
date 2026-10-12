@@ -1,0 +1,190 @@
+# #58 EDITONLY prepared, unexecuted/unaccepted. 68 operations / 12 named images.
+# Existing native saved Portkey ModelsField ONLY: mixed visibility, real checkbox and
+# row selection, Select All/Deselect All, Update/reopen, Cancel, dirty keep/reload/reset.
+# shared.tsx766–779 derives test_model_name from the first visible model; utils.ts121
+# requires it and shared.tsx1145 disables Update when invalid. Thus zero-selected Update
+# is disabled by the SOURCE, not an invented minimum or mock error.
+# Portkey hides Auto Update; no Add Model/settings/default-changing or other-family replay.
+# All product writes are native Update. Supplementary GETs protect saved provider/default
+# metadata; only existing reset controls receive direct writes. Witness snapshots in
+# sessionStorage are not product state. Public DOM scrolling keeps both rows readable.
+name: admin-provider-model-selection
+title: Native saved provider model visibility checkboxes and bulk selection
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+overlays:
+  - edition-enterprise
+steps:
+  # 1–11: menu/direct entry and meaningful native mixed visibility/default seed.
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - click: { selector: 'a[href="/admin/language-models"]' }
+    id: click-a-href-admin-language-models
+  - wait: { role: button, name: Edit Campus Models (local fake), exact: true }
+    id: wait-edit-campus-models-local-fake
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('ModelsField seed read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 62), learning = p?.model_configurations.find(m => m.name === 'learning-notes-demo'), summary = p?.model_configurations.find(m => m.name === 'workshop-summary-demo'); if (c.providers.length !== 1 || p?.name !== 'Campus Models (local fake)' || p.provider !== 'portkey' || p.model_configurations.length !== 2 || learning?.is_visible !== true || summary?.is_visible !== false || c.default_text?.provider_id !== 62 || c.default_text?.model_name !== 'learning-notes-demo') throw new Error('Configured two-model mixed/default seed prerequisite missing'); sessionStorage.setItem('mockshop-model-selection-seed',JSON.stringify(c)); })()
+    id: eval-script
+  - shot: { name: model-selection-menu-mixed-seed, full_page: true }
+    id: shot-model-selection-menu-mixed-seed
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  - click: { role: button, name: Edit Campus Models (local fake), exact: true }
+    id: click-edit-campus-models-local-fake
+  - wait: { selector: '[role="dialog"] [data-model-name="learning-notes-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-learning-notes-demo-role-checkb
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="false"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); const expected = [['learning-notes-demo',true],['workshop-summary-demo',false]]; if (d.querySelectorAll('[data-model-name]').length !== 2 || d.textContent.includes('Auto Update') || d.textContent.includes('Add Model')) throw new Error('Native Portkey model inventory or source-hidden controls mismatch'); for (const [name,selected] of expected) { const row = d.querySelector(`[data-model-name="${name}"]`); if (row.querySelector('[role="checkbox"]').getAttribute('aria-checked') !== String(selected) || row.querySelector('input[type="checkbox"]').checked !== selected || row.querySelector('[data-interactive-variant="select-heavy"]').getAttribute('data-interactive-state') !== (selected ? 'selected' : 'empty')) throw new Error(`Native mixed checkbox/row state mismatch: ${name}`); } if (!d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model') || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Select All')) throw new Error('Protected default badge or initial bulk Select All missing'); d.querySelector('[data-model-name="learning-notes-demo"]').scrollIntoView({block:'center'});
+    id: eval-script-2
+  - shot: { name: model-selection-native-mixed-checkboxes-default, full_page: true }
+    id: shot-model-selection-native-mixed-checkboxes-default
+  # 12–21: individual hidden-model checkbox selection; Deselect All and source zero-selection guard.
+  - click: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"]' }
+    id: click-role-dialog-data-model-name-workshop-summary-demo-role-che
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-2
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('[data-model-name="learning-notes-demo"] [role="checkbox"]').getAttribute('aria-checked') !== 'true' || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Deselect All')) throw new Error('Individual checkbox did not select hidden model or update native bulk label');
+    id: eval-script-3
+  - shot: { name: model-selection-individual-checkbox-all-selected, full_page: true }
+    id: shot-model-selection-individual-checkbox-all-selected
+  - click: { selector: '[role="dialog"] button:has-text("Deselect All")' }
+    id: click-role-dialog-button-has-text-deselect-all
+  - wait: { selector: '[role="dialog"] [data-model-name="learning-notes-demo"] [role="checkbox"][aria-checked="false"]' }
+    id: wait-role-dialog-data-model-name-learning-notes-demo-role-checkb-2
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="false"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-3
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]' }
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); for (const row of d.querySelectorAll('[data-model-name]')) { if (row.querySelector('input[type="checkbox"]').checked || row.querySelector('[data-interactive-variant="select-heavy"]').getAttribute('data-interactive-state') !== 'empty') throw new Error('Deselect All left a native selected row'); } if (!d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model') || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Select All')) throw new Error('Zero draft changed protected default badge or lost native Select All'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Zero draft protected catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-selection-seed')) throw new Error('Unsaved zero-selection draft changed committed catalog/default'); })()
+    id: eval-script-4
+  - shot: { name: model-selection-deselect-all-zero-source-update-disabled, full_page: true }
+    id: shot-model-selection-deselect-all-zero-source-update-disabled
+  # 22–33: bulk Select All; clickable native row deselection; checkbox restoration before Save.
+  - click: { selector: '[role="dialog"] button:has-text("Select All")' }
+    id: click-role-dialog-button-has-text-select-all
+  - wait: { selector: '[role="dialog"] [data-model-name="learning-notes-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-learning-notes-demo-role-checkb-3
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-4
+  - shot: { name: model-selection-bulk-select-all-native-rows, full_page: true }
+    id: shot-model-selection-bulk-select-all-native-rows
+  - type: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [data-interactive-variant="select-heavy"][role="button"]', value: ' ' }
+    id: type-role-dialog-data-model-name-workshop-summary-demo-data-inte
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="false"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-5
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('[data-model-name="learning-notes-demo"] [role="checkbox"]').getAttribute('aria-checked') !== 'true' || d.querySelector('[data-model-name="workshop-summary-demo"] input[type="checkbox"]').checked || d.querySelector('[data-model-name="workshop-summary-demo"] [data-interactive-variant="select-heavy"]').getAttribute('data-interactive-state') !== 'empty' || !d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model') || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Select All')) throw new Error('Individual model-row toggle failed mixed/default/bulk state');
+    id: eval-script-5
+  - shot: { name: model-selection-individual-row-mixed-default-protected, full_page: true }
+    id: shot-model-selection-individual-row-mixed-default-protected
+  - click: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"]' }
+    id: click-role-dialog-data-model-name-workshop-summary-demo-role-che-2
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-6
+  - wait: { selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"] *)' }
+    id: wait-role-dialog-button-type-submit-not-disabled-not-aria-disabl
+  - shot: { name: model-selection-both-visible-ready-native-update, full_page: true }
+    id: shot-model-selection-both-visible-ready-native-update
+  # 34–41: real Update persists visibility; protected metadata and actual configured editor reopen.
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+    id: click-role-dialog-button-type-submit-has-text-update
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Saved visibility catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 62), seed = JSON.parse(sessionStorage.getItem('mockshop-model-selection-seed')), before = seed.providers[0], models = list => list.map(m => [m.name,m.display_name,m.max_input_tokens,m.supports_image_input,m.supports_reasoning]); if (c.providers.length !== 1 || p?.model_configurations.length !== 2 || p.model_configurations.some(m => m.is_visible !== true) || JSON.stringify(models(p.model_configurations)) !== JSON.stringify(models(before.model_configurations)) || p.name !== before.name || p.provider !== before.provider || p.api_key !== before.api_key || p.api_base !== before.api_base || p.is_auto_mode !== before.is_auto_mode || p.is_public !== before.is_public || JSON.stringify(p.groups) !== JSON.stringify(before.groups) || JSON.stringify(p.personas) !== JSON.stringify(before.personas) || JSON.stringify(p.custom_config) !== JSON.stringify(before.custom_config) || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft])) throw new Error('Native visibility Update failed both-visible serialization or protected provider/model/default metadata'); sessionStorage.setItem('mockshop-model-selection-committed',JSON.stringify(c)); })()
+    id: eval-script-6
+  - click: { role: button, name: Edit Campus Models (local fake), exact: true }
+    id: click-edit-campus-models-local-fake-2
+  - wait: { selector: '[role="dialog"] [data-model-name="learning-notes-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-learning-notes-demo-role-checkb-4
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-7
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelectorAll('[data-model-name]').length !== 2) throw new Error('Saved model inventory did not genuinely reopen'); for (const row of d.querySelectorAll('[data-model-name]')) { if (!row.querySelector('input[type="checkbox"]').checked || row.querySelector('[data-interactive-variant="select-heavy"]').getAttribute('data-interactive-state') !== 'selected') throw new Error('Saved visibility did not reopen in native checkbox and selected row'); } if (!d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model') || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Deselect All')) throw new Error('Saved both-visible default/bulk label mismatch'); d.querySelector('[data-model-name="learning-notes-demo"]').scrollIntoView({block:'center'});
+    id: eval-script-7
+  - shot: { name: model-selection-both-visible-saved-native-reopen, full_page: true }
+    id: shot-model-selection-both-visible-saved-native-reopen
+  # 42–52: dirty individual checkbox draft canceled; whole committed catalog and native rows protected.
+  - click: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"]' }
+    id: click-role-dialog-data-model-name-workshop-summary-demo-role-che-3
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="false"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-8
+  - shot: { name: model-selection-canceled-hidden-summary-draft, full_page: true }
+    id: shot-model-selection-canceled-hidden-summary-draft
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+    id: click-role-dialog-button-has-text-cancel
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-2
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Canceled visibility catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-selection-committed')) throw new Error('Canceled individual visibility draft changed committed models/provider/default'); })()
+    id: eval-script-8
+  - click: { role: button, name: Edit Campus Models (local fake), exact: true }
+    id: click-edit-campus-models-local-fake-3
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-9
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelector('[data-model-name="learning-notes-demo"] [role="checkbox"]').getAttribute('aria-checked') !== 'true' || !d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model') || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Deselect All')) throw new Error('Canceled draft leaked into genuine both-visible/default reopen'); d.querySelector('[data-model-name="learning-notes-demo"]').scrollIntoView({block:'center'});
+    id: eval-script-9
+  - shot: { name: model-selection-cancel-protected-both-visible-reopen, full_page: true }
+    id: shot-model-selection-cancel-protected-both-visible-reopen
+  - press: Escape
+    id: press-escape
+  - id: eval-script-10-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-admin-provider-model-selection.yaml
+      overlays:
+        - edition-enterprise
+  # 53–60: dirty both-visible state survives keep and actual same-URL document navigation/reload.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,keep:true})}); if (!r.ok) throw new Error('Existing model-selection keep control failed'); })()
+    id: eval-script-10
+  - goto: /admin/language-models
+    id: goto-admin-language-models-2
+  - click: { role: button, name: Edit Campus Models (local fake), exact: true }
+    id: click-edit-campus-models-local-fake-4
+  - wait: { selector: '[role="dialog"] [data-model-name="learning-notes-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-learning-notes-demo-role-checkb-5
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-10
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); for (const row of d.querySelectorAll('[data-model-name]')) { if (!row.querySelector('input[type="checkbox"]').checked || row.querySelector('[data-interactive-variant="select-heavy"]').getAttribute('data-interactive-state') !== 'selected') throw new Error('Keep/document reload lost native selected model rows'); } if (!d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model')) throw new Error('Keep/document reload lost protected default badge'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Kept visibility catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-selection-committed')) throw new Error('Keep/document reload changed committed visibility catalog'); const pub = await fetch('/api/llm/provider'); if (!pub.ok) throw new Error('Public visibility projection read failed'); const c = await pub.json(), p = c.providers.find(p => p.id === 62); if (p?.model_configurations.length !== 2 || p.model_configurations.some(m => m.is_visible !== true) || c.default_text?.provider_id !== 62 || c.default_text?.model_name !== 'learning-notes-demo') throw new Error('Sole public provider projection/default did not retain saved visibility'); d.querySelector('[data-model-name="learning-notes-demo"]').scrollIntoView({block:'center'}); })()
+    id: eval-script-11
+  - shot: { name: model-selection-dirty-both-visible-keep-reload-reopen, full_page: true }
+    id: shot-model-selection-dirty-both-visible-keep-reload-reopen
+  - press: Escape
+    id: press-escape-2
+  - id: eval-script-12-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-admin-provider-model-selection.yaml
+      overlays:
+        - edition-enterprise
+  # 61–68: meaningful fresh reset restores original mixed visibility and exact seed/default catalog.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,keep:false,resetChats:true})}); if (!r.ok) throw new Error('Existing model-selection fresh-reset control failed'); })()
+    id: eval-script-12
+  - goto: /admin/language-models
+    id: goto-admin-language-models-3
+  - click: { role: button, name: Edit Campus Models (local fake), exact: true }
+    id: click-edit-campus-models-local-fake-5
+  - wait: { selector: '[role="dialog"] [data-model-name="learning-notes-demo"] [role="checkbox"][aria-checked="true"]' }
+    id: wait-role-dialog-data-model-name-learning-notes-demo-role-checkb-6
+  - wait: { selector: '[role="dialog"] [data-model-name="workshop-summary-demo"] [role="checkbox"][aria-checked="false"]' }
+    id: wait-role-dialog-data-model-name-workshop-summary-demo-role-chec-11
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); for (const [name,selected] of [['learning-notes-demo',true],['workshop-summary-demo',false]]) { const row = d.querySelector(`[data-model-name="${name}"]`); if (row.querySelector('input[type="checkbox"]').checked !== selected || row.querySelector('[data-interactive-variant="select-heavy"]').getAttribute('data-interactive-state') !== (selected ? 'selected' : 'empty')) throw new Error(`Fresh reset did not visibly restore mixed native state: ${name}`); } if (!d.querySelector('[data-model-name="learning-notes-demo"]').textContent.includes('Default Model') || ![...d.querySelectorAll('button')].some(b => b.textContent.trim() === 'Select All')) throw new Error('Fresh mixed/default bulk state missing'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Fresh model seed read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-model-selection-seed')) throw new Error('Fresh reset retained dirty visibility or failed exact seed/model ID/default restoration'); const pub = await fetch('/api/llm/provider'); if (!pub.ok) throw new Error('Fresh public model projection read failed'); const c = await pub.json(), p = c.providers.find(p => p.id === 62); if (p?.model_configurations.find(m => m.name === 'learning-notes-demo')?.is_visible !== true || p?.model_configurations.find(m => m.name === 'workshop-summary-demo')?.is_visible !== false || c.default_text?.provider_id !== 62 || c.default_text?.model_name !== 'learning-notes-demo') throw new Error('Fresh sole public projection/default did not restore mixed seed'); d.querySelector('[data-model-name="learning-notes-demo"]').scrollIntoView({block:'center'}); })()
+    id: eval-script-13
+  - shot: { name: model-selection-fresh-original-mixed-default-restored, full_page: true }
+    id: shot-model-selection-fresh-original-mixed-default-restored
+  - press: Escape
+    id: press-escape-3
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-admin-provider-model-selection.yaml

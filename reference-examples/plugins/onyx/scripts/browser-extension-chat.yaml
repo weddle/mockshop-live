@@ -1,0 +1,172 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-chat
+title: Independent no-attachment native stream, feedback, edited questions, answer branches, history and sharing
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  - goto: /nrf
+    id: goto-nrf
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-5.2")' }
+    id: click-data-testid-model-selector-button-has-text-gpt-5-2
+  - wait: { placeholder: Search models... }
+    id: wait
+  - fill: { placeholder: Search models..., value: GPT-5 mini }
+    id: fill
+  - click: { text: GPT-5 mini, exact: true }
+    id: click-gpt-5-mini
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5 mini")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-5-mini
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'extension: outline a fictional workshop' }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button', settle: 0 }
+    id: click-onyx-chat-input-send-button
+  - wait: 700
+    id: wait-2
+  - shot: { name: nrf-answer-streaming, full_page: true, delay: 0 }
+    id: shot-nrf-answer-streaming
+  - wait: { testid: 'AgentMessage/toolbar', timeout: 30000 }
+    id: wait-3
+  - settle: 1200
+    id: settle
+  - wait: { text: No tab context was supplied. }
+    id: wait-no-tab-context-was-supplied
+  - shot: { name: nrf-answer-without-tab-context, full_page: true }
+    id: shot-nrf-answer-without-tab-context
+  - click: { testid: 'AgentMessage/copy-button', last: true }
+    id: click
+  - shot: { name: nrf-answer-copied, full_page: true }
+    id: shot-nrf-answer-copied
+  - click: { testid: 'AgentMessage/like-button', last: true }
+    id: click-2
+  - wait: { role: dialog }
+    id: wait-4
+  - shot: { name: nrf-feedback-modal, full_page: true }
+    id: shot-nrf-feedback-modal
+  - press: Escape
+    id: press-escape
+  - click: { testid: 'AgentMessage/like-button', last: true }
+    id: click-3
+  - wait: { placeholder: What did you like about this response? }
+    id: wait-5
+  - fill: { placeholder: What did you like about this response?, value: The fictional accessibility outline is clear. }
+    id: fill-2
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-like-button-data-interactive-state
+  - shot: { name: nrf-feedback-saved, full_page: true }
+    id: shot-nrf-feedback-saved
+  - click: { testid: 'AgentMessage/dislike-button', last: true }
+    id: click-4
+  - wait: { placeholder: What did you dislike about this response? }
+    id: wait-6
+  - fill: { placeholder: What did you dislike about this response?, value: Add a large-print reflection option. }
+    id: fill-3
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st
+  - shot: { name: nrf-feedback-replaced, full_page: true }
+    id: shot-nrf-feedback-replaced
+  - click: { testid: 'AgentMessage/dislike-button', last: true }
+    id: click-5
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="empty"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st-2
+  - shot: { name: nrf-feedback-removed, full_page: true }
+    id: shot-nrf-feedback-removed
+  - hover: { selector: '#onyx-human-message' }
+    id: hover-onyx-human-message
+  - click: { testid: 'HumanMessage/edit-button', last: true }
+    id: click-6
+  - fill: { selector: 'textarea', value: 'extension: revise the fictional workshop outline' }
+    id: fill-textarea
+  - shot: { name: nrf-question-edit-draft, full_page: true }
+    id: shot-nrf-question-edit-draft
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - hover: { selector: '#onyx-human-message' }
+    id: hover-onyx-human-message-2
+  - click: { testid: 'HumanMessage/edit-button', last: true }
+    id: click-7
+  - fill: { selector: 'textarea', value: 'extension: revise the fictional workshop outline' }
+    id: fill-textarea-2
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit-3
+  - wait: { text: No tab context was supplied. }
+    id: wait-no-tab-context-was-supplied-2
+  - settle: 2000
+    id: settle-2
+  - shot: { name: nrf-question-edited, full_page: true }
+    id: shot-nrf-question-edited
+  # Approved0006 forwards the SAME native session-controller branch callback as AppPage.
+  - click: { selector: '[data-testid="MessageSwitcher/container"] button', nth: 0 }
+    id: click-data-testid-messageswitcher-container-button
+  - wait: { text: 'extension: outline a fictional workshop', exact: true }
+    id: wait-extension-outline-a-fictional-workshop
+  - shot: { name: nrf-question-previous-branch, full_page: true }
+    id: shot-nrf-question-previous-branch
+  - click: { selector: '[data-testid="MessageSwitcher/container"] button', nth: 1 }
+    id: click-data-testid-messageswitcher-container-button-2
+  - wait: { text: 'extension: revise the fictional workshop outline', exact: true }
+    id: wait-extension-revise-the-fictional-workshop-outline
+  - shot: { name: nrf-question-next-branch, full_page: true }
+    id: shot-nrf-question-next-branch
+  - click: { selector: '[data-testid="AgentMessage/regenerate"] button', last: true }
+    id: click-data-testid-agentmessage-regenerate-button
+  - click: { selector: '[role="dialog"] :text-is("GPT-5 mini")' }
+    id: click-role-dialog-text-is-gpt-5-mini
+  - wait: { text: 'Alternative outline without reading a browser tab:' }
+    id: wait-alternative-outline-without-reading-a-browser-tab
+  - settle: 1200
+    id: settle-3
+  - shot: { name: nrf-answer-regenerated, full_page: true }
+    id: shot-nrf-answer-regenerated
+  - click: { selector: '[data-testid="AgentMessage/toolbar"] [data-testid="MessageSwitcher/container"] button', nth: 0 }
+    id: click-data-testid-agentmessage-toolbar-data-testid-messageswitch
+  - wait: { text: No tab context was supplied. }
+    id: wait-no-tab-context-was-supplied-3
+  - shot: { name: nrf-answer-previous-branch, full_page: true }
+    id: shot-nrf-answer-previous-branch
+  - click: { selector: '[data-testid="AgentMessage/toolbar"] [data-testid="MessageSwitcher/container"] button', nth: 1 }
+    id: click-data-testid-agentmessage-toolbar-data-testid-messageswitch-2
+  - wait: { text: 'Alternative outline without reading a browser tab:' }
+    id: wait-alternative-outline-without-reading-a-browser-tab-2
+  - shot: { name: nrf-answer-next-branch, full_page: true }
+    id: shot-nrf-answer-next-branch
+  - eval: |
+      (async () => {
+        const {sessions} = await (await fetch('/api/chat/get-user-chat-sessions')).json();
+        const session = sessions.find(s => s.name === 'Fictional browser learning conversation');
+        if (!session) throw new Error('NRF conversation was not in the existing sidebar engine');
+        sessionStorage.setItem('nrf-conversation', session.id);
+        location.assign(`/app?chatId=${session.id}`);
+      })()
+    id: eval-script
+  - wait: { text: 'Alternative outline without reading a browser tab:' }
+    id: wait-alternative-outline-without-reading-a-browser-tab-3
+  - shot: { name: nrf-conversation-reopened-in-onyx, full_page: true }
+    id: shot-nrf-conversation-reopened-in-onyx
+  - hover: { testid: ChatButton, has_text: Fictional browser learning conversation }
+    id: hover
+  - click: { selector: '[data-testid="ChatButton"]:has-text("Fictional browser learning conversation") button[aria-label="Chat options"]' }
+    id: click-data-testid-chatbutton-has-text-fictional-browser-learning
+  - click: { role: menuitem, name: Share }
+    id: click-share
+  - wait: { role: dialog }
+    id: wait-7
+  - shot: { name: nrf-conversation-share, full_page: true }
+    id: shot-nrf-conversation-share
+  - press: Escape
+    id: press-escape-2
+world: ../../../worlds/seaside/world.yaml

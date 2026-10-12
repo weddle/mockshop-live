@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { check } from "../core/validate.mjs";
 
-const schema = JSON.parse(fs.readFileSync(new URL("./scenario.schema.json", import.meta.url), "utf8"));
+const schema = JSON.parse(fs.readFileSync(new URL("./script.schema.json", import.meta.url), "utf8"));
 const errorsFor = (step) => check(schema.$defs.step, step, schema);
 
 const valid = [

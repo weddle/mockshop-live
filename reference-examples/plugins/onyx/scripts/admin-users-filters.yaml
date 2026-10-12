@@ -1,0 +1,62 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-filters
+title: Native Users account, group and status filters
+strict: true
+requires: enterprise
+locale: en
+steps:
+  - goto: /admin/users
+    id: goto-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  - fill: { selector: 'input[placeholder="Search users..."]', value: '' }
+    id: fill-input-placeholder-search-users
+  - click: { role: button, name: Filter by account type, exact: true }
+    id: click-filter-by-account-type
+  - shot: users-account-filter-menu
+    id: shot-users-account-filter-menu
+  - click: { text: Slack Bot, exact: true }
+    id: click-slack-bot
+  - press: Escape
+    id: press-escape
+  - wait: { text: "{{people.workshop-bot.name}}", exact: true }
+    id: wait-workshop-bot
+  - shot: users-account-filter
+    id: shot-users-account-filter
+  - goto: /admin/users
+    id: goto-admin-users-2
+  - click: { role: button, name: Filter by group, exact: true }
+    id: click-filter-by-group
+  - shot: users-group-filter-menu
+    id: shot-users-group-filter-menu
+  - click: { text: "{{teams.training.name}}", exact: true }
+    id: click-training
+  - press: Escape
+    id: press-escape-2
+  - shot: users-group-filter
+    id: shot-users-group-filter
+  - goto: /admin/users
+    id: goto-admin-users-3
+  - click: { role: button, name: Filter by status, exact: true }
+    id: click-filter-by-status
+  - click: { text: Inactive, exact: true }
+    id: click-inactive
+  - press: Escape
+    id: press-escape-3
+  - wait: { text: "{{people.noa.name}}", exact: true }
+    id: wait-noa-patel
+  - shot: users-inactive-filter
+    id: shot-users-inactive-filter
+  - goto: /admin/users
+    id: goto-admin-users-4
+  - click: { role: button, name: Filter by status, exact: true }
+    id: click-filter-by-status-2
+  - shot: users-status-menu
+    id: shot-users-status-menu
+  - click: { text: Invite Pending, exact: true }
+    id: click-invite-pending
+  - press: Escape
+    id: press-escape-4
+  - shot: users-invited
+    id: shot-users-invited
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,101 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-account-status
+title: Native Users deactivate, activate, delete, CSV and dirty reset
+strict: true
+requires: enterprise
+locale: en
+steps:
+  - goto: /admin/users
+    id: goto-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+    id: fill-input-placeholder-search-users
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions
+  - click: { text: Deactivate User, exact: true }
+    id: click-deactivate-user
+  - shot: users-deactivate-dialog
+    id: shot-users-deactivate-dialog
+  - click: { role: button, name: Deactivate, exact: true }
+    id: click-deactivate
+  - wait: { text: User deactivated, exact: true }
+    id: wait-user-deactivated
+  - shot: users-deactivated
+    id: shot-users-deactivated
+  - goto: /admin/users
+    id: goto-admin-users-2
+  - fill: { selector: 'input[placeholder="Search users..."]', value: devon.ortiz }
+    id: fill-input-placeholder-search-users-2
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-2
+  - shot: users-inactive-menu
+    id: shot-users-inactive-menu
+  - click: { text: Activate User, exact: true }
+    id: click-activate-user
+  - shot: users-activate-dialog
+    id: shot-users-activate-dialog
+  - click: { role: button, name: Activate, exact: true }
+    id: click-activate
+  - wait: { text: User activated, exact: true }
+    id: wait-user-activated
+  - shot: users-activated
+    id: shot-users-activated
+  - goto: /admin/users
+    id: goto-admin-users-3
+  - fill: { selector: 'input[placeholder="Search users..."]', value: noa.patel }
+    id: fill-input-placeholder-search-users-3
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-3
+  - click: { text: Delete User, exact: true }
+    id: click-delete-user
+  - shot: users-delete-dialog
+    id: shot-users-delete-dialog
+  - click: { role: button, name: Delete, exact: true }
+    id: click-delete
+  - wait: { text: User deleted, exact: true }
+    id: wait-user-deleted
+  - wait_gone: { text: "{{people.noa.name}}", exact: true }
+    id: wait-gone-noa-patel
+  - shot: users-deleted
+    id: shot-users-deleted
+  - goto: /admin/users
+    id: goto-admin-users-4
+  - click: { role: button, name: Download CSV, exact: true }
+    id: click-download-csv
+  - shot: users-csv
+    id: shot-users-csv
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/manage/users/download');
+        if (!res.ok) throw new Error('CSV readback failed');
+        const csv = await res.text();
+        if (!csv.startsWith('email,account_type,is_admin,is_active\n') || csv.includes('{{people.noa.email}}') || !csv.includes('{{people.devon.email}},STANDARD,false,true')) throw new Error('Native CSV does not reflect current accepted User state');
+      })()
+    id: eval-script
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en'})});
+        if (!res.ok) throw new Error('Mock reset failed');
+        location.reload();
+      })()
+    id: eval-script-2
+  - wait: { text: "{{people.iris.email}}", exact: true }
+    id: wait-iris-ward-learning-lab-example
+  - shot: users-reset
+    id: shot-users-reset
+  - fill: { selector: 'input[placeholder="Search users..."]', value: noa.patel }
+    id: fill-input-placeholder-search-users-4
+  - wait: { text: "{{people.noa.name}}", exact: true }
+    id: wait-noa-patel
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-4
+  - wait: { text: Activate User, exact: true }
+    id: wait-activate-user
+  - shot: users-deleted-inactive-reset
+    id: shot-users-deleted-inactive-reset
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,38 @@
+# #65 route-sized native proof: LLM Gateway.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-llm-gateway
+title: LLM Gateway - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/llm-gateway
+    id: goto-admin-llm-gateway
+  - shot: inventory-llm-gateway
+    id: shot-inventory-llm-gateway
+  - goto: /admin/chat-preferences
+    id: goto-admin-chat-preferences
+  - click: { selector: 'a[href="/admin/llm-gateway"]' }
+    id: click-a-href-admin-llm-gateway
+  - wait: { text: LLM Gateway, exact: true }
+    id: wait-llm-gateway
+  - shot: llm-gateway-menu
+    id: shot-llm-gateway-menu
+  - goto: /admin/llm-gateway
+    id: goto-admin-llm-gateway-2
+  - click: { selector: '[role="switch"]' }
+    id: click-role-switch
+  - goto: /admin/chat-preferences
+    id: goto-admin-chat-preferences-2
+  - goto: /admin/llm-gateway
+    id: goto-admin-llm-gateway-3
+  - wait: { selector: '[role="switch"][aria-checked="false"]' }
+    id: wait-role-switch-aria-checked-false
+  - shot: llm-gateway-saved-off
+    id: shot-llm-gateway-saved-off
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,81 @@
+# #34 missing-witness unit only. Existing fixture40 supplies Salesforce101/credential201,
+# indexing history and applicable:false sync DTOs. This is prepared, NOT accepted.
+# Native row + direct entry and both honest not-applicable panels remain required.
+# No connector execution, credential write, reindex or production ACL claim.
+name: coverage-cc101
+title: Seeded Salesforce connector native detail and sync applicability
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/connectors
+    id: goto-admin-connectors
+  - click: { selector: 'a[href="/admin/indexing-status"]' }
+    id: click-a-href-admin-indexing-status
+  - wait: { placeholder: Search connectors... }
+    id: wait
+  - fill: { placeholder: Search connectors..., value: Salesforce }
+    id: fill
+  - settle: 800
+    id: settle
+  - click: { text: Expand All, exact: true }
+    id: click-expand-all
+  - wait: { text: "Salesforce – Guest Services", exact: true }
+    id: wait-salesforce-guest-services
+  - shot: cc101-list-entry
+    id: shot-cc101-list-entry
+  - click: { text: "Salesforce – Guest Services", exact: true }
+    id: click-salesforce-guest-services
+  - wait: { text: Connector Configuration, exact: true }
+    id: wait-connector-configuration
+  - eval: |
+      if (location.pathname !== '/admin/connector/101' || !document.body.innerText.includes('Salesforce – Guest Services')) throw new Error('Salesforce row opened the wrong native detail');
+    id: eval-script
+  - shot: cc101-row-detail
+    id: shot-cc101-row-detail
+  - goto: /admin/connector/101
+    id: goto-admin-connector-101
+  - wait: { text: Connector Configuration, exact: true }
+    id: wait-connector-configuration-2
+  - wait: { text: "Salesforce – Guest Services", exact: true }
+    id: wait-salesforce-guest-services-2
+  - wait: { text: Not Started, exact: true }
+    id: wait-not-started
+  - shot: cc101-direct-detail-not-started
+    id: shot-cc101-direct-detail-not-started
+  - scroll: { text: Credential, exact: true }
+    id: scroll-credential
+  - wait: { text: Salesforce integration user, exact: true }
+    id: wait-salesforce-integration-user
+  - shot: cc101-credential-config
+    id: shot-cc101-credential-config
+  - click: { text: Advanced, exact: true }
+    id: click-advanced
+  - scroll: { selector: table, last: true }
+    id: scroll-table
+  - wait: { role: tab, name: Indexing, exact: true }
+    id: wait-indexing
+  - wait: { text: New Docs, exact: true }
+    id: wait-new-docs
+  - shot: cc101-index-history
+    id: shot-cc101-index-history
+  - click: { role: tab, name: Document Permission Sync, exact: true }
+    id: click-document-permission-sync
+  - wait: { text: "This connector does not use a separate document-permission syncing job.", exact: true }
+    id: wait-this-connector-does-not-use-a-separate-document-permission-
+  - shot: cc101-document-sync-not-applicable
+    id: shot-cc101-document-sync-not-applicable
+  - click: { role: tab, name: Group Membership Sync, exact: true }
+    id: click-group-membership-sync
+  - wait: { text: "This connector does not use a separate group-membership syncing job.", exact: true }
+    id: wait-this-connector-does-not-use-a-separate-group-membership-syn
+  - shot: cc101-group-sync-not-applicable
+    id: shot-cc101-group-sync-not-applicable
+  - click: { role: tab, name: Indexing, exact: true }
+    id: click-indexing
+  - wait: { text: New Docs, exact: true }
+    id: wait-new-docs-2
+  - shot: cc101-return-indexing
+    id: shot-cc101-return-indexing
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,19 @@
+name: omzo-incident-example
+plugin: onyx
+world: ../../worlds/omzo/world.yaml
+profile: ../../profiles/zoom-blue.yaml
+strict: true
+scenes:
+  - id: investigate
+    steps:
+      - id: open-chat
+        goto: /app
+      - id: incident-question
+        send:
+          text: "Who coordinates the {{vars.incident}} rollback?"
+          reply:
+            queries: ["{{vars.incident}} relay rollback owner"]
+            cites: [rollback]
+            text: "{{people.sam.name}} coordinates the rollback. Disable the relay flag, then verify meeting join latency has returned to baseline."
+      - id: answer
+        shot: answer

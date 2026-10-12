@@ -1,0 +1,277 @@
+# #34 true-Community per-user-route witness. EDITONLY authored; UNEXECUTED/UNACCEPTED.
+# Parent owns matching physical CE artifact selection, schema validation and complete strict native/image proof.
+# Independent native runner prelude resets unit overlays/clock/locale. Keep uses existing state DSL;
+# fresh tails use existing /api/__mockshop/state keep:false plus native full navigation.
+# No continue_on_error, fixed-settle-only success, private React, clips or acceptance/closure claim.
+# Original route rows 8-14, including canonical /settings -> /general.
+# CE removes Business Default App Mode/Gateway tab; direct Gateway redirects to General.
+# Minimal native auto-scroll/eligible fake token writes, metadata reload, keep and fresh reset.
+name: community-user-routes-settings
+title: True Community settings routes, edition guards and minimal native preferences/token writes
+requires: community
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 1000
+steps:
+  - goto: /app
+    id: goto-app
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox
+  - click:
+      selector: '#onyx-user-dropdown'
+    id: click-onyx-user-dropdown
+  - click:
+      text: Settings
+      exact: true
+    id: click-settings
+  - wait:
+      placeholder: Your name
+    id: wait
+  - eval: if(location.pathname!=="/app/settings/general") throw new Error('Native route/guard reached the wrong canonical URL');
+    id: eval-script
+  - eval: (async()=>{const r=await fetch('/api/settings'); if(!r.ok) throw new Error('Community settings prerequisite missing'); const v=await r.json(); if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active') throw new Error('Not a Community fixture/licensing state');})()
+    id: eval-script-2
+  - shot:
+      name: ce-settings-native-menu
+      full_page: true
+    id: shot-ce-settings-native-menu
+  - goto: /app/settings
+    id: goto-app-settings
+  - wait:
+      placeholder: Your name
+    id: wait-2
+  - eval: if(location.pathname!=="/app/settings/general") throw new Error('Native route/guard reached the wrong canonical URL');
+    id: eval-script-3
+  - shot:
+      name: ce-settings-default-general
+      full_page: true
+    id: shot-ce-settings-default-general
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - wait:
+      placeholder: Your name
+    id: wait-3
+  - eval: if(document.querySelector('a[href="/app/settings/llm-gateway"]')) throw new Error('Community exposes Business LLM Gateway sidebar entry');
+    id: eval-script-4
+  - shot:
+      name: ce-settings-general-community-navigation
+      full_page: true
+    id: shot-ce-settings-general-community-navigation
+  - click:
+      selector: a[href="/app/settings/chat-preferences"]
+    id: click-a-href-app-settings-chat-preferences
+  - wait:
+      text: Default Model
+      exact: true
+    id: wait-default-model
+  - wait:
+      selector: label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="false"]
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-fa
+  - eval: if([...document.querySelectorAll('label')].some(l=>l.textContent.includes('Default App Mode'))) throw new Error('Community exposed Business-only Default App Mode');
+    id: eval-script-5
+  - shot:
+      name: ce-settings-chat-preferences-community-guard
+      full_page: true
+    id: shot-ce-settings-chat-preferences-community-guard
+  - click:
+      selector: label:has-text("Chat Auto-scroll") [role="switch"]
+    id: click-label-has-text-chat-auto-scroll-role-switch
+  - wait:
+      selector: label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="true"]
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-tr
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences
+  - wait:
+      selector: label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="true"]
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-tr-2
+  - eval: (async()=>{if(!(await (await fetch('/api/me')).json()).preferences.auto_scroll) throw new Error('Native Community auto-scroll write did not persist');})()
+    id: eval-script-6
+  - shot:
+      name: ce-settings-chat-preferences-written-reloaded
+      full_page: true
+    id: shot-ce-settings-chat-preferences-written-reloaded
+  - click:
+      selector: a[href="/app/settings/accounts-access"]
+    id: click-a-href-app-settings-accounts-access
+  - wait:
+      text: No access tokens created.
+      exact: true
+    id: wait-no-access-tokens-created
+  - shot:
+      name: ce-settings-accounts-access-menu
+      full_page: true
+    id: shot-ce-settings-accounts-access-menu
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - wait:
+      role: button
+      name: New Access Token
+      exact: true
+    id: wait-new-access-token
+  - click:
+      role: button
+      name: New Access Token
+      exact: true
+    id: click-new-access-token
+  - fill:
+      placeholder: Name your token
+      value: Community workshop token (fake)
+    id: fill
+  - click:
+      placeholder: Select permissions
+    id: click
+  - click:
+      text: Limited access
+      exact: true
+    id: click-limited-access
+  - wait:
+      role: checkbox
+      name: Chat Read
+      exact: true
+    id: wait-chat-read
+  - eval: (async()=>{const scopes=await (await fetch('/api/user/pats/scopes')).json(),d=document.querySelector('[role=dialog]'),labels=[...d.querySelectorAll('[role=checkbox]')].map(c=>c.getAttribute('aria-label')); for(const scope of scopes) if(scope.min_tier!=='community'&&labels.includes(scope.label)) throw new Error('Community exposes paid-only token scope '+scope.label);})()
+    id: eval-script-7
+  - click:
+      role: checkbox
+      name: Chat Read
+      exact: true
+    id: click-chat-read
+  - shot:
+      name: ce-settings-community-eligible-token-scope
+      full_page: true
+    id: shot-ce-settings-community-eligible-token-scope
+  - click:
+      role: button
+      name: Create Token
+      exact: true
+    id: click-create-token
+  - wait:
+      text: mockshop-not-a-real-token-0001
+      exact: true
+    id: wait-mockshop-not-a-real-token-0001
+  - shot:
+      name: ce-settings-fictional-token-created
+      full_page: true
+    id: shot-ce-settings-fictional-token-created
+  - click:
+      selector: '[role="dialog"] button[aria-label="Close"]'
+    id: click-role-dialog-button-aria-label-close
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-2
+  - wait:
+      text: Community workshop token (fake)
+      exact: true
+    id: wait-community-workshop-token-fake
+  - eval: (async()=>{const rows=await (await fetch('/api/user/pats')).json(),p=rows.find(p=>p.name==='Community workshop token (fake)'); if(!p||p.scopes.join(',')!=='read:chat'||Object.hasOwn(p,'token')) throw new Error('Community scoped fake token metadata/one-time boundary not persisted');})()
+    id: eval-script-8
+  - shot:
+      name: ce-settings-token-metadata-reopened
+      full_page: true
+    id: shot-ce-settings-token-metadata-reopened
+  - click:
+      selector: a[href="/app/settings/connectors"]
+    id: click-a-href-app-settings-connectors
+  - wait:
+      text: Connectors
+      exact: true
+      nth: 0
+    id: wait-connectors
+  - eval: if(location.pathname!=="/app/settings/connectors") throw new Error('Native route/guard reached the wrong canonical URL');
+    id: eval-script-9
+  - shot:
+      name: ce-settings-connectors-menu
+      full_page: true
+    id: shot-ce-settings-connectors-menu
+  - goto: /app/settings/connectors
+    id: goto-app-settings-connectors
+  - wait:
+      # IndexedConnectorCard displays getSourceMetadata(source).displayName, not ccPair.name.
+      text: Google Drive
+      exact: true
+    id: wait-google-drive
+  - shot:
+      name: ce-settings-connectors-direct
+      full_page: true
+    id: shot-ce-settings-connectors-direct
+  - goto: /app/settings/llm-gateway
+    id: goto-app-settings-llm-gateway
+  - wait:
+      placeholder: Your name
+    id: wait-4
+  - eval: if(location.pathname!=="/app/settings/general") throw new Error('Native route/guard reached the wrong canonical URL');
+    id: eval-script-10
+  - eval: if(document.querySelector('a[href="/app/settings/llm-gateway"]')) throw new Error('Community gateway guard retained forbidden tab');
+    id: eval-script-11
+  - shot:
+      name: ce-settings-llm-gateway-community-redirect
+      full_page: true
+    id: shot-ce-settings-llm-gateway-community-redirect
+  - click:
+      selector: a[href="/app/settings/usage"]
+    id: click-a-href-app-settings-usage
+  - wait:
+      testid: usage-model-tokens
+      nth: 0
+    id: wait-5
+  - wait:
+      text: Model prices
+      exact: true
+    id: wait-model-prices
+  - shot:
+      name: ce-settings-usage-menu
+      full_page: true
+    id: shot-ce-settings-usage-menu
+  - goto: /app/settings/usage
+    id: goto-app-settings-usage
+  - wait:
+      testid: usage-model-tokens
+      nth: 0
+    id: wait-6
+  - shot:
+      name: ce-settings-usage-direct
+      full_page: true
+    id: shot-ce-settings-usage-direct
+  - state:
+      world: ../../../worlds/seaside/world.yaml
+    id: state
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-2
+  - wait:
+      selector: label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="true"]
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-tr-3
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-3
+  - wait:
+      text: Community workshop token (fake)
+      exact: true
+    id: wait-community-workshop-token-fake-2
+  - shot:
+      name: ce-settings-written-state-kept
+      full_page: true
+    id: shot-ce-settings-written-state-kept
+  - id: eval-script-12-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})}); if(!response.ok) throw new Error('Independent Community dirty-state reset failed');})()
+    id: eval-script-12
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-3
+  - wait:
+      selector: label:has-text("Chat Auto-scroll") [role="switch"][aria-checked="false"]
+    id: wait-label-has-text-chat-auto-scroll-role-switch-aria-checked-fa-2
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-4
+  - wait:
+      text: No access tokens created.
+      exact: true
+    id: wait-no-access-tokens-created-2
+  - shot:
+      name: ce-settings-fresh-preferences-token-restored
+      full_page: true
+    id: shot-ce-settings-fresh-preferences-token-restored
+demo_anchor: '2026-10-09T10:00:00-04:00'
+world: ../../../worlds/seaside/world.yaml

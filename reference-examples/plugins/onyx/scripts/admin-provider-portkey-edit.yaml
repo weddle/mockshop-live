@@ -1,0 +1,263 @@
+# #58 EDITONLY prepared, unexecuted/unaccepted. One independently seeded ADMIN route unit.
+# Actual caller: LanguageModelsPage ExistingProviderCard -> getProvider('portkey').Modal
+# with existingLlmProvider; the source registry binds PortkeyModal. Onboarding's connected
+# card instead navigates here; ProviderSetupModal has no existing-provider edit prop.
+# Exactly three native API tabs. No virtual-key/gateway-config UI exists at this pin.
+# Every product mutation uses native fields/tabs/Update/Cancel. Supplementary GET assertions
+# cannot replace the visible saved/reopened states. Only the existing runner reset control
+# receives direct writes; sessionStorage below contains witness snapshots, not product state.
+# 100 operations / 20 named images: menu/direct entry; seed and canceled saved edit;
+# required key/base; mode-aware Restore and known-default transitions; three genuine
+# saved modes/reopens; redacted replacement and unchanged-key preservation; dirty keep,
+# hard navigation/reload, protected committed cancel, and meaningful fresh seed restoration.
+# Sole handlers-save-controls catalog/reset/discovery; only fictional .invalid bases and keys.
+name: admin-provider-portkey-edit
+title: Native admin Portkey API modes, saved edit/reopen and protected reset
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # 1–11: menu and direct route entry, genuine configured-provider Messages edit.
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - click: { selector: 'a[href="/admin/language-models"]' }
+    id: click-a-href-admin-language-models
+  - wait: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: wait-edit-campus-portkey-local-fake
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Seed catalog read failed'); const c = await r.json(); const p = c.providers.find(p => p.id === 58); if (c.providers.length !== 1 || p?.provider !== 'portkey' || p.name !== 'Campus Portkey (local fake)' || p.custom_config?.portkey_api_mode !== 'messages' || p.api_base !== 'https://campus-portkey.invalid/seed/messages' || p.api_key !== 'mock-only-not-a-secret') throw new Error('Configured Portkey seed prerequisite missing'); sessionStorage.setItem('mockshop-admin-portkey-seed', JSON.stringify(c)); })()
+    id: eval-script
+  - shot: { name: admin-portkey-menu-configured-seed, full_page: true }
+    id: shot-admin-portkey-menu-configured-seed
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake
+  - wait: { selector: '[role="dialog"] input[name="api_base"]' }
+    id: wait-role-dialog-input-name-api-base
+  - wait: { selector: '[role="dialog"]:has-text("Learning Notes (local fake)")' }
+    id: wait-role-dialog-has-text-learning-notes-local-fake
+  - eval: >-
+      const d = document.querySelector('[role="dialog"]'); if (d.querySelectorAll('[role="tab"]').length !== 3 || !d.querySelector('[role="tab"][aria-selected="true"]')?.textContent.includes('Messages API') || d.querySelector('input[name="name"]').value !== 'Campus Portkey (local fake)' || d.querySelector('input[name="api_base"]').value !== 'https://campus-portkey.invalid/seed/messages' || d.querySelector('input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Saved Messages mode/base/key did not open in the genuine admin editor');
+    id: eval-script-2
+  - shot: { name: admin-portkey-seed-messages-edit, full_page: true }
+    id: shot-admin-portkey-seed-messages-edit
+  # 12–26: seeded custom base survives both other tabs; canceled draft protects catalog.
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Chat Completions API")' }
+    id: click-role-dialog-role-tab-has-text-chat-completions-api
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Chat Completions API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-chat-compl
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/seed/messages' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Chat Completions switching clobbered saved custom base/key');
+    id: eval-script-3
+  - shot: { name: admin-portkey-chat-preserves-seed-custom-base, full_page: true }
+    id: shot-admin-portkey-chat-preserves-seed-custom-base
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Responses API")' }
+    id: click-role-dialog-role-tab-has-text-responses-api
+  - eval: >-
+      if (!document.querySelector('[role="dialog"] [role="tab"][aria-selected="true"]')?.textContent.includes('Responses API') || document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/seed/messages' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Responses switching clobbered saved custom base/key');
+    id: eval-script-4
+  - fill: { selector: '[role="dialog"] input[name="api_base"]', value: 'https://campus-portkey.invalid/canceled-seed-draft' }
+    id: fill-role-dialog-input-name-api-base
+  - shot: { name: admin-portkey-responses-canceled-seed-draft, full_page: true }
+    id: shot-admin-portkey-responses-canceled-seed-draft
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+    id: click-role-dialog-button-has-text-cancel
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Canceled seed catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-portkey-seed')) throw new Error('Canceled admin draft changed configured Portkey/defaults/models'); })()
+    id: eval-script-5
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake-2
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Messages API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-messages-a
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/seed/messages' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Canceled seed draft leaked into genuine reopen');
+    id: eval-script-6
+  - shot: { name: admin-portkey-canceled-seed-protected-reopen, full_page: true }
+    id: shot-admin-portkey-canceled-seed-protected-reopen
+  # 27–46: actual required-key/base guards, Restore, and all mode defaults.
+  - fill: { selector: '[role="dialog"] input[name="api_key"]', value: '' }
+    id: fill-role-dialog-input-name-api-key
+  - press: Tab
+    id: press-tab
+  - wait: { text: API Key is required, exact: true }
+    id: wait-api-key-is-required
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]' }
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di
+  - shot: { name: admin-portkey-required-key-protects-update, full_page: true }
+    id: shot-admin-portkey-required-key-protects-update
+  - fill: { selector: '[role="dialog"] input[name="api_key"]', value: mock-only-portkey-replacement-not-a-secret }
+    id: fill-role-dialog-input-name-api-key-2
+  - fill: { selector: '[role="dialog"] input[name="api_base"]', value: '' }
+    id: fill-role-dialog-input-name-api-base-2
+  - press: Tab
+    id: press-tab-2
+  - wait: { text: API Base URL is required, exact: true }
+    id: wait-api-base-url-is-required
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]' }
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di-2
+  - shot: { name: admin-portkey-required-base-protects-update, full_page: true }
+    id: shot-admin-portkey-required-base-protects-update
+  - click: { selector: '[role="dialog"] button[aria-label="Restore default API base URL"]' }
+    id: click-role-dialog-button-aria-label-restore-default-api-base-url
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://api.portkey.ai' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-portkey-replacement-not-a-secret') throw new Error('Messages Restore did not restore its exact default while preserving draft key');
+    id: eval-script-7
+  - shot: { name: admin-portkey-messages-restore-default, full_page: true }
+    id: shot-admin-portkey-messages-restore-default
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Responses API")' }
+    id: click-role-dialog-role-tab-has-text-responses-api-2
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://api.portkey.ai/v1' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-portkey-replacement-not-a-secret') throw new Error('Responses did not switch the known default to /v1 or preserved-key mismatch');
+    id: eval-script-8
+  - shot: { name: admin-portkey-responses-default-base, full_page: true }
+    id: shot-admin-portkey-responses-default-base
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Chat Completions API")' }
+    id: click-role-dialog-role-tab-has-text-chat-completions-api-2
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://api.portkey.ai/v1' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-portkey-replacement-not-a-secret') throw new Error('Chat Completions default base/key mismatch');
+    id: eval-script-9
+  - shot: { name: admin-portkey-chat-default-base, full_page: true }
+    id: shot-admin-portkey-chat-default-base
+  # 47–58: save Responses + custom base + replacement fake key; genuine saved reopen.
+  - fill: { selector: '[role="dialog"] input[name="api_base"]', value: 'https://campus-portkey.invalid/saved/responses' }
+    id: fill-role-dialog-input-name-api-base-3
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Responses API")' }
+    id: click-role-dialog-role-tab-has-text-responses-api-3
+  - wait: { selector: '[role="dialog"] button[type="submit"]:not(:disabled):not([aria-disabled="true"]):not([aria-disabled="true"] *)' }
+    id: wait-role-dialog-button-type-submit-not-disabled-not-aria-disabl
+  - shot: { name: admin-portkey-responses-custom-ready-update, full_page: true }
+    id: shot-admin-portkey-responses-custom-ready-update
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+    id: click-role-dialog-button-type-submit-has-text-update
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-2
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Saved Responses catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 58), seed = JSON.parse(sessionStorage.getItem('mockshop-admin-portkey-seed')); if (c.providers.length !== 1 || p?.provider !== 'portkey' || p.custom_config?.portkey_api_mode !== 'responses' || p.api_base !== 'https://campus-portkey.invalid/saved/responses' || p.api_key !== 'mock-only-not-a-secret' || p.api_key_changed !== true || p.custom_config_changed !== true || p.name !== 'Campus Portkey (local fake)' || p.is_public !== true || p.is_auto_mode !== false || p.groups.length || p.personas.length || p.model_configurations.length !== 1 || p.model_configurations[0].name !== 'learning-notes-demo' || p.model_configurations[0].is_visible !== true || p.model_configurations[0].max_input_tokens !== 32768 || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft]) || JSON.stringify(c).includes('mock-only-portkey-replacement-not-a-secret')) throw new Error('Responses update failed saved mode/base/redaction or protected model/access/default fields'); })()
+    id: eval-script-10
+  - shot: { name: admin-portkey-responses-saved-native-card, full_page: true }
+    id: shot-admin-portkey-responses-saved-native-card
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake-3
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Responses API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-responses-
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/saved/responses' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret' || document.querySelector('[role="dialog"] input[name="name"]').value !== 'Campus Portkey (local fake)') throw new Error('Saved Responses/custom base/redacted key did not genuinely reopen');
+    id: eval-script-11
+  - shot: { name: admin-portkey-responses-saved-reopen, full_page: true }
+    id: shot-admin-portkey-responses-saved-reopen
+  # 59–69: save Messages + its own custom base without replacing the saved key.
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Messages API")' }
+    id: click-role-dialog-role-tab-has-text-messages-api
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/saved/responses' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Messages switching clobbered committed custom base/key');
+    id: eval-script-12
+  - fill: { selector: '[role="dialog"] input[name="api_base"]', value: 'https://campus-portkey.invalid/saved/messages' }
+    id: fill-role-dialog-input-name-api-base-4
+  - shot: { name: admin-portkey-messages-custom-ready-update, full_page: true }
+    id: shot-admin-portkey-messages-custom-ready-update
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+    id: click-role-dialog-button-type-submit-has-text-update-2
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-3
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider/58'); if (!r.ok) throw new Error('Saved Messages detail read failed'); const p = await r.json(); if (p.id !== 58 || p.custom_config?.portkey_api_mode !== 'messages' || p.api_base !== 'https://campus-portkey.invalid/saved/messages' || p.api_key !== 'mock-only-not-a-secret' || p.api_key_changed !== false || p.custom_config_changed !== true || p.model_configurations.length !== 1 || p.model_configurations[0].name !== 'learning-notes-demo' || p.model_configurations[0].is_visible !== true) throw new Error('Messages edit did not preserve saved key/model or persist mode/base'); })()
+    id: eval-script-13
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake-4
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Messages API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-messages-a-2
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/saved/messages' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Saved Messages/custom base/unchanged key did not genuinely reopen');
+    id: eval-script-14
+  - shot: { name: admin-portkey-messages-saved-reopen, full_page: true }
+    id: shot-admin-portkey-messages-saved-reopen
+  # 70–82: save Chat Completions; real keep and hard navigation/reload reopen its dirty state.
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Chat Completions API")' }
+    id: click-role-dialog-role-tab-has-text-chat-completions-api-3
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/saved/messages' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Chat Completions switching clobbered committed custom base/key');
+    id: eval-script-15
+  - fill: { selector: '[role="dialog"] input[name="api_base"]', value: 'https://campus-portkey.invalid/saved/chat-completions' }
+    id: fill-role-dialog-input-name-api-base-5
+  - shot: { name: admin-portkey-chat-custom-ready-update, full_page: true }
+    id: shot-admin-portkey-chat-custom-ready-update
+  - click: { selector: '[role="dialog"] button[type="submit"]:has-text("Update")' }
+    id: click-role-dialog-button-type-submit-has-text-update-3
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-4
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Saved Chat Completions catalog read failed'); const c = await r.json(), p = c.providers.find(p => p.id === 58), seed = JSON.parse(sessionStorage.getItem('mockshop-admin-portkey-seed')); if (c.providers.length !== 1 || p?.custom_config?.portkey_api_mode !== 'chat_completions' || p.api_base !== 'https://campus-portkey.invalid/saved/chat-completions' || p.api_key !== 'mock-only-not-a-secret' || p.api_key_changed !== false || p.custom_config_changed !== true || p.name !== 'Campus Portkey (local fake)' || p.is_public !== true || p.is_auto_mode !== false || p.groups.length || p.personas.length || p.model_configurations.length !== 1 || p.model_configurations[0].name !== 'learning-notes-demo' || p.model_configurations[0].is_visible !== true || p.model_configurations[0].max_input_tokens !== 32768 || JSON.stringify([c.default_text,c.default_vision,c.default_chat_naming,c.default_craft]) !== JSON.stringify([seed.default_text,seed.default_vision,seed.default_chat_naming,seed.default_craft])) throw new Error('Chat Completions update failed mode/base/unchanged-key or protected catalog/default fields'); sessionStorage.setItem('mockshop-admin-portkey-committed', JSON.stringify(c)); })()
+    id: eval-script-16
+  - id: eval-script-17-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-admin-provider-portkey.yaml
+      overlays: []
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,keep:true})}); if (!r.ok) throw new Error('Existing keep control failed'); })()
+    id: eval-script-17
+  - goto: /admin/language-models
+    id: goto-admin-language-models-2
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake-5
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Chat Completions API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-chat-compl-2
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="api_base"]').value !== 'https://campus-portkey.invalid/saved/chat-completions' || d.querySelector('input[name="api_key"]').value !== 'mock-only-not-a-secret' || d.querySelector('input[name="name"]').value !== 'Campus Portkey (local fake)' || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Keep/hard navigation lost genuine saved Chat Completions fields/model'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Kept catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-portkey-committed')) throw new Error('Keep/hard navigation changed committed catalog'); })()
+    id: eval-script-18
+  - shot: { name: admin-portkey-chat-saved-keep-reload-reopen, full_page: true }
+    id: shot-admin-portkey-chat-saved-keep-reload-reopen
+  # 83–93: cancel a NEW draft after actual saves; protect and reopen committed Chat state.
+  - click: { selector: '[role="dialog"] [role="tab"]:has-text("Responses API")' }
+    id: click-role-dialog-role-tab-has-text-responses-api-4
+  - fill: { selector: '[role="dialog"] input[name="api_base"]', value: 'https://campus-portkey.invalid/canceled-committed-draft' }
+    id: fill-role-dialog-input-name-api-base-6
+  - shot: { name: admin-portkey-post-save-canceled-responses-draft, full_page: true }
+    id: shot-admin-portkey-post-save-canceled-responses-draft
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+    id: click-role-dialog-button-has-text-cancel-2
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog-5
+  - eval: >-
+      (async () => { const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Protected committed catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-portkey-committed')) throw new Error('Cancel after saves changed committed provider/defaults/models'); })()
+    id: eval-script-19
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake-6
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Chat Completions API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-chat-compl-3
+  - eval: >-
+      if (document.querySelector('[role="dialog"] input[name="api_base"]').value !== 'https://campus-portkey.invalid/saved/chat-completions' || document.querySelector('[role="dialog"] input[name="api_key"]').value !== 'mock-only-not-a-secret') throw new Error('Canceled post-save Responses draft leaked into genuine committed Chat reopen');
+    id: eval-script-20
+  - shot: { name: admin-portkey-post-save-cancel-protected-reopen, full_page: true }
+    id: shot-admin-portkey-post-save-cancel-protected-reopen
+  - press: Escape
+    id: press-escape
+  - id: eval-script-21-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-admin-provider-portkey.yaml
+      overlays: []
+  # 94–100: fresh reset restores original Messages/base/model IDs/defaults, not last saved Chat.
+  - eval: >-
+      (async () => { const r = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,keep:false,resetChats:true})}); if (!r.ok) throw new Error('Existing fresh-reset control failed'); })()
+    id: eval-script-21
+  - goto: /admin/language-models
+    id: goto-admin-language-models-3
+  - click: { role: button, name: Edit Campus Portkey (local fake), exact: true }
+    id: click-edit-campus-portkey-local-fake-7
+  - wait: { selector: '[role="dialog"] [role="tab"][aria-selected="true"]:has-text("Messages API")' }
+    id: wait-role-dialog-role-tab-aria-selected-true-has-text-messages-a-3
+  - eval: >-
+      (async () => { const d = document.querySelector('[role="dialog"]'); if (d.querySelector('input[name="api_base"]').value !== 'https://campus-portkey.invalid/seed/messages' || d.querySelector('input[name="api_key"]').value !== 'mock-only-not-a-secret' || d.querySelector('input[name="name"]').value !== 'Campus Portkey (local fake)' || !d.textContent.includes('Learning Notes (local fake)')) throw new Error('Fresh reset did not visibly restore seeded Messages/base/key/model'); const r = await fetch('/api/admin/llm/provider'); if (!r.ok) throw new Error('Fresh seed catalog read failed'); if (JSON.stringify(await r.json()) !== sessionStorage.getItem('mockshop-admin-portkey-seed')) throw new Error('Fresh reset did not restore exact seed provider/models/defaults or retained dirty configuration'); })()
+    id: eval-script-22
+  - shot: { name: admin-portkey-fresh-seed-messages-restored, full_page: true }
+    id: shot-admin-portkey-fresh-seed-messages-restored
+  - press: Escape
+    id: press-escape-2
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-admin-provider-portkey.yaml

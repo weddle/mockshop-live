@@ -1,7 +1,0 @@
-# Recents (placeholder university): "LMS gradebook not syncing".
-turns:
-  - message: My LMS gradebook isn't syncing to the registrar. Any fix?
-    script:
-      title: LMS gradebook not syncing
-      answer: |
-        Placeholder answer: re-run "Sync final grades" from the course settings page; if it still fails after 30 minutes, open a ticket with the Campus IT Service Desk and include the course section number.

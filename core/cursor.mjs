@@ -1,4 +1,4 @@
-// Mockshop cursor: scenario `cursor:` config -> planned moves (vendored @trycua/cursor-motion, see
+// Mockshop cursor: script `cursor:` config -> planned moves (vendored @trycua/cursor-motion, see
 // core/vendor/cua-cursor-motion/) -> real page.mouse.move along the samples (so hover fires) while the
 // in-page overlay plays the same trajectory with its effects. Used by runner.mjs for clips and screenshots.
 import { planMove, planSpec, specForStyle, MOTION_STYLES, EASE_NAMES, DEFAULT_TRAIL, REST_HEADING, resolveEffects, Trajectory, fittsDuration } from "./vendor/cua-cursor-motion/motion.mjs";
@@ -24,7 +24,7 @@ export const CURSOR_DEFAULTS = {
   path: null,              // straight | arc | bow
   settle: null,            // none | follow_through | spring
   heading: null,           // tangent | fixed: the arrow leans into the motion (needs look.rotate) or keeps its pose
-  seed: null,              // determinism seed (default: scenario name + move index)
+  seed: null,              // determinism seed (default: script name + move index)
   reduced_motion: false,   // short straight 120 ms glide, no effects
   effects: {},             // { trail, glow, magnet, ripple, squish }: true/false overrides the style's defaults
   trail: {},               // { secs, fade_len, steps, tail_width, head_width, alpha }
@@ -45,7 +45,7 @@ export function mergeCursor(base, over) {
   return out;
 }
 
-// Scenario cursor config: defaults <- manifest runner.cursor <- clip.cursor / move_ms / pre_click_ms (back-compat) <- scenario cursor.
+// Script cursor config: defaults <- manifest runner.cursor <- clip.cursor / move_ms / pre_click_ms <- script cursor.
 export function resolveCursor(manifestCursor, sc) {
   let c = mergeCursor(CURSOR_DEFAULTS, manifestCursor);
   const clip = sc.clip || {};

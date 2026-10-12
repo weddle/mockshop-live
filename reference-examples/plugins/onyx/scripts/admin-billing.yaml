@@ -1,0 +1,47 @@
+# #65 route-sized native proof: Self-hosted Plans and Billing.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-billing
+title: Self-hosted Plans and Billing - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/billing
+    id: goto-admin-billing
+  - shot: inventory-billing-manual-license
+    id: shot-inventory-billing-manual-license
+  - goto: /admin/billing
+    id: goto-admin-billing-2
+  - shot: billing-self-hosted-manual-license
+    id: shot-billing-self-hosted-manual-license
+  - click: { role: button, name: Update Key, exact: true }
+    id: click-update-key
+  - fill: { placeholder: 'eyJwYXlsb2FkIjogeyJ2ZXJzaW9...', value: mock-only-not-a-license }
+    id: fill
+  - shot: billing-fake-license-input
+    id: shot-billing-fake-license-input
+  - click: { role: button, name: Update License, exact: true }
+    id: click-update-license
+  - wait: { text: License updated successfully!, exact: true }
+    id: wait-license-updated-successfully
+  - shot: billing-fake-license-local-receipt
+    id: shot-billing-fake-license-local-receipt
+  - click: { role: button, name: View Plan Details, exact: true }
+    id: click-view-plan-details
+  - wait: { selector: '[aria-label="Enterprise plan card"]:has-text("Your Current Plan")' }
+    id: wait-aria-label-enterprise-plan-card-has-text-your-current-plan
+  - eval: |
+      if (document.querySelector('[aria-label="Business plan card"]')?.textContent.includes('Your Current Plan')) throw new Error('License-only Enterprise must not mark Business as current');
+    id: eval-script
+  - shot: billing-self-hosted-enterprise-current-plan
+    id: shot-billing-self-hosted-enterprise-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait: { text: Enterprise Plan, exact: true }
+    id: wait-enterprise-plan
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

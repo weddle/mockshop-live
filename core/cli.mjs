@@ -23,13 +23,17 @@ const HELP = `Mockshop: screenshot real web UIs against a scripted mock backend.
   pin     [p]                   show pin + build stamp
   up | down | restart | status  [p]   start/stop the plugin's mock + web servers
   switch  [p] [overlay...]      swap fixture overlays on the running mock (none = base), keeping in-run state; reload the page
-  shot <target>...              run scenarios -> out/<p>/<scenario>/*.png
-       --locale <code>          override scenario locale (plugin-supported languages)
-       targets: onyx/admin-connectors | admin-connectors (default plugin) | onyx --all | --all | path/to/x.yaml
-  clip <target>...              record the same scenarios as human-paced MP4s -> out/<p>/clips/<scenario>.mp4
-                                (scenario-level \`clip:\` options set pacing; see README "Clips"); also writes <scenario>.timeline.json/.vtt
-  validate [target]...          check scenario YAML (and plugin.yaml, vocabulary.yaml) against schema/*.json + the plugin's web routes
-       targets: path/to/x.yaml | onyx/admin-connectors | onyx | --all | path/to/plugin.yaml | path/to/vocabulary.yaml
+  shot <target>...              run scripts -> out/<p>/<script>/*.png
+       --locale <code>          override script locale (plugin-supported languages)
+       targets: onyx/omzo-incident | omzo-incident (default plugin) | onyx --all | --all | path/to/x.yaml
+  clip <target>...              record the same scripts as human-paced MP4s -> out/<p>/clips/<script>.mp4
+                                (script-level \`clip:\` options set pacing; see README "Clips"); also writes <script>.timeline.json/.vtt
+       --profile <file>         select presentation defaults instead of the script profile
+       --render-overrides <file> override presentation by script, scene ID, or step ID
+  explain <clip.timeline.json> --at <seconds|mm:ss>
+                                locate the scene, step, and authoring source in that exact render
+  validate [target]...          check script YAML (and plugin.yaml, vocabulary.yaml) against schema/*.json + the plugin's web routes
+       targets: path/to/x.yaml | onyx/omzo-incident | onyx | --all | path/to/plugin.yaml | path/to/vocabulary.yaml
   live [p] [--clip] [--locale code] [--name n] [--save file.yaml]
                                 stdio JSON-lines control: one step per line in, one result per line out (docs/agent-guide.md)
 `;
@@ -55,6 +59,17 @@ const editionArg = ei >= 0 ? args.splice(ei, 2)[1] : null;
 const li = args.indexOf("--locale");
 const localeArg = li >= 0 ? args.splice(li, 2)[1] : null;
 if (li >= 0 && (!localeArg || localeArg.startsWith('--'))) throw new Error('--locale requires a language code');
+function optionValue(name) {
+  const i = args.indexOf(name);
+  if (i < 0) return undefined;
+  const value = args[i + 1];
+  if (!value || value.startsWith("--")) throw new Error(`${name} requires a value`);
+  args.splice(i, 2);
+  return value;
+}
+const profileArg = optionValue("--profile");
+const renderOverridesArg = optionValue("--render-overrides");
+const atArg = optionValue("--at");
 const flags = new Set(args.filter((a) => a.startsWith("--")));
 const positional = args.filter((a) => !a.startsWith("--"));
 const plugins = listPlugins();
@@ -85,10 +100,10 @@ function printVerify(m, v) {
   for (const i of v.info) console.log(`  · ${i}`);
 }
 
-// Scenario `requires: <edition>` (or a list): the edition the runtime must have been built as.
+// Script `requires: <edition>` (or a list): the edition the runtime must have been built as.
 const asList = (v) => (v == null ? [] : [].concat(v));
 const buildHint = (m, ed) => `./mockshop build ${m.name} --${ed}`;
-// Scenarios in `files` whose requirement isn't met by the built edition (fallback: the selected one).
+// Scripts in `files` whose requirement isn't met by the built edition (fallback: the selected one).
 function editionMisses(m, files) {
   if (!m.editions) return [];
   const have = builtEdition(m) || m.edition;
@@ -101,13 +116,13 @@ function editionMisses(m, files) {
 function warnEditionMisses(m, misses) {
   if (!misses.length) return;
   const need = [...new Set(misses.flatMap((x) => x.need))];
-  log(`${m.name}: WARNING, ${misses.length} scenario(s) need the ${need.join(" or ")} edition but the built edition is ${misses[0].have} (${misses.map((x) => x.name).join(", ")}); shot/clip will skip them. Build with ${buildHint(m, need[0])}`);
+  log(`${m.name}: WARNING, ${misses.length} script(s) need the ${need.join(" or ")} edition but the built edition is ${misses[0].have} (${misses.map((x) => x.name).join(", ")}); shot/clip will skip them. Build with ${buildHint(m, need[0])}`);
 }
 
 async function up(m, files = null) {
   const v = verify(m);
   if (!v.ok) { log(`${m.name}: WARNING, the copy doesn't match the pin:`); printVerify(m, v); }
-  warnEditionMisses(m, editionMisses(m, files || (fs.existsSync(m.scenariosDir) ? fs.readdirSync(m.scenariosDir).filter((f) => /\.ya?ml$/.test(f) && !f.startsWith("_")).sort().map((f) => path.join(m.scenariosDir, f)) : [])));
+  warnEditionMisses(m, editionMisses(m, files || (fs.existsSync(m.scriptsDir) ? fs.readdirSync(m.scriptsDir).filter((f) => /\.ya?ml$/.test(f) && !f.startsWith("_")).sort().map((f) => path.join(m.scriptsDir, f)) : [])));
   ensureToolchain(m);
   const artifact = m.runtime?.artifact ? path.join(m.runtimeDir, m.runtime.artifact) : m.build?.artifact ? path.join(m.workdir, m.build.artifact) : null;
   if (artifact && !fs.existsSync(artifact)) await hook(m, "build", build, {});
@@ -146,20 +161,22 @@ function resolveTargets(list) {
   const add = (p, f) => { if (!jobs.has(p)) jobs.set(p, []); if (f) jobs.get(p).push(f); };
   const all = (p) => {
     const m = loadPlugin(p);
-    fs.readdirSync(m.scenariosDir).filter((f) => /\.ya?ml$/.test(f) && !f.startsWith("_")).sort().forEach((f) => add(p, path.join(m.scenariosDir, f)));
+    fs.readdirSync(m.scriptsDir).filter((f) => /\.ya?ml$/.test(f) && !f.startsWith("_")).sort().forEach((f) => add(p, path.join(m.scriptsDir, f)));
   };
   if (!list.length || (list.length === 0 && flags.has("--all"))) { all(pluginName); return jobs; }
   for (const t of list) {
     if (plugins.includes(t)) { all(t); continue; }
     if (fs.existsSync(t) && fs.statSync(t).isFile()) {
       const abs = path.resolve(t);
-      const owner = plugins.find((p) => abs.startsWith(loadPlugin(p).dir + path.sep)) || pluginName;
+      const declared = YAML.parse(fs.readFileSync(abs, "utf8"))?.plugin;
+      const owner = declared || plugins.find((p) => abs.startsWith(loadPlugin(p).dir + path.sep)) || pluginName;
+      if (!plugins.includes(owner)) throw new Error(`${t}: unknown plugin "${owner}"`);
       add(owner, abs); continue;
     }
     const [p, s] = t.includes("/") ? t.split("/", 2) : [pluginName, t];
     const m = loadPlugin(p);
-    const f = [s, `${s}.yaml`, `${s}.yml`].map((x) => path.join(m.scenariosDir, x)).find((x) => fs.existsSync(x) && fs.statSync(x).isFile());
-    if (!f) throw new Error(`scenario not found: ${t} (looked in ${path.relative(ROOT, m.scenariosDir)}/)`);
+    const f = [s, `${s}.yaml`, `${s}.yml`].map((x) => path.join(m.scriptsDir, x)).find((x) => fs.existsSync(x) && fs.statSync(x).isFile());
+    if (!f) throw new Error(`script not found: ${t} (looked in ${path.relative(ROOT, m.scriptsDir)}/)`);
     add(p, f);
   }
   return jobs;
@@ -167,6 +184,19 @@ function resolveTargets(list) {
 
 async function main() {
   switch (cmd) {
+    case "explain": {
+      if (positional.length !== 1 || atArg === undefined) throw new Error("usage: ./mockshop explain <clip.timeline.json> --at <seconds|mm:ss>");
+      const { parseAt } = await import("./timeline.mjs");
+      const ms = parseAt(atArg);
+      if (ms === null || ms < 0) throw new Error(`invalid clip time: ${atArg}`);
+      const file = path.resolve(positional[0]);
+      const timeline = JSON.parse(fs.readFileSync(file, "utf8"));
+      if (!Array.isArray(timeline.actions)) throw new Error(`${file}: not a clip timeline`);
+      const actions = timeline.actions.filter((a) => a.start_ms <= ms && a.end_ms > ms);
+      if (!actions.length) throw new Error(`${file}: no recorded step at ${atArg}`);
+      console.log(JSON.stringify({ timeline: file, script: timeline.script, at_ms: ms, actions }, null, 2));
+      return 0;
+    }
     case "cache": {
       const action=positional[0],p=positional[1];
       if (!['list','verify'].includes(action)) throw new Error('usage: ./mockshop cache list | cache verify [plugin]');
@@ -226,7 +256,7 @@ async function main() {
     }
     case "status": for (const p of (positional.length || args.includes(pluginName) ? [pluginName] : plugins)) status(loadPlugin(p)); return 0;
     case "validate": { // schema + plugin-aware checks; no browser, no servers
-      const { validateScenario, validateManifest, validateVocabulary, printResult } = await import("./validate.mjs");
+      const { validateScriptFile, validateManifest, validateVocabulary, printResult } = await import("./validate.mjs");
       let bad = 0;
       const special = (t) => fs.existsSync(t) && ["plugin.yaml", "vocabulary.yaml"].includes(path.basename(t));
       const vocab = (m, label) => { const f = path.join(m.dir, "vocabulary.yaml"); if (!fs.existsSync(f)) return; const r = validateVocabulary(f, m); printResult(label, r); if (!r.ok) bad++; };
@@ -239,7 +269,10 @@ async function main() {
       if (files.length || !positional.length) for (const [p, fs_] of resolveTargets(files)) {
         const m = loadPlugin(p);
         if (!files.length || files.includes(p)) { const r = validateManifest(path.join(m.dir, "plugin.yaml")); printResult(`${p}/plugin.yaml`, r); if (!r.ok) bad++; vocab(m, `${p}/vocabulary.yaml`); }
-        for (const f of fs_) { const r = validateScenario(fs.readFileSync(f, "utf8"), m); printResult(`${p}/${path.basename(f)}`, r); if (!r.ok) bad++; }
+        for (const f of fs_) {
+          const r = await validateScriptFile(f, m, { profile: profileArg, renderOverrides: renderOverridesArg });
+          printResult(`${p}/${path.basename(f)}`, r); if (!r.ok) bad++;
+        }
       }
       return bad ? 1 : 0;
     }
@@ -253,7 +286,7 @@ async function main() {
     case "shot":
     case "clip": {
       const jobs = resolveTargets(positional);
-      const { runScenarios } = await import("./runner.mjs");
+      const { runScripts } = await import("./runner.mjs");
       let failed = 0;
       for (const [p, files] of jobs) {
         const m = loadPlugin(p);
@@ -262,7 +295,7 @@ async function main() {
         const run = files.filter((f) => !misses.some((x) => x.file === f));
         if (!run.length) continue;
         await up(m, files);
-        failed += await runScenarios(m, run, { clip: cmd === "clip", locale: localeArg });
+        failed += await runScripts(m, run, { clip: cmd === "clip", locale: localeArg, profile: profileArg, renderOverrides: renderOverridesArg });
       }
       return failed ? 1 : 0;
     }

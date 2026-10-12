@@ -1,0 +1,12 @@
+# Admin: document sets list (added as a timing test for "how long does a new scenario take").
+name: admin-document-sets
+title: Admin reviews document sets
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/documents/sets
+    id: goto-admin-documents-sets
+  - settle: 800
+    id: settle
+  - shot: document-sets
+    id: shot-document-sets
+world: ../../../worlds/seaside/world.yaml

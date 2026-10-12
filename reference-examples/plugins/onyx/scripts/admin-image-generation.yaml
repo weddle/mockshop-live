@@ -1,0 +1,62 @@
+# #65 route-sized native proof: Image Generation.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-image-generation
+title: Image Generation - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/image-generation
+    id: goto-admin-image-generation
+  - shot: inventory-image-generation
+    id: shot-inventory-image-generation
+  - goto: /admin/web-search
+    id: goto-admin-web-search
+  - click: { selector: 'a[href="/admin/image-generation"]' }
+    id: click-a-href-admin-image-generation
+  - wait: { text: Image Generation Model, exact: true }
+    id: wait-image-generation-model
+  - shot: image-generation-menu-empty
+    id: shot-image-generation-menu-empty
+  - goto: /admin/image-generation
+    id: goto-admin-image-generation-2
+  - click: { selector: '[aria-label="image-gen-provider-openai_gpt_image_2_5_flare"]' }
+    id: click-aria-label-image-gen-provider-openai-gpt-image-2-5-flare
+  - wait: { role: dialog }
+    id: wait
+  - shot: image-generation-connect-dialog
+    id: shot-image-generation-connect-dialog
+  - fill: { selector: '[role="dialog"] input[placeholder*="API key"]', value: mock-only-not-a-secret }
+    id: fill-role-dialog-input-placeholder-api-key
+  - click: { role: button, name: Connect, exact: true }
+    id: click-connect
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/web-search
+    id: goto-admin-web-search-2
+  - goto: /admin/image-generation
+    id: goto-admin-image-generation-3
+  - wait: { text: Current Default, exact: true }
+    id: wait-current-default
+  - shot: image-generation-saved
+    id: shot-image-generation-saved
+  - hover: { selector: '[aria-label="image-gen-provider-openai_gpt_image_2_5_flare"]' }
+    id: hover-aria-label-image-gen-provider-openai-gpt-image-2-5-flare
+  - click: { role: button, name: Disconnect GPT Image 2.5 Flare, exact: true }
+    id: click-disconnect-gpt-image-2-5-flare
+  - wait: { role: dialog }
+    id: wait-2
+  - shot: image-generation-disconnect-confirm
+    id: shot-image-generation-disconnect-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+    id: click-role-dialog-button-has-text-disconnect
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - shot: image-generation-disconnected
+    id: shot-image-generation-disconnected
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,113 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-sharing
+title: Native Extras - sharing
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - click: { role: button, name: Share, exact: true }
+    id: click-share
+  - wait: { text: Learning Team, exact: true }
+    id: wait-learning-team
+  - shot: { name: extras-40-share-group-editor-indicator, full_page: true }
+    id: shot-extras-40-share-group-editor-indicator
+  - click: { role: button, name: Copy Link, exact: true }
+    id: click-copy-link
+  - wait: { text: Copied link., exact: true }
+    id: wait-copied-link
+  - shot: { name: extras-40a-share-native-copy-link, full_page: true }
+    id: shot-extras-40a-share-native-copy-link
+  - click: { label: Update access for Learning Team }
+    id: click-2
+  - click: { selector: '[role="listbox"][aria-label="Update access for Learning Team"] [role="option"]:has(:text-is("View & Chat"))' }
+    id: click-role-listbox-aria-label-update-access-for-learning-team-ro
+  - fill: { placeholder: 'Add users, groups, and accounts', value: Clinical }
+    id: fill
+  - click: { text: Clinical Educators, exact: true }
+    id: click-clinical-educators
+  - click: { label: Select staged permission }
+    id: click-3
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-select-staged-permission-role-opti
+  - shot: { name: extras-41-share-staged-group-choice, full_page: true }
+    id: shot-extras-41-share-staged-group-choice
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-2
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-2
+  - wait: { text: Clinical Educators, exact: true }
+    id: wait-clinical-educators
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.group_shares.some(s=>s.group_id===330&&s.permission==='VIEWER') || !a.group_shares.some(s=>s.group_id===331&&s.permission==='EDITOR')) throw new Error('Native group choices did not persist');
+      })()
+    id: eval-script
+  - shot: { name: extras-42-share-group-saved-reload, full_page: true }
+    id: shot-extras-42-share-group-saved-reload
+  - fill: { placeholder: 'Add users, groups, and accounts', value: DEVON }
+    id: fill-2
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example
+  - click: { label: Select staged permission }
+    id: click-4
+  - click: { selector: '[role="listbox"][aria-label="Select staged permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-select-staged-permission-role-opti-2
+  - shot: { name: extras-42a-share-user-editor-draft, full_page: true }
+    id: shot-extras-42a-share-user-editor-draft
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save-2
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-3
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-3
+  - wait: { text: "{{people.devon.email}}", exact: true }
+    id: wait-devon-ortiz-seasidecollection-example
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.user_shares.some(s=>s.user.id==='u2'&&s.permission==='EDITOR')) throw new Error('Native user sharing choice did not persist');
+      })()
+    id: eval-script-2
+  - shot: { name: extras-42b-share-user-saved-reload, full_page: true }
+    id: shot-extras-42b-share-user-saved-reload
+  - click: { role: button, name: Copy Link, exact: true }
+    id: click-copy-link-2
+  - wait: { text: Copied link., exact: true }
+    id: wait-copied-link-2
+  - click: { label: Change sharing scope }
+    id: click-5
+  - click: { text: Anyone in your organization, exact: true }
+    id: click-anyone-in-your-organization
+  - click: { label: Change public permission }
+    id: click-6
+  - click: { selector: '[role="listbox"][aria-label="Change public permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-change-public-permission-role-opti
+  - shot: { name: extras-43-share-public-edit-choice, full_page: true }
+    id: shot-extras-43-share-public-edit-choice
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save-3
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

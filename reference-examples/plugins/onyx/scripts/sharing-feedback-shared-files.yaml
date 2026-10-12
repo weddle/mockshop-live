@@ -1,0 +1,206 @@
+# DEVELOPMENT inventory; independent parent strict/every-PNG acceptance/publication remains pending.
+# Independent fresh reset uses the existing control plane; mutations under test use only native controls.
+
+name: sharing-feedback-shared-files
+title: Native exact shared content, future turn, files, citations and copy
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const currentResponse = await fetch('/api/__mockshop/state');
+        if (!currentResponse.ok) throw new Error('Independent Sharing seed read failed');
+        const current = await currentResponse.json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,locale:'en',keep:false,resetChats:true,anchor:current.demo_anchor})});
+        if (!response.ok) throw new Error('Independent Sharing reset failed');
+        sessionStorage.removeItem('sharing-workshop-id');
+        sessionStorage.removeItem('sharing-workshop-link');
+      })();
+    id: eval-script
+  # Native prerequisite replay only; original screenshots remain in their single primary owning unit.
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+    id: goto-app-chatid-61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+    id: wait-closing-reflection
+  - wait: { testid: 'AgentMessage/toolbar', nth: 1 }
+    id: wait
+  - settle: 1200
+    id: settle
+  - eval: |
+      const toolbars = [...document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')];
+      if (toolbars.length !== 2 || !document.body.innerText.includes('Start with a short reading circle.')) throw new Error('Seeded workshop did not replay both saved turns');
+      if (toolbars.some(t => !t.textContent.includes('GPT-5.2'))) throw new Error('Saved answer model labels did not replay');
+      if ([...toolbars[1].querySelectorAll('button')].some(b => b.textContent.trim() === 'Sources')) throw new Error('No-source closing reflection invented a Sources control');
+      sessionStorage.setItem('sharing-workshop-id', '61616161-0000-4000-8000-000000000001');
+    id: eval-script-2
+  - click: { selector: '[aria-label="share-chat-button"]' }
+    id: click-aria-label-share-chat-button
+  - wait: { text: Share this chat, exact: true }
+    id: wait-share-this-chat
+  - click: { selector: '[aria-label="share-modal-option-public"]' }
+    id: click-aria-label-share-modal-option-public
+  - click: { selector: '[aria-label="share-modal-submit"]' }
+    id: click-aria-label-share-modal-submit
+  - wait: { text: Chat shared, exact: true }
+    id: wait-chat-shared
+  - wait: { text: Share link copied to clipboard!, exact: true }
+    id: wait-share-link-copied-to-clipboard
+  - eval: |
+      const input = document.querySelector('[aria-label="share-modal-link-input"]');
+      const expected = `${location.origin}/app/shared/${sessionStorage.getItem('sharing-workshop-id')}`;
+      if (input?.value !== expected || !input.readOnly) throw new Error('Native saved share link is not this exact fake conversation');
+      sessionStorage.setItem('sharing-workshop-link', input.value);
+    id: eval-script-3
+  - press: Escape
+    id: press-escape
+  # Live answer CopyButton uses its actual native success icon, not an API response echo.
+  # Primary original operations 108-168; every original interaction and named PNG is retained.
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'Library sharing follow-up: add one fictional accessible activity.' }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: Future shared library activity, exact: true, timeout: 30000 }
+    id: wait-future-shared-library-activity
+  - wait: { testid: 'AgentMessage/toolbar', nth: 2 }
+    id: wait-2
+  - eval: |
+      const toolbar = document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')[2];
+      if (!toolbar?.textContent.includes('GPT-5.2') || [...toolbar.querySelectorAll('button')].some(b => b.textContent.trim() === 'Sources')) throw new Error('Future no-source answer lost its model label or invented Sources');
+    id: eval-script-4
+  - settle: 1000
+    id: settle-2
+  - shot: future-message-added-after-sharing
+    id: shot-future-message-added-after-sharing
+  # Exact modal URL opens the saved engine conversation; no separate shared-chat stream.
+  - eval: location.assign(sessionStorage.getItem('sharing-workshop-link'))
+    id: eval-script-5
+  - wait: { text: Closing reflection, exact: true }
+    id: wait-closing-reflection-2
+  - wait: { text: "by {{people.alex-learning.name}}", exact: true }
+    id: wait-by-alex-learning
+  - wait: { testid: 'AgentMessage/toolbar', nth: 1 }
+    id: wait-3
+  - hover: { selector: '#onyx-image' }
+    id: hover-onyx-image
+  - settle: 1500
+    id: settle-3
+  - eval: |
+      if (location.pathname !== '/app/shared/61616161-0000-4000-8000-000000000001' || document.querySelectorAll('[data-testid="AgentMessage/toolbar"]').length !== 3 || !document.body.innerText.includes('Start with a short reading circle.') || !document.body.innerText.includes('Future shared library activity')) throw new Error('Shared link opened a different or incomplete conversation');
+      const img = document.querySelector('#onyx-image img');
+      if (!img?.complete || !img.naturalWidth) throw new Error('Shared saved image thumbnail is missing; compose #28 file owner');
+      if (document.querySelector('#onyx-chat-input-textbox')) throw new Error('Shared page invented an editable composer');
+      const toolbars = [...document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')];
+      if (toolbars.some(t => ![...t.querySelectorAll('button')].some(b => b.disabled && b.textContent.trim() === 'GPT-5.2'))) throw new Error('Native shared answer model attribution is missing or interactive');
+    id: eval-script-6
+  - shot: shared-saved-content-files-thumbnail
+    id: shot-shared-saved-content-files-thumbnail
+  - click: { role: button, name: View the full image, exact: true }
+    id: click-view-the-full-image
+  - wait: { role: dialog }
+    id: wait-4
+  - eval: |
+      const image = document.querySelector('[role="dialog"] img');
+      if (!image?.complete || !image.naturalWidth) throw new Error('Native full image dialog has no image');
+    id: eval-script-7
+  - shot: shared-image-expanded
+    id: shot-shared-image-expanded
+  - press: Escape
+    id: press-escape-2
+  - eval: |
+      window.sharingDownloads = [];
+      document.addEventListener('click', e => { const a = e.target.closest?.('a[download]'); if (a) window.sharingDownloads.push({url:a.href, name:a.download}); }, true);
+    id: eval-script-8
+  - hover: { selector: '#onyx-image' }
+    id: hover-onyx-image-2
+  - click: { selector: '#onyx-image button' }
+    id: click-onyx-image-button
+  - settle: 1500
+    id: settle-4
+  - eval: |
+      if (!window.sharingDownloads.some(d => d.url.startsWith('blob:') && d.name === 'image-demo-diagram.png')) throw new Error('Native image download did not hand off its fixture blob');
+      if (document.querySelector('[role="dialog"]')) throw new Error('Download unexpectedly opened image zoom');
+    id: eval-script-9
+  - shot: shared-image-download
+    id: shot-shared-image-download
+  - wait: { text: Reflection circle, exact: true }
+    id: wait-reflection-circle
+  - shot: shared-table-inline
+    id: shot-shared-table-inline
+  # Required native control. Exact pin has a relative URL; parent must resolve/record this individually, not add shared feedback/Sources.
+  - click: { selector: '#onyx-human-message .bg-background-tint-02 button', nth: 0 }
+    id: click-onyx-human-message-bg-background-tint-02-button
+  - eval: |
+      if (!window.sharingDownloads.some(d => d.url === `${location.origin}/api/chat/file/demo-attendance` && d.name === 'attendance-demo.csv')) throw new Error('Native shared table download resolved to the wrong nested route');
+    id: eval-script-10
+  - shot: shared-table-download
+    id: shot-shared-table-download
+  - click: { selector: '#onyx-human-message .bg-background-tint-02 button', nth: 1 }
+    id: click-onyx-human-message-bg-background-tint-02-button-2
+  - wait: { role: dialog }
+    id: wait-5
+  - wait: { text: Reflection circle, exact: true }
+    id: wait-reflection-circle-2
+  - shot: shared-table-expanded
+    id: shot-shared-table-expanded
+  - press: Escape
+    id: press-escape-3
+  - click: { selector: '#onyx-human-message .bg-background-tint-02 button', nth: 2 }
+    id: click-onyx-human-message-bg-background-tint-02-button-3
+  - wait_gone: { text: Reflection circle, exact: true }
+    id: wait-gone-reflection-circle
+  - shot: shared-table-hidden
+    id: shot-shared-table-hidden
+  - click: { role: button, name: Expand document, exact: true, nth: 1 }
+    id: click-expand-document
+  - wait: { text: Reflection circle, exact: true }
+    id: wait-reflection-circle-3
+  - shot: shared-table-reopened
+    id: shot-shared-table-reopened
+  - click: { testid: 'AgentMessage/copy-button', nth: 1 }
+    id: click
+  - wait: { selector: '[data-testid="AgentMessage/copy-button"] >> nth=1 >> path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-data-testid-agentmessage-copy-button-nth-1-path-d-m13-5-4-5
+  - shot: shared-answer-copy-success
+    id: shot-shared-answer-copy-success
+  - hover: { selector: '#onyx-human-message', nth: 1 }
+    id: hover-onyx-human-message
+  - click: { selector: '#onyx-human-message >> nth=1 >> button', nth: 0 }
+    id: click-onyx-human-message-nth-1-button
+  - wait: { selector: '#onyx-human-message >> nth=1 >> path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-onyx-human-message-nth-1-path-d-m13-5-4-5l6-12l2-5-8-5
+  - shot: shared-question-copy-success
+    id: shot-shared-question-copy-success
+  - click: { selector: '#onyx-file button' }
+    id: click-onyx-file-button
+  - wait: { role: dialog }
+    id: wait-6
+  - wait: { text: Synthetic demo reading note, exact: false }
+    id: wait-synthetic-demo-reading-note
+  - shot: shared-uploaded-text-preview
+    id: shot-shared-uploaded-text-preview
+  - press: Escape
+    id: press-escape-4
+  - hover: { role: button, name: File, exact: true }
+    id: hover-file
+  - shot: shared-citation-hover
+    id: shot-shared-citation-hover
+  - click: { role: button, name: File, exact: true }
+    id: click-file
+  - wait: { role: dialog }
+    id: wait-7
+  - wait: { text: Synthetic demo reading note, exact: false }
+    id: wait-synthetic-demo-reading-note-2
+  - shot: shared-citation-file-preview
+    id: shot-shared-citation-file-preview
+  - press: Escape
+    id: press-escape-5
+  # Native Sources and feedback belong to the normal live chat; shared display has no wired sidebar/feedback ID at this pin.
+world: ../../../worlds/seaside/world.yaml

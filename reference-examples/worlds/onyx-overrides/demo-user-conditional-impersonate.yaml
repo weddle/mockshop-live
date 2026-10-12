@@ -1,0 +1,7 @@
+apps:
+  onyx:
+    fixtures:
+      GET /mockshop/auth-anonymous/staging:
+        enabled: true
+        mode: member
+        impersonation_superuser: true

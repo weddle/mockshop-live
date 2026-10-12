@@ -1,9 +1,0 @@
-# Fake personal settings only. Token text never authenticates; metadata is seeded/reset per run.
-GET /user/pats: []
-GET /user/pats/scopes:
-  - { scope: "read:search", group_label: Search, label: Read, description: Use search and query endpoints., min_tier: community, implies: [] }
-  - { scope: "read:chat", group_label: Chat, label: Read, description: View chat sessions and messages., min_tier: community, implies: [] }
-  - { scope: "write:chat", group_label: Chat, label: Write, description: Create sessions and send messages., min_tier: community, implies: ["read:chat"] }
-  - { scope: "use:llm_gateway", group_label: LLM Gateway, label: Use, description: Call the LLM gateway from external tools., min_tier: business, implies: [] }
-# Source-gated Connected apps: the named scenario overlay supplies fictional grants.
-GET /oauth-provider/grants: []

@@ -1,0 +1,217 @@
+# #34 EDITONLY prepared native unit; no execution/acceptance claim. CE/other locales unverified.
+# Fictional LOCAL inputs only. Every run independently resets the same sole Auth owner.
+name: user-conditional-federated-callback
+title: User Conditional Federated Callback
+requires: enterprise
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 900
+overlays:
+  - edition-enterprise
+known_errors:
+  - match: /^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-validation&state=mock-only-conditional-state$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-validation&state=mock-only-conditional-state\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: '/^console: OAuth callback error: Error: Configuration error - please check your connector settings\n    at http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js:2:3116 \[source: http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js\]$/'
+    reason: Exact independent8f4e6c3 native Error message/newline/stack/source from OAuthCallbackPage.tsx193. This unit asserts its native validation-error UI and unchanged callback receipt before recovery; no other console event is allowed.
+  - match: /^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-client-secret&state=mock-only-conditional-state$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-client-secret&state=mock-only-conditional-state\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: '/^console: OAuth callback error: Error: Authentication credentials are missing or invalid\n    at http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js:2:3116 \[source: http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js\]$/'
+    reason: Exact independent8f4e6c3 native Error message/newline/stack/source from OAuthCallbackPage.tsx193. Required client-secret error UI and unchanged callback receipt are asserted; no other console event is allowed.
+  - match: /^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-oauth&state=mock-only-conditional-state$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-oauth&state=mock-only-conditional-state\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: '/^console: OAuth callback error: Error: OAuth authorization failed\n    at http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js:2:3116 \[source: http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js\]$/'
+    reason: Exact independent8f4e6c3 native Error message/newline/stack/source from OAuthCallbackPage.tsx193. Required OAuth-error UI and unchanged callback receipt are asserted; no other console event is allowed.
+  - match: /^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-generic&state=mock-only-conditional-state$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/federated\/callback\?code=mock-only-generic&state=mock-only-conditional-state\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: '/^console: OAuth callback error: Error: Failed to complete authorization\n    at http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js:2:3116 \[source: http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/1xztt0xkb_wqn\.js\]$/'
+    reason: Exact independent8f4e6c3 native Error message/newline/stack/source from OAuthCallbackPage.tsx193. Required fallback-error UI and unchanged callback receipt are asserted; no other console event is allowed.
+steps:
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-conditional.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+
+      \  if (!response.ok) throw new Error('Conditional independent reset failed');
+
+      \  const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+
+      \  if (Object.keys(receipt.callbacks).length || Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered) throw new Error('Conditional reset retained dirty receipts');
+
+      \  const me = await (await fetch('/api/me')).json();
+
+      \  if (me.email !== '{{people.alex-learner.email}}' || !me.password_configured) throw new Error('Sole Auth owner did not restore fictional member');
+
+      })()"
+    id: eval-script
+  - goto: /federated/oauth/callback
+    id: goto-federated-oauth-callback
+  - wait:
+      text: Invalid Request
+      exact: true
+    id: wait-invalid-request
+  - shot:
+      name: conditional-federated-missing
+      delay: 0
+    id: shot-conditional-federated-missing
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-2
+  - click:
+      role: button
+      name: Back to Chat
+      exact: true
+    id: click-back-to-chat
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox
+  - shot:
+      name: conditional-federated-back
+      delay: 0
+    id: shot-conditional-federated-back
+  - goto: /federated/oauth/callback?error=access_denied&error_description=LOCAL%20FAKE%20DEMO%20cancelled
+    id: goto-federated-oauth-callback-error-access-denied-error-descript
+  - wait:
+      text: LOCAL FAKE DEMO cancelled
+      exact: true
+    id: wait-local-fake-demo-cancelled
+  - shot:
+      name: conditional-federated-cancelled
+      delay: 0
+    id: shot-conditional-federated-cancelled
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-3
+  - goto: /federated/oauth/callback?code=mock-only-validation&state=mock-only-conditional-state
+    id: goto-federated-oauth-callback-code-mock-only-validation-state-mo
+  - wait:
+      text: Configuration error - please check your connector settings
+      exact: true
+    id: wait-configuration-error-please-check-your-connector-settings
+  - shot:
+      name: conditional-federated-validation
+      delay: 0
+    id: shot-conditional-federated-validation
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-4
+  - goto: /federated/oauth/callback?code=mock-only-client-secret&state=mock-only-conditional-state
+    id: goto-federated-oauth-callback-code-mock-only-client-secret-state
+  - wait:
+      text: Authentication credentials are missing or invalid
+      exact: true
+    id: wait-authentication-credentials-are-missing-or-invalid
+  - shot:
+      name: conditional-federated-client-secret
+      delay: 0
+    id: shot-conditional-federated-client-secret
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-5
+  - goto: /federated/oauth/callback?code=mock-only-oauth&state=mock-only-conditional-state
+    id: goto-federated-oauth-callback-code-mock-only-oauth-state-mock-on
+  - wait:
+      text: OAuth authorization failed
+      exact: true
+    id: wait-oauth-authorization-failed
+  - shot:
+      name: conditional-federated-oauth
+      delay: 0
+    id: shot-conditional-federated-oauth
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-6
+  - goto: /federated/oauth/callback?code=mock-only-generic&state=mock-only-conditional-state
+    id: goto-federated-oauth-callback-code-mock-only-generic-state-mock-
+  - wait:
+      text: Failed to complete authorization
+      exact: true
+    id: wait-failed-to-complete-authorization
+  - shot:
+      name: conditional-federated-generic
+      delay: 0
+    id: shot-conditional-federated-generic
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-7
+  - goto: /federated/oauth/callback?code=mock-only-success&state=mock-only-conditional-state
+    id: goto-federated-oauth-callback-code-mock-only-success-state-mock-
+  - wait:
+      text: Processing...
+      exact: true
+    id: wait-processing
+  - shot:
+      name: conditional-federated-processing
+      delay: 0
+    id: shot-conditional-federated-processing
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(Object.keys(r.callbacks).length === 0)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-8
+  - wait:
+      text: Success!
+      exact: true
+      timeout: 30000
+    id: wait-success
+  - shot:
+      name: conditional-federated-fictional-receipt
+      delay: 0
+    id: shot-conditional-federated-fictional-receipt
+  - wait:
+      text: "{{people.alex-learner.email}}"
+      exact: true
+    id: wait-alex-learner-workshop-example
+  - eval: if (location.pathname !== '/app/settings/accounts-access' || new URL(location.href).searchParams.get('message') !== 'oauth_connected') throw new Error('Native callback did not follow LOCAL fixture return');
+    id: eval-script-9
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(r.callbacks["federated"] === true)) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-10
+  - shot:
+      name: conditional-federated-local-return
+      delay: 0
+    id: shot-conditional-federated-local-return
+  - id: eval-script-11-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-conditional.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+
+      \  if (!response.ok) throw new Error('Conditional independent reset failed');
+
+      \  const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+
+      \  if (Object.keys(receipt.callbacks).length || Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered) throw new Error('Conditional reset retained dirty receipts');
+
+      \  const me = await (await fetch('/api/me')).json();
+
+      \  if (me.email !== '{{people.alex-learner.email}}' || !me.password_configured) throw new Error('Sole Auth owner did not restore fictional member');
+
+      })()"
+    id: eval-script-11
+  - goto: /federated/oauth/callback
+    id: goto-federated-oauth-callback-2
+  - wait:
+      text: Invalid Request
+      exact: true
+    id: wait-invalid-request-2
+  - shot:
+      name: conditional-federated-fresh-reset
+      delay: 0
+    id: shot-conditional-federated-fresh-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-conditional.yaml

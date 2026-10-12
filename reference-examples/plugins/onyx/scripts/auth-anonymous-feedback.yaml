@@ -1,0 +1,120 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-anonymous-feedback
+title: "Independent native #69 unit: auth-anonymous-feedback"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Independent prerequisites: Native guest entry and Claude welcome answer independently provide real saved message IDs; copy, modal cancel/required/save/reload/clear and Sources.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /anonymous/workshop-demo
+    id: goto-anonymous-workshop-demo
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      (async () => {const me = await (await fetch('/api/me')).json(); if (!me.is_anonymous_user || location.pathname !== '/app') throw new Error('Native anonymous redirect/session did not complete');})()
+    id: eval-script-2
+  - click: { role: button, name: GPT-5.2, exact: true }
+    id: click-gpt-5-2
+  - click: { text: Anthropic, exact: true }
+    id: click-anthropic
+  - click: { text: Claude Sonnet 4.5, exact: true }
+    id: click-claude-sonnet-4-5
+  - type: { selector: '#onyx-chat-input-textbox', value: 'Local fake workshop welcome' }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: 'No provider, authentication, real document search or email service was contacted.', exact: false }
+    id: wait-no-provider-authentication-real-document-search-or-email-se
+  - wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+    id: wait
+  - settle: 600
+    id: settle
+  - click: { testid: AgentMessage/copy-button }
+    id: click
+  - wait: { selector: '[data-testid="AgentMessage/copy-button"] path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-data-testid-agentmessage-copy-button-path-d-m13-5-4-5l6-12l
+  - shot: anonymous-answer-copied
+    id: shot-anonymous-answer-copied
+  - hover: { text: Local fake workshop welcome, exact: true }
+    id: hover-local-fake-workshop-welcome
+  - click: { testid: HumanMessage/copy-button }
+    id: click-2
+  - wait: { selector: '[data-testid="HumanMessage/copy-button"] path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-data-testid-humanmessage-copy-button-path-d-m13-5-4-5l6-12l
+  - shot: anonymous-question-copied
+    id: shot-anonymous-question-copied
+  - click: { testid: AgentMessage/like-button }
+    id: click-3
+  - wait: { placeholder: What did you like about this response? }
+    id: wait-2
+  - shot: anonymous-like-feedback-modal
+    id: shot-anonymous-like-feedback-modal
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - shot: anonymous-feedback-cancelled
+    id: shot-anonymous-feedback-cancelled
+  - click: { testid: AgentMessage/dislike-button }
+    id: click-4
+  - wait: { placeholder: What did you dislike about this response? }
+    id: wait-3
+  - eval: |
+      if (![...document.querySelectorAll('[role="dialog"] button')].find(b => b.textContent.trim() === 'Submit')?.disabled) throw new Error('Empty negative feedback must not submit');
+    id: eval-script-3
+  - shot: anonymous-feedback-required
+    id: shot-anonymous-feedback-required
+  - fill: { placeholder: What did you dislike about this response?, value: LOCAL FAKE DEMO — please add an accessible workshop example. }
+    id: fill
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st
+  - shot: anonymous-feedback-saved
+    id: shot-anonymous-feedback-saved
+  - eval: location.reload()
+    id: eval-script-4
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st-2
+  - shot: anonymous-feedback-reloaded
+    id: shot-anonymous-feedback-reloaded
+  - click: { testid: AgentMessage/dislike-button }
+    id: click-5
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="empty"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st-3
+  - shot: anonymous-feedback-cleared
+    id: shot-anonymous-feedback-cleared
+  - click: { role: button, name: Sources, exact: true }
+    id: click-sources
+  - wait: { text: Workshop welcome checklist (fake demo), exact: false }
+    id: wait-workshop-welcome-checklist-fake-demo
+  - shot: anonymous-native-sources
+    id: shot-anonymous-native-sources
+  - click: { role: button, name: Sources, exact: true }
+    id: click-sources-2
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

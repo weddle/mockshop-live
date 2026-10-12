@@ -1,0 +1,86 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset; direct admin entry. Agent14 starts listed/unfeatured; prior visibility segment leaves Agent12 at its same listed seed state.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+
+name: admin-agent-curation-editor
+title: Native editor Feature Save, unlisted warning, direct reload and Relist
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - wait: { testid: agent-row-actions-14 }
+    id: wait
+  - hover: { testid: agent-row-actions-14 }
+    id: hover
+  - click: { testid: edit-agent-14 }
+    id: click
+  - wait: { selector: 'input[name="name"][value="IT Helpdesk"]' }
+    id: wait-input-name-name-value-it-helpdesk
+  - scroll: { text: Feature This Agent, exact: true }
+    id: scroll-feature-this-agent
+  - click: { selector: 'button#is_featured' }
+    id: click-button-is-featured
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+    id: wait-button-is-featured-aria-checked-true
+  - shot: editor-feature-draft
+    id: shot-editor-feature-draft
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - goto: /app/agents/edit/14?admin=true
+    id: goto-app-agents-edit-14-admin-true
+  - wait: { selector: 'input[name="name"][value="IT Helpdesk"]' }
+    id: wait-input-name-name-value-it-helpdesk-2
+  - scroll: { text: Feature This Agent, exact: true }
+    id: scroll-feature-this-agent-2
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+    id: wait-button-is-featured-aria-checked-true-2
+  - shot: editor-feature-saved-reload
+    id: shot-editor-feature-saved-reload
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/persona/14');
+        if (!r.ok) throw new Error('Saved editor detail missing');
+        const saved = await r.json();
+        if (!saved.is_featured || !saved.is_listed || saved.name !== 'IT Helpdesk') throw new Error('Native editor Feature save not persisted');
+        sessionStorage.setItem('admin-curation-editor-saved', JSON.stringify(saved));
+      })()
+    id: eval-script
+  - scroll: { role: button, name: Unlist Agent, exact: true }
+    id: scroll-unlist-agent
+  - click: { role: button, name: Unlist Agent, exact: true }
+    id: click-unlist-agent
+  - wait: { role: button, name: Relist Agent, exact: true }
+    id: wait-relist-agent
+  - scroll: { text: Feature This Agent, exact: true }
+    id: scroll-feature-this-agent-3
+  - wait: { text: This agent is unlisted and won't be shown in the featured list., exact: true }
+    id: wait-this-agent-is-unlisted-and-won-t-be-shown-in-the-featured-l
+  - shot: editor-featured-unlisted-warning
+    id: shot-editor-featured-unlisted-warning
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { selector: '.radial-00:has-text("{{teams.training.name}} Analyst")' }
+    id: wait-radial-00-has-text-training-analyst
+  - wait_gone: { selector: '.radial-00:has-text("IT Helpdesk")' }
+    id: wait-gone-radial-00-has-text-it-helpdesk
+  - shot: editor-unlisted-gallery
+    id: shot-editor-unlisted-gallery
+  - goto: /app/agents/edit/14?admin=true
+    id: goto-app-agents-edit-14-admin-true-2
+  - wait: { selector: 'input[name="name"][value="IT Helpdesk"]' }
+    id: wait-input-name-name-value-it-helpdesk-3
+  - scroll: { role: button, name: Relist Agent, exact: true }
+    id: scroll-relist-agent
+  - click: { role: button, name: Relist Agent, exact: true }
+    id: click-relist-agent
+  - wait: { role: button, name: Unlist Agent, exact: true }
+    id: wait-unlist-agent
+  - shot: editor-relisted
+    id: shot-editor-relisted
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

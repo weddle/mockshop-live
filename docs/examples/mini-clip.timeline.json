@@ -1,5 +1,5 @@
 {
-  "scenario": "mini-clip",
+  "script": "mini-clip",
   "plugin": "onyx",
   "clip": "mini-clip.mp4",
   "duration_ms": 7100,

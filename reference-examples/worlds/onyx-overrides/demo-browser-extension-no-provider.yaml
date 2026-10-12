@@ -1,0 +1,21 @@
+apps:
+  onyx:
+    fixtures:
+      GET /llm/provider:
+        providers: []
+        default_text: null
+        default_vision: null
+        default_chat_naming: null
+        default_craft: null
+      GET /llm/persona/:id/providers:
+        providers: []
+        default_text: null
+        default_vision: null
+        default_chat_naming: null
+        default_craft: null
+      GET /admin/llm/provider:
+        providers: []
+        default_text: null
+        default_vision: null
+        default_chat_naming: null
+        default_craft: null

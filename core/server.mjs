@@ -16,11 +16,11 @@ const PORT = m.ports.mock;
 fs.mkdirSync(m.logsDir, { recursive: true });
 const MISS_LOG = path.join(m.logsDir, "mock-misses.log");
 const table = new FixtureTable(m.fixturesDir);
-// The running edition (from the runtime manifest, else the resolved one) may name a fixtures overlay; it goes directly on base, under scenario overlays.
+// The running edition (from the runtime manifest, else the resolved one) may name a fixtures overlay; it goes directly on base, under script overlays.
 const editionOverlays = () => { const f = m.editions?.[builtEdition(m) || m.edition]?.fixtures; return f ? [f] : []; };
 table.overlays = editionOverlays();
 const state = {locale:resolveLocale(m).code}; // free-form per-plugin state, reset via POST /__mockshop/state
-// Scenario-scoped policy also covers SSR calls, whose browser headers never reach the mock.
+// Script-scoped policy also covers SSR calls, whose browser headers never reach the mock.
 let strict = false;
 const strictMisses = [];
 
@@ -55,7 +55,13 @@ const transforms = Object.entries(plugin.transform || {}).map(([k, fn]) => { con
 
 function reload() { console.log(`${isoLocal()} [mock] ${m.name}: loaded ${table.reload()} fixture routes (overlays: ${table.overlays.join(",") || "none"}; demo anchor ${isoLocal(new Date(getAnchor()))})`); }
 reload();
-fs.watch(m.fixturesDir, { recursive: true }, () => { clearTimeout(reload.t); reload.t = setTimeout(reload, 150); });
+fs.watch(m.fixturesDir, { recursive: true }, () => {
+  clearTimeout(reload.t);
+  reload.t = setTimeout(() => {
+    try { reload(); }
+    catch (e) { console.error(`[mock] fixture reload failed: ${e.message}`); }
+  }, 150);
+});
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://x");
@@ -76,8 +82,10 @@ const server = http.createServer(async (req, res) => {
         if (typeof b.strict === "boolean") { strict = b.strict; strictMisses.length = 0; }
         if (!b.keep || b.locale) state.locale = resolveLocale(m, b.locale).code;
         if (!b.keep || b.anchor) setAnchor(b.anchor ?? Date.now());
-        table.overlays = [...editionOverlays(), ...(b.overlays || [])];
-        reload();
+        if (!b.keep || b.overlays !== undefined) {
+          const overlays = [...editionOverlays(), ...(b.overlays || [])];
+          table.reload(overlays);
+        }
         await plugin.reset?.(b);
       }
       return send(res, 200, { plugin: m.name, locale: state.locale, overlays: table.overlays, demo_anchor: isoLocal(new Date(getAnchor()), { ms: true }), strict, strict_misses: strictMisses });

@@ -1,16 +1,17 @@
-// Mockshop scenario runner (Playwright): <plugin>/scenarios/*.yaml -> out/<plugin>/<scenario>/NN-<shot>.png + report.json
-// Clip mode (runScenarios(..., {clip:true})): same steps, human pacing, cursor overlay, CDP screencast -> MP4
-// at out/<plugin>/clips/<scenario>.mp4 (see core/clip.mjs).
+// Mockshop script runner (Playwright): <plugin>/scripts/*.yaml -> out/<plugin>/<script>/NN-<shot>.png + report.json
+// Clip mode (runScripts(..., {clip:true})): same steps, human pacing, cursor overlay, CDP screencast -> MP4
+// at out/<plugin>/clips/<script>.mp4 (see core/clip.mjs).
 import fs from "node:fs";
 import path from "node:path";
-import YAML from "yaml";
 import { routeCaptured } from "./captured.mjs";
 import { chromium } from "playwright-core";
 import { isoLocal } from "./time.mjs";
 import { resolveLocale } from "./locale.mjs";
-import { clipDefaults, cardInit, Recorder, showCard, encodeClip, clipType, freezeFrame, fadeFrom, fadeOut } from "./clip.mjs";
-import { resolveCursor, mergeCursor, resolveLook, installCursorOverlay, glideTo } from "./cursor.mjs";
-import { Timeline } from "./timeline.mjs";
+import { cardInit, Recorder, showCard, encodeClip, clipType, freezeFrame, fadeFrom, fadeOut } from "./clip.mjs";
+import { mergeCursor, resolveLook, installCursorOverlay, glideTo } from "./cursor.mjs";
+import { META_KEYS, Timeline } from "./timeline.mjs";
+import { prepareScript } from "./script.mjs";
+import { stepPresentation } from "./presentation.mjs";
 
 const CHROME = process.env.CHROME_PATH || ["/opt/google/chrome/chrome", "/usr/bin/chromium", "/usr/bin/google-chrome", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"].find((p) => fs.existsSync(p));
 const escapeRx = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -32,7 +33,6 @@ function loc(page, spec) {
 }
 
 const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
-const STEP_MODIFIERS = ["only", "at", "cursor"];
 const rectOf = (b) => [b.x, b.y, b.width, b.height];
 const centerOf = (b) => [b.x + b.width / 2, b.y + b.height / 2];
 
@@ -68,24 +68,26 @@ async function settle(page, ms = 400, idleTimeout = 8000) {
   await page.waitForTimeout(ms);
 }
 
-// opts.scenario: scenario object instead of a file. opts.steps: (async) iterable of steps instead of sc.steps.
+// opts.script: script object instead of a file. opts.steps: (async) iterable of steps instead of sc.steps.
 // opts.live: { after(info) } called after every step (used by `mockshop live`, see core/live.mjs).
-export async function runScenario(m, file, browser, opts = {}) {
+export async function runScript(m, file, browser, opts = {}) {
   const R = m.runner || {};
   const BASE = process.env.MOCKSHOP_URL || R.base_url || `http://127.0.0.1:${m.ports.web}`;
   const MOCK = `http://127.0.0.1:${m.ports.mock}`;
-  const sc = opts.scenario ?? YAML.parse(fs.readFileSync(file, "utf8"));
+  const sc = await prepareScript(m, file, opts);
   const strict = sc.strict ?? R.strict ?? false;
   const selector = [...(R.cookies || []), ...(sc.cookies || [])].findLast(c=>c.name===m.localization?.cookie);
   const locale = resolveLocale(m, opts.locale || sc.locale || R.locale || selector?.value);
-  const name = sc.name || path.basename(file).replace(/\.ya?ml$/, "");
-  const clip = opts.clip ? clipDefaults(sc.clip) : null;
+  const name = sc.name;
+  const baseClip = opts.clip ? sc._presentation.clip : null;
+  let clip = baseClip;
   const outDir = clip ? path.join(m.outDir, "clips", `.${name}`) : path.join(m.outDir, name);
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
-  // Demo anchor = scenario/recording start: fixture times ({{ago:2h}}) resolve against it so on-screen
+  fs.writeFileSync(clip ? path.join(m.outDir, "clips", `${name}.resolved.json`) : path.join(outDir, "resolved.json"), JSON.stringify(sc, null, 2));
+  // Demo anchor = script/recording start: fixture times ({{ago:2h}}) resolve against it so on-screen
   // relative times are the same on every run. Records below use absolute local ISO times.
-  // Fixed anchor (scenario `demo_anchor`, else manifest runner.demo_anchor) -> identical on-screen times on every run;
+  // Fixed anchor (script `demo_anchor`, else manifest runner.demo_anchor) -> identical on-screen times on every run;
   // without one, the anchor is the real start time.
   const startedAt = new Date();
   const anchorSpec = sc.demo_anchor ?? R.demo_anchor ?? null;
@@ -93,7 +95,7 @@ export async function runScenario(m, file, browser, opts = {}) {
   const clockOffset = anchor.getTime() - startedAt.getTime();
   if (Number.isNaN(anchor.getTime())) throw new Error(`${name}: bad demo_anchor ${JSON.stringify(anchorSpec)}`);
   const reset = await fetch(`${MOCK}/__mockshop/state`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ overlays: sc.overlays || [], resetChats: true, anchor: anchor.toISOString(), locale: locale.code, strict }) });
-  if (!reset.ok) throw new Error(`${name}: mock state reset failed (${reset.status})`);
+  if (!reset.ok) throw new Error(`${name}: mock state reset failed (${reset.status}): ${await reset.text()}`);
 
   const [w, h] = clip?.viewport || sc.viewport || R.viewport || [1440, 900];
   const ctx = await browser.newContext({ ...(m.kind === "captured-frontend" ? { serviceWorkers: "block" } : {}), viewport: { width: w, height: h }, deviceScaleFactor: sc.scale || 1, colorScheme: sc.theme === "dark" ? "dark" : "light", locale: locale.code, extraHTTPHeaders: { 'Accept-Language': locale.code }, timezoneId: sc.timezone || R.timezone || "America/New_York" });
@@ -109,7 +111,7 @@ export async function runScenario(m, file, browser, opts = {}) {
     document.addEventListener("DOMContentLoaded", () => { off(); new MutationObserver(off).observe(document.documentElement, { subtree: true, childList: true }); });
   });
   // Shift the page's wall clock (Date only; timers, animation frames and performance.now are untouched, so pacing is
-  // unchanged) so it reads the demo anchor at scenario start and runs in real time from there.
+  // unchanged) so it reads the demo anchor at script start and runs in real time from there.
   if (anchorSpec) await ctx.addInitScript(({ offset }) => {
     const D = Date, now = () => D.now() + offset;
     function MDate(...a) { if (!new.target) return new D(now()).toString(); return a.length ? new D(...a) : new D(now()); }
@@ -119,14 +121,16 @@ export async function runScenario(m, file, browser, opts = {}) {
   }, { offset: clockOffset });
   // Cursor (core/cursor.mjs, docs/cursor.md): clips install it even when initially hidden, so cursor-only
   // steps can enable it later. Screenshots inject only with cursor.screenshots or an explicit cursor step.
-  let cur = resolveCursor(R.cursor, sc);
+  let cur = sc._presentation.cursor;
   const cs = { pos: [w * 0.55, h * 0.6], moves: 0, seed: name };
-  const overlay = !!clip || cur.screenshots || (sc.steps || []).some((s) => isObj(s.shot) && s.shot.cursor !== undefined) || (sc.steps || []).some((s) => s.cursor !== undefined);
-  const hiddenNow = () => (clip ? !cur.enabled : !cur.screenshots);
+  const overlay = !!clip || !!opts.live || cur.screenshots || (sc.steps || []).some((s) => isObj(s.shot) && s.shot.cursor !== undefined || s.cursor !== undefined || s._presentation?.scene?.cursor !== undefined || s._presentation?.step?.cursor !== undefined);
+  const hiddenNow = (config = cur) => !config.enabled || (!clip && !config.screenshots);
   if (clip) await ctx.addInitScript(cardInit);
   if (overlay) await ctx.addInitScript(installCursorOverlay, { look: resolveLook(cur.look), w, h, follow: !!clip, hidden: hiddenNow() });
   const page = await ctx.newPage();
-  const setLook = (look) => page.evaluate((l) => window.__msCursorLook?.(l), resolveLook(look)).catch(() => {});
+  const applyCursor = (config) => page.evaluate(({ look, hide }) => {
+    window.__msCursorLook?.(look); window.__msCursorHide?.(hide);
+  }, { look: resolveLook(config.look), hide: hiddenNow(config) }).catch(() => {});
   const problems = [];
   const rec = clip ? new Recorder(page, outDir, [w, h]) : null;
   page.on("console", (msg) => {
@@ -143,27 +147,29 @@ export async function runScenario(m, file, browser, opts = {}) {
 
   const shots = [], shotLog = [], beatLog = [];
   const t00 = Date.now();
-  const tl = clip || opts.live ? new Timeline({ scenario: name, plugin: m.name, now: clip ? () => rec.videoTime() * 1000 : () => Date.now() - t00, ready: () => !clip || rec.started }) : null;
+  const tl = clip || opts.live ? new Timeline({ script: name, plugin: m.name, source: sc._resolved.source, inputs: sc._resolved.inputs, scenes: sc._resolved.scenes, now: clip ? () => rec.videoTime() * 1000 : () => Date.now() - t00, ready: () => !clip || rec.started }) : null;
   let i = 0;
   for await (const step of opts.steps ?? sc.steps ?? []) {
     i++;
     let failure = null;
-    // step modifiers (only/at/cursor) sit beside the op key; a step with only `cursor:` is the cursor op
-    const entries = Object.entries(step).filter(([k]) => !STEP_MODIFIERS.includes(k));
+    // Metadata never becomes an operation; cursor alone remains a precise persistent manual instruction.
+    const entries = Object.entries(step).filter(([k]) => !META_KEYS.includes(k));
     if (step.only && step.only !== (clip ? "clip" : "shot")) continue;
     const [op, arg] = entries.length ? entries[0] : step.cursor !== undefined ? ["cursor", step.cursor] : [Object.keys(step)[0], undefined];
-    // per-step cursor override: step-level `cursor:` (wins) or `cursor:` inside the op's arg; a look change lasts for this step
+    const settings = stepPresentation(sc, step, cur);
+    clip = opts.clip ? settings.clip : null;
     const stepCursor = op === "cursor" ? undefined : step.cursor !== undefined ? step.cursor : isObj(arg) ? arg.cursor : undefined;
-    const c = op !== "shot" && stepCursor !== undefined && stepCursor !== false ? mergeCursor(cur, stepCursor) : cur;
-    if (overlay && c.look !== cur.look) await setLook(c.look);
+    const c = stepCursor === undefined ? settings.cursor : mergeCursor(settings.cursor, stepCursor);
+    if (overlay) await applyCursor(c);
     try {
-      await tl?.begin({ i, op, arg, step, page, loc: (s) => loc(page, s), cursor: cs });
+      await tl?.begin({ i, op, arg, step, page, loc: (s) => loc(page, s), cursor: cs, presentation: { ...settings, cursor: c } });
       switch (op) {
         case "goto": {
           // clip: after the first page, crossfade from the old screen and cut the load time
           const fade = clip && rec.started && clip.nav_fade ? await freezeFrame(page) : null;
           if (fade) rec.cutStart();
           await page.goto(BASE + arg, { waitUntil: "domcontentloaded" }); await settle(page, 600);
+          if (overlay) await applyCursor(c);
           if (fade) { await fadeFrom(page, fade, clip.nav_fade); rec.cutEnd(); await page.evaluate(([x, y]) => window.__msCursor?.(x, y), cs.pos).catch(() => {}); await fadeOut(page, clip.nav_fade); }
           if (clip) { await page.evaluate(([x, y]) => window.__msCursor?.(x, y), cs.pos).catch(() => {}); if (!rec.started) { await rec.start(); if (clip.title) await showCard(page, clip.title, clip.title_ms); } }
           break;
@@ -201,10 +207,9 @@ export async function runScenario(m, file, browser, opts = {}) {
           if (clip && arg.hold) await page.waitForTimeout(arg.hold);
           break;
         }
-        case "cursor": { // change the scenario's cursor settings from here on
-          const look = cur.look;
+        case "cursor": { // Precise manual changes persist; natural scene/step overrides never mutate them.
           cur = mergeCursor(cur, arg);
-          if (overlay) { if (cur.look !== look) await setLook(cur.look); await page.evaluate((h) => window.__msCursorHide?.(h), hiddenNow()).catch(() => {}); }
+          if (overlay) await applyCursor(stepPresentation(sc, step, cur).cursor);
           break;
         }
         case "pause": await page.waitForTimeout(clip ? Number(arg) : 0); break;  // pacing beat; no-op for screenshots
@@ -238,11 +243,11 @@ export async function runScenario(m, file, browser, opts = {}) {
         case "shot": {
           const s = typeof arg === "string" ? { name: arg } : arg;
           if (clip) { // a shot is a beat: glide to the hover target (if any) and hold
-            if (s.hover) { const b = await loc(page, s.hover).boundingBox().catch(() => null); if (b) await glideTo(page, isObj(stepCursor) ? mergeCursor(cur, stepCursor) : cur, cs, ...centerOf(b), rectOf(b)); }
+            if (s.hover) { const b = await loc(page, s.hover).boundingBox().catch(() => null); if (b) await glideTo(page, c, cs, ...centerOf(b), rectOf(b)); }
             const beatT = rec.videoTime();             // read-only: where this beat starts in the video
             await page.waitForTimeout(s.hold ?? clip.hold_ms);
             shots.push(s.name);
-            beatLog.push({ beat: s.name, step: i, t_s: beatT, hold_s: (s.hold ?? clip.hold_ms) / 1000 });
+            beatLog.push({ beat: s.name, step: i, step_id: step.author_id || step.id, scene: step.scene, origin: step.origin, t_s: beatT, hold_s: (s.hold ?? clip.hold_ms) / 1000 });
             break;
           }
           await page.mouse.move(s.mouse?.[0] ?? w - 5, s.mouse?.[1] ?? h - 5).catch(() => {});
@@ -251,14 +256,13 @@ export async function runScenario(m, file, browser, opts = {}) {
           // Cursor in the still: shown when cursor.screenshots is on or the shot has a `cursor:` object; `cursor: false`
           // hides it. at: locator | [x, y] (default: hover target, else the last click/hover/move point);
           // ripple: true | 0..1 (frozen ripple; the number is how far it has expanded); squish; magnet: true | [x, y, w, h].
-          const so = isObj(stepCursor) ? stepCursor : {};
-          const showCursor = overlay && stepCursor !== false && (cur.screenshots || isObj(stepCursor));
+          const so = c;
+          const showCursor = overlay && c.enabled && stepCursor !== false && (c.screenshots || isObj(stepCursor) || stepCursor === true);
           if (overlay) {
             let at = cs.pos, rect = null;
             if (so.at) { if (Array.isArray(so.at)) at = so.at; else { const b = await loc(page, so.at).boundingBox(); if (b) { at = centerOf(b); rect = rectOf(b); } } }
             else if (hoverBox) { at = centerOf(hoverBox); rect = rectOf(hoverBox); }
             const magnet = Array.isArray(so.magnet) ? so.magnet : so.magnet ? rect ?? [at[0] - 12, at[1] - 12, 24, 24] : null;
-            if (so.look) await setLook(mergeCursor(cur, so).look);
             await page.evaluate(({ hide, still }) => { window.__msCursorHide?.(hide); return window.__msStill?.(still); },
               { hide: !showCursor, still: { at, ripple: so.ripple ?? false, squish: so.squish ?? false, magnet } }).catch(() => {});
           }
@@ -266,17 +270,17 @@ export async function runScenario(m, file, browser, opts = {}) {
           const f = path.join(outDir, `${String(shots.length + 1).padStart(2, "0")}-${s.name}.png`);
           await page.screenshot({ path: f, fullPage: !!s.full_page, ...(s.clip ? { clip: s.clip } : {}) });
           if (overlay) {
-            await page.evaluate((hide) => { window.__msStill?.(null); window.__msCursorHide?.(hide); }, hiddenNow()).catch(() => {});
-            if (so.look) await setLook(cur.look);
+            await page.evaluate((hide) => { window.__msStill?.(null); window.__msCursorHide?.(hide); }, hiddenNow(c)).catch(() => {});
           }
-          shotLog.push({ shot: path.basename(f), at: isoLocal() });
+          shotLog.push({ shot: path.basename(f), at: isoLocal(), step_id: step.author_id || step.id, scene: step.scene, origin: step.origin });
           for (const t of R.crash_text || []) if (await page.getByText(t).count()) problems.push(`STEP ${i} shot ${s.name}: APP CRASHED ("${t}"): a fixture shape is likely wrong`);
           shots.push(f);
           break;
         }
         case "mark": case "keyframe": tl?.mark(arg, i, op); break;  // timeline label only; no browser action
-        case "state": { // live overlay switch (e.g. another persona); keeps in-run state, demo clock and locale. Reload with goto.
-          const r = await fetch(`${MOCK}/__mockshop/state`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ overlays: arg.overlays, keep: true, resetChats: false }) });
+        case "state": { // Fixture, armed-turn, and screen state retain the current session unless explicitly reset.
+          const { cursor: _cursor, ...state } = arg;
+          const r = await fetch(`${MOCK}/__mockshop/state`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...state, url: page.url(), keep: state.keep ?? true, resetChats: state.resetChats ?? false }) });
           if (!r.ok) throw new Error(`mock state switch failed (${r.status})`);
           break;
         }
@@ -288,19 +292,21 @@ export async function runScenario(m, file, browser, opts = {}) {
       await page.screenshot({ path: f }).catch(() => {});
       problems.push(`STEP ${i} ${op} ${JSON.stringify(arg)} failed: ${e.message.split("\n")[0]}`);
     }
-    if (overlay && c.look !== cur.look) await setLook(cur.look);
+    if (overlay) await applyCursor(stepPresentation(sc, step, cur, { includeStep: false }).cursor);
     await tl?.end(failure);
     await opts.live?.after({ i, op, arg, step, page, shots, outDir, problems, error: failure, timeline: tl });
     if (failure && !sc.continue_on_error) break;
   }
+  clip = baseClip;
+  if (overlay) await applyCursor(cur);
   // SSR misses may be swallowed by the front end without any browser response error.
-  // Read only this scenario's server-side misses, never historical log lines.
+  // Read only this script's server-side misses, never historical log lines.
   if (strict) {
     const response = await fetch(`${MOCK}/__mockshop/state`);
     if (!response.ok) problems.push(`mock strict state failed (${response.status})`);
     else problems.push(...(await response.json()).strict_misses);
   }
-  // Known errors (manifest runner.known_errors + scenario known_errors): matched problems are reported apart and never fail strict.
+  // Known errors (manifest runner.known_errors + script known_errors): matched problems are reported apart and never fail strict.
   const { unexpected, known } = splitKnown(problems, [...(R.known_errors || []), ...(sc.known_errors || [])]);
   problems.length = 0; problems.push(...unexpected);
   if (clip) {
@@ -311,16 +317,16 @@ export async function runScenario(m, file, browser, opts = {}) {
     const info = await encodeClip(rec, mp4, clip);
     tl.write(path.join(m.outDir, "clips", name), { clip: path.basename(mp4), duration_ms: Math.round(info.duration_s * 1000), viewport: [w, h] });
     fs.writeFileSync(path.join(m.outDir, "clips", `${name}.report.json`), JSON.stringify({
-      scenario: name, locale: locale.code, mp4, recorded_at: isoLocal(startedAt), finished_at: isoLocal(), demo_anchor: isoLocal(anchor, { ms: !anchorSpec }),
+      script: name, locale: locale.code, mp4, recorded_at: isoLocal(startedAt), finished_at: isoLocal(), demo_anchor: isoLocal(anchor, { ms: !anchorSpec }),
       ...info, beats: shots, beat_times: beatLog, time_note: "beat_times[].t_s = seconds from the start of the video", problems, known_problems: known }, null, 2));
     if (!process.env.MOCKSHOP_KEEP_FRAMES) fs.rmSync(outDir, { recursive: true, force: true });
-    return { name, shots: [mp4], problems, known, info };
+    return { name, shots: [mp4], problems, known, info, strict };
   }
   await ctx.close();
   fs.writeFileSync(path.join(outDir, "report.json"), JSON.stringify({
-    scenario: name, locale: locale.code, started_at: isoLocal(startedAt), finished_at: isoLocal(), demo_anchor: isoLocal(anchor, { ms: !anchorSpec }),
+    script: name, locale: locale.code, started_at: isoLocal(startedAt), finished_at: isoLocal(), demo_anchor: isoLocal(anchor, { ms: !anchorSpec }),
     shots, shot_times: shotLog, problems, known_problems: known }, null, 2));
-  return { name, shots, problems, known };
+  return { name, shots, problems, known, strict };
 }
 
 
@@ -341,16 +347,15 @@ export async function launchBrowser() {
   return chromium.launch({ executablePath: CHROME, headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage", "--hide-scrollbars", "--disable-spell-checking"] });
 }
 
-// Run scenario files for one plugin; returns the number of scenarios with failed steps.
-export async function runScenarios(m, files, opts = {}) {
+// Run script files for one plugin; returns the number of scripts with failed steps.
+export async function runScripts(m, files, opts = {}) {
   const browser = await launchBrowser();
   let failed = 0;
   try {
     for (const f of files) {
       const t0 = Date.now();
-      const r = await runScenario(m, f, browser, opts);
-      const strict = YAML.parse(fs.readFileSync(f, "utf8")).strict ?? m.runner?.strict ?? false;
-      const stepFail = strict ? r.problems.length > 0 : r.problems.some((p) => p.startsWith("STEP"));
+      const r = await runScript(m, f, browser, opts);
+      const stepFail = r.strict ? r.problems.length > 0 : r.problems.some((p) => p.startsWith("STEP"));
       if (stepFail) failed++;
       if (r.info) console.log(`${stepFail ? "✗" : "✓"} ${m.name}/${r.name}: clip ${r.info.duration_s.toFixed(1)}s (${r.info.frames} frames) in ${((Date.now() - t0) / 1000).toFixed(1)}s -> ${r.shots[0]}`);
       else console.log(`${stepFail ? "✗" : "✓"} ${m.name}/${r.name}: ${r.shots.length} shot(s) in ${((Date.now() - t0) / 1000).toFixed(1)}s -> ${path.join(m.outDir, r.name)}/`);

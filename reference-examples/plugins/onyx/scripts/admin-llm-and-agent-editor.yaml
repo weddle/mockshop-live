@@ -1,0 +1,50 @@
+# Admin: LLM provider config (incl. on-prem model) + anatomy of an agent
+# (instructions, starters, knowledge/document set, actions/tools incl. an MCP server, sharing, pinned model).
+name: admin-llm-and-agent-editor
+requires: enterprise # the Share Agent modal lists user groups only when the enterprise settings route answers
+title: Admin reviews LLM providers and edits an agent
+viewport: [ 1440, 900 ]
+continue_on_error: true
+steps:
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  - shot: language-models
+    id: shot-language-models
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - settle: 1000
+    id: settle
+  - shot: agent-editor
+    id: shot-agent-editor
+  - scroll: 520
+    id: scroll
+  - shot: agent-editor-knowledge
+    id: shot-agent-editor-knowledge
+  - scroll: { text: Share Agent }
+    id: scroll-share-agent
+  - click: { role: button, name: Share }
+    id: click-share
+  - wait: { text: "{{teams.training.name}}", exact: true }
+    id: wait-training
+  - settle: 600
+    id: settle-2
+  - shot: agent-editor-sharing
+    id: shot-agent-editor-sharing
+  - press: Escape
+    id: press-escape
+  - settle: 400
+    id: settle-3
+  # Actions and Advanced Options are open by default; scroll their headers to the top
+  - eval: "(e=>{e.style.scrollMarginTop='170px';e.scrollIntoView({block:'start'})})(document.querySelectorAll('.opal-collapsible')[0])"
+    id: eval-script
+  - settle: 500
+    id: settle-4
+  - shot: agent-editor-actions
+    id: shot-agent-editor-actions
+  - eval: "(e=>{e.style.scrollMarginTop='170px';e.scrollIntoView({block:'start'})})(document.querySelectorAll('.opal-collapsible')[1])"
+    id: eval-script-2
+  - settle: 500
+    id: settle-5
+  - shot: agent-editor-advanced
+    id: shot-agent-editor-advanced
+world: ../../../worlds/seaside/world.yaml

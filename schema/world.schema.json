@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/weddle/mockshop-live/schema/world.schema.json",
+  "title": "Mockshop world and script content",
+  "description": "Authoring schema for worlds, included fragments and script content. Objects merge recursively; arrays, scalars and null replace. Includes and body_file are relative to their declaring file. Partial entities and typed references are allowed while authoring; after composition, removal and reference/use expansion the loader applies $defs.resolved and validates entity relationships. No world presentation settings or executable code.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "includes": { "type": "array", "items": { "$ref": "#/$defs/file" }, "description": "Explicit local YAML/JSON files, loaded in order before this file; cycles are errors." },
+    "company": { "anyOf": [{ "$ref": "#/$defs/company" }, { "$ref": "#/$defs/reference" }] },
+    "people": { "anyOf": [{ "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "anyOf": [{ "$ref": "#/$defs/person" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }] },
+    "teams": { "anyOf": [{ "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "anyOf": [{ "$ref": "#/$defs/team" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }] },
+    "sources": { "anyOf": [{ "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "anyOf": [{ "$ref": "#/$defs/source" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }] },
+    "documents": { "anyOf": [{ "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "anyOf": [{ "$ref": "#/$defs/document" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }] },
+    "conversations": { "anyOf": [{ "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "anyOf": [{ "$ref": "#/$defs/conversation" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }] },
+    "vars": { "anyOf": [{ "type": "object" }, { "$ref": "#/$defs/reference" }], "description": "Free-form JSON/YAML variables; null remains a value." },
+    "apps": { "anyOf": [{ "type": "object", "additionalProperties": { "anyOf": [{ "type": "object" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }], "description": "Plugin-owned data, validated by that plugin. Unrelated app blocks are allowed." }
+  },
+  "$defs": {
+    "key": { "type": "string", "pattern": "^(?!(?:__proto__|prototype|constructor)$)[A-Za-z0-9][A-Za-z0-9_-]*$", "description": "Stable identifier; display names and declaration order never determine identity." },
+    "file": { "type": "string", "minLength": 1, "pattern": "^(?!/|~|[A-Za-z][A-Za-z0-9+.-]*:)(?!.*[\\\\\\r\\n\\u0000]).+$" },
+    "path": { "type": "string", "pattern": "^(company|people|teams|sources|documents|conversations|vars|apps)(?:\\.(?!(?:__proto__|prototype|constructor)(?:\\.|$))[A-Za-z0-9_-]+)*$" },
+    "reference": { "type": "string", "pattern": "^\\{\\{\\s*(company|people|teams|sources|documents|conversations|vars|apps)(?:\\.(?!(?:__proto__|prototype|constructor)(?:\\.|\\s*\\}))[A-Za-z0-9_-]+)*\\s*\\}\\}$", "description": "A whole-value reference retains the referenced type. Embedded references in text must resolve to scalars. Substituted text is never interpreted again." },
+    "entityReference": { "anyOf": [{ "$ref": "#/$defs/key" }, { "$ref": "#/$defs/reference" }] },
+    "nullableText": { "type": ["string", "null"] },
+    "keys": { "type": "array", "items": { "$ref": "#/$defs/key" } },
+    "keyList": { "anyOf": [{ "type": "array", "items": { "$ref": "#/$defs/entityReference" } }, { "$ref": "#/$defs/reference" }] },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "name": { "type": "string", "minLength": 1 },
+        "domain": { "$ref": "#/$defs/nullableText" },
+        "description": { "$ref": "#/$defs/nullableText" },
+        "url": { "$ref": "#/$defs/nullableText" }
+      }
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "name": { "type": "string", "minLength": 1 },
+        "email": { "$ref": "#/$defs/nullableText" },
+        "title": { "$ref": "#/$defs/nullableText" },
+        "avatar": { "$ref": "#/$defs/nullableText" }
+      }
+    },
+    "team": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "$ref": "#/$defs/nullableText" },
+        "members": { "$ref": "#/$defs/keyList" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "name": { "type": "string", "minLength": 1 },
+        "vendor": { "type": "string", "minLength": 1, "description": "The consuming plugin validates its supported vendors, not core." },
+        "url": { "$ref": "#/$defs/nullableText" },
+        "description": { "$ref": "#/$defs/nullableText" }
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "source": { "$ref": "#/$defs/entityReference", "description": "Key in sources." },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "$ref": "#/$defs/nullableText" },
+        "body": { "$ref": "#/$defs/nullableText" },
+        "body_file": { "$ref": "#/$defs/file", "description": "UTF-8 text, expanded to body before composition. Cannot be declared beside body on the same object." },
+        "url": { "$ref": "#/$defs/nullableText" },
+        "author": { "anyOf": [{ "$ref": "#/$defs/entityReference" }, { "type": "null" }], "description": "Optional key in people." },
+        "owners": { "$ref": "#/$defs/keyList" }
+      }
+    },
+    "message": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "role": { "type": "string", "minLength": 1, "description": "For example user, assistant or system; consuming plugins validate supported roles." },
+        "person": { "anyOf": [{ "$ref": "#/$defs/entityReference" }, { "type": "null" }] },
+        "text": { "type": "string" },
+        "documents": { "$ref": "#/$defs/keyList", "description": "Document keys in citation order." }
+      }
+    },
+    "conversation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use": { "$ref": "#/$defs/path" },
+        "title": { "$ref": "#/$defs/nullableText" },
+        "messages": { "anyOf": [{ "type": "array", "items": { "anyOf": [{ "$ref": "#/$defs/message" }, { "$ref": "#/$defs/reference" }] } }, { "$ref": "#/$defs/reference" }] }
+      }
+    },
+    "resolvedPerson": { "allOf": [{ "$ref": "#/$defs/person" }, { "required": ["name"] }] },
+    "resolvedTeam": { "allOf": [{ "$ref": "#/$defs/team" }, { "required": ["name"], "properties": { "members": { "$ref": "#/$defs/keys" } } }] },
+    "resolvedSource": { "allOf": [{ "$ref": "#/$defs/source" }, { "required": ["name", "vendor"] }] },
+    "resolvedDocument": { "allOf": [{ "$ref": "#/$defs/document" }, { "required": ["source", "title"], "properties": { "source": { "$ref": "#/$defs/key" }, "author": { "anyOf": [{ "$ref": "#/$defs/key" }, { "type": "null" }] }, "owners": { "$ref": "#/$defs/keys" } } }] },
+    "resolvedMessage": { "allOf": [{ "$ref": "#/$defs/message" }, { "required": ["role", "text"], "properties": { "person": { "anyOf": [{ "$ref": "#/$defs/key" }, { "type": "null" }] }, "documents": { "$ref": "#/$defs/keys" } } }] },
+    "resolvedConversation": { "allOf": [{ "$ref": "#/$defs/conversation" }, { "properties": { "messages": { "type": "array", "items": { "$ref": "#/$defs/resolvedMessage" } } } }] },
+    "resolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "company": { "allOf": [{ "$ref": "#/$defs/company" }, { "required": ["name"] }] },
+        "people": { "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/resolvedPerson" } },
+        "teams": { "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/resolvedTeam" } },
+        "sources": { "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/resolvedSource" } },
+        "documents": { "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/resolvedDocument" } },
+        "conversations": { "type": "object", "propertyNames": { "$ref": "#/$defs/key" }, "additionalProperties": { "$ref": "#/$defs/resolvedConversation" } },
+        "vars": { "type": "object" },
+        "apps": { "type": "object", "additionalProperties": { "type": "object" } }
+      }
+    }
+  }
+}

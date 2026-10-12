@@ -1,146 +1,157 @@
-# Plugin vocabulary: documented demo capabilities
+# Plugin vocabulary and operating knowledge
 
-Each plugin documents its demoable surface in two files. Together they answer one question for an agent (or a person)
-writing scenarios: *what can I show with this plugin, where, and what will I see?*
+A plugin must be understandable without a collection of sample scripts. Its documentation should answer: **what does this control do, which API does it call, how does the mock respond, and what state changes?**
 
-| File | Audience | Content |
-|---|---|---|
-| `plugins/<p>/vocabulary.yaml` | machines, agents | the structured vocabulary: surfaces, entities, actions, demo moments, unsupported list, locales, scenario snippets. Schema: `schema/vocabulary.schema.json` |
-| `plugins/<p>/PLAYBOOK.md` | people, agents | the same vocabulary as readable prose and tables, plus anything that does not fit the structure (caveats, how fixtures shape what you see) |
+| File | Responsibility |
+|---|---|
+| `plugins/<p>/vocabulary.yaml` | Structured inventory of screens, entities, operations, useful visible outcomes, limitations and optional step snippets. |
+| `plugins/<p>/PLAYBOOK.md` | Author-facing entry point: how to build a fresh script using the supported controls and operating guides. |
+| `plugins/<p>/API-MAP.md` | Mock backend entry point: request dispatch, routes, seed data, state ownership, persistence/reset and simulation boundaries. |
+| `plugins/<p>/docs/*.md` | Detailed operating contracts linked from the entry points and vocabulary. |
 
-Both files are optional per plugin, but if `vocabulary.yaml` exists, `./mockshop validate <p>` checks it (see Validation).
-`PLAYBOOK.md` must not contradict `vocabulary.yaml`; when they disagree, the YAML wins and the playbook is fixed.
+The source implementation is authoritative. Distinguish source-derived behavior from exercised verification. A `works` inventory entry describes intended supported behavior; it is not evidence of a current successful browser run.
 
-The included Onyx integration is experimental. Its [vocabulary](../plugins/onyx/vocabulary.yaml) and
-[playbook](../plugins/onyx/PLAYBOOK.md) describe the fixture-backed scope, not full upstream feature coverage.
-Validation checks structure and references; it does not prove that an interaction succeeds in a browser.
+## Operating documentation requirements
 
-## Tone
+For each UI family, explain:
 
-This is a **neutral capability vocabulary**, not sales or enablement copy.
+1. **Screen:** frontend route, edition/permission prerequisites and required seed data.
+2. **Control:** visible label and locator context; distinguish controls with identical labels.
+3. **Request:** method, API path, important request fields and request order.
+4. **Implementation:** owning handler, fixture routes and mutable state stores.
+5. **Result:** response/stream structure and the resulting visible UI state.
+6. **Lifecycle:** persistence across navigation, chat changes, world switches and resets.
+7. **Timing:** actual completion signals, refresh requirements and asynchronous states.
+8. **Boundaries:** simulated external effects, unsupported writes, canned outputs and success-shaped no-ops.
+9. **Failure:** supported error staging and how to diagnose missing or inconsistent data.
 
-- Describe what is on screen and what changes, in plain words: "the connector appears in the list with status Indexing".
-- No benefits, value claims, personas or talk tracks ("empowers admins", "saves hours").
-- Say what the *mock* does, not what the real product does. If the real product would send an email but the mock only shows
-  a toast, write the toast.
-- Be honest about gaps. Anything that looks clickable but does nothing, renders partially, or is not captured goes in
-  `not_supported` (or carries a `status` other than `works`).
+Do not present a native button as fully implemented merely because it renders. Do not explain a mocked connector in terms of real indexing or a prepared answer in terms of real retrieval.
 
-## vocabulary.yaml
+Sample scripts are examples, not the specification. When samples move to a separate repository, their unique operating knowledge must remain here as documentation, implementation, and focused regression tests.
 
-The following is an illustrative format fragment, not a complete validated vocabulary or an assertion of current Onyx coverage.
-Use the included plugin's vocabulary for actual fixture names, edition requirements and supported actions.
+## Vocabulary schema
+
+Machine-readable format: [`schema/vocabulary.schema.json`](../schema/vocabulary.schema.json). Root fields:
+
+| Field | Meaning |
+|---|---|
+| `plugin` | Plugin directory name. |
+| `version` | Vocabulary format version, currently `1`. |
+| `summary` | What the local integration supports; state major limitations. |
+| `locales`, `default_locale` | UI locales supported by the plugin. |
+| `surfaces` | Screen/area IDs, frontend routes, descriptions and support status. |
+| `entities` | Data concepts the screens expose, with optional examples and surface references. |
+| `actions` | Operations: prerequisites, instructions, outcome, persistence and operating-guide links. |
+| `moments` | Useful visible outcomes, with operating-guide links. |
+| `not_supported` | Explicit limitations and reasons. |
+| `snippets` | Optional copyable low-level step sequences; not an inheritance or template system. |
+
+IDs are kebab-case and unique within each list. Cross-references name IDs, not titles.
 
 ```yaml
-plugin: onyx                       # must equal the plugin dir name
-version: 1                         # format version (this document); currently 1
-summary: >                         # 1-3 neutral sentences: which UI, which parts are mocked
-  Onyx web UI (chat and admin) against fixture data.
-locales: [en, es, ja]              # optional; must be a subset of plugin.yaml localization.locales
-default_locale: en                 # optional; must be in locales
+plugin: example
+version: 1
+summary: Fixture-backed records and local edits; no external synchronization.
+locales: [en]
+default_locale: en
 
-surfaces:                          # screens/areas a scenario can open
-  - id: admin-connectors           # unique kebab-case id, referenced by actions/moments
-    title: Connectors
-    routes: [/admin/connectors]    # paths a `goto` can open directly (no host; ?query and #hash allowed)
-    status: works                  # works | partial | placeholder | needs-capture
-    description: Catalog of connector types, grouped by category, with search.
-    notes: ...                     # optional: caveats (what is partial and why)
-    edition: enterprise            # optional: needs this plugin edition (must be in plugin.yaml editions)
-    group: Admin                   # optional: nav grouping (e.g. the product's menu category)
+surfaces:
+  - id: records
+    title: Records
+    routes: [/records]
+    status: partial
+    description: Lists local seeded records and supports in-run edits.
+    notes: Refresh after replacing seed data.
 
-entities:                          # the fake things on screen, so agents use names that exist in fixtures
-  - id: connector
-    title: Connector
-    description: A configured data source (name, type, status, last indexed).
-    examples: ["Confluence – Engineering", "Google Drive – Sales"]   # example names; real plugins use their fixture values
-    surfaces: [admin-connectors, indexing-status]
+entities:
+  - id: record
+    title: Record
+    description: A reusable document mapped into the application's record shape.
+    surfaces: [records]
 
-actions:                           # demoable verbs
-  - id: add-connector
-    title: Add a connector
-    surface: admin-connectors       # where it starts
-    entities: [connector]           # optional
-    preconditions: [Confluence credential exists in fixtures]   # optional: state/fixtures/edition needed
-    steps: Click a connector tile, fill the form, choose a credential.   # optional: how, in UI words
-    outcome: The form shows the filled values; Save is enabled.         # required: what becomes visible
-    persists: false                 # optional: true if the change survives navigation/deep links in the same run
-    status: works                   # works | partial | not-supported (default works)
-    scenario: admin-connectors      # optional: an existing scenario that shows it
+actions:
+  - id: edit-record
+    title: Edit a record
+    surface: records
+    entities: [record]
+    preconditions: [A record exists and the viewer can edit it.]
+    steps: Open the record, choose Edit, change its title and save.
+    outcome: The list and detail title both update.
+    persists: true
+    status: partial
+    guide: docs/records.md#editing
 
-moments:                           # good demo beats: a single screen state worth a screenshot or a clip beat
-  - id: indexing-in-progress
-    title: A connector mid-reindex with attempt history
-    surface: indexing-status
-    shows: Progress bar, attempt table with one failed and one running attempt.
-    scenario: admin-connectors      # optional
-    shot: connector-index-attempts  # optional: a shot name in that scenario
+moments:
+  - id: saved-record
+    title: Saved record
+    surface: records
+    shows: Updated title in both the list and detail panel.
+    guide: docs/records.md#editing
 
-not_supported:                     # capabilities outside this mock's scope
-  - what: Running a live external connector sync
-    why: The local fixture backend does not connect to external content services.
-    surface: admin-connectors       # optional
+not_supported:
+  - what: Publishing edits to an external service
+    why: Writes update only the local mock's in-run state.
+    surface: records
 
-snippets:                          # small, copyable step sequences (scenario-spec step vocabulary)
-  - id: open-connector-detail
-    title: Open a connector's detail page
-    action: add-connector           # optional
-    steps:                          # validated against schema/scenario.schema.json step definitions
-      - goto: /admin/indexing-status
-      - click: { text: "Confluence – OPS space" }
-      - wait: { text: Connector Configuration }
-      - shot: connector-detail
+snippets:
+  - id: open-records
+    title: Open records
+    action: edit-record
+    steps:
+      - goto: /records
+      - wait: {role: heading, name: Records}
 ```
 
-### Fields
+This example describes a hypothetical plugin, not additional implemented Onyx routes.
 
-- `surfaces[].status`
-  - `works`: renders fixture data; the listed actions behave as described.
-  - `partial`: renders, but parts are missing or known-broken (say which in `notes`).
-  - `placeholder`: reachable (direct link works, nav highlights) but the body is an honest "not captured" page.
-  - `needs-capture`: not reachable in the mock yet; listed so agents know it exists in the real product's navigation.
-- `actions[].persists`: a stateful mock keeps writes for the current run (reset at every run start). `false` means the UI
-  reacts (dialog, toast, local state) but a reload or deep link shows the fixture value again.
-- `actions[].outcome` and `moments[].shows` describe **visible** results only: texts, rows, badges, toggles.
-- `snippets[].steps` use exactly the scenario step vocabulary ([scenario-spec.md](scenario-spec.md)); they are fragments,
-  so they need not start with `goto`. Prefer selectors that already work in the plugin's scenarios.
-- IDs are kebab-case (`^[a-z0-9][a-z0-9-]*$`) and unique within their list.
+### Screens and routes
 
-## PLAYBOOK.md
+`surfaces[].routes` are **frontend navigation routes**, not API endpoints. Use the backend operating guide for API request contracts. Query strings and fragments are allowed in navigation paths.
 
-Free Markdown; these headings make the information easy for readers and clients to find:
+Screen status is one of `works`, `partial`, `placeholder`, or `needs-capture`. Use `notes` to explain incomplete behavior. Optional `edition` names a manifest edition; optional `group` describes a navigation category.
 
-1. `# <Plugin title> playbook`: one paragraph, same scope as `summary`.
-2. `## Surfaces`: table `Surface | Route | Status | What you see`.
-3. `## Entities`: the fake data, with the literal names to use.
-4. `## Actions`: per action: preconditions, outcome, persists yes/no, scenario that shows it.
-5. `## Demo moments`: one line each, with scenario/shot.
-6. `## Not supported`: what to avoid and why.
-7. `## Locales`: which locales render translated UI and any per-locale caveats.
-8. `## Snippets`: the snippets as YAML blocks.
+### Actions and persistence
 
-Keep the playbook concise: the YAML is the structured source of truth; prose can explain caveats a table cell cannot hold.
+Actions require `id`, `title`, `surface`, and `outcome`. Optional fields include `entities`, `preconditions`, `steps`, `persists`, `status`, `guide`, and `script`.
+
+`persists: true` means the change survives ordinary navigation within the supported mock lifecycle. It does not imply durable storage or persistence across a reset/restart. The operating guide must specify the actual scope.
+
+Action status is `works`, `partial`, or `not-supported`. Preconditions must state required content, permissions, edition and UI state—not merely say “run sample X.”
+
+### Guide links and optional examples
+
+`guide` is a plugin-relative Markdown file with an optional heading anchor, such as `docs/chat.md#model-selection`. Keep these links within the plugin. Heading anchors and explicit `<a id="...">` anchors are checked by validation.
+
+`script` optionally names a small example kept in `plugins/<p>/scripts/<name>.yaml`. A moment may also name a `shot` in that script. These references are optional: a feature must not require a bundled example to be documented or supported. Archived sample names belong in historical coverage provenance, not active vocabulary dependencies.
+
+### Snippets
+
+Snippet `steps` use the ordinary [script step vocabulary](script-spec.md). They need not begin with navigation, but their prerequisites must be understandable from the associated action. Prefer locators that identify controls by role, label or stable application attributes. Keep fictional names and story choices in world references or the author's own script rather than baking them into reusable instructions.
 
 ## Validation
 
-`./mockshop validate <p>` (and `--all`, or a direct path to `vocabulary.yaml`) checks, when the file exists:
+```bash
+./mockshop validate onyx
+./mockshop validate plugins/onyx/vocabulary.yaml
+```
 
-- **Schema**: `schema/vocabulary.schema.json` (unknown fields are errors, with "did you mean").
-- **Plugin**: `plugin` equals the plugin dir name.
-- **References**: every `surface`/`surfaces`/`entities`/`action` reference names a defined id; ids are unique per list.
-- **Scenarios**: every `scenario:` names an existing `plugins/<p>/scenarios/<name>.yaml`; a moment's `shot:` exists in
-  that scenario.
-- **Locales**: `locales` is a subset of `plugin.yaml` `localization.locales`; `default_locale` is in `locales`.
-- **Editions**: `edition` is a key of `plugin.yaml` `editions`.
-- **Routes**: when the plugin has a built web route table (source-build plugins), every `works`/`partial` route must
-  match it (error). Otherwise routes are checked against the `goto` paths of the plugin's scenarios: a `works`/`partial`
-  route that no scenario opens is a warning (not checked against a route table), never an error.
-- **Snippets**: every snippet step is a valid scenario step.
-- **PLAYBOOK.md**: a warning if `vocabulary.yaml` exists without `PLAYBOOK.md`.
+Validation checks:
+- Schema fields/types and unique IDs.
+- Surface/entity/action references.
+- Local guide files and heading anchors.
+- Optional bundled script/shot references.
+- Locale and edition declarations against the manifest.
+- Supported frontend routes against the built route table, when available. Without a built table, unmatched routes receive warnings rather than claims of support.
+- Snippet step shapes against the script schema.
+- Presence of `PLAYBOOK.md` beside the vocabulary.
+
+Validation cannot prove a locator works, a response shape matches the pinned frontend, or a save has the documented effect. Exercise the actual screen and inspect its state/report.
 
 ## Workflow for agents
 
-1. Read `vocabulary.yaml` (or `PLAYBOOK.md`) before reading handlers or fixtures.
-2. Pick surfaces with status `works`/`partial`, actions and moments; reuse snippets and the referenced scenarios.
-3. Avoid everything in `not_supported` and any surface with `placeholder`/`needs-capture`.
-4. When you add a scenario that shows a new action or moment, add it to the vocabulary and run `./mockshop validate <p>`.
+1. Read the plugin's `PLAYBOOK.md`, vocabulary and relevant operating-guide sections.
+2. Select a reusable world or define the required content explicitly.
+3. Write a new script using documented routes, controls and state contracts. Existing samples are optional references.
+4. Validate it, exercise it against the real frontend and inspect the visible result.
+5. Record and inspect the clip with the selected presentation profile.
+6. If implementation behavior changes, update the operating contract and focused regression coverage. Adding another story does not require extending the plugin vocabulary.

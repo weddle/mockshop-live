@@ -1,0 +1,42 @@
+# #65 route-sized native proof: Discord guild channel configuration.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-discord-channels
+title: Discord guild channel configuration - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/discord-bot/6501
+    id: goto-admin-discord-bot-6501
+  - shot: inventory-discord-guild
+    id: shot-inventory-discord-guild
+  - goto: /admin/discord-bot/6501
+    id: goto-admin-discord-bot-6501-2
+  - wait: { text: workshop-notes, exact: true }
+    id: wait-workshop-notes
+  - shot: discord-guild-channels
+    id: shot-discord-guild-channels
+  - click: { role: button, name: Disable All, exact: true }
+    id: click-disable-all
+  - shot: discord-bulk-channel-dirty
+    id: shot-discord-bulk-channel-dirty
+  - click: { role: button, name: Update Configuration, exact: true }
+    id: click-update-configuration
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/discord-bot/6501
+    id: goto-admin-discord-bot-6501-3
+  - shot: discord-bulk-channel-saved
+    id: shot-discord-bulk-channel-saved
+  - click: { role: button, name: Enable All, exact: true }
+    id: click-enable-all
+  - click: { role: button, name: Update Configuration, exact: true }
+    id: click-update-configuration-2
+  - shot: discord-bulk-channel-restored
+    id: shot-discord-bulk-channel-restored
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

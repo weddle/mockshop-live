@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mockshop.local/schema/vocabulary.schema.json",
   "title": "Mockshop plugin vocabulary",
-  "description": "plugins/<name>/vocabulary.yaml: what an agent can demo with a plugin. Spec: docs/plugin-vocabulary.md. Snippet steps are checked against scenario.schema.json#/$defs/step by core/validate.mjs.",
+  "description": "plugins/<name>/vocabulary.yaml: supported operations and operating knowledge. Spec: docs/plugin-vocabulary.md. Snippet steps are checked against script.schema.json#/$defs/step by core/validate.mjs.",
   "type": "object",
   "additionalProperties": false,
   "required": ["plugin", "version", "summary", "surfaces"],
@@ -65,7 +65,8 @@
         "outcome": { "$ref": "#/$defs/text" },
         "persists": { "type": "boolean" },
         "status": { "enum": ["works", "partial", "not-supported"] },
-        "scenario": { "type": "string" }
+        "script": { "type": "string" },
+        "guide": { "type": "string", "description": "Plugin-relative operating guide path and optional heading anchor." }
       }
     },
     "moment": {
@@ -77,7 +78,8 @@
         "title": { "$ref": "#/$defs/text" },
         "surface": { "$ref": "#/$defs/id" },
         "shows": { "$ref": "#/$defs/text" },
-        "scenario": { "type": "string" },
+        "script": { "type": "string" },
+        "guide": { "type": "string", "description": "Plugin-relative operating guide path and optional heading anchor." },
         "shot": { "type": "string" }
       }
     },

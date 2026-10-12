@@ -1,0 +1,112 @@
+# #65 route-sized native proof: Voice.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-voice
+title: Voice - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - shot: inventory-voice
+    id: shot-inventory-voice
+  - goto: /admin/image-generation
+    id: goto-admin-image-generation
+  - click: { selector: 'a[href="/admin/voice"]' }
+    id: click-a-href-admin-voice
+  - wait: { text: Speech to Text, exact: true }
+    id: wait-speech-to-text
+  - shot: voice-menu-empty
+    id: shot-voice-menu-empty
+  - goto: /admin/voice
+    id: goto-admin-voice-2
+  - click: { selector: '[aria-label="voice-stt-whisper"]' }
+    id: click-aria-label-voice-stt-whisper
+  - wait: { role: dialog }
+    id: wait
+  - shot: voice-setup-dialog
+    id: shot-voice-setup-dialog
+  - fill: { selector: '[role="dialog"] input[name="api_key"]', value: mock-only-not-a-secret }
+    id: fill-role-dialog-input-name-api-key
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/web-search
+    id: goto-admin-web-search
+  - goto: /admin/voice
+    id: goto-admin-voice-3
+  - wait: { text: Current Default, exact: true }
+    id: wait-current-default
+  - shot: voice-saved
+    id: shot-voice-saved
+  - hover: { selector: '[aria-label="voice-stt-whisper"]' }
+    id: hover-aria-label-voice-stt-whisper
+  - click: { role: button, name: Disconnect Whisper, exact: true }
+    id: click-disconnect-whisper
+  - wait: { role: dialog }
+    id: wait-2
+  - shot: voice-disconnect-confirm
+    id: shot-voice-disconnect-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+    id: click-role-dialog-button-has-text-disconnect
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - shot: voice-disconnected
+    id: shot-voice-disconnected
+  - scroll: { selector: '[aria-label="voice-tts-tts-1"]' }
+    id: scroll-aria-label-voice-tts-tts-1
+  - shot: voice-tts-native-empty
+    id: shot-voice-tts-native-empty
+  - click: { selector: '[aria-label="voice-tts-tts-1"]' }
+    id: click-aria-label-voice-tts-tts-1
+  - wait: { role: dialog }
+    id: wait-3
+  - wait: { selector: '[role="dialog"] input[name="default_voice"][value="Alloy"]' }
+    id: wait-role-dialog-input-name-default-voice-value-alloy
+  - shot: voice-tts-model-voice-form
+    id: shot-voice-tts-model-voice-form
+  - fill: { selector: '[role="dialog"] input[name="api_key"]', value: mock-only-tts-not-a-secret }
+    id: fill-role-dialog-input-name-api-key-2
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+  - wait: { selector: '[aria-label="voice-tts-tts-1"] button:has-text("Current Default")' }
+    id: wait-aria-label-voice-tts-tts-1-button-has-text-current-default
+  - shot: voice-tts-connected
+    id: shot-voice-tts-connected
+  - click: { selector: '[aria-label="voice-tts-tts-1-hd"]' }
+    id: click-aria-label-voice-tts-tts-1-hd
+  - wait: { selector: '[aria-label="voice-tts-tts-1-hd"] button:has-text("Current Default")' }
+    id: wait-aria-label-voice-tts-tts-1-hd-button-has-text-current-defau
+  - shot: voice-tts-hd-default
+    id: shot-voice-tts-hd-default
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/voice
+    id: goto-admin-voice-4
+  - scroll: { selector: '[aria-label="voice-tts-tts-1-hd"]' }
+    id: scroll-aria-label-voice-tts-tts-1-hd
+  - wait: { selector: '[aria-label="voice-tts-tts-1-hd"] button:has-text("Current Default")' }
+    id: wait-aria-label-voice-tts-tts-1-hd-button-has-text-current-defau-2
+  - shot: voice-tts-navigation-readback
+    id: shot-voice-tts-navigation-readback
+  - hover: { selector: '[aria-label="voice-tts-tts-1-hd"]' }
+    id: hover-aria-label-voice-tts-tts-1-hd
+  - click: { role: button, name: Disconnect TTS-1 HD, exact: true }
+    id: click-disconnect-tts-1-hd
+  - wait: { role: dialog }
+    id: wait-4
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+    id: click-role-dialog-button-has-text-disconnect-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-4
+  - shot: voice-tts-disconnected
+    id: shot-voice-tts-disconnected
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

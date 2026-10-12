@@ -1,0 +1,46 @@
+# #65 route-sized native proof: Export Logs aliases and receipt.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-export-logs
+title: Export Logs aliases and receipt - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/export-logs
+    id: goto-admin-export-logs
+  - shot: inventory-export-logs-alias
+    id: shot-inventory-export-logs-alias
+  - goto: /ee/admin/export-logs
+    id: goto-ee-admin-export-logs
+  - shot: inventory-export-logs-ee
+    id: shot-inventory-export-logs-ee
+  - goto: /admin/export-logs
+    id: goto-admin-export-logs-2
+  - shot: export-logs-menu-route
+    id: shot-export-logs-menu-route
+  - click: { selector: 'a[href="/admin/export-logs"]' }
+    id: click-a-href-admin-export-logs
+  - shot: export-logs-sidebar
+    id: shot-export-logs-sidebar
+  - goto: /ee/admin/export-logs
+    id: goto-ee-admin-export-logs-2
+  - shot: export-logs-ee-direct
+    id: shot-export-logs-ee-direct
+  - click: { role: button, name: Export Logs, exact: true }
+    id: click-export-logs
+  - wait: { text: no log files found, exact: true }
+    id: wait-no-log-files-found
+  - shot: export-logs-empty-receipt
+    id: shot-export-logs-empty-receipt
+  - goto: /ee/admin/export-logs?export=00000000000000000000000000000001
+    id: goto-ee-admin-export-logs-export-0000000000000000000000000000000
+  - wait: { text: no log files found, exact: true }
+    id: wait-no-log-files-found-2
+  - shot: export-logs-receipt-navigation
+    id: shot-export-logs-receipt-navigation
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

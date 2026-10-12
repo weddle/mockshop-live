@@ -1,0 +1,22 @@
+# #65 route-sized native proof: Federated detail.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-federated-detail
+title: Federated detail - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/federated/6501
+    id: goto-admin-federated-6501
+  - shot: inventory-federated-detail
+    id: shot-inventory-federated-detail
+  - goto: /admin/federated/6501
+    id: goto-admin-federated-6501-2
+  - shot: federated-detail-fake
+    id: shot-federated-detail-fake
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

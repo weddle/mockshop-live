@@ -1,0 +1,82 @@
+# End user: Recents / history (#24). Open a historic chat (fixtures/base/history/<id>.yaml) -> follow-up inside it ->
+# rename another chat from its menu -> delete a third -> Search Chats finds the renamed one -> reload: all of it persists.
+name: user-recents
+title: Recents - open, follow up, rename, delete, search
+steps:
+  - goto: /app
+    id: goto-app
+  - click: { testid: ChatButton, has_text: "Late checkout policy" }
+    id: click
+  - wait: { text: "front desk confirms", timeout: 30000 }
+    id: wait-front-desk-confirms
+  - settle: 1000
+    id: settle
+  - shot: opened-history
+    id: shot-opened-history
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox
+  - type: { selector: "#onyx-chat-input-textbox", value: "Follow-up: summarize that in one sentence" }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: "Follow-up to your first question", timeout: 30000 }
+    id: wait-follow-up-to-your-first-question
+  - settle: 1200
+    id: settle-2
+  - shot: follow-up-in-history
+    id: shot-follow-up-in-history
+  - hover: { testid: ChatButton, has_text: "Key West hurricane" }
+    id: hover
+  - click: { selector: "[data-testid=ChatButton]:has-text('Key West hurricane') button[aria-label='Chat options']" }
+    id: click-data-testid-chatbutton-has-text-key-west-hurricane-button-
+  - settle: 400
+    id: settle-3
+  - shot: chat-menu
+    id: shot-chat-menu
+  - click: { role: menuitem, name: Rename }
+    id: click-rename
+  - press: Control+A
+    id: press-control-a
+  - type: { selector: "input:focus", value: "Storm prep checklist" }
+    id: type-input-focus
+  - press: Enter
+    id: press-enter
+  - settle: 800
+    id: settle-4
+  - shot: renamed
+    id: shot-renamed
+  - hover: { testid: ChatButton, has_text: "Opera PMS sync" }
+    id: hover-2
+  - click: { selector: "[data-testid=ChatButton]:has-text('Opera PMS sync') button[aria-label='Chat options']" }
+    id: click-data-testid-chatbutton-has-text-opera-pms-sync-button-aria
+  - click: { role: menuitem, name: Delete }
+    id: click-delete
+  - settle: 400
+    id: settle-5
+  - shot: delete-confirm
+    id: shot-delete-confirm
+  - click: { role: button, name: Delete, last: true }
+    id: click-delete-2
+  - settle: 800
+    id: settle-6
+  - shot: deleted
+    id: shot-deleted
+  - click: { text: Search Chats }
+    id: click-search-chats
+  - settle: 400
+    id: settle-7
+  - type: { selector: "input:focus", value: "storm" }
+    id: type-input-focus-2
+  - settle: 1000
+    id: settle-8
+  - shot: search-chats
+    id: shot-search-chats
+  - press: Escape
+    id: press-escape
+  - goto: /app
+    id: goto-app-2
+  - settle: 1000
+    id: settle-9
+  - shot: after-reload
+    id: shot-after-reload
+world: ../../../worlds/seaside/world.yaml

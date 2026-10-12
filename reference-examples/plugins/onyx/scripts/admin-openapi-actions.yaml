@@ -1,0 +1,64 @@
+# #65 route-sized native proof: OpenAPI Actions.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-openapi-actions
+title: OpenAPI Actions - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/openapi-actions
+    id: goto-admin-openapi-actions
+  - shot: inventory-openapi-actions
+    id: shot-inventory-openapi-actions
+  - goto: /admin/craft/preferences
+    id: goto-admin-craft-preferences
+  - click: { selector: 'a[href="/admin/openapi-actions"]' }
+    id: click-a-href-admin-openapi-actions
+  - shot: openapi-actions-menu-empty
+    id: shot-openapi-actions-menu-empty
+  - goto: /admin/openapi-actions
+    id: goto-admin-openapi-actions-2
+  - shot: openapi-actions-direct
+    id: shot-openapi-actions-direct
+  - click: { role: button, name: Add OpenAPI Action, exact: true }
+    id: click-add-openapi-action
+  - wait: { role: dialog }
+    id: wait
+  - fill:
+      selector: 'textarea[name="definition"]'
+      value: '{"openapi":"3.0.0","info":{"title":"Workshop reference (fake)","version":"1.0.0","description":"Fictional educational reference; no API calls."},"servers":[{"url":"https://workshop.example.invalid"}],"paths":{"/notes":{"get":{"operationId":"workshop_notes","summary":"Read fictional workshop notes","responses":{"200":{"description":"Educational notes"}}}}}}'
+    id: fill-textarea-name-definition
+  - shot: openapi-actions-add-dialog
+    id: shot-openapi-actions-add-dialog
+  - click: { selector: '[role="dialog"] button:has-text("Add Action")' }
+    id: click-role-dialog-button-has-text-add-action
+  - wait: { selector: '[role="dialog"] input[name="authorizationUrl"]' }
+    id: wait-role-dialog-input-name-authorizationurl
+  - fill: { selector: 'input[name="authorizationUrl"]', value: 'https://workshop.example.invalid/authorize' }
+    id: fill-input-name-authorizationurl
+  - fill: { selector: 'input[name="tokenUrl"]', value: 'https://workshop.example.invalid/token' }
+    id: fill-input-name-tokenurl
+  - fill: { selector: 'input[name="clientId"]', value: mock-only-client }
+    id: fill-input-name-clientid
+  - fill: { selector: 'input[name="clientSecret"]', value: mock-only-not-a-secret }
+    id: fill-input-name-clientsecret
+  - shot: openapi-actions-local-auth-dialog
+    id: shot-openapi-actions-local-auth-dialog
+  - click: { selector: '[role="dialog"] button:has-text("Connect")' }
+    id: click-role-dialog-button-has-text-connect
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/openapi-actions
+    id: goto-admin-openapi-actions-3
+  - wait: { text: Workshop reference (fake), exact: true }
+    id: wait-workshop-reference-fake
+  - shot: openapi-actions-saved
+    id: shot-openapi-actions-saved
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -2,6 +2,7 @@ node_modules/
 .toolchains/
 plugins/*/work/
 plugins/*/runtime/
+plugins/*/fixtures/.built/
 out/
 logs/
 .preserved/

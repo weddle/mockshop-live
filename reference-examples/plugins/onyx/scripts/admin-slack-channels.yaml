@@ -1,0 +1,56 @@
+# #65 route-sized native proof: Slack channel create/edit lifecycle.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-slack-channels
+title: Slack channel create/edit lifecycle - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/bots/6501/channels/new
+    id: goto-admin-bots-6501-channels-new
+  - shot: inventory-slack-channel-new
+    id: shot-inventory-slack-channel-new
+  - goto: /admin/bots/6501/channels/6501
+    id: goto-admin-bots-6501-channels-6501
+  - shot: inventory-slack-channel-edit
+    id: shot-inventory-slack-channel-edit
+  - goto: /admin/bots/6501/channels/new
+    id: goto-admin-bots-6501-channels-new-2
+  - shot: slack-channel-new-form
+    id: shot-slack-channel-new-form
+  - fill: { selector: 'input[name="channel_name"]', value: learning-practice }
+    id: fill-input-name-channel-name
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - goto: /admin/bots/6501
+    id: goto-admin-bots-6501
+  - wait: { text: '#learning-practice', exact: true }
+    id: wait-learning-practice
+  - shot: slack-channel-created
+    id: shot-slack-channel-created
+  - click: { selector: 'tr:has-text("learning-practice") button', nth: 0 }
+    id: click-tr-has-text-learning-practice-button
+  - wait_gone: { text: '#learning-practice', exact: true }
+    id: wait-gone-learning-practice
+  - shot: slack-channel-deleted
+    id: shot-slack-channel-deleted
+  - goto: /admin/bots/6501/channels/6501
+    id: goto-admin-bots-6501-channels-6501-2
+  - shot: slack-channel-edit-form
+    id: shot-slack-channel-edit-form
+  - fill: { selector: 'input[name="channel_name"]', value: learning-accessibility }
+    id: fill-input-name-channel-name-2
+  - click: { role: button, name: Update, exact: true }
+    id: click-update
+  - goto: /admin/bots/6501
+    id: goto-admin-bots-6501-2
+  - wait: { text: '#learning-accessibility', exact: true }
+    id: wait-learning-accessibility
+  - shot: slack-channel-saved
+    id: shot-slack-channel-saved
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

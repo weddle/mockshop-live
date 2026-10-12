@@ -1,0 +1,4 @@
+includes:
+  - ../seaside/world.yaml
+  - ../onyx-overrides/demo-auth-anonymous.yaml
+  - ../onyx-overrides/demo-community-user-route-shell.yaml

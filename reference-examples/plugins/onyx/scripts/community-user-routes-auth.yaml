@@ -1,0 +1,351 @@
+# #34 true-Community per-user-route witness. EDITONLY authored; UNEXECUTED/UNACCEPTED.
+# Parent owns matching physical CE artifact selection, schema validation and complete strict native/image proof.
+# Independent native runner prelude resets unit overlays/clock/locale. Keep uses existing state DSL;
+# fresh tails use existing /api/__mockshop/state keep:false plus native full navigation.
+# No continue_on_error, fixed-settle-only success, private React, clips or acceptance/closure claim.
+# Original route rows20-28: all nine intended native Auth entrypoints.
+# Parent must select genuinely compiled CE artifact: paidEE=false, Cloud=false, existingForgot=true.
+# Fictional local signup/reset/verification/member consumers only; no real credential/provider/session claim.
+# Exact required logged-out /me401 diagnostics only, with positive native UI/status/cookie assertions.
+name: community-user-routes-auth
+title: True Community local auth forms, required Forgot flag, verification and reset tails
+requires: community
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 1000
+known_errors:
+  - match: /^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/
+    reason: Required source-native logged-out /me; sole fake stage clears cookie and unit positively asserts 401/login UI. No unrelated endpoint/status is allowed.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?\]$/'
+    reason: Exact same required logged-out /me diagnostic, paired with positive native logged-out boundary.
+  - match: /^http 404 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/enterprise-settings$/
+    reason: Source settings/hooks.ts70-90 probes branding on auth paths even in compiled CE; 404 is native absent enterprise settings (37-39,116-120), not an outage. Initial native Onyx login shot positively asserts default branding, exact404 DTO and protected Community flags. No other URI/status is allowed.
+  - match: '/^console: Failed to load resource: the server responded with a status of 404 \(Not Found\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/enterprise-settings\]$/'
+    reason: Exact resource diagnostic of the same source-native CE branding absence; paired with the default Onyx login,404 DTO and unchanged Community flags assertion.
+steps:
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: '(async()=>{const r=await fetch(''/api/mockshop/auth-anonymous/stage'',{method:''POST'',headers:{''Content-Type'':''application/json''},body:JSON.stringify({"mode": "logged-out"})}); if(!r.ok) throw new Error(''Existing sole fake Auth stage failed'');const me=await fetch(''/api/me''); if(me.status!==401||document.cookie.includes(''fastapiusersauth='')) throw new Error(''Required fake logged-out cookie/401 boundary missing'');})()'
+    id: eval-script
+  - goto: /auth/login
+    id: goto-auth-login-2
+  - wait:
+      testid: email
+    id: wait
+  - eval: |
+      (async()=>{
+        const r=await fetch('/api/settings');
+        if(!r.ok) throw new Error('Community settings prerequisite missing');
+        const v=await r.json();
+        if(v.tier!=='community'||v.ee_features_enabled!==false||v.application_status!=='active') throw new Error('Not a Community fixture/licensing state');
+        const branding=await fetch('/api/enterprise-settings');
+        if(branding.status!==404||(await branding.json()).detail!=='Not Found'||!document.body.innerText.includes('Welcome to Onyx')) throw new Error('Native CE absent-branding/default Onyx login boundary missing');
+        const analytics=await fetch('/api/enterprise-settings/custom-analytics-script');
+        if(!analytics.ok||await analytics.json()!==null) throw new Error('Native empty analytics configuration prerequisite missing');
+      })()
+    id: eval-script-2
+  - wait:
+      selector: button[type="submit"]:disabled
+    id: wait-button-type-submit-disabled
+  - shot:
+      name: ce-auth-login-native-empty
+      full_page: true
+    id: shot-ce-auth-login-native-empty
+  - goto: /auth/signup
+    id: goto-auth-signup
+  - wait:
+      testid: email
+    id: wait-2
+  - wait:
+      role: button
+      name: Create Account
+      exact: true
+    id: wait-create-account
+  - shot:
+      name: ce-auth-signup-direct
+      full_page: true
+    id: shot-ce-auth-signup-direct
+  - goto: /auth/join
+    id: goto-auth-join
+  - wait:
+      text: Re-authenticate to join team
+      exact: true
+    id: wait-re-authenticate-to-join-team
+  - wait:
+      testid: email
+    id: wait-3
+  - shot:
+      name: ce-auth-join-direct
+      full_page: true
+    id: shot-ce-auth-join-direct
+  - goto: /auth/create-account
+    id: goto-auth-create-account
+  - wait:
+      text: Account Not Found
+      exact: true
+    id: wait-account-not-found
+  - shot:
+      name: ce-auth-create-account
+      full_page: true
+    id: shot-ce-auth-create-account
+  - click:
+      role: link
+      name: Sign in
+      exact: true
+    id: click-sign-in
+  - wait:
+      testid: email
+    id: wait-4
+  - goto: /auth/error
+    id: goto-auth-error
+  - wait:
+      text: Authentication Error
+      exact: true
+    id: wait-authentication-error
+  - wait:
+      text: 'Possible Issues:'
+      exact: true
+    id: wait-possible-issues
+  - shot:
+      name: ce-auth-error-native-default
+      full_page: true
+    id: shot-ce-auth-error-native-default
+  - click:
+      role: link
+      name: Return to Login Page
+      exact: true
+    id: click-return-to-login-page
+  - wait:
+      testid: email
+    id: wait-5
+  # Source EmailPasswordForm461-468 shows Forgot only after a valid nonempty email.
+  - fill:
+      testid: email
+      value: "{{people.alex-learner.email}}"
+    id: fill
+  - click:
+      role: link
+      name: Forgot password?
+      exact: true
+    id: click-forgot-password
+  - wait:
+      text: Forgot Password
+      exact: true
+    id: wait-forgot-password
+  - shot:
+      name: ce-auth-forgot-native-link
+      full_page: true
+    id: shot-ce-auth-forgot-native-link
+  - goto: /auth/forgot-password
+    id: goto-auth-forgot-password
+  - wait:
+      selector: input[name="email"]
+    id: wait-input-name-email
+  - fill:
+      selector: input[name="email"]
+      value: "{{people.alex-learner.email}}"
+    id: fill-input-name-email
+  - click:
+      role: button
+      name: Reset Password
+      exact: true
+    id: click-reset-password
+  - wait:
+      text: Password reset email sent. Please check your inbox.
+    id: wait-password-reset-email-sent-please-check-your-inbox
+  - shot:
+      name: ce-auth-forgot-native-fake-mailbox-issued
+      full_page: true
+    id: shot-ce-auth-forgot-native-fake-mailbox-issued
+  - goto: /auth/reset-password
+    id: goto-auth-reset-password
+  - wait:
+      selector: input[name="password"]
+    id: wait-input-name-password
+  - shot:
+      name: ce-auth-reset-direct-native-form
+      full_page: true
+    id: shot-ce-auth-reset-direct-native-form
+  - click:
+      role: button
+      name: Reset Password
+      exact: true
+    id: click-reset-password-2
+  - wait:
+      text: Password is required
+      exact: true
+    id: wait-password-is-required
+  - wait:
+      text: Confirm Password is required
+      exact: true
+    id: wait-confirm-password-is-required
+  - shot:
+      name: ce-auth-reset-native-required-guard
+      full_page: true
+    id: shot-ce-auth-reset-native-required-guard
+  - eval: location.assign('/api/mockshop/auth-anonymous/email-link/reset')
+    id: eval-script-3
+  - wait:
+      selector: input[name="password"]
+    id: wait-input-name-password-2
+  - fill:
+      selector: input[name="password"]
+      value: MockOnly-Workshop1!
+    id: fill-input-name-password
+  - fill:
+      selector: input[name="confirmPassword"]
+      value: MockOnly-Workshop1!
+    id: fill-input-name-confirmpassword
+  - click:
+      role: button
+      name: Reset Password
+      exact: true
+    id: click-reset-password-3
+  - wait:
+      testid: email
+    id: wait-6
+  - eval: (async()=>{const b=await (await fetch('/api/mockshop/auth-anonymous/messages')).json(); if(!b.simulated||!b.reset_complete||!b.messages.some(m=>m.kind==='reset')) throw new Error('Native Community Forgot/Reset did not persist the sole fake mailbox/result');})()
+    id: eval-script-4
+  - shot:
+      name: ce-auth-reset-native-success-login
+      full_page: true
+    id: shot-ce-auth-reset-native-success-login
+  - goto: /auth/signup?email=robin.guest%40workshop.example
+    id: goto-auth-signup-email-robin-guest-40workshop-example
+  - wait:
+      testid: email
+    id: wait-7
+  - fill:
+      testid: password
+      value: MockOnly-Workshop1!
+    id: fill-2
+  - click:
+      role: button
+      name: Create Account
+      exact: true
+    id: click-create-account
+  - wait:
+      text: it looks like you haven't verified your email yet.
+      exact: false
+    id: wait-it-looks-like-you-haven-t-verified-your-email-yet
+  - shot:
+      name: ce-auth-signup-native-unverified-return
+      full_page: true
+    id: shot-ce-auth-signup-native-unverified-return
+  - goto: /auth/waiting-on-verification
+    id: goto-auth-waiting-on-verification
+  - wait:
+      role: button
+      name: here
+      exact: true
+    id: wait-here
+  - shot:
+      name: ce-auth-waiting-direct-unverified
+      full_page: true
+    id: shot-ce-auth-waiting-direct-unverified
+  - click:
+      role: button
+      name: here
+      exact: true
+    id: click-here
+  - wait:
+      text: A new verification email has been sent!
+    id: wait-a-new-verification-email-has-been-sent
+  - shot:
+      name: ce-auth-waiting-native-resend
+      full_page: true
+    id: shot-ce-auth-waiting-native-resend
+  - goto: /auth/verify-email
+    id: goto-auth-verify-email
+  - wait:
+      text: Missing verification token. Try requesting a new verification email.
+    id: wait-missing-verification-token-try-requesting-a-new-verificatio
+  - shot:
+      name: ce-auth-verify-direct-token-guard
+      full_page: true
+    id: shot-ce-auth-verify-direct-token-guard
+  - eval: location.assign('/api/mockshop/auth-anonymous/email-link/verify')
+    id: eval-script-5
+  - wait:
+      text: Your email has been verified! Please sign in to continue.
+    id: wait-your-email-has-been-verified-please-sign-in-to-continue
+  - eval: (async()=>{const b=await (await fetch('/api/mockshop/auth-anonymous/messages')).json(); if(!b.verified||b.mode!=='logged-out'||(await fetch('/api/me')).status!==401) throw new Error('Native fake verification did not persist/clear unverified session');})()
+    id: eval-script-6
+  - shot:
+      name: ce-auth-verify-native-success-login
+      full_page: true
+    id: shot-ce-auth-verify-native-success-login
+  - fill:
+      testid: email
+      value: "{{people.alex-learner.email}}"
+    id: fill-3
+  - fill:
+      testid: password
+      value: MockOnly-Workshop1!
+    id: fill-4
+  - click:
+      role: button
+      name: Sign In
+      exact: true
+    id: click-sign-in-2
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox
+  - eval: (async()=>{const m=await (await fetch('/api/me')).json(); if(m.email!=='{{people.alex-learner.email}}'||!m.is_verified||m.role!=='basic') throw new Error('Native Community sign-in did not enter sole fake member');})()
+    id: eval-script-7
+  - shot:
+      name: ce-auth-login-native-member-return
+      full_page: true
+    id: shot-ce-auth-login-native-member-return
+  - goto: /auth/login
+    id: goto-auth-login-3
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox-2
+  - eval: if(location.pathname!=="/app") throw new Error('Native route/guard reached the wrong canonical URL');
+    id: eval-script-8
+  - shot:
+      name: ce-auth-login-verified-member-guard
+      full_page: true
+    id: shot-ce-auth-login-verified-member-guard
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous--demo-community-user-route-shell.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login-4
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox-3
+  - shot:
+      name: ce-auth-dirty-member-kept
+      full_page: true
+    id: shot-ce-auth-dirty-member-kept
+  - id: eval-script-9-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous--demo-community-user-route-shell.yaml
+      overlays: []
+  - eval: (async()=>{const current=await (await fetch('/api/__mockshop/state')).json(); const response=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})}); if(!response.ok) throw new Error('Independent Community dirty-state reset failed');})()
+    id: eval-script-9
+  - goto: /auth/login
+    id: goto-auth-login-5
+  - eval: '(async()=>{const r=await fetch(''/api/mockshop/auth-anonymous/stage'',{method:''POST'',headers:{''Content-Type'':''application/json''},body:JSON.stringify({"mode": "logged-out"})}); if(!r.ok) throw new Error(''Existing sole fake Auth stage failed'');const me=await fetch(''/api/me''); if(me.status!==401||document.cookie.includes(''fastapiusersauth='')) throw new Error(''Required fake logged-out cookie/401 boundary missing'');})()'
+    id: eval-script-10
+  - goto: /auth/login
+    id: goto-auth-login-6
+  - wait:
+      testid: email
+    id: wait-8
+  - eval: (async()=>{const b=await (await fetch('/api/mockshop/auth-anonymous/messages')).json(); if(b.messages.length||b.reset_complete||b.verified||b.mode!=='logged-out') throw new Error('Fresh Community fake auth reset retained mailbox/reset/verification/member state');})()
+    id: eval-script-11
+  - shot:
+      name: ce-auth-fresh-original-logged-out-state
+      full_page: true
+    id: shot-ce-auth-fresh-original-logged-out-state
+demo_anchor: '2026-10-09T10:00:00-04:00'
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml
+    - ../../../worlds/onyx-overrides/demo-community-user-route-shell.yaml

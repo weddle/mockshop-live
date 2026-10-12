@@ -1,0 +1,6 @@
+apps:
+  onyx:
+    fixtures:
+      GET /chat/get-user-chat-sessions:
+        sessions: []
+        has_more: false

@@ -1,0 +1,122 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-side-panel
+title: Independent native side-panel waiting, untrusted message, stop, answer error, recovery and reset
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  - goto: /nrf/side-panel
+    id: goto-nrf-side-panel
+  - wait: { text: Read this tab, exact: true }
+    id: wait-read-this-tab
+  - eval: |
+      if (document.querySelector('.absolute.top-0.end-0.p-4 button')) throw new Error('Side panel wrongly exposes new-tab Settings panel');
+    id: eval-script
+  - shot: { name: nrf-side-panel-direct-empty, full_page: true }
+    id: shot-nrf-side-panel-direct-empty
+  - click: { role: button, name: Read this tab, exact: true }
+    id: click-read-this-tab
+  - wait: { text: Reading tab..., exact: true }
+    id: wait-reading-tab
+  # A REAL HTTP-origin postMessage must NOT pass the extension trust guard.
+  - eval: window.postMessage({type:'TAB_URL_UPDATED',url:'https://campus.example/learning/accessible-workshop'}, location.origin)
+    id: eval-script-2
+  - wait: 300
+    id: wait
+  - eval: |
+      if (document.body.textContent.includes('campus.example')) throw new Error('HTTP-origin message crossed the trusted-parent boundary');
+    id: eval-script-3
+  - shot: { name: nrf-side-panel-untrusted-url-rejected, full_page: true }
+    id: shot-nrf-side-panel-untrusted-url-rejected
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'extension: outline the selected fictional tab' }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: No tab context was supplied. }
+    id: wait-no-tab-context-was-supplied
+  - settle: 1200
+    id: settle
+  - shot: { name: nrf-side-panel-waiting-context-answer, full_page: true }
+    id: shot-nrf-side-panel-waiting-context-answer
+  - click: { role: button, name: Reading tab..., exact: true }
+    id: click-reading-tab
+  - wait: { text: Read this tab, exact: true }
+    id: wait-read-this-tab-2
+  - shot: { name: nrf-side-panel-tab-reading-disabled, full_page: true }
+    id: shot-nrf-side-panel-tab-reading-disabled
+  - click: { selector: 'header .flex.items-center.gap-1 button', nth: 0 }
+    id: click-header-flex-items-center-gap-1-button
+  - wait_gone: { testid: 'AgentMessage/toolbar' }
+    id: wait-gone
+  - wait: { text: Read this tab, exact: true }
+    id: wait-read-this-tab-3
+  - shot: { name: nrf-side-panel-new-chat-reset, full_page: true }
+    id: shot-nrf-side-panel-new-chat-reset
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'extension: stream a fictional workshop outline' }
+    id: fill-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button', settle: 0 }
+    id: click-onyx-chat-input-send-button-2
+  - wait: 700
+    id: wait-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-3
+  - settle: 500
+    id: settle-2
+  - shot: { name: nrf-side-panel-stream-stopped, full_page: true }
+    id: shot-nrf-side-panel-stream-stopped
+  - click: { selector: 'header .flex.items-center.gap-1 button', nth: 0 }
+    id: click-header-flex-items-center-gap-1-button-2
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/mockshop/browser-extension/outcome', {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({fail:true})});
+        if (!response.ok) throw new Error('Missing #71 error staging callback');
+      })()
+    id: eval-script-4
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'extension: show the fictional answer error' }
+    id: fill-onyx-chat-input-textbox-3
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-4
+  - wait: { text: Fictional extension answer is temporarily unavailable. Try again. }
+    id: wait-fictional-extension-answer-is-temporarily-unavailable-try-a
+  - shot: { name: nrf-side-panel-answer-error, full_page: true }
+    id: shot-nrf-side-panel-answer-error
+  - click: { role: button, name: Stack trace, exact: true }
+    id: click-stack-trace
+  - wait: { text: 'Mockshop fixture65: deliberate local answer failure; no provider request.' }
+    id: wait-mockshop-fixture65-deliberate-local-answer-failure-no-provi
+  - shot: { name: nrf-side-panel-error-details, full_page: true }
+    id: shot-nrf-side-panel-error-details
+  - click: { role: button, name: Regenerate, exact: true }
+    id: click-regenerate
+  - wait: { text: No tab context was supplied. }
+    id: wait-no-tab-context-was-supplied-2
+  - settle: 1200
+    id: settle-3
+  - shot: { name: nrf-side-panel-error-recovered, full_page: true }
+    id: shot-nrf-side-panel-error-recovered
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const update = await fetch('/api/mockshop/browser-extension/context', {method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({active_tab:'healthcare',tabs:{healthcare:{title:'Edited fictional health learning title',content:'Editable fictional healthcare learning outline.'}}})});
+        if (!update.ok) throw new Error('Fictional fixture context setup failed');
+        const reset = await fetch('/api/__mockshop/state', {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,resetChats:true})});
+        if (!reset.ok) throw new Error('Fictional context and conversation reset failed');
+        localStorage.removeItem('useOnyxAsDefaultNewTab');
+      })()
+    id: eval-script-5
+  - goto: /nrf/side-panel
+    id: goto-nrf-side-panel-2
+  - wait: { text: Read this tab, exact: true }
+    id: wait-read-this-tab-4
+  - shot: { name: nrf-side-panel-fresh-reset, full_page: true }
+    id: shot-nrf-side-panel-fresh-reset
+  - wait_gone: { testid: 'AgentMessage/toolbar' }
+    id: wait-gone-2
+world: ../../../worlds/seaside/world.yaml

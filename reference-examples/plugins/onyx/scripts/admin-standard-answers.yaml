@@ -1,0 +1,102 @@
+# #65 route-sized native proof: Standard Answer list/create/edit aliases.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-standard-answers
+title: Standard Answer list/create/edit aliases - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/standard-answer
+    id: goto-admin-standard-answer
+  - shot: inventory-standard-answer-alias
+    id: shot-inventory-standard-answer-alias
+  - goto: /ee/admin/standard-answer
+    id: goto-ee-admin-standard-answer
+  - shot: inventory-standard-answer-ee
+    id: shot-inventory-standard-answer-ee
+  - goto: /admin/standard-answer/new
+    id: goto-admin-standard-answer-new
+  - shot: inventory-standard-answer-new-alias
+    id: shot-inventory-standard-answer-new-alias
+  - goto: /ee/admin/standard-answer/new
+    id: goto-ee-admin-standard-answer-new
+  - shot: inventory-standard-answer-new-ee
+    id: shot-inventory-standard-answer-new-ee
+  - goto: /admin/standard-answer/6501
+    id: goto-admin-standard-answer-6501
+  - shot: inventory-standard-answer-edit-alias
+    id: shot-inventory-standard-answer-edit-alias
+  - goto: /ee/admin/standard-answer/6501
+    id: goto-ee-admin-standard-answer-6501
+  - shot: inventory-standard-answer-edit-ee
+    id: shot-inventory-standard-answer-edit-ee
+  - goto: /admin/standard-answer
+    id: goto-admin-standard-answer-2
+  - wait: { text: workshop-hours, exact: true }
+    id: wait-workshop-hours
+  - shot: standard-answer-alias
+    id: shot-standard-answer-alias
+  - goto: /ee/admin/standard-answer
+    id: goto-ee-admin-standard-answer-2
+  - shot: standard-answer-list-ee
+    id: shot-standard-answer-list-ee
+  - goto: /admin/standard-answer/new
+    id: goto-admin-standard-answer-new-2
+  - shot: standard-answer-new-alias
+    id: shot-standard-answer-new-alias
+  - goto: /ee/admin/standard-answer/new
+    id: goto-ee-admin-standard-answer-new-2
+  - shot: standard-answer-new-ee
+    id: shot-standard-answer-new-ee
+  - fill: { selector: 'input[name="keyword"]', value: workshop-checklist }
+    id: fill-input-name-keyword
+  - fill: { selector: 'textarea[name="answer"]', value: Prepare fictional accessible notes and a quiet workspace. }
+    id: fill-textarea-name-answer
+  - fill: { placeholder: 'Type a category and press Enter…', value: Learning operations }
+    id: fill
+  - press: Enter
+    id: press-enter
+  - shot: standard-answer-create-filled
+    id: shot-standard-answer-create-filled
+  - click: { role: button, name: Create!, exact: true }
+    id: click-create
+  - wait: { text: workshop-checklist, exact: true }
+    id: wait-workshop-checklist
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/standard-answer
+    id: goto-admin-standard-answer-3
+  - wait: { text: workshop-checklist, exact: true }
+    id: wait-workshop-checklist-2
+  - shot: standard-answer-created
+    id: shot-standard-answer-created
+  - click: { selector: 'tr:has-text("workshop-checklist") button' }
+    id: click-tr-has-text-workshop-checklist-button
+  - wait_gone: { text: workshop-checklist, exact: true }
+    id: wait-gone-workshop-checklist
+  - shot: standard-answer-deleted
+    id: shot-standard-answer-deleted
+  - goto: /admin/standard-answer/6501
+    id: goto-admin-standard-answer-6501-2
+  - shot: standard-answer-edit-alias
+    id: shot-standard-answer-edit-alias
+  - goto: /ee/admin/standard-answer/6501
+    id: goto-ee-admin-standard-answer-6501-2
+  - fill: { selector: 'textarea[name="answer"]', value: The fictional workshop is open from 10:00 to 16:00. }
+    id: fill-textarea-name-answer-2
+  - shot: standard-answer-edit-ee
+    id: shot-standard-answer-edit-ee
+  - click: { role: button, name: Update!, exact: true }
+    id: click-update
+  - goto: /admin/standard-answer
+    id: goto-admin-standard-answer-4
+  - wait: { text: The fictional workshop is open from 10:00 to 16:00., exact: true }
+    id: wait-the-fictional-workshop-is-open-from-10-00-to-16-00
+  - shot: standard-answer-saved
+    id: shot-standard-answer-saved
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

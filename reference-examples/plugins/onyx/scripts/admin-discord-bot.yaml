@@ -1,0 +1,60 @@
+# #65 route-sized native proof: Discord pending guild registration.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-discord-bot
+title: Discord pending guild registration - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/discord-bot
+    id: goto-admin-discord-bot
+  - shot: inventory-discord-bot
+    id: shot-inventory-discord-bot
+  - goto: /admin/bots/6501
+    id: goto-admin-bots-6501
+  - click: { selector: 'a[href="/admin/discord-bot"]' }
+    id: click-a-href-admin-discord-bot
+  - wait: { text: Learning Workshop (fake guild), exact: true }
+    id: wait-learning-workshop-fake-guild
+  - shot: discord-menu
+    id: shot-discord-menu
+  - goto: /admin/discord-bot
+    id: goto-admin-discord-bot-2
+  - shot: discord-direct
+    id: shot-discord-direct
+  - click: { role: button, name: Add Server, exact: true }
+    id: click-add-server
+  - wait: { role: dialog }
+    id: wait
+  - shot: discord-register-key-dialog
+    id: shot-discord-register-key-dialog
+  - press: Escape
+    id: press-escape
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/discord-bot
+    id: goto-admin-discord-bot-3
+  - wait: { text: 'Server #6502', exact: true }
+    id: wait-server-6502
+  - shot: discord-pending-registration
+    id: shot-discord-pending-registration
+  - click: { selector: 'tr:has-text("Server #6502") button:not(:disabled)' }
+    id: click-tr-has-text-server-6502-button-not-disabled
+  - wait: { role: dialog }
+    id: wait-2
+  - shot: discord-remove-guild-confirm
+    id: shot-discord-remove-guild-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+    id: click-role-dialog-button-has-text-delete
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - wait_gone: { text: 'Server #6502', exact: true }
+    id: wait-gone-server-6502
+  - shot: discord-pending-guild-removed
+    id: shot-discord-pending-guild-removed
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

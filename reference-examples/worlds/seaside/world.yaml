@@ -1,0 +1,528 @@
+includes:
+  - onyx.yaml
+company:
+  name: Seaside Collection
+  domain: seasidecollection.example
+  description: Boutique coastal hotels & resorts (fictional demo company)
+people:
+  maya:
+    name: Maya Chen
+    email: maya.chen@{{company.domain}}
+    title: Director of Learning & Development
+  devon:
+    name: Devon Ortiz
+    email: devon.ortiz@{{company.domain}}
+  priya:
+    name: Priya Raman
+    email: priya.raman@{{company.domain}}
+  lena:
+    name: Lena Brooks
+    email: lena.brooks@{{company.domain}}
+  marco:
+    name: Marco Silva
+    email: marco.silva@{{company.domain}}
+  sam:
+    name: Sam Okafor
+    email: sam.okafor@{{company.domain}}
+  noa:
+    name: Noa Patel
+    email: noa.patel@learning-lab.example
+  workshop-bot:
+    name: Workshop Bot
+    email: workshop.bot@learning-lab.example
+  visiting-educator:
+    name: Visiting Educator
+    email: visiting.educator@learning-lab.example
+  resource-indexer:
+    name: Resource Indexer
+    email: resource.indexer@learning-lab.example
+  iris:
+    name: Iris Ward
+    email: iris.ward@learning-lab.example
+  ellis:
+    name: Ellis Reed
+    email: ellis.reed@learning-lab.example
+  robin:
+    name: Robin Lee
+    email: robin.lee@learning-lab.example
+  alex-learner:
+    name: Alex Learner (fake demo)
+    email: alex.learner@workshop.example
+  avery:
+    name: Avery Learning
+  morgan:
+    name: Morgan Care
+  alex-learning:
+    name: Alex Learning
+  learning-coordinator:
+    name: Learning Coordinator
+    email: learning.coordinator@workshop.example
+  teaching-lead:
+    name: Teaching Lead
+    email: teaching.lead@workshop.example
+teams:
+  training:
+    name: Training
+    members:
+      - maya
+      - devon
+      - priya
+  property-operations:
+    name: Property Operations
+    members:
+      - lena
+      - marco
+  front-office:
+    name: Front Office
+    members:
+      - sam
+sources:
+  learning-ops:
+    name: "#learning-*, #ops-*"
+    vendor: slack
+  guest-services:
+    name: Guest Services
+    vendor: salesforce
+  policies-procedures:
+    name: Policies & Procedures
+    vendor: google_drive
+  it-service-desk:
+    name: IT Service Desk
+    vendor: jira
+  ops-space:
+    name: OPS space
+    vendor: confluence
+  training-space:
+    name: Training space
+    vendor: confluence
+  meeting-transcripts:
+    name: Meeting transcripts
+    vendor: zoom
+  file:
+    name: Uploaded documents
+    vendor: file
+  web:
+    name: web
+    vendor: web
+documents:
+  file-learning-accessibility-checklist:
+    source: file
+    title: Accessible workshop checklist.md
+    body: |
+      # Accessible workshop checklist
+      Prepare captions and large-print handouts before the workshop.
+      Offer quiet breaks, accessible seating and an alternative written activity.
+      Ask participants which format helps them learn, without collecting health data.
+    owners:
+      - avery
+  learning-workshop-guide:
+    source: ops-space
+    title: Community workshop facilitator guide
+    body: |
+      # Community workshop facilitator guide
+      Welcome participants, explain the agenda and offer an accessible activity choice.
+      Use plain language and reserve time for questions at each station.
+    owners:
+      - avery
+  learning-health-handout:
+    source: policies-procedures
+    title: Community health learning handout
+    body: |
+      # Community health learning handout
+      This fictional workshop covers reading a general wellbeing information sheet.
+      It contains no patient records and provides no personalized medical advice.
+    owners:
+      - morgan
+  learning-team-notes:
+    source: learning-ops
+    title: Educator workshop planning notes
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-archived-handbook:
+    source: ops-space
+    title: Archived community learning handbook
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-06:
+    source: ops-space
+    title: Workshop welcome activity
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-07:
+    source: ops-space
+    title: Plain-language lesson plan
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-08:
+    source: ops-space
+    title: Learning station schedule
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-09:
+    source: ops-space
+    title: Community reading circle guide
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-10:
+    source: ops-space
+    title: Accessible discussion prompts
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-11:
+    source: ops-space
+    title: Workshop reflection sheet
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-12:
+    source: ops-space
+    title: Educator preparation guide
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-13:
+    source: ops-space
+    title: Inclusive participation notes
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-14:
+    source: ops-space
+    title: Workshop feedback questions
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-15:
+    source: ops-space
+    title: Community learning agenda
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-16:
+    source: ops-space
+    title: Small-group activity outline
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-17:
+    source: ops-space
+    title: Handout formatting guide
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-18:
+    source: ops-space
+    title: Caption preparation notes
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-19:
+    source: ops-space
+    title: Workshop quiet-break plan
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-20:
+    source: ops-space
+    title: Educator resource index
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-21:
+    source: ops-space
+    title: Community learning closing activity
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  learning-resource-22:
+    source: ops-space
+    title: Workshop next-session checklist
+    body: |
+      # Community learning resource
+      This is an editable fictional workshop document. Plan accessible activities,
+      share materials in advance, and offer several ways to participate.
+    owners:
+      - avery
+  file-demo-reading:
+    source: file
+    title: library-reading.txt
+    body: Fictional reading-circle notes supplied by the local demo file registry.
+  file-demo-attendance:
+    source: file
+    title: attendance-demo.csv
+    body: Fictional attendance notes supplied by the local demo file registry.
+  conf-ops-home:
+    source: ops-space
+    title: "{{company.name}} — Company Handbook"
+    body: "{{company.name}} operates 14 boutique coastal properties across California, Florida and the Carolinas."
+  community-workshop-facilitation:
+    source: web
+    title: Community workshop facilitation notes
+    body: Fictional education notes recommending a welcoming check-in, practical demonstration, small-group practice and a quiet reflection break.
+  gdrive-1xfdonboarding2026:
+    source: policies-procedures
+    title: Front Desk Onboarding Path 2026.pdf
+    body: |
+      # Front Desk Onboarding Path 2026
+
+      Owner: Learning & Development. Applies to every new front desk hire, full and part time.
+
+      ## Days 1–5: welcome
+
+      - Property tour and safety walk (fire exits, AED location, first-aid kit)
+      - Brand standards and guest greeting
+      - Guest privacy and data handling (e-learning, 45 minutes)
+
+      ## By day 14: systems and service
+
+      - Check-in and check-out in the property system, with a buddy
+      - Accessibility requests: room features, service animals, mobility equipment
+      - Lost and found, key cards and late checkout requests
+
+      ## By day 30: certifications
+
+      - Food-safety awareness (e-learning)
+      - **CPR/First Aid with AED**, classroom, run by Coastal Health {{teams.training.name}}
+      - Sign-off by the front office manager
+
+      Missed a class? Ask Learning & Development for the next open date. The training policy allows one 14-day extension when a class is cancelled.
+    owners:
+      - maya
+  gdrive-1xtrainingrecordsq4:
+    source: policies-procedures
+    title: "{{teams.training.name}} records export — new hires since Aug 1.xlsx"
+    body: "14 front desk hires since Aug 1. 11 on track. 3 overdue on CPR/First Aid: Key West (2), Carmel (1). All 14 have completed guest-privacy training."
+    owners:
+      - maya
+      - devon
+  zoom-rec-88123:
+    source: meeting-transcripts
+    title: "Zoom meeting: First aid & AED train-the-trainer (Sep 18)"
+    body: "Instructor (Coastal Health {{teams.training.name}}): “Every shift needs at least one certified first-aider on site, and the AED check belongs on the opening checklist.”"
+  slack-c04learnkw-1727712000:
+    source: learning-ops
+    title: "#learning-keywest — CPR class rescheduled"
+    body: "{{people.devon.name}}: the Oct 2 CPR/First Aid class at Key West was cancelled (instructor out sick). Two new hires still need it; next open date is Oct 23."
+  conf-hr-tp-4412:
+    source: ops-space
+    title: "{{teams.training.name}} Policy: Required certifications by role"
+    body: |
+      # {{teams.training.name}} Policy: Required certifications by role
+
+      ## Front desk
+
+      - CPR/First Aid with AED within **30 days of hire**, valid for 2 years.
+      - Guest privacy training within 5 days of hire, refreshed yearly.
+
+      ## Housekeeping and maintenance
+
+      - Safe lifting and chemical handling within 14 days of hire.
+      - CPR/First Aid for shift leads.
+
+      ## Extensions
+
+      A property may extend a certification deadline **once, by 14 days**, if the scheduled class is cancelled. The front office manager logs the extension and books the next open class.
+  file-aed-opening-checklist:
+    source: file
+    title: AED & first-aid kit opening checklist.md
+    body: |
+      # AED & first-aid kit opening checklist
+
+      Front desk, every property. The opening shift lead signs the shift board when every item is done.
+
+      ## Before the lobby opens
+
+      1. **AED status light** is green. If it is red or blinking, call Facilities and post the "AED out of service" sign.
+      2. **Pads and battery** are in date (check the labels on the case).
+      3. **First-aid kit** is sealed. If the seal is broken, restock it from the supply cabinet and log what was used.
+      4. **Certified first-aider** is named on the shift board, with their certification expiry date.
+
+      ## If no certified first-aider is on shift
+
+      - Tell the duty manager right away.
+      - Ask the nearest property for cover until a certified colleague arrives.
+      - Record it in the incident log so Learning & Development can schedule training.
+
+      ## Contacts
+
+      - Learning & Development: training questions and class bookings
+      - Facilities: AED faults and supply restocks
+  conf-ops-fo-210:
+    source: ops-space
+    title: "{{teams.front-office.name}} SOP: Late checkout"
+    body: "Gold members: complimentary late checkout until 2 PM, subject to availability; Platinum until 4 PM."
+  conf-ops-kw-77:
+    source: ops-space
+    title: "Key West: Hurricane watch & warning runbook"
+    body: "Watch (48h): notify arriving guests, secure pool furniture, check generator fuel, confirm the evacuation partner hotel."
+conversations:
+  food-safety-refresher-course-outline:
+    title: Food-safety refresher course outline
+    messages:
+      - role: user
+        text: Food-safety refresher course outline
+      - role: assistant
+        text: |
+          {{company.name}} runs **14 boutique coastal properties** across California, Florida and the Carolinas [1]. Ask me about staff training, property SOPs, or IT issues — I'll pull from Salesforce, Confluence, Slack, Google Drive and Zoom.
+        documents:
+          - conf-ops-home
+  late-checkout-policy-for-gold-members:
+    title: Late checkout policy for Gold members
+    messages:
+      - role: user
+        text: What's our late checkout policy for {{company.name}} Rewards Gold members?
+      - role: assistant
+        text: |
+          Gold members get **complimentary late checkout until 2 PM**, subject to availability on the day [1]. Platinum members get 4 PM [1].
+        documents:
+          - conf-ops-fo-210
+      - role: user
+        text: Can the front desk guarantee it at booking?
+      - role: assistant
+        text: |
+          No. For Gold it can't be guaranteed at booking; the front desk confirms it the evening before departure [1].
+        documents:
+          - conf-ops-fo-210
+  key-west-hurricane-watch-runbook:
+    title: Key West hurricane-watch runbook
+    messages:
+      - role: user
+        text: Walk me through the hurricane-watch runbook for the Key West property.
+      - role: assistant
+        text: |
+          When a **hurricane watch** is issued (about 48 hours out) [1]:
+          1. Notify guests arriving in the next 72 hours and offer flexible rebooking.
+          2. Secure pool furniture and loose signage.
+          3. Check generator fuel and run the weekly load test early.
+          4. Confirm rooms with the inland evacuation partner hotel.
+        documents:
+          - conf-ops-kw-77
+  q3-training-completion-by-property:
+    title: Q3 training completion by property
+    messages:
+      - role: user
+        text: Q3 training completion by property
+      - role: assistant
+        text: |
+          Here's the **30-day training plan** for new front desk hires, and where the current group stands [1][2].
+
+          **What new hires complete in their first 30 days** [1]
+          1. Days 1–5: orientation, brand standards and guest privacy.
+          2. By day 14: check-in/check-out systems and accessibility requests.
+          3. By day 30: food-safety awareness and **CPR/First Aid with AED**.
+
+          **Who is behind**
+          - **3 of 14 hires are overdue on CPR/First Aid**: two at Key West and one at Carmel [2]. Everyone has finished guest-privacy training.
+          - **Key West's class was cancelled.** The Oct 2 session was dropped when the instructor was out sick; the next open date is **Oct 23** [4]. The policy allows a one-time 14-day extension when a class is cancelled [5].
+
+          **Suggested next steps**
+          - Log the 14-day extension for the two Key West hires and book them into the Oct 23 class [4][5].
+          - Until they're certified, make sure every Key West shift still has a certified first-aider on site, as the trainer asked [3], and keep the AED check on the opening checklist [6].
+        documents:
+          - gdrive-1xfdonboarding2026
+          - gdrive-1xtrainingrecordsq4
+          - zoom-rec-88123
+          - slack-c04learnkw-1727712000
+          - conf-hr-tp-4412
+          - file-aed-opening-checklist
+  draft-welcome-email-for-new-hires:
+    title: Draft welcome email for new hires
+    messages:
+      - role: user
+        text: Draft welcome email for new hires
+      - role: assistant
+        text: |
+          Here's the **30-day training plan** for new front desk hires, and where the current group stands [1][2].
+
+          **What new hires complete in their first 30 days** [1]
+          1. Days 1–5: orientation, brand standards and guest privacy.
+          2. By day 14: check-in/check-out systems and accessibility requests.
+          3. By day 30: food-safety awareness and **CPR/First Aid with AED**.
+
+          **Who is behind**
+          - **3 of 14 hires are overdue on CPR/First Aid**: two at Key West and one at Carmel [2]. Everyone has finished guest-privacy training.
+          - **Key West's class was cancelled.** The Oct 2 session was dropped when the instructor was out sick; the next open date is **Oct 23** [4]. The policy allows a one-time 14-day extension when a class is cancelled [5].
+
+          **Suggested next steps**
+          - Log the 14-day extension for the two Key West hires and book them into the Oct 23 class [4][5].
+          - Until they're certified, make sure every Key West shift still has a certified first-aider on site, as the trainer asked [3], and keep the AED check on the opening checklist [6].
+        documents:
+          - gdrive-1xfdonboarding2026
+          - gdrive-1xtrainingrecordsq4
+          - zoom-rec-88123
+          - slack-c04learnkw-1727712000
+          - conf-hr-tp-4412
+          - file-aed-opening-checklist
+  opera-pms-sync-errors-at-carmel:
+    title: Opera PMS sync errors at Carmel
+    messages:
+      - role: user
+        text: Opera PMS sync errors at Carmel
+      - role: assistant
+        text: |
+          {{company.name}} runs **14 boutique coastal properties** across California, Florida and the Carolinas [1]. Ask me about staff training, property SOPs, or IT issues — I'll pull from Salesforce, Confluence, Slack, Google Drive and Zoom.
+        documents:
+          - conf-ops-home
+vars:
+  onyx_template_open: "{{"
