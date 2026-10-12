@@ -4,6 +4,8 @@ Mockshop exposes the same script steps to YAML files and a JSON-lines live sessi
 
 References: [script specification](script-spec.md), [script schema](../schema/script.schema.json), [plugin vocabulary format](plugin-vocabulary.md), [installation and platform requirements](../README.md#requirements).
 
+For the end-to-end demo workflow — choosing world versus script content, cross-script consistency, presentation and verification levels — read the [demo-authoring skill](../skills/demo-authoring/SKILL.md).
+
 ## Author a script
 
 1. Read the plugin's [capability vocabulary](../plugins/onyx/vocabulary.yaml), [playbook](../plugins/onyx/PLAYBOOK.md), [backend/API map](../plugins/onyx/API-MAP.md), [manifest](../plugins/onyx/plugin.yaml) and [README](../plugins/onyx/README.md). Author from the operating references; private sample scripts are not a dependency. A rendered control is not proof that its backend behavior is implemented.
