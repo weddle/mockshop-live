@@ -28,7 +28,7 @@ export function ensureToolchain(m) {
   if (fs.existsSync(path.join(dir, "bin", "node"))) return;
   log(`installing Node ${v} into .toolchains/`);
   fs.mkdirSync(dir, { recursive: true });
-  sh(`curl -fsSL https://nodejs.org/dist/v${v}/node-v${v}-linux-x64.tar.gz | tar -xz -C "${dir}" --strip-components=1`, { stdio: "inherit" });
+  sh(`curl -fsSL https://nodejs.org/dist/v${v}/node-v${v}-${process.platform}-${process.arch}.tar.gz | tar -xz -C "${dir}" --strip-components=1`, { stdio: "inherit" });
 }
 
 function patchFiles(m) {
@@ -144,7 +144,14 @@ function hashTree(dir, skip = []) {
   return files;
 }
 const totalDigest = (files) => sha256(Object.keys(files).sort().map((f) => `${f}\0${files[f]}\n`).join(""));
-const duBytes = (dir) => { try { return Number(sh(`du -sb "${dir}"`).split(/\s/)[0]); } catch { return null; } };
+// Apparent size in bytes (like GNU `du -sb`); portable because BSD/macOS du has no -b. lstat: symlinks count as themselves.
+const duBytes = (dir) => {
+  const size = (p) => {
+    const st = fs.lstatSync(p);
+    return st.isDirectory() ? st.size + fs.readdirSync(p).reduce((n, e) => n + size(path.join(p, e)), 0) : st.size;
+  };
+  try { return size(dir); } catch { return null; }
+};
 const mb = (b) => (b == null ? "?" : `${(b / 1048576).toFixed(0)} MB`);
 
 // build = fetch pinned source into workdir -> install -> build -> assemble runtime/ -> delete work/ (unless keepWork)

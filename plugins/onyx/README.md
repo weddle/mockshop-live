@@ -4,7 +4,7 @@ Onyx is the first application included with Mockshop. The plugin builds the real
 
 ## Run it
 
-Follow the [root quick start](../../README.md) for Linux x86-64 prerequisites and installation. From the repository root:
+Follow the [root quick start](../../README.md) for platform prerequisites (Linux x86-64 or macOS arm64) and installation. From the repository root:
 
 ```sh
 export MOCKSHOP_PIN_CACHE="$HOME/.cache/mockshop/pins"

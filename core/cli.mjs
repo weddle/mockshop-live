@@ -61,7 +61,11 @@ const plugins = listPlugins();
 if (positional[0] && plugins.includes(positional[0]) && cmd !== "shot" && cmd !== "clip" && cmd !== "validate") pluginName = positional.shift();
 
 const pidOn = (port) => {
-  try { return execSync(`ss -ltnpH "sport = :${port}"`, { encoding: "utf8" }).match(/pid=(\d+)/)?.[1] || null; } catch { return null; }
+  try {
+    // lsof is on stock macOS; ss (iproute2) is Linux-only.
+    if (process.platform === "darwin") return execSync(`lsof -nP -iTCP:${port} -sTCP:LISTEN -t`, { encoding: "utf8" }).split("\n")[0] || null;
+    return execSync(`ss -ltnpH "sport = :${port}"`, { encoding: "utf8" }).match(/pid=(\d+)/)?.[1] || null;
+  } catch { return null; }
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function waitHttp(url, tries = 120) {

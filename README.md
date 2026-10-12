@@ -1,12 +1,12 @@
 # Mockshop
 
-**Experimental v0.1.0 · Onyx first**
+**Experimental v0.1.1 · Onyx first**
 
 Mockshop runs a real, pinned application frontend against a lightweight fixture backend. YAML scenarios drive the UI with Playwright to produce screenshots or paced video walkthroughs, without running the application's production backend or using live accounts.
 
 The included application is [Onyx](plugins/onyx/README.md). Its frontend is built locally from upstream commit `f858083d6cbe37c4146834d379e39511260a9879`, with the small patches in `plugins/onyx/patches/`. The backend supplies fictional fixture data, scripted chat streams and selected stateful interactions. This repository does **not** contain an upstream frontend build, captured proprietary bundles or a working Onyx production backend.
 
-This initial public snapshot is version **0.1.0**, exported from frozen source revision `1c9b137466a1438dc546ad6b23a30bf3aaf45a28`. It is not a promise of full frontend coverage or production readiness.
+This is version **0.1.1** (macOS support added to the **0.1.0** public snapshot), exported from frozen source revision `1c9b137466a1438dc546ad6b23a30bf3aaf45a28`. It is not a promise of full frontend coverage or production readiness.
 
 ## What is included
 
@@ -33,21 +33,21 @@ Outputs: out/onyx/<scenario>/ or out/onyx/clips/
 
 ## Requirements
 
-The current build and process-management baseline is **Linux x86-64**:
+The build and process-management baseline is **Linux x86-64** and **macOS (Apple Silicon)**:
 
 - Node.js 20+ and npm on `PATH` to bootstrap the CLI; a currently supported Node release is recommended. Onyx's pinned Node toolchain is downloaded into `.toolchains/` when needed.
-- Git, Bash, `curl`, `tar`, `patch`, GNU command-line utilities and `ss` (typically from `iproute2`).
+- Git, Bash, `curl`, `tar`, `patch`, and either GNU command-line utilities plus `ss` (typically from `iproute2`) on Linux, or the stock macOS tools including `lsof`.
 - Bun at the version declared in [the Onyx manifest](plugins/onyx/plugin.yaml), currently `1.4.2`, to build Onyx. A different Bun version emits a warning rather than being installed automatically.
 - Installed Chrome or Chromium. Set `CHROME_PATH` to its executable if discovery does not find it. Mockshop uses `playwright-core` and does not download a browser.
 - `ffmpeg` with H.264 encoding support for `clip` and `live --clip`.
 - Several GB of free disk for the temporary frontend build, dependencies, runtime, cache and outputs, and enough memory for a Next.js build.
 - Network access for the initial toolchain, dependency and upstream downloads. A completed runtime/cache reduces later network dependence; allowed fonts and favicon requests can still use the network.
 
-Native macOS and ARM builds are not supported by the current bootstrap: it downloads a Linux x86-64 Node archive, and process discovery uses Linux `ss`. Browser discovery alone does not make those platforms supported.
+Other platforms (Windows, Intel Macs, Linux ARM) are untested. The bootstrap downloads the Node archive matching `process.platform`/`process.arch`, so any platform with a published Node build for the pinned version may work, and port discovery uses `ss` on Linux and `lsof` on macOS.
 
 ## Quick start
 
-Run from a Linux x86-64 machine with the requirements installed:
+Run from a Linux x86-64 or macOS arm64 machine with the requirements installed:
 
 ```bash
 git clone https://github.com/weddle/mockshop-live.git

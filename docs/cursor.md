@@ -9,7 +9,7 @@ Headless Chrome has no visible pointer, so Mockshop draws one. Before each move,
 
 Path planning is deterministic for the same seed, scenario, targets and configuration. Browser layout and capture
 timing can still vary; this does not promise byte-identical screenshots or recordings. Cursor control is part of
-Mockshop's experimental v0.1.0 runner.
+Mockshop's experimental v0.1.1 runner.
 
 Demo: `plugins/onyx/scenarios/cursor-demo.yaml` (`./mockshop clip onyx/cursor-demo`, `./mockshop shot onyx/cursor-demo`).
 
