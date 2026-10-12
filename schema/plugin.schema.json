@@ -163,7 +163,7 @@
     },
     "route_aliases": {
       "type": "array",
-      "description": "Optional pinned-source static public-prefix to physical-page-prefix aliases. Validation metadata only: does not install routes or bypass native UI. Every destination requires an original built page at that prefix or a slash-boundary descendant.",
+      "description": "Optional pinned-source static public-prefix to physical-page-prefix aliases. Validation metadata only: does not install routes or bypass native UI. When a compiled frontend route table is available, every destination must have an original built page at that prefix or a slash-boundary descendant; otherwise physical route checks are explicitly skipped.",
       "items": {
         "type": "object",
         "required": ["source", "destination"],

@@ -1,6 +1,6 @@
 # Mockshop
 
-**Experimental v0.2.0 · Onyx first**
+**Experimental v0.2.1 · Onyx first**
 
 Mockshop runs a real, pinned application frontend against a lightweight fixture backend. YAML scripts drive the UI with Playwright to produce screenshots or paced video walkthroughs, without running the application's production backend or using live accounts.
 
@@ -141,7 +141,7 @@ Operations include navigation, click/hover, fill/type, key presses, waits, scrol
 
 `shot` writes `out/<plugin>/<script>/NN-<shot>.png`, `report.json` and `resolved.json`. A failed step also produces `FAILED-stepN-<op>.png`. `clip` writes an MP4, `.report.json`, `.resolved.json`, `.timeline.json` and `.vtt` under `out/<plugin>/clips/`. Resolved metadata records source inputs and hashes; the timeline records scene/step IDs, effective presentation and action timing. Mockshop does not synthesize narration or music.
 
-In non-strict mode, failed steps fail the command while other observed problems are reported. `strict: true` also fails on unexpected console/page errors, HTTP failures and unmocked backend requests. Narrow, reasoned `known_errors` matches classify known problems separately; they never excuse failed steps. Validation cannot prove locator correctness or visual quality: inspect the reports and images.
+In non-strict mode, failed steps fail the command while other observed problems are reported. `strict: true` also fails on unexpected console/page errors, HTTP failures and unmocked backend requests. Narrow, reasoned `known_errors` matches classify known problems separately; they never excuse failed steps. Since **0.2.1**, validation works without a compiled frontend: schemas, references, plugin compilation and alias definitions are checked, while physical frontend route and alias-destination checks explicitly report that they were skipped. Those route checks run automatically when the compiled route table is available. Validation cannot prove locator correctness or visual quality: inspect the reports and images.
 
 ## Authoring demos
 

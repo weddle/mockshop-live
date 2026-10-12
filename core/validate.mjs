@@ -79,7 +79,7 @@ function closest(k, keys) {
 }
 
 // Built Next pages plus explicitly declared aliases backed by original physical destinations.
-function webRoutes(m, errors = []) {
+function webRoutes(m, errors, warnings) {
   let aliases = m.route_aliases ?? [];
   if (m.route_aliases !== undefined) {
     const schema = pluginSchema();
@@ -89,7 +89,7 @@ function webRoutes(m, errors = []) {
   }
   const f = m.runtimeDir && path.join(m.runtimeDir, ".next", "server", "app-paths-manifest.json");
   if (!f || !fs.existsSync(f)) {
-    if (aliases.length) errors.push({ path: "route_aliases", message: "aliases require a built physical web route table" });
+    warnings.push({ path: "runtime", message: `Frontend route checks skipped: ${m.name} has no compiled runtime route table` });
     return null;
   }
   const physical = Object.keys(JSON.parse(fs.readFileSync(f, "utf8"))).filter((k) => k.endsWith("/page"))
@@ -117,7 +117,7 @@ function pluginChecks(m, sc) {
   const warns = [], errs = [];
   for (const o of [...(sc.overlays || []), ...(sc.steps || []).flatMap((s) => s?.state?.overlays || [])]) if (!fs.existsSync(path.join(m.fixturesDir, o))) errs.push({ path: "overlays", message: `no fixture overlay dir "${o}" in ${path.relative(ROOT, m.fixturesDir)}/` });
   if (sc.requires && m.editions) for (const r of [].concat(sc.requires)) if (!(r in m.editions)) errs.push({ path: "requires", message: `unknown edition "${r}" (have: ${Object.keys(m.editions).join(", ")})` });
-  const routes = webRoutes(m, errs);
+  const routes = webRoutes(m, errs, warns);
   const seen = new Set();
   (sc.steps || []).forEach((s, i) => {
     if (typeof s?.goto === "string") {
@@ -127,7 +127,6 @@ function pluginChecks(m, sc) {
     const n = typeof s?.shot === "string" ? s.shot : s?.shot?.name;
     if (n) { if (seen.has(n)) warns.push({ path: `steps[${i}].shot`, message: `duplicate shot name "${n}"` }); seen.add(n); }
   });
-  if (!routes && (sc.steps || []).some((s) => s?.goto)) warns.push({ path: "steps", message: `goto paths not checked (${m.name} has no built web route table)` });
   return { errs, warns };
 }
 
@@ -161,8 +160,8 @@ export function validateManifest(file) {
   const errors = check(pluginSchema(), doc), warnings = [];
   if (doc?.name && doc.name !== path.basename(path.dirname(file))) errors.push({ path: "name", message: `must equal the plugin dir name "${path.basename(path.dirname(file))}"` });
   if (doc?.editions && doc.edition && !(doc.edition in doc.editions)) errors.push({ path: "edition", message: `"${doc.edition}" is not in editions` });
-  if (!errors.length && doc.route_aliases?.length) webRoutes({ ...doc,
-    runtimeDir: doc.runtime?.dir ? path.resolve(path.dirname(file), doc.runtime.dir) : null }, errors);
+  if (!errors.length) webRoutes({ ...doc,
+    runtimeDir: doc.runtime?.dir ? path.resolve(path.dirname(file), doc.runtime.dir) : null }, errors, warnings);
   return { ok: !errors.length, errors, warnings };
 }
 
@@ -224,7 +223,7 @@ export function validateVocabulary(file, m) {
     if (!guides.get(guide).has(anchor)) E(field, `no heading "#${anchor}" in "${relative}"`);
   };
   const editions = m.editions ? Object.keys(m.editions) : [];
-  const routes = webRoutes(m, errors), gotos = [...scen.values()].flatMap((s) => s.gotos);
+  const routes = webRoutes(m, errors, warnings), gotos = [...scen.values()].flatMap((s) => s.gotos);
   let unchecked = 0;
   doc.surfaces.forEach((s, i) => {
     if (s.edition !== undefined && !editions.includes(s.edition)) E(`surfaces[${i}].edition`, `unknown edition "${s.edition}" (have: ${editions.join(", ") || "none"})`);
