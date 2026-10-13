@@ -21,6 +21,8 @@ The default web port is `3300`; the fixture backend uses `8800`. Use `MOCKSHOP_O
 
 The frontend is pinned to upstream Onyx commit `f858083d6cbe37c4146834d379e39511260a9879`. Toolchain, patches, editions, ports and runtime assembly are specified in [plugin.yaml](plugin.yaml). A sibling Onyx checkout is optional; otherwise the build fetches the pinned upstream source.
 
+Validation does not require a frontend build: `./mockshop validate onyx --all` checks authored worlds/scripts on its own. Builds and browser runs still require the toolchain and matching edition described above.
+
 ## Make a demo your own
 
 - **Shared content:** edit a world such as [`worlds/omzo/world.yaml`](../../worlds/omzo/world.yaml). Company, people, teams, sources, documents and conversations use stable keys. Keep recurring names and prose linked with `{{people.sam.name}}`-style references.
@@ -29,6 +31,14 @@ The frontend is pinned to upstream Onyx commit `f858083d6cbe37c4146834d379e39511
 - **Interaction:** write a short YAML script that drives the real controls. Start with the complete [Omzo incident](scripts/omzo-incident.yaml) and [Omzo follow-up](scripts/omzo-followup.yaml) examples, which share one world rather than copying their company and cast.
 - **Presentation:** select a reusable profile and optional render overrides; keep business content out of those settings. Cursor movement drives real browser mouse actions rather than adding an invented pointer afterward.
 - **State:** supported create, rename, save, delete and selection actions persist during a run. Fresh runs reset fake state; this is not durable storage.
+
+### Local capabilities
+
+The native new-chat greeting is deterministic ("How can I help?" in English); authored Enterprise greetings and saved Admin edits take precedence. Agents expose editable Advanced controls for default model, knowledge cutoff, system-prompt replacement and reminders, plus finite folder/document Knowledge selection.
+
+Providers, connector pairs, Groups, Document Sets and Agents remain single-owner local stores. Their native selectors and saved readbacks project current names and identities rather than maintaining duplicate catalogs. Federated configurations support create/list/update/delete with allocated numeric IDs; Slack channel editors restore the saved Answer Type instead of always showing Standard.
+
+These are resettable fictional configurations, not provider connections, ingestion, permission propagation or bot execution. Indexing controls can stage guarded run/targeted-reindex requests, pause/resume and pending deletion; no worker completes them or fabricates indexed documents. See the [admin contract](docs/backend-admin.md) and [agent/settings guide](docs/script-agents-settings.md) for prerequisites and boundaries.
 
 The three default examples demonstrate specific visible outcomes, not a supported catalog of every product feature. Author the script needed for the task using the [playbook](PLAYBOOK.md) and [backend/API map](API-MAP.md), then inspect its report and output. Larger historical samples live under [`reference-examples/`](../../reference-examples/README.md), outside default discovery; [their knowledge coverage index](docs/script-coverage.md) keeps provenance without making those samples dependencies.
 

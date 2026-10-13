@@ -27,13 +27,13 @@ Important collisions:
 | Route | Actual winner/composition |
 |---|---|
 | `GET /chat/file/:id` | Known uploaded synthetic file first; root source-markdown viewer if it declines. Craft calls `serveFile()` directly for fixture bytes. |
-| `GET /manage/connector` | Admin Pages' projection of fixture `/manage/admin/connector/status`, ahead of Save Controls' live connector route. It is not a live connector-list alias. |
+| `GET /manage/connector` | Admin Pages' route composed with Save Controls' `connectorList()` (projected status connectors plus unbound saved connectors), ahead of Save Controls' own route. |
 | `POST /admin/search` | First Admin Pages implementation searches its opt-in document store; the later empty-result route is unreachable after it sends. |
 | `PATCH /admin/tool/status` | Admin Pages accepts all-OpenAPI IDs; otherwise MCP accepts configured MCP IDs; unsupported/mixed built-in batches fall through. |
 | `PUT/DELETE /admin/token-rate-limits/rate-limit/:id` | Admin Pages handles global/user-owned IDs; Groups handles group-owned IDs after `false`. |
 | `POST /manage/admin/user-group/:id/add-users`, `PATCH /manage/admin/user-group/:id` | Groups owns combined/member writes. Composed Users explicitly declines its standalone implementations. |
 | `GET /notifications`, `GET /notifications/summary` | Extras dynamic reads wrapped by Admin Pages banner transform. Bulk dismiss updates both owners. Exact `/notifications/65065/dismiss` precedes generic Extras ID route. |
-| `GET /enterprise-settings/logo` | Enabled Extras branding returns its seeded PNG before Admin Pages' uploaded-logo bytes. |
+| `GET /enterprise-settings/logo` | Uploaded Admin logo bytes/type first; otherwise enabled Extras branding PNG, else Admin Pages'404. Reset clears the upload. |
 | Provider reads | Save Controls' dynamic admin/public/persona responses explicitly receive Admin Pages model-default overrides. |
 
 ## Shared content → native seeds
@@ -49,7 +49,7 @@ Author shared data in a world and specialized native DTOs under `apps.onyx.fixtu
 | `documents.<key>.{source,title,body,owners,author,url}` plus native document mapping | ID defaults `DOC-<hash>`; safe filename required. Generates source markdown and document DTO with title, vendor source, link, blurb, owners' emails. Auto-populates user-search documents unless that seed is explicitly overridden. |
 | `apps.onyx.agents.<key>` | Inherits builtin `/persona/0`, then native fields; resolves owner person key and source keys; emits detail/catalog/admin/pins unless those lists explicitly supplied. Builtin is prepended if no agent maps to ID 0. `sources` becomes distinct vendor `knowledge_sources`. |
 | `conversations.<key>.{title,messages}` and `apps.onyx.conversations.<key>` | Stable UUID unless explicit; default persona 0 or mapped `agent`; sidebar metadata and generated history. Only user/assistant roles; assistant must follow a user without an existing answer. Explicit native `turns` replaces generated turns. `/mockshop/conversation-catalog` remains complete even if initial sidebar fixture is empty. |
-| `apps.onyx.replies.<key>` | Compiles `{text,cites:[document keys],queries?,...}` to `answer,documents,citations`. Citation `[n]` must index `cites`. Safe filename required. Other allowed fields: `title,reasoning,chunk_delay_ms,match,after,default,follow_up_default,regenerate,model_variants,web_search`. See chat selection rules. |
+| `apps.onyx.replies.<key>` | Compiles `{text,cites:[document keys],queries?,...}` to `answer,documents,citations`. Citation `[n]` must index `cites`. Safe filename required. Other fields: `title,reasoning,chunk_delay_ms,match,after,default,follow_up_default,regenerate,model_variants,web_search,turn,question`. Exact `turn/question` files support a native submission without convenience retyping/completion waits and never enter manual regex selection. |
 | `apps.onyx.models.<alias>.name` | Alias only; does not create a model. Selection must find a visible name in `GET /admin/llm/provider.providers[].model_configurations`. |
 | `apps.onyx.history.<id>`, `apps.onyx.source_bodies.<id>` | Explicit native history/source text for specialized cases; safe IDs required. Source text must be string. |
 | `apps.onyx.fixtures` | Ordinary exact `METHOD /path` DTOs, not a route-patch language or override of dynamic handlers. Shared source/document/person/agent identity fields in embedded snapshots are reprojected to avoid stale names/vendors. |
@@ -69,13 +69,14 @@ Default derived connector configuration by vendor: Confluence `{wiki_base,space:
 | `state.agent: key` or `null` | Agent ID or builtin 0; refresh adds `agentId` query | Readback persona and current selected session updated; does not rewrite historical answer content. |
 | `state.model: alias/name` or `null` | `Provider display name__provider__model[__mc:<id>]`, or null | Changes screen/default readback and selected session picker; old assistant nodes retain their frozen model attribution. Hidden/unknown models fail compile. |
 | `send: {text,reply,wait?}` | Write exact-turn chat file; arm `{keep:true,resetChats:false,turn:<author step>}`; focus/type/send native controls; poll `/mockshop/turn/:id` until backend complete **and newest message wrapper is rendered complete**; then optional explicit `send.wait` | Exact arm is one-shot, org/session/question-bound. `turn` scripts never match manual regex fallback. A stopped exact answer fails compiled completion wait. |
+| Native submission preceded by `state:{turn:<key>,keep:true,resetChats:false}` | Arm declared `apps.onyx.replies.<key>.turn`; retain the following native click/Enter and explicit waits | Same org/session/question guard and sole `withContext()` model/context projection; can retain stream/Stop stages without a mandatory completion wait. |
 | `state.world: <relative path>` | Precompile whole target snapshot and switch overlays; defaults `keep:true,resetChats:false` | Not a partial world edit. Persists until another switch; screen controls must be a separate step. Identical return-to-primary content reuses original namespace. Author references still resolve against immutable primary content. |
 
 Screen updates compile to backend state plus same-URL browser reload, unload marker wait and body wait. They default to `keep:true,resetChats:false`, but honor explicit `keep:false` or `resetChats:true` (which clears conversations as described below). Keyed screen selections cannot be combined with raw `overlays`, `turn` or `screen` controls in the same state object. Reload does not promise that every frontend component is hydrated merely because `<body>` exists. Selection does not revert at scene boundaries.
 
 ## Control plane and reset matrix
 
-`GET /__mockshop/health → {ok:true,plugin:"onyx"}`. `GET/POST /__mockshop/state → {plugin,locale,overlays,demo_anchor,strict,strict_misses}`. POST accepts `overlays,keep,resetChats,anchor,locale,strict` plus plugin fields `screen,turn,session,url,admin_documents_fixture`. `strict` explicitly supplied resets miss history. With `keep:true`, locale/anchor/overlays stay unchanged unless provided; without keep, core returns to declared edition + requested overlays and resets locale/anchor. Root's `org` key is the joined **authored overlays array** when supplied, not a person/team ID.
+`GET /__mockshop/health → {ok:true,plugin:"onyx"}`. `GET/POST /__mockshop/state → {plugin,locale,overlays,demo_anchor,strict,strict_misses}`. POST accepts `overlays,keep,resetChats,anchor,locale,strict` plus plugin fields `screen,turn,session,url,admin_documents_fixture,admin_oauth_claims_fixture`. Explicit `strict` resets miss history. With keep, locale/anchor/overlays stay unchanged unless provided; fresh returns to the declared edition + requested overlays and resets locale/anchor. Root's `org` key is the joined authored overlays array, not a person/team ID; implicit edition prefixes are normalized on state roundtrips rather than becoming an authored namespace.
 
 | Store/owner | Same-world `keep:true,resetChats:false` | World/overlay change with keep | `keep:false` / fresh run |
 |---|---|---|---|
@@ -83,14 +84,14 @@ Screen updates compile to backend state plus same-URL browser reload, unload mar
 | Root `agentOrgs[org]` (`personas,deleted,pins,nextId`) | Retained | Old org records retained and new org lazily seeded | All orgs cleared |
 | Root `userSettings[org:fixture-user-id]` (`preferences,personalization,pats,connectors,grants,prompts,counters`) | Retained | Old user/org edits retained | Cleared |
 | Root `screens[org]` | Merged, not replaced, by `screen` fields | Per-org selection retained | All screens cleared |
-| Save Controls `state.saveControls[org]` | Retained | Org-scoped catalog/connectors/credentials/uploads retained for revisit | All orgs cleared |
+| Save Controls `state.saveControls[org]`, including `seededPairs,indexingErrors,targetedJobs,nextTargetedJob` | Retained | Catalog/connectors/credentials/uploads/errors/submit-only requests and sequence retained for revisit | All orgs cleared; IDs allocate above seed maxima; targeted sequence returns to1 |
 | Sharing `state.sharingFeedback` (org-keyed shares/feedback plus global fail-next operations) | Retained | Retained if chat-reset policy is false | Cleared; root nodes' feedback cleared. Any `resetChats` value other than false clears it. |
 | MCP edits/created servers/tools; document-set records | Retained | **Reseeded**, even with keep | Cleared |
 | Files records/session refs; Projects maps/memberships/file links | Retained | **Reseeded** | Cleared |
 | Groups records/permission/limit edits + `adminGroupMembers`; Users accepted/invited/pending | Retained | **Reseeded** | Cleared |
 | Extras dismissals/labels/avatar counter; extension context/failNext | Retained | **Reseeded** | Cleared |
 | Auth `run`; Conditional receipts | Retained | **Reseeded** | Cleared |
-| Admin Pages `data`, documents-loaded flag, `adminCraftEnabled`; Craft `data` | Retained | **Reseeded** | Cleared. Documents seeded only with `admin_documents_fixture:"loaded"`. |
+| Admin Pages `data`, documents-loaded/OAuth-claims selector flags, `adminCraftEnabled`; Craft `data` | Retained | **Reseeded** | Cleared. Documents need `admin_documents_fixture:"loaded"`; `admin_oauth_claims_fixture:"empty"` selects an opt-in found-but-empty snapshot, not a login. |
 | User Search | No mutable store; reads active seed each call | New fixtures immediately | No reset function |
 
 The root passes a forced `keep:false` to non-org seed caches on namespace change. This prevents foreign-world row leakage but means revisiting a world restores its chat/provider/agent/preferences state while projects/files/groups/Craft/admin form edits restart from that world's seeds. Do not describe this as “keep everything.” A no-keep reset clears chats even if `resetChats:false` was supplied; the root condition is `!keep || resetChats === true`.
@@ -104,7 +105,7 @@ Supply complete native DTOs for specialized families; empty neutral arrays are i
 | UI family | Minimum related seeds/readers to keep coherent |
 |---|---|
 | Main app/home | `/me`, `/settings`, `/auth/type`, provider catalog, `/persona` + each `/persona/:id`, `/tool`, sidebar sessions; profile locale/cookies. |
-| Agent editor/gallery | Above + `/manage/document-set`, known user files, `/users`, group/minimal groups, `/persona/labels`; `/mockshop/user-extras{,-options}` for ownership/branding/empty states; details must exist for each catalog ID. |
+| Agent editor/gallery | Above + `/manage/document-set`, known user files, `/users`, group/minimal groups, `/persona/labels`; `/mockshop/user-extras{,-options}` for ownership/branding/empty states; each catalog ID needs detail. Optional `/mockshop/user-knowledge-hierarchy` supplies finite folder/document choices. Shares/transfers use live accepted Users and Groups; shared team IDs must be coherent because teams supersede raw group fixtures. |
 | Admin providers/model picker | **Admin** provider catalog is mutable authority; public catalog supplies display descriptors. Built-in options/available-model fixtures stage selectable models; keep IDs/default provider/model references coherent. |
 | Connectors/detail | Shared sources generate indexing rows, pair detail, connector + credential; supplementary attempts/errors/permission-sync/group-sync DTOs; `/mockshop/save-controls.pair` for create. |
 | Groups/users | Accepted-users identity list + admin groups + group seeds + connector status + document sets + admin agents; invite/pending lists and mock-feedback metadata separately. |

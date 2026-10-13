@@ -12,18 +12,26 @@ Opening a card displays the agent viewer. **More Info**, Fold/Expand Actions & T
 
 A form's knowledge/actions selection changes metadata used by native catalogs and the authored chat context. It does not provision a real retrieval source or execute an external action. The admin editor uses this same form with `?admin=true`; its feature/list controls are covered in [admin agent curation](script-admin.md#admin-agent-curation).
 
+Agent **Advanced Options** exposes native **Default Model**, **Knowledge Cutoff Date**, **Overwrite System Prompt** and **Reminders**. Save commits `default_model_configuration_id`, `search_start_date`, `replace_base_system_prompt` and `task_prompt` on the same persona; preserve unrelated name/instructions/starters/tools/ownership/privacy/labels/sets. Reopen the saved gallery/editor, reload, retain with keep and restore with fresh reset. The native Collapsible is open by default; another title click closes it. Provider expansion follows header `aria-expanded`; these editor controls are not Enterprise-only.
+
+For Knowledge browsing, author finite `/mockshop/user-knowledge-hierarchy:{nodes,documents}` plus coherent source/document identities. Native hierarchy/document routes expose that catalog; no indexer discovers additional content. Use source/folder controls, breadcrumbs, native sorting/filtering and visible-row selection. Date sorting places missing timestamps last; **On top** and **Mixed with Files** are folder choices, not an invented “On bottom” control. Hidden selected rows survive visible-row header selection; no-match filtering is a local empty view, not deletion.
+
+The selected-items **eye** and **Selected items** return preserve selection; footer clear then Save explicitly empties Knowledge. Save resolves new folder/document IDs against this finite catalog, preserves omitted fields and rejects unknown IDs. Check saved reopen/reload and protected Agent metadata; the Knowledge card refreshes current selected Document Set names by stable ID. Use the native search-submit button: the pinned Enter handler can also submit the outer Agent form.
+
 ## Agent sharing, ownership and deletion
 
 | Native control/context | Operation and committed state | Result, cancel behavior and boundary |
 | --- | --- | --- |
 | Agent **Share** modal | `PATCH /api/persona/<id>/share` saves public scope, user/group shares and permission levels. | Empty search intentionally has no suggestions; type a case-insensitive user name/email or group. Selecting a chip is a draft; Save commits. Cancel/reopen must retain only prior saved shares. |
-| Share permission choice **View & Chat** / **Editor** | Changes the corresponding share's level. | Scope the row; a same-label selector outside it can alter another recipient. Group resource pickers may be fixture-only on the admin side; see backend cross-read limits. |
+| Share permission choice **View & Chat** / **Editor** | Changes the corresponding share's level. | Scope the row; same-label selectors can alter another recipient. Users/Groups and Group resources read current sole owners; this still is not production authorization. |
 | Share **Copy link** | Browser clipboard write of the local agent link. | Does not change access scope. Clipboard permission and a copy success icon matter. |
 | Owner row → transfer dialog | `POST /api/persona/<id>/transfer-ownership`. | Agents accept user or group ownership; skill ownership is different. Back/Cancel preserves the original owner. |
 | **Remove my access** | `DELETE /api/persona/<id>/share/me`. | Removes this viewer's share and updates accessible catalog views. It is not global deletion. |
 | Agent **Delete** → confirmation | `DELETE /api/persona/<id>`. | Deletes the local persona and removes relevant native catalog/pin consumers. Cancel leaves it intact. |
 
 The old share-picker example only opened/searched a picker; it did not demonstrate saving access. The later sharing/ownership/self-access scripts contain those mutations and readbacks. Do not promote a picker screenshot to permission persistence evidence. The Extras mock's share/delete routes do not provide complete production-grade root permission enforcement; author the correct native viewer/role and describe the actual boundary.
+
+Saved Group names follow the sole Groups store in Share and group-Owner rows without replacing selected IDs, permissions or ownership. Users resolve live accepted identities. Declare shared teams and their explicit IDs coherently: adapter team projection supersedes raw group directories. Community sharing should use its native user/public controls and confirm absence of Enterprise group writes, rather than adding paid flags.
 
 ## Agent labels, avatars and analytics
 
@@ -41,6 +49,8 @@ An empty-user seed can hide existing chats, pins, notifications and nonbuilt-in 
 
 Enterprise branding comes from enterprise settings: application/team name, logo, header/greeting, disclaimer and help content. A required first-visit notice is a blocking native dialog: select its required acknowledgement checkbox, then **Start**. Acknowledgement is stored in browser-local consent keys, not reset solely by a backend keep flag. A published announcement is a separate native popup/banner. See [admin theme and consent](script-admin.md#theme-consent-and-announcements) for writes and persistence.
 
+The patched native greeting defaults deterministically to localized help text ("How can I help?" in English). Truthy Enterprise authored/saved custom greetings take precedence; fresh restores the seed. Community does not fetch Enterprise greeting settings or enable paid features for this behavior.
+
 ## Notifications and banners
 
 `#onyx-user-dropdown` → **Notifications** opens the native list, with read/unread/pinned groups according to staged metadata. Hover a notification to reveal mark-read/dismiss actions. Opening a target navigates and `POST /api/notifications/<id>/dismiss` marks that item dismissed; **Mark all** posts `/api/notifications/dismiss-all`. `GET /api/notifications/summary` supplies counts. A warning banner has **Next**, **Previous**, **View**, and **Dismiss** controls; View and Dismiss are not synonymous.
@@ -49,9 +59,11 @@ These operations mutate the local notification store and survive navigation/keep
 
 ## General settings, language and background
 
-`/app/settings` redirects to the General page. Name and role fields save through `PATCH /api/user/personalization` on the native commit interaction (Enter/blur as appropriate). Color Mode updates `PATCH /api/user/theme-preference`; selecting a chat background updates `/api/user/chat-background` and the theme expected by that background. **Cloud**, **Hills**, **Plants**, **Mountains**, **Night**, and **None** are immediate choices: there is no Save/Cancel transaction. None clears the background to null while retaining the current theme. Verify the chat CSS/wallpaper consumer as well as the selected tile.
+`/app/settings` redirects to General. Name and role commit via `PATCH /api/user/personalization` on native Enter/blur. Color Mode uses `/api/user/theme-preference`; backgrounds use `/api/user/chat-background` and native LIGHT/DARK theme. **Clouds**, **Hills**, **Plants**, **Mountains**, **Night** and **None** are immediate buttons, not Save/Cancel drafts. None writes null but retains theme. Inspect the actual `/app` wallpaper/CSS as well as selected tiles; dirty a background before asserting fresh null restoration. These controls are edition-neutral.
 
 The **Display language** input offers nine native endonyms. Escape cancels an open picker; choosing the current language is the native `defaultOption` no-op. A different choice patches `/api/user/language`, sets the native HTTP-only `NEXT_LOCALE` cookie and refreshes the router. `document.cookie` cannot assert or clear that HTTP-only cookie. The corpus covers an English→Spanish transition and a fresh-context English restoration; it does not establish that every control in every locale is translated. A source-derived nine-option inventory is not a nine-locale acceptance matrix. Use stable test IDs in locale-independent steps and explicit localized labels only when locale is intentional.
+
+To demonstrate Spanish dirty → English restoration, use a fresh runner/browser context with `locale: en`, not a same-browser backend pseudo-reset: the HTTP-only locale cookie has a separate lifetime.
 
 ## Chat preferences and memories
 
@@ -81,6 +93,8 @@ The LLM Gateway settings tab is edition/permission gated (Business+, eligible `C
 ## Connected apps and personal connectors
 
 The connected-apps page requires `oauth_provider_enabled` and an authenticated member. Its grant list uses the local OAuth-provider grant store; Disconnect opens a confirmation, Cancel preserves the grant, and confirm DELETEs `/api/oauth-provider/grants/<id>`. The empty state is a native result of deleting the local grant. It does not revoke a real third-party token or implement an authorization server.
+
+Community can expose Connected apps with explicit `oauth_provider_enabled:true`, `ee_features_enabled:false`, `tier:community` settings and a finite grant seed. Enter through native Accounts & Access, Cancel/confirm Disconnect, and check empty/reload/keep/fresh. The LLM Gateway link and Enterprise settings requests remain absent; enabling this conditional tab neither grants paid features nor performs real OAuth revocation.
 
 Personal connector cards are distinct from organization connector/credential pairs. Vendor/name metadata is read-only where the native UI supplies no editor. Gmail Disconnect deletes `/api/federated/<id>/oauth`. Connect first navigates to the local `/mockshop/personal-connectors/<id>/connect` landing: the GET is read-only and safe from prefetch side effects. Only its explicit **Connect fake…** POST marks the local connector connected and redirects to settings. A landing-page screenshot is not a successful OAuth connection. See [callback contracts](script-auth-extension.md#provider-callbacks) for finite receipts and errors.
 

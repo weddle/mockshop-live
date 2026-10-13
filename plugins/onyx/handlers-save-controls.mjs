@@ -1,4 +1,4 @@
-// Native common writes only. No provider requests, OAuth, indexing or durable storage.
+// Native common writes only. No provider requests, OAuth, indexing execution or durable storage.
 export default function createSaveControls(core) {
   const state = core.state;
   const reset = (body = {}) => { if (!body.keep) state.saveControls = {}; };
@@ -23,9 +23,10 @@ export default function createSaveControls(core) {
       nextModel: Math.max(0, ...catalog.providers.flatMap((p) => p.model_configurations.map((m) => m.id))) + 1,
       nextConnector: Math.max(999, ...Object.values(pairs).map((p) => p.connector.id)) + 1,
       nextPair: Math.max(999, ...Object.values(pairs).map((p) => p.id)) + 1,
-      nextCredential: Math.max(999, ...credentials.map((c) => c.id)) + 1, nextFile: 1000, uploads: {} };
+      nextCredential: Math.max(999, ...credentials.map((c) => c.id)) + 1, nextFile: 1000, uploads: {},
+      indexingErrors: {}, targetedJobs: {}, nextTargetedJob: 1 };
   };
-  // Shared with #27: call this at model resolution time; do not retain a fixture catalog snapshot.
+  // Shared with chat: call this at model resolution time; do not retain a fixture catalog snapshot.
   state.saveControlsProviderCatalog = () => publicCatalog();
   const publicCatalog = () => {
     const catalog = data().catalog;
@@ -65,6 +66,27 @@ export default function createSaveControls(core) {
       total_docs_indexed: group.indexing_statuses.reduce((sum, p) => sum + p.docs_indexed, 0) };
     return groups;
   };
+  // One current projection of the sole connector/pair state over the seeded admin status DTOs: keeps seeded extra
+  // fields, overlays saved pair/connector/credential edits and appends new pairs. Untouched seeds read unchanged.
+  const connectorRows = (seedRows = core.fixture("GET", "/manage/admin/connector/status") || []) => {
+    const d = data(), seeded = new Set(seedRows.map((row) => row.cc_pair_id));
+    const project = (pair, base = {}) => clone({ groups: [], has_successful_run: false, ...base, cc_pair_id: pair.id,
+      name: pair.name ?? base.name, connector: { ...base.connector, ...pair.connector },
+      credential: { ...base.credential, ...pair.credential }, access_type: pair.access_type ?? base.access_type,
+      status: pair.status ?? base.status });
+    return [...seedRows.map((row) => d.pairs[row.cc_pair_id] ? project(d.pairs[row.cc_pair_id], row) : clone(row)),
+      ...Object.values(d.pairs).filter((p) => !seeded.has(p.id) && !d.seededPairs.has(p.id)).map((p) => project(p))];
+  };
+  // Current connectors: those of the projected rows plus saved connectors not yet bound to a pair.
+  const connectorList = () => {
+    const rows = connectorRows().map((row) => row.connector), ids = new Set(rows.map((c) => c.id));
+    return [...rows, ...Object.values(data().connectors).filter((c) => !ids.has(c.id)).map(clone)];
+  };
+  // Error rows and queued requests belong to this same org store. No worker lands documents.
+  const pairErrors = (id) => {
+    const d = data();
+    return d.indexingErrors[id] ||= clone(core.fixture("GET", `/manage/admin/cc-pair/${id}/errors`) || { items: [], total_items: 0 });
+  };
   const bind = (connector, credential, body) => {
     const d = data();
     const existing = Object.values(d.pairs).find((p) => p.connector.id === connector.id && p.credential.id === credential.id);
@@ -85,7 +107,7 @@ export default function createSaveControls(core) {
     if (baseRequired.includes(body.provider) && !(body.api_base ?? existing?.api_base)) return "API Base URL is required";
     return null;
   };
-  return { reset, routes: [
+  return { reset, connectorRows, connectorList, providerRows: () => data().catalog.providers, routes: [
     { method: "GET", path: "/admin/llm/provider", handle(ctx) { ctx.send(200, data().catalog); } },
     { method: "GET", path: "/admin/llm/provider/:id", handle(ctx) {
       const provider = data().catalog.providers.find((p) => p.id === Number(ctx.params.id));
@@ -131,6 +153,17 @@ export default function createSaveControls(core) {
         model_configurations: models };
       if (existing) d.catalog.providers[d.catalog.providers.indexOf(existing)] = provider; else d.catalog.providers.push(provider);
       ctx.send(200, provider);
+    } },
+    // Native Delete: a default provider needs ?force=true (sent only for the last provider); defaults naming it are cleared.
+    { method: "DELETE", path: "/admin/llm/provider/:id", handle(ctx) {
+      const catalog = data().catalog, id = Number(ctx.params.id), index = catalog.providers.findIndex((p) => p.id === id);
+      if (index < 0) return ctx.send(404, { detail: "Fake provider not found" });
+      if (catalog.default_text?.provider_id === id && ctx.query.force !== "true")
+        return ctx.send(400, { detail: "Cannot delete the default provider" });
+      catalog.providers.splice(index, 1);
+      for (const key of ["default_text", "default_vision", "default_chat_naming", "default_craft"])
+        if (catalog[key]?.provider_id === id) catalog[key] = null;
+      ctx.send(200, null);
     } },
     { method: "POST", path: "/admin/llm/default", async handle(ctx) {
       const body = await ctx.body(), catalog = data().catalog;
@@ -241,10 +274,23 @@ export default function createSaveControls(core) {
       ctx.send(200, { success: true, simulated: true });
     } },
     { method: "POST", path: "/manage/admin/connector/run-once", async handle(ctx) {
-      const body = await ctx.body(), pair = Object.values(data().pairs).find((p) => p.connector.id === body.connector_id);
-      if (!pair || pair.id < 1000) return false;
-      pair.indexing = true; pair.last_index_attempt_status = "in_progress";
-      pair.latest_checkpoint_description = "Local fake upload staged; no indexing process runs.";
+      const body = await ctx.body(), d = data(), pairs = Object.values(d.pairs);
+      if (!Array.isArray(body.credentialIds) || !body.credentialIds.length || typeof body.from_beginning !== "boolean")
+        return ctx.send(400, { detail: "Connector, credential IDs and indexing mode are required" });
+      const selected = body.credentialIds.map((id) => pairs.find((p) => p.connector.id === body.connector_id && p.credential.id === id));
+      if (selected.some((p) => !p)) return ctx.send(404, { detail: "Fake connector and credential pair not found" });
+      if (selected.some((p) => p.indexing)) return ctx.send(409, { detail: "Cannot re-index while indexing is already in progress" });
+      if (selected.some((p) => p.status === "PAUSED" || p.status === "INVALID"))
+        return ctx.send(409, { detail: "Resume or fix the connector before re-indexing" });
+      for (const pair of selected) {
+        pair.indexing = true;
+        const seeded = d.seededPairs.has(pair.id);
+        pair.last_index_attempt_status = seeded ? "not_started" : "in_progress";
+        pair.latest_checkpoint_description = seeded
+          ? `Local fake ${body.from_beginning ? "complete re-index" : "indexing update"} request staged; no indexing process runs.`
+          : "Local fake upload staged; no indexing process runs.";
+      }
+      // Existing document counts, attempt history and unresolved errors remain untouched.
       ctx.send(200, { success: true, simulated: true });
     } },
     { method: "GET", path: "/manage/admin/connector", handle(ctx) { ctx.send(200, Object.values(data().connectors).filter((c) => !ctx.query.credential || c.credential_ids.includes(Number(ctx.query.credential)))); } },
@@ -290,6 +336,53 @@ export default function createSaveControls(core) {
       if (!pair) return ctx.send(404, { detail: "Fake connector not found" });
       ctx.send(200, pair);
     } },
+    { method: "GET", path: "/manage/admin/cc-pair/:id/errors", handle(ctx) {
+      if (!data().pairs[ctx.params.id]) return ctx.send(404, { detail: "Fake connector not found" });
+      const errors = pairErrors(ctx.params.id);
+      const items = ctx.query.include_resolved === "false" ? errors.items.filter((e) => !e.is_resolved) : errors.items;
+      const page = Math.max(0, Number(ctx.query.page_num) || 0), size = Math.max(1, Number(ctx.query.page_size) || 10);
+      ctx.send(200, { items: items.slice(page * size, (page + 1) * size), total_items: items.length });
+    } },
+    { method: "POST", path: "/manage/admin/indexing/targeted-reindex", async handle(ctx) {
+      const body = await ctx.body(), d = data();
+      if (!Array.isArray(body.error_ids) || !body.error_ids.length || body.error_ids.length > 100)
+        return ctx.send(400, { detail: "Provide between 1 and 100 existing indexing error IDs" });
+      const errors = Object.keys(d.pairs).flatMap((id) => pairErrors(id).items);
+      const selected = [...new Set(body.error_ids)].map((id) => errors.find((e) => e.id === id));
+      if (selected.some((e) => !e)) return ctx.send(404, { detail: "Fake indexing error not found" });
+      if (selected.some((e) => !d.pairs[e.connector_credential_pair_id]?.supports_targeted_reindex))
+        return ctx.send(400, { detail: "This connector does not support targeted reindex" });
+      const queued = selected.filter((e) => !e.is_resolved), skipped = selected.length - queued.length;
+      const id = d.nextTargetedJob++;
+      d.targetedJobs[id] = { id, status: "not_started", requested_at: new Date().toISOString(), completed_at: null,
+        target_count: queued.length, resolved_count: 0, still_failing_count: queued.length, skipped_count: skipped, resolved_summary: [] };
+      // Submit-only native outcome: rows stay Unresolved, no completed job/document is fabricated.
+      ctx.send(200, { targeted_reindex_job_id: id, queued_count: queued.length, skipped_count: skipped });
+    } },
+    { method: "GET", path: "/manage/admin/indexing/targeted-reindex/:id", handle(ctx) {
+      const job = data().targetedJobs[ctx.params.id];
+      ctx.send(job ? 200 : 404, job || { detail: "Fake targeted reindex request not found" });
+    } },
+    { method: "PUT", path: "/manage/admin/cc-pair/:id/status", async handle(ctx) {
+      const pair = data().pairs[ctx.params.id], body = await ctx.body();
+      if (!pair) return ctx.send(404, { detail: "Fake connector not found" });
+      if (!["ACTIVE", "PAUSED"].includes(body.status))
+        return ctx.send(400, { detail: "Connector status must be ACTIVE or PAUSED" });
+      if (pair.status === "DELETING") return ctx.send(400, { detail: "Connector deletion is already scheduled" });
+      pair.status = body.status;
+      ctx.send(200, null);
+    } },
+    { method: "POST", path: "/manage/admin/deletion-attempt", async handle(ctx) {
+      const body = await ctx.body();
+      const pair = Object.values(data().pairs).find((p) => p.connector.id === body.connector_id && p.credential.id === body.credential_id);
+      if (!pair) return ctx.send(404, { detail: "Fake connector not found" });
+      if (!["PAUSED", "INVALID"].includes(pair.status))
+        return ctx.send(400, { detail: "Pause the connector before deleting" });
+      // Scheduling is visible immediately; no job runs and indexed documents remain intact.
+      pair.status = "DELETING";
+      pair.latest_deletion_attempt = { connector_id: body.connector_id, credential_id: body.credential_id, status: "PENDING" };
+      ctx.send(200, null);
+    } },
     { method: "PUT", path: "/manage/admin/cc-pair/:id/name", handle(ctx) {
       const pair = data().pairs[ctx.params.id];
       if (!pair) return ctx.send(404, { detail: "Fake connector not found" });
@@ -313,7 +406,14 @@ export default function createSaveControls(core) {
         indexing_statuses: g.indexing_statuses.filter((r) => !body.name_filter || r.name.toLowerCase().includes(body.name_filter.toLowerCase())) })));
     } },
   ], transform: {
-    "GET /manage/connector-status": (value) => [...value, ...Object.values(data().pairs).filter((p) => !data().seededPairs.has(p.id))
-      .map((p) => ({ source: p.connector.source, status: p.status, has_successful_run: false }))],
+    "GET /manage/connector-status": (value) => {
+      const d = data();
+      return [...value.map((row) => {
+        const pair = d.pairs[row.cc_pair_id];
+        return pair ? { ...row, status: pair.status } : row;
+      }), ...Object.values(d.pairs).filter((p) => !d.seededPairs.has(p.id))
+        .map((p) => ({ cc_pair_id: p.id, source: p.connector.source, status: p.status, has_successful_run: false }))];
+    },
+    "GET /manage/admin/connector/status": (value) => connectorRows(value),
   } };
 }

@@ -46,9 +46,9 @@ These routes either stay fixture-only or have the noted small transform. Exact r
 | `POST /manage/admin/connector-checks/plan` | `{checks:[]}`; **static no-op** plan, not connector validation. |
 | `POST /manage/admin/credential/:id/binding-check` | `{field_errors:{},rejection:null}`; **static no-op** accepts shape without credential verification. |
 | `GET /manage/connector-group-restrictions` | `{enabled:false}`; seed only; group permission/resource edits do not set it. |
-| `GET /manage/admin/cc-pair/:id/index-attempts`, `GET /manage/admin/cc-pair/:id/errors` | `{items:[],total_items:0}`; adapter may emit exact-ID overrides using source mapping attempts/errors. No attempt worker. |
+| `GET /manage/admin/cc-pair/:id/index-attempts`, `GET /manage/admin/cc-pair/:id/errors` | Neutral `{items:[],total_items:0}` seeds; adapter can author attempts/errors. Attempts remain fixture-only; Save Controls owns paginated live error reads, not an attempt worker. |
 | `GET /manage/admin/cc-pair/:id/permission-sync-attempts`, `GET /manage/admin/cc-pair/:id/external-group-sync-attempts` | `{applicable:false,items:[],total_items:0}`; exact source mapping permission_sync/group_sync can override. No sync engine. |
-| `GET /federated` | [] connector selector rows; literal `/federated/6501` live save does not recompute this list. |
+| `GET /federated` | Neutral [] seed; Admin Pages owns the live create/list/update/delete collection and Document Set reader. Empty seeds do not fabricate a configured connector. |
 | `GET /federated/sources/federated_slack/credentials/schema` | `{credentials:{bot_token:{type,description,required,secret}}}` neutral empty/false values; author actual native schema metadata. |
 | `GET /federated/sources/federated_slack/configuration/schema` | `{configuration:{channel_names:{type,description,required,secret}}}`; no dynamic schema discovery. |
 | `GET /build/admin/base-instructions` | `{content:""}`; no save route here. Craft settings/instructions must target their real owner, not assume this is writable. |
@@ -56,10 +56,10 @@ These routes either stay fixture-only or have the noted small transform. Exact r
 | `GET /admin/hooks/specs` | [] specs, read by an explicit Admin Pages route before hook-ID matching; no execution. |
 | `GET /analytics/admin/persona/messages`, `GET /analytics/admin/persona/unique-users` | [] fixture metrics; unlike query/user/onyxbot they have no date-filter transform. |
 | `GET /admin/chat-session-history/6501` | One neutral exact-detail object `{id,user_email,name,assistant_id,assistant_name,time_created,flow_type,messages}`. Other IDs need explicit fixtures; list/filter writes do not create detail routes. |
-| `GET /admin/oauth-test/claims` | `{found:false,email:"",captured_at:null,oauth_name:null,id_token_claims:null,userinfo:null,directory_profile:null,directory_source:null,resolved_profile:null,enrichment_enabled:false,token_meta:null}`. No JWT/IdP claim capture. |
+| `GET /admin/oauth-test/claims` | Neutral no-snapshot `{found:false,email:"",captured_at:null,oauth_name:null,id_token_claims:null,userinfo:null,directory_profile:null,directory_source:null,resolved_profile:null,enrichment_enabled:false,token_meta:null}`. Admin Pages owns prepared readback and optional `/mockshop/admin-pages/oauth-claims-{rerun,empty}` DTOs; no JWT/IdP claim capture. |
 | `GET /admin/billing/billing-information` | `{subscribed:false}`; separate from live transformed `/tenants/billing-information`. |
 | `GET /admin/cost-overrides` | [] fixture cost rows; no save handler declared. |
-| `GET /users` | [] neutral user sharing-directory; adapter generates people. Root agent Extras shares/transfers uses this **raw fixture**, unlike Craft's live accepted-user callback. |
+| `GET /users` | Neutral [] sharing-directory; adapter generates people. Extras shares/transfers use current accepted Users, preserving unchanged same-ID seed DTOs, rather than a stale raw directory. |
 | `GET /user/pats/scopes` | [] scope descriptions; PAT creation does not populate scope inventory. |
 | `GET /user-oauth-token/status` | [] status metadata; not updated by personal connector/OAuth-grant writers. |
 
@@ -73,11 +73,11 @@ Every other base fixture route belongs to one of these explicit owner contracts;
 | `GET /enterprise-settings`, `GET /license` | Community explicit404; enterprise overlay + [Admin Pages](backend-admin.md#branding-banners-reports-and-analytics) transforms. |
 | `GET /persona`, `GET /persona/0`, `GET /admin/persona`, `GET /admin/agents`, `GET /user/pinned-assistants` | [Root agents](backend-user.md#agents-and-pins). Base only builtin Assistant0. Catalog/detail/flags are complete native DTOs, not names alone. |
 | `GET /persona/labels` | Extras fixture+added labels; [user](backend-user.md#extras). |
-| `GET /tool`, `GET /tool/openapi` | Base builtins plus MCP then OpenAPI transforms; [Admin](backend-admin.md#mcp). Root agent save still selects raw `/tool` seed. |
+| `GET /tool`, `GET /tool/openapi` | Base builtins plus MCP then saved OpenAPI composition; Agent save/readback uses that same live catalog. [Admin](backend-admin.md#mcp). |
 | `GET /mcp/servers`, `GET /mcp/servers/persona/11`, `GET /mcp/servers/persona/:id`, `GET /admin/mcp/servers`, `GET /admin/mcp/server/1/tools/snapshots`, `GET /admin/mcp/mock-creation` | MCP inventories and creation defaults. Literal persona11 includes assistant_id in neutral DTO; parameter route only mcp_servers. Dynamic admin tools route wins over exact tools fixture and derives tools from `/tool`. |
 | `GET /manage/admin/user-group`, `GET /manage/user-groups/minimal`, `GET /mockshop/admin-groups/seeds`, `GET /manage/admin/permissions/registry` | [Groups](backend-admin.md#users-and-groups). Registry static IDs/tokens below; actual stores/mutations in Groups. |
 | `GET /manage/users`, `GET /manage/users/accepted/all`, `GET /manage/users/invited`, `GET /tenants/users/pending`, `GET /manage/users/counts`, `GET /manage/users/mock-feedback` | [Users](backend-admin.md#users-and-groups). Neutral empty users/counts; mock-feedback `{simulated:false,invite_message:"",reset_password:""}` must be authored for meaningful fake invite/reset messages. |
-| `GET /manage/document-set`, `GET /manage/admin/connector/status` | Document-set store seed and raw resource-selector rows decorated by Groups; [Admin](backend-admin.md#document-sets). |
+| `GET /manage/document-set`, `GET /manage/admin/connector/status` | Document Set seed and connector selector rows; Save Controls projects current pair metadata and Groups decorates selections. [Admin](backend-admin.md#document-sets). |
 | `POST /manage/admin/connector/indexing-status`, `GET /manage/connector-status`, `GET /manage/admin/credential`, `GET /mockshop/save-controls` | Org-keyed connector/provider writer seeds; [Save Controls](backend-admin.md#providers-connectors-and-credentials). |
 | `GET /manage/admin/similar-credentials/google_drive`, `/slack`, `/zoom`, `/jira`, `/confluence` (all GET) | Neutral exact empty arrays; Save Controls dynamic similar-credentials derives actual live credential rows for any source. |
 | `GET /connector/oauth/details/google_drive`, `/slack`, `/zoom`, `/jira`, `/confluence` (all GET) | Neutral `{oauth_enabled:false,additional_kwargs:[]}`; dynamic handler overrides flags using mock save-controls.oauth_sources. |
@@ -138,7 +138,9 @@ Static `/manage/admin/permissions/registry` identifiers → token arrays:
 
 Groups stores selected permission arrays, but no propagation engine updates user effective permissions. Role demonstrations must seed user tokens deliberately. MCP uses role/admin_capabilities instead, and root agent read also recognizes `read:agents` although it is not a separate neutral registry row.
 
-Enterprise-only seed additions: `GET /enterprise-settings` with `application_name,use_custom_logo,use_custom_logotype,logo_display_style,custom_nav_items,custom_lower_disclaimer_content,custom_header_content,two_lines_for_chat_header,custom_popup_header,custom_popup_content,enable_consent_screen,consent_screen_prompt,show_first_visit_notice,custom_greeting_message`; all neutral null/false/empty. `GET /enterprise-settings/custom-analytics-script:null`. `GET /license` active/enterprise/local manual_upload, seats500,used_seats212,expires_at in180d. These are local display metadata, not a real license or production subscription.
+Enterprise-only seed additions: `GET /enterprise-settings` with `application_name,use_custom_logo,use_custom_logotype,logo_display_style,custom_nav_items,custom_lower_disclaimer_content,custom_header_content,two_lines_for_chat_header,custom_popup_header,custom_popup_content,enable_consent_screen,consent_screen_prompt,show_first_visit_notice,custom_greeting_message`; neutral null/false/empty except greeting `How can I help?`. `GET /enterprise-settings/custom-analytics-script:null`. `GET /license` active/enterprise/local manual_upload, seats500,used_seats212,expires_at in180d. These are local display metadata, not a real license/subscription.
+
+The native new-chat greeting is deterministic. Community uses localized `greeting.helpText` (English "How can I help?") without fetching Enterprise settings or spoofing paid flags. Enterprise's truthy authored/saved `custom_greeting_message` wins; empty/null falls back to the same help text. Fresh reset restores the seed. The matching patched frontend build is required for this fallback behavior.
 
 ## Frontend patches
 
@@ -159,6 +161,8 @@ Manifest applies all `.patch` files in name order with `patch -p1` after exporti
 | `0013-nrf-no-provider-footer-clearance.patch` | NRF configure-provider CTA adds shrink-0/footer-height margin to remain reachable. Native action navigates LLM admin route, no new backend API. |
 | `0014-single-model-regeneration-classification.patch` | `multiModel.ts`: >=2 model-tagged siblings only count as parallel models if model names differ; same-model regenerated siblings stay alternatives. Includes upstream unit-test patch; no test execution claimed here. |
 | `0015-agent-gallery-curation.patch` | Gallery sorts display_priority before descending-ID tie-break and hides is_listed:false from All while retaining owned entries in Your. Backend root still computes access and priorities. |
+| `0016-deterministic-native-greeting.patch` | `WelcomeMessage.tsx`: fallback always uses `greeting.helpText`, replacing random helpText/startText selection; truthy Enterprise custom greeting still wins. |
+| `0017-slack-answer-type-readback.patch` | Optional typed `ChannelConfig.response_type` initializes the native channel editor from saved configuration; falls back to `citations` only when absent. No additional backend store. |
 
 `ONYX-ENTERPRISE-LICENSE.txt` governs EE patch excerpts (0009 and0012), not Mockshop's MIT grant. Pinned enterprise source remains subject to its upstream terms; documentation of local fake license metadata grants no production rights. Generated runtime/upstream assets are not a new product or permission bypass.
 
@@ -185,9 +189,9 @@ Intentional failures need matching script assertions/expected-error policy. Avoi
 
 - Every current handler module and every base/edition fixture family is indexed. This is **mock implementation coverage**, not exhaustive coverage of every upstream API or every possible UI path.
 - All routes here were read from source; no builds, tests, formatting, browser smokes or network calls were performed to verify behavior for this documentation work. Native UI gating/hydration/error presentation still requires integrated verification after implementation changes.
-- Raw fixture joins intentionally miss some live changes: group agent/connector selectors, document-set connector selectors, Extras user/group sharing, admin image source provider, Slack persona/sets, project featured-agent flags, and shadowed `/manage/connector`. Resets/cache refresh cannot manufacture missing cross-owner joins.
+- Image source-provider choice, Slack Agent/Document Sets, Group resources, Agent Knowledge/tools/sharing and Project featured flags use explicit sole-owner live projections. Other fixture-only snapshots still do not inherit arbitrary live changes; see each owner contract.
 - Root chat persistence is stronger than most feature caches on world revisit; read the reset matrix before demonstrating cross-world continuity. Cookies/localStorage/cache are browser-owned and separate.
 - Some neutral skeletons are intentionally inert (blank Craft defaults, status0 conditional cases, empty built-in provider choices, zero context-token budgets). Enabled gates plus empty skeletons are not a prepared walkthrough.
-- The core generic `send()` JSON-stringifies nonstring objects. Admin logo and log-ZIP routes pass Buffers through it; unlike raw binary owners, valid binary wire output cannot be claimed from these paths without observing it. This source-level caveat is recorded rather than hidden by a fake successful download claim.
+- Admin logos and empty log-export ZIPs use raw binary responses rather than generic JSON serialization. Correct source ownership is not browser/download acceptance: inspect actual response/download bytes, decoding and the visible consumer when verifying these paths.
 - Authorization is partial UI simulation; root agents and MCP enforce specific checks, but many admin/Extras/Craft writes only validate row existence/content. No production security assurance should be inferred.
 - Dates, counts, prices, metrics, generated titles, search rankings, scheduled runs, tools and responses are prepared/finite unless the table explicitly describes computation. A control's successful local readback is not execution against a real service.

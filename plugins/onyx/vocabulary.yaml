@@ -1685,6 +1685,62 @@ actions:
     preconditions: ["Native branch callback support and shared selected-message tree implementation"]
     outcome: "Native extension surface uses shared chat/preferences and browser-local new-tab state; no live extension is installed."
     guide: "docs/script-auth-extension.md#new-tab-extension-surface"
+  - id: stage-seeded-connector-indexing
+    title: Stage seeded full or update reindex
+    surface: connector-detail
+    guide: "docs/script-admin.md#indexing-details-and-permission-sync"
+    steps: "Use the native Run Update/Re-index confirmation; cancel preserves state, submit remains pending with documents/history/errors unchanged."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
+  - id: queue-targeted-connector-reindex
+    title: Queue existing-capability targeted Resolve All
+    surface: connector-detail
+    guide: "docs/script-admin.md#indexing-details-and-permission-sync"
+    steps: "Submit known unresolved error IDs through native Resolve All; toast acknowledges queue, readback remains not_started and unresolved."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
+  - id: schedule-paused-connector-deletion
+    title: Schedule pending-only connector deletion
+    surface: connector-detail
+    guide: "docs/script-admin.md#indexing-details-and-permission-sync"
+    steps: "Pause then use native Delete confirmation; only PAUSED/INVALID eligible, pending deletion cannot resume and indexed documents remain."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
+  - id: inspect-oauth-claim-snapshots
+    title: Read and rerun local OAuth claim snapshots
+    surface: admin65-enterprise
+    guide: "docs/script-admin.md#oauth-claim-snapshots-and-rerun"
+    steps: "Distinguish no snapshot, loaded claims and found-empty; rerun only the prepared diagnostic capture, preserving actor/providers/other Pages state."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
+  - id: configure-saved-model-default
+    title: Set a saved model default immediately
+    surface: admin-language-models
+    guide: "docs/script-admin.md#saved-defaults-manual-models-and-auto-update"
+    steps: "Set as Default writes immediately; reopen actual default badge/picker, preserve IDs and distinguish provider-form Cancel from submitted state."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
+  - id: configure-manual-and-auto-models
+    title: Save manual and finite Auto model inventory
+    surface: admin-language-models
+    guide: "docs/script-admin.md#saved-defaults-manual-models-and-auto-update"
+    steps: "Trim/duplicate/blank guards, native draft switches/model names and Update/reopen/public picker/Cancel/keep/fresh; no discovery calls."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
+  - id: configure-community-model-access
+    title: Save genuine Community provider access metadata
+    surface: admin-language-models
+    guide: "docs/script-admin.md#saved-defaults-manual-models-and-auto-update"
+    steps: "Native All Users & Agents/Named Groups & Agents, agent chips, source-native fallback group cards and absent paid requests; metadata is not a production ACL."
+    status: partial
+    persists: true
+    outcome: "Source-derived local state contract; current-engine browser acceptance pending."
 moments:
   - id: settings-preferences-persisted
     surface: user-settings-chat

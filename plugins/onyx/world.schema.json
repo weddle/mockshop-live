@@ -53,6 +53,8 @@
         "title": { "type": "string" },
         "reasoning": { "type": "string" },
         "chunk_delay_ms": { "type": "number", "minimum": 0 },
+        "turn": { "type": "string", "minLength": 1, "description": "Exact prepared turn identity for an authored native submission armed by state.turn; excluded from manual regex selection." },
+        "question": { "type": "string", "description": "Exact native submitted question for the prepared turn guard." },
         "match": { "type": "string" },
         "after": { "type": "string" },
         "default": { "type": "boolean" },

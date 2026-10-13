@@ -1,5 +1,5 @@
-// Project metadata and associations only. Chat replay remains in handlers.mjs; files in #28.
-export default function createUserProjectHandlers(core, { getFile, listChatSessions } = {}) {
+// Project metadata and associations only. Chat replay remains in handlers.mjs; files in handlers-user-files.mjs.
+export default function createUserProjectHandlers(core, { getFile, listChatSessions, listAgents } = {}) {
   let data;
   const reset = (body = {}) => { if (!body.keep) data = undefined; };
   const records = () => {
@@ -79,7 +79,7 @@ export default function createUserProjectHandlers(core, { getFile, listChatSessi
       { method: "GET", path: "/user/projects/:id/details", handle(ctx) {
         const project = lookup(ctx);
         if (!project) return;
-        const featured = Object.fromEntries((core.fixture("GET", "/persona") || []).map((agent) => [agent.id, Boolean(agent.is_featured)]));
+        const featured = Object.fromEntries(listAgents().map((agent) => [agent.id, Boolean(agent.is_featured)]));
         ctx.send(200, { project: snapshot(project), files: filesForProject(project.id), persona_id_to_is_featured: featured });
       } },
       { method: "GET", path: "/user/projects/:id/instructions", handle(ctx) {

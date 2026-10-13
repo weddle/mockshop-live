@@ -7,8 +7,8 @@ export default function createUserExtrasHandlers(core, agents) {
     return value.enabled ? value : { avatar_png_base64: value.avatar_png_base64, daily_stats: value.daily_stats };
   };
   const labels = () => [...(core.fixture("GET", "/persona/labels") || []), ...addedLabels];
-  const users = () => core.fixture("GET", "/users") || [];
-  const groups = () => core.fixture("GET", "/manage/user-groups/minimal") || [];
+  const users = () => agents.users();
+  const groups = () => agents.groups();
   const notifications = () => (seed().notifications || []).map((n) => ({ ...n, dismissed: n.dismissed || dismissed.has(n.id) }));
   const summary = () => ({ total_items: notifications().length, undismissed_count: notifications().filter((n) => !n.dismissed).length });
   const agent = (ctx) => {

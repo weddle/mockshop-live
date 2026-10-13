@@ -1,5 +1,5 @@
-// #63: only document-set form state; no connector ingestion or indexing.
-export default function createDocumentSetHandlers(core) {
+// Only document-set form state; no connector ingestion or indexing.
+export default function createDocumentSetHandlers(core, { connectorRows, federatedRows }) {
   let records;
   let nextId;
   const reset = (body = {}) => { if (!body.keep) records = undefined; };
@@ -16,12 +16,12 @@ export default function createDocumentSetHandlers(core) {
     const id = update ? Number(body.id) : nextId;
     const existing = rows.get(id);
     if (update && !existing) return ctx.send(404, { detail: "Document set not found" });
-    const connectors = core.fixture("GET", "/manage/admin/connector/status") || [];
+    const connectors = connectorRows();
     const selected = (body.cc_pair_ids || []).map(id => connectors.find(c => c.cc_pair_id === Number(id)));
     if (!body.name?.trim() || selected.some(c => !c) || (!selected.length && !body.federated_connectors?.length)) {
       return ctx.send(400, { detail: "A name and at least one available connector are required" });
     }
-    const federated = core.fixture("GET", "/federated") || [];
+    const federated = federatedRows();
     const row = {
       ...existing, id, name: body.name, description: body.description || "",
       cc_pair_summaries: selected.map(c => ({ id: c.cc_pair_id, name: c.name, source: c.connector.source, access_type: c.access_type })),

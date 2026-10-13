@@ -177,7 +177,7 @@ function materialize(content, { m, script, outputDir, overlays = script.overlays
   const groups = new Map();
   for (const { row } of connectorRows) { if (!groups.has(row.source)) groups.set(row.source, []); groups.get(row.source).push(row); }
   routes["POST /manage/admin/connector/indexing-status"] = [...groups].map(([source, rows]) => ({ source, summary: { total_connectors: rows.length, active_connectors: rows.filter((r) => r.cc_pair_status === "ACTIVE").length, public_connectors: rows.filter((r) => r.access_type === "public").length, total_docs_indexed: rows.reduce((n, r) => n + r.docs_indexed, 0) }, current_page: 1, total_pages: 1, indexing_statuses: rows }));
-  routes["GET /manage/connector-status"] = connectorRows.filter((s) => s.visible).map(({ row }) => ({ has_successful_run: true, source: row.source, status: row.cc_pair_status }));
+  routes["GET /manage/connector-status"] = connectorRows.filter((s) => s.visible).map(({ id, row }) => ({ cc_pair_id: id, has_successful_run: true, source: row.source, status: row.cc_pair_status }));
   routes["GET /manage/admin/credential"] = connectorRows.map((s) => s.credential);
   for (const vendor of groups.keys()) routes[`GET /manage/admin/similar-credentials/${vendor}`] = connectorRows.filter((s) => s.row.source === vendor).map((s) => s.credential);
   routes["GET /mockshop/world-screen"] = { hidden_connectors: connectorRows.filter((s) => !s.visible).map((s) => s.id) };

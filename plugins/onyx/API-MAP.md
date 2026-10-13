@@ -25,12 +25,12 @@ All `handlers*.mjs` modules are accounted for here. Root composition order matte
 | [handlers.mjs](handlers.mjs) | Composition; chat trees; prepared turns; org/screen state; agents/pins; user settings; source viewer | [Runtime](docs/backend-runtime.md), [chat](docs/backend-chat.md), [user](docs/backend-user.md) |
 | [chat.mjs](chat.mjs) | Answer selection/context, citation rendering, NDJSON packets, saved-tree serialization | [Chat](docs/backend-chat.md) |
 | [adapter.mjs](adapter.mjs), [world.schema.json](world.schema.json) | Shared world → Onyx DTOs, generated routes/history/source bodies/replies; `send` and `state` compilation | [Runtime](docs/backend-runtime.md) |
-| [handlers-save-controls.mjs](handlers-save-controls.mjs) | Org-keyed LLM catalog, connectors, credentials, pair metadata, metadata-only connector uploads | [Admin: providers/connectors](docs/backend-admin.md#providers-connectors-and-credentials) |
+| [handlers-save-controls.mjs](handlers-save-controls.mjs) | Org-keyed LLM catalog, connectors, credentials, pair metadata, metadata-only uploads, guarded indexing requests/errors and pending deletion | [Admin: providers/connectors](docs/backend-admin.md#providers-connectors-and-credentials) |
 | [handlers-document-sets.mjs](handlers-document-sets.mjs) | Document-set form records | [Admin: document sets](docs/backend-admin.md#document-sets) |
 | [handlers-admin-users.mjs](handlers-admin-users.mjs) | Accepted/invited/pending users; shared group membership identities | [Admin: users and groups](docs/backend-admin.md#users-and-groups) |
 | [handlers-admin-groups.mjs](handlers-admin-groups.mjs) | Group membership/resources/permissions/token limits | [Admin: users and groups](docs/backend-admin.md#users-and-groups) |
 | [handlers-mcp.mjs](handlers-mcp.mjs) | MCP server/tool metadata, local authentication receipts | [Admin: MCP](docs/backend-admin.md#mcp) |
-| [handlers-admin-pages.mjs](handlers-admin-pages.mjs) | Remaining admin forms, apps, billing snapshots, reports, configuration, notifications | [Admin: remaining pages](docs/backend-admin.md#remaining-admin-pages) |
+| [handlers-admin-pages.mjs](handlers-admin-pages.mjs) | Remaining admin forms, sole federated collection, apps, billing snapshots, reports, configuration, notifications | [Admin: remaining pages](docs/backend-admin.md#remaining-admin-pages) |
 | [handlers-user-files.mjs](handlers-user-files.mjs) | Known-file catalog records, metadata-only uploads, attachment references, fixture byte serving | [User: files](docs/backend-user.md#files) |
 | [handlers-user-projects.mjs](handlers-user-projects.mjs) | Projects and chat/file associations | [User: projects](docs/backend-user.md#projects) |
 | [handlers-user-search.mjs](handlers-user-search.mjs) | Fixture document filtering/classification and chat response selection; no search-session store | [Chat: search](docs/backend-chat.md#search) |
@@ -48,6 +48,7 @@ All `handlers*.mjs` modules are accounted for here. Root composition order matte
 - Tables list exact methods and paths; `:id` is one path segment and `*` a wildcard suffix. Braced choices in prose/tables enumerate literal route alternatives, not a new routing syntax.
 - Unless a row says otherwise, writes read JSON via `ctx.body()` and return HTTP 200; `null`, `{}`, a row and a list are different response bodies. Query fields are marked `?field`; multipart fields are explicitly named.
 - `core.fixture()` returns a seed DTO **without** running plugin transforms. Therefore a table that says “fixture-only join” deliberately does not promise to see another module's live edits.
+- Composed readers explicitly join sole live owners where supported: provider/image choices, connector and Group resources, Agent Knowledge/tools/sharing, Project featured flags and Slack Agent/Document Set readback. These joins preserve IDs; they do not implement service execution or permission propagation.
 - No state is durable. Preserving some state with `keep:true` is not a database and does not preserve every module on a world switch. See the reset matrix.
 - No real LLM, search index, connector ingestion, MCP execution, sandbox, scheduler, identity provider, email, DNS, billing or public sharing service is implemented. Local pages/receipts are not live integrations.
 - Do not use real secrets or private files. Most secret/upload controls discard or replace inputs, but generic metadata fields are not a comprehensive sanitizer; the admin logo handler intentionally retains selected image bytes in memory.

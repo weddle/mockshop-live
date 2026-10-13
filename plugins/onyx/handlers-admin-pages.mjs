@@ -3,8 +3,13 @@
 export default function createAdminPages(core, composition = {}) {
   let data;
   let documentsLoaded = false;
+  let oauthClaimsFixture;
+  let joinedKeys = new Set();
   const reset = (body = {}) => {
-    if (!body.keep) { data = null; documentsLoaded = body.admin_documents_fixture === "loaded"; core.state.adminCraftEnabled = {}; }
+    if (!body.keep) {
+      data = null; joinedKeys = new Set(); documentsLoaded = body.admin_documents_fixture === "loaded"; core.state.adminCraftEnabled = {};
+      oauthClaimsFixture = body.admin_oauth_claims_fixture === "empty" ? "empty" : undefined;
+    }
   };
   reset();
   const seed = (path) => structuredClone(core.fixture("GET", path));
@@ -15,6 +20,13 @@ export default function createAdminPages(core, composition = {}) {
   const billingSeed = () => {
     const kind = core.fixture("GET", "/mockshop/admin-pages/billing-case");
     return kind ? structuredClone(core.fixture("GET", "/mockshop/admin-pages/billing-snapshots")[kind]) : null;
+  };
+  // One federated collection: world rows plus the literal 6501 detail when the world defines it. Ids are never reused after Delete.
+  const federatedSeed = () => {
+    const rows = seed("/federated") || [];
+    const detail = seed("/federated/6501");
+    if (detail?.id === 6501 && !rows.some((row) => row.id === 6501)) rows.push(detail);
+    return { rows, lastId: Math.max(6500, ...rows.map((row) => Number(row.id) || 0)) };
   };
   const state = () => data ||= {
     settings: {}, enterprise: {}, security: seed("/admin/security"), assistant: seed("/admin/default-assistant/configuration"),
@@ -27,12 +39,15 @@ export default function createAdminPages(core, composition = {}) {
     guilds: seed("/manage/admin/discord-bot/guilds"), discordChannels: { 6501: seed("/manage/admin/discord-bot/guilds/6501/channels") },
     hooks: seed("/admin/hooks"), hookLogs: {}, answers: seed("/manage/admin/standard-answer"), categories: seed("/manage/admin/standard-answer/category"),
     apps: seed("/build/admin/apps"), reports: seed("/admin/usage-report"), exports: [], logs: {}, banner: seed("/admin/banner"), bannerDismissed: false,
-    federated: seed("/federated/6501"), modelDefaults: {}, customAnalytics: undefined, logo: null, license: null,
+    federated: federatedSeed(), modelDefaults: {}, customAnalytics: undefined, logo: null, license: null,
     openapi: seed("/tool/openapi"), oauthConfigs: [],
     globalLimits: seed("/admin/token-rate-limits/global"), userLimits: seed("/admin/token-rate-limits/users"),
     billing: billingSeed(),
     billingHandoffs: { checkout: null, portal: null },
     documents: documentsLoaded ? seed("/mockshop/admin-pages/documents") : [],
+    oauthClaims: oauthClaimsFixture === "empty"
+      ? seed("/mockshop/admin-pages/oauth-claims-empty") || seed("/admin/oauth-test/claims")
+      : seed("/admin/oauth-test/claims"),
   };
   // Expose the owned mutable rows; a composed Skills module can reconcile them.
   const apps = () => state().apps;
@@ -63,6 +78,16 @@ export default function createAdminPages(core, composition = {}) {
     return out;
   };
   const simulatedTest = (ctx) => send(ctx, { simulated: true, message: "Local fictional configuration accepted; no provider was contacted." });
+  route("GET", "/admin/oauth-test/claims", (ctx, s) => send(ctx, s.oauthClaims));
+  // Opt-in, already-authenticated fictional capture only: no OIDC, cookie or session work.
+  route("GET", "/auth/oidc/authorize", (ctx, s) => {
+    const snapshot = core.fixture("GET", "/mockshop/admin-pages/oauth-claims-rerun");
+    if (!snapshot || ctx.query.next !== "/admin/oauth-test" || ctx.query.redirect !== "true") return false;
+    s.oauthClaims = structuredClone(snapshot);
+    ctx.send(302, { simulated: true }, {
+      location: `http://127.0.0.1:${core.plugin.ports.web}/admin/oauth-test`, "cache-control": "no-store",
+    });
+  });
 
   route("PATCH", "/admin/settings", async (ctx, s) => {
     Object.assign(s.settings, await ctx.body()); send(ctx, { ...core.fixture("GET", "/settings"), ...defaults().settings, ...s.settings });
@@ -162,7 +187,7 @@ export default function createAdminPages(core, composition = {}) {
   route("POST", "/admin/image-generation/test", simulatedTest);
   const imageSave = (body, s, id) => {
     const existing = s.images.find((r) => r.image_provider_id === id);
-    const source = core.fixture("GET", "/admin/llm/provider").providers.find((p) => p.id === body.source_llm_provider_id);
+    const source = composition.providers().find((p) => p.id === body.source_llm_provider_id);
     const row = { image_provider_id: id, model_name: body.model_name, model_configuration_id: existing?.model_configuration_id ?? nextId(s.images, "model_configuration_id"),
       llm_provider_id: source?.id ?? 6501, llm_provider_name: source?.name ?? "Fictional image configuration", is_default: body.is_default ?? existing?.is_default ?? false };
     s.imageCredentials[id] = { api_key: fake(), api_base: body.api_base ?? null, api_version: body.api_version ?? null,
@@ -180,27 +205,45 @@ export default function createAdminPages(core, composition = {}) {
   });
   route("DELETE", "/admin/image-generation/config/:id", (ctx, s) => { s.images = s.images.filter((r) => r.image_provider_id !== ctx.params.id); delete s.imageCredentials[ctx.params.id]; send(ctx, {}); });
 
-  const keyGroups = (ids) => (core.fixture("GET", "/manage/admin/user-group") || []).filter((g) => ids.includes(g.id)).map(({ id, name }) => ({ id, name }));
+  // Service Account Groups are the Groups store's member lists containing the account's synthetic user (what native Edit
+  // reads/writes); fixture-seeded rows join their seeded Groups once per fresh state.
+  const serviceUser = (id) => { const key = state().apiKeys?.find((k) => k.user_id === id);
+    return key ? { id, email: `${id}@service-account.invalid`, is_active: true } : undefined; };
+  const keyRow = (row) => {
+    if (!joinedKeys.has(row.api_key_id)) {
+      joinedKeys.add(row.api_key_id);
+      if (row.groups?.length) composition.syncServiceGroups(serviceUser(row.user_id), row.groups.map((g) => g.id), false);
+    }
+    return { ...row, groups: composition.groupsOf(row.user_id) };
+  };
   route("POST", "/admin/api-key", async (ctx, s) => {
     const b = await ctx.body(), id = nextId(s.apiKeys, "api_key_id");
-    const row = { api_key_id: id, api_key_display: defaults().api_key_display, api_key: null, api_key_name: b.name ?? null, groups: keyGroups(b.group_ids || []), user_id: `fake-service-${id}` };
-    s.apiKeys.push(row); send(ctx, { ...row, api_key: fake() });
+    const row = { api_key_id: id, api_key_display: defaults().api_key_display, api_key: null, api_key_name: b.name ?? null, groups: [], user_id: `fake-service-${id}` };
+    s.apiKeys.push(row); joinedKeys.add(id); composition.syncServiceGroups(serviceUser(row.user_id), b.group_ids || [], false); send(ctx, { ...keyRow(row), api_key: fake() });
   });
   route("PATCH", "/admin/api-key/:id", async (ctx, s) => {
     const row = byId(s.apiKeys, ctx.params.id, "api_key_id"); if (!row) return missing(ctx);
-    const b = await ctx.body(); Object.assign(row, { api_key_name: b.name ?? row.api_key_name, groups: keyGroups(b.group_ids || []) }); send(ctx, row);
+    const b = await ctx.body(); Object.assign(row, { api_key_name: b.name ?? row.api_key_name });
+    keyRow(row); composition.syncServiceGroups(serviceUser(row.user_id), b.group_ids || [], true); send(ctx, keyRow(row));
   });
   route("POST", "/admin/api-key/:id/regenerate", (ctx, s) => {
     const row = byId(s.apiKeys, ctx.params.id, "api_key_id"); if (!row) return missing(ctx);
-    row.api_key_display = `${defaults().api_key_display}-regenerated`; send(ctx, { ...row, api_key: fake() });
+    row.api_key_display = `${defaults().api_key_display}-regenerated`; send(ctx, { ...keyRow(row), api_key: fake() });
   });
-  route("DELETE", "/admin/api-key/:id", (ctx, s) => { s.apiKeys = s.apiKeys.filter((r) => String(r.api_key_id) !== ctx.params.id); send(ctx, {}); });
+  route("DELETE", "/admin/api-key/:id", (ctx, s) => {
+    const row = byId(s.apiKeys, ctx.params.id, "api_key_id");
+    if (row) {
+      composition.syncServiceGroups(serviceUser(row.user_id), [], true);
+      joinedKeys.delete(row.api_key_id);
+    }
+    s.apiKeys = s.apiKeys.filter((r) => String(r.api_key_id) !== ctx.params.id); send(ctx, {});
+  });
   route("POST", "/admin/enterprise-settings/scim/token", async (ctx, s) => {
     const b = await ctx.body(); s.scim = { id: (s.scim?.id ?? 6500) + 1, name: b.name, token_display: defaults().api_key_display, is_active: true, created_at: now(), last_used_at: null, idp_domain: null };
     send(ctx, { ...s.scim, raw_token: fake() });
   });
   route("POST", "/admin/sso/provider", async (ctx, s) => {
-    const b = scrub(await ctx.body()), row = { ...b, id: nextId(s.sso), enabled: false, redirect_uri: `/mockshop/fake-sso/${b.name}` };
+    const b = scrub(await ctx.body()), row = { ...b, id: nextId(s.sso), enabled: true, redirect_uri: `/mockshop/fake-sso/${b.name}` };
     s.sso.push(row); send(ctx, row);
   });
   route("PATCH", "/admin/sso/provider/:id", async (ctx, s) => {
@@ -234,27 +277,36 @@ export default function createAdminPages(core, composition = {}) {
   });
   route("DELETE", "/search-settings/delete-unstructured-api-key", (ctx, s) => { s.unstructured = false; send(ctx, s.unstructured); });
 
-  const botView = (s, bot) => { const channels = s.channels.filter((c) => c.slack_bot_id === bot.id); return { ...bot, configs_count: channels.length, slack_channel_configs: channels }; };
+  // Resolve selected IDs through their sole current owners.
+  const documentSets = (ids) => composition.documentSets().filter((d) => ids.includes(d.id));
+  const channelView = (channel) => {
+    const live = channel.persona_id != null ? composition.agent(channel.persona_id) : null;
+    if (live) return { ...channel, persona: live };
+    if (channel.persona_id == null && channel.persona) return { ...channel, persona: { ...channel.persona,
+      document_sets: documentSets((channel.persona.document_sets || []).map((d) => d.id)) } };
+    return channel;
+  };
+  const botView = (s, bot) => { const channels = s.channels.filter((c) => c.slack_bot_id === bot.id).map(channelView); return { ...bot, configs_count: channels.length, slack_channel_configs: channels }; };
   route("GET", "/manage/admin/slack-app/bots/:id", (ctx, s) => { const row = byId(s.bots, ctx.params.id); row ? send(ctx, botView(s, row)) : missing(ctx); });
-  route("GET", "/manage/admin/slack-app/bots/:id/config", (ctx, s) => send(ctx, s.channels.filter((c) => String(c.slack_bot_id) === ctx.params.id)));
+  route("GET", "/manage/admin/slack-app/bots/:id/config", (ctx, s) => send(ctx, s.channels.filter((c) => String(c.slack_bot_id) === ctx.params.id).map(channelView)));
   route("POST", "/manage/admin/slack-app/bots", async (ctx, s) => {
     const b = scrub(await ctx.body()), row = { ...b, id: nextId(s.bots), configs_count: 0, slack_channel_configs: [] }; s.bots.push(row); send(ctx, row);
   });
   route("PATCH", "/manage/admin/slack-app/bots/:id", async (ctx, s) => { const row = byId(s.bots, ctx.params.id); if (!row) return missing(ctx); Object.assign(row, scrub(await ctx.body())); send(ctx, botView(s, row)); });
   route("DELETE", "/manage/admin/slack-app/bots/:id", (ctx, s) => { s.bots = s.bots.filter((r) => String(r.id) !== ctx.params.id); s.channels = s.channels.filter((r) => String(r.slack_bot_id) !== ctx.params.id); send(ctx, {}); });
   const channelSave = (b, s, previous) => {
-    const persona = b.persona_id != null ? core.fixture("GET", `/persona/${b.persona_id}`) : null;
+    const persona = b.persona_id != null ? composition.agent(b.persona_id) : null;
     const row = { ...previous, id: previous?.id ?? nextId(s.channels), slack_bot_id: b.slack_bot_id ?? previous?.slack_bot_id,
-      persona_id: b.persona_id ?? null, persona: persona || { id: 0, name: "Assistant", tools: [], document_sets:
-        (core.fixture("GET", "/manage/document-set") || []).filter((d) => (b.document_sets || []).includes(d.id)) },
+      persona_id: b.persona_id ?? null, persona: persona || (b.document_sets?.length ? { id: 0, name: "__slack_bot_persona__fictional", tools: [], document_sets:
+        documentSets(b.document_sets) } : null),
       enable_auto_filters: b.enable_auto_filters, is_default: !b.channel_name,
       channel_config: Object.fromEntries(["channel_name", "respond_tag_only", "respond_to_bots", "is_ephemeral",
-        "show_continue_in_web_ui", "respond_member_group_list", "answer_filters", "follow_up_tags", "disabled"].map((key) => [key, b[key]])),
+        "show_continue_in_web_ui", "respond_member_group_list", "answer_filters", "follow_up_tags", "disabled", "response_type"].map((key) => [key, b[key]])),
       standard_answer_categories: s.categories.filter((c) => (b.standard_answer_categories || []).includes(c.id)) };
     if (previous) Object.assign(previous, row); else s.channels.push(row); return row;
   };
-  route("POST", "/manage/admin/slack-app/channel", async (ctx, s) => send(ctx, channelSave(await ctx.body(), s)));
-  route("PATCH", "/manage/admin/slack-app/channel/:id", async (ctx, s) => { const row = byId(s.channels, ctx.params.id); row ? send(ctx, channelSave(await ctx.body(), s, row)) : missing(ctx); });
+  route("POST", "/manage/admin/slack-app/channel", async (ctx, s) => send(ctx, channelView(channelSave(await ctx.body(), s))));
+  route("PATCH", "/manage/admin/slack-app/channel/:id", async (ctx, s) => { const row = byId(s.channels, ctx.params.id); row ? send(ctx, channelView(channelSave(await ctx.body(), s, row))) : missing(ctx); });
   route("DELETE", "/manage/admin/slack-app/channel/:id", (ctx, s) => { s.channels = s.channels.filter((r) => String(r.id) !== ctx.params.id); send(ctx, {}); });
   route("POST", "/manage/admin/discord-bot/config", async (ctx, s) => { await ctx.body(); s.discord = { configured: true, created_at: now() }; send(ctx, s.discord); });
   route("DELETE", "/manage/admin/discord-bot/config", (ctx, s) => { s.discord = { configured: false, created_at: null }; send(ctx, {}); });
@@ -326,14 +378,43 @@ export default function createAdminPages(core, composition = {}) {
   route("GET", "/admin/log-export/:id/download", (ctx, s) => {
     if (!s.logs[ctx.params.id]) return missing(ctx);
     // A genuine empty ZIP: the fictional workers reported no logs.
-    ctx.send(200, Buffer.from("504b0506000000000000000000000000000000000000", "hex"),
-      { "content-type": "application/zip", "content-disposition": "attachment; filename=fictional-no-logs.zip" });
+    const zip = Buffer.from("504b0506000000000000000000000000000000000000", "hex");
+    // Raw native response: core's JSON send would serialize the Buffer.
+    ctx.res.writeHead(200, { "content-type": "application/zip", "content-length": zip.length,
+      "content-disposition": "attachment; filename=fictional-no-logs.zip" });
+    ctx.res.end(zip);
   });
-  route("GET", "/manage/connector", (ctx) => send(ctx,
-    (core.fixture("GET", "/manage/admin/connector/status") || []).map(({ connector }) => connector)));
+  route("GET", "/manage/connector", (ctx) => send(ctx, composition.connectors()));
   route("POST", "/admin/search", async (ctx) => { await ctx.body(); send(ctx, { documents: [] }); });
-  route("PUT", "/federated/6501", async (ctx, s) => { const b = await ctx.body(); Object.assign(s.federated, { config: b.config ?? s.federated.config, credentials: b.credentials ? scrub(b.credentials) : s.federated.credentials }); send(ctx, s.federated); });
-  route("DELETE", "/federated/6501", (ctx, s) => { s.federated = null; send(ctx, {}); });
+  route("GET", "/federated", (ctx, s) => send(ctx, s.federated.rows));
+  route("POST", "/federated", async (ctx, s) => {
+    const b = await ctx.body();
+    if (typeof b.source !== "string" || !b.source.startsWith("federated_")) return ctx.send(400, { detail: "A federated source is required." });
+    const label = b.source.slice("federated_".length);
+    const row = { id: ++s.federated.lastId, source: b.source, name: `${label.charAt(0).toUpperCase()}${label.slice(1)} (federated)`,
+      credentials: scrub(b.credentials || {}), config: b.config ?? {}, oauth_token_exists: false, oauth_token_expires_at: null, document_sets: [] };
+    s.federated.rows.push(row);
+    send(ctx, row);
+  });
+  // Numeric ids only: /federated/oauth-status and other literals belong to later owners.
+  route("GET", "/federated/:id", (ctx, s) => {
+    if (!/^\d+$/.test(ctx.params.id)) return false;
+    const row = byId(s.federated.rows, ctx.params.id);
+    return row ? send(ctx, row) : missing(ctx);
+  });
+  route("PUT", "/federated/:id", async (ctx, s) => {
+    if (!/^\d+$/.test(ctx.params.id)) return false;
+    const b = await ctx.body(), row = byId(s.federated.rows, ctx.params.id);
+    if (!row) return missing(ctx);
+    Object.assign(row, { config: b.config ?? row.config, credentials: b.credentials ? scrub(b.credentials) : row.credentials });
+    send(ctx, row);
+  });
+  route("DELETE", "/federated/:id", (ctx, s) => {
+    if (!/^\d+$/.test(ctx.params.id)) return false;
+    if (!byId(s.federated.rows, ctx.params.id)) return missing(ctx);
+    s.federated.rows = s.federated.rows.filter((row) => String(row.id) !== ctx.params.id);
+    send(ctx, {});
+  });
   route("POST", "/federated/sources/federated_slack/credentials/validate", simulatedTest);
   route("PUT", "/admin/enterprise-settings/logo", async (ctx, s) => {
     const chunks = [];
@@ -348,8 +429,12 @@ export default function createAdminPages(core, composition = {}) {
     s.logo = { bytes: body.subarray(headerEnd + 4, end), contentType };
     s.enterprise.use_custom_logo = true; send(ctx, { simulated: true });
   });
-  route("GET", "/enterprise-settings/logo", (ctx, s) => s.logo
-    ? ctx.send(200, s.logo.bytes, { "content-type": s.logo.contentType }) : missing(ctx));
+  route("GET", "/enterprise-settings/logo", (ctx, s) => {
+    if (!s.logo) return missing(ctx);
+    // Raw native response: core's JSON send would serialize the Buffer.
+    ctx.res.writeHead(200, { "content-type": s.logo.contentType, "content-length": s.logo.bytes.length, "cache-control": "no-store" });
+    ctx.res.end(s.logo.bytes);
+  });
   const methods = (definition) => Object.entries(definition.paths || {}).flatMap(([path, operations]) =>
     Object.entries(operations).filter(([method]) => ["get", "post", "put", "patch", "delete", "head", "options"].includes(method))
       .map(([method, spec]) => ({ name: spec.operationId || `${method}_${path}`, summary: spec.summary || path,
@@ -362,7 +447,7 @@ export default function createAdminPages(core, composition = {}) {
   route("POST", "/admin/tool/custom", async (ctx, s) => {
     const b = scrub(await ctx.body()), row = { ...b, id: nextId(s.openapi), display_name: b.name,
       in_code_tool_id: null, enabled: true, chat_selectable: true, agent_creation_selectable: true,
-      default_enabled: false, mcp_server_id: null, permissions: { manage: true, toggle: true, delete: true } };
+      default_enabled: false, mcp_server_id: null, permissions: { edit: true, toggle: true, delete: true } };
     s.openapi.push(row); send(ctx, row);
   });
   route("PUT", "/admin/tool/custom/:id", async (ctx, s) => {
@@ -470,8 +555,10 @@ export default function createAdminPages(core, composition = {}) {
     ["/admin/embedding/embedding-provider", "embedding"], ["/search-settings/unstructured-api-key-set", "unstructured"], ["/manage/admin/slack-app/channel", "channels"],
     ["/manage/admin/discord-bot/config", "discord"], ["/manage/admin/discord-bot/guilds", "guilds"], ["/admin/hooks", "hooks"],
     ["/manage/admin/standard-answer", "answers"], ["/manage/admin/standard-answer/category", "categories"], ["/build/admin/apps", "apps"],
-    ["/admin/usage-report", "reports"], ["/admin/query-history/list", "exports"], ["/admin/banner", "banner"], ["/federated/6501", "federated"], ["/tool/openapi", "openapi"],
+    ["/admin/usage-report", "reports"], ["/admin/query-history/list", "exports"], ["/admin/banner", "banner"], ["/tool/openapi", "openapi"],
   ]) transform[`GET ${path}`] = () => state()[field];
+  transform["GET /admin/api-key"] = () => state().apiKeys.map(keyRow);
+  transform["GET /manage/admin/slack-app/channel"] = () => state().channels.map(channelView);
   transform["GET /manage/admin/slack-app/bots"] = () => state().bots.map((bot) => botView(state(), bot));
   transform["GET /settings"] = (value) => {
     const configuration = defaults(), saved = state().settings;
@@ -534,5 +621,5 @@ export default function createAdminPages(core, composition = {}) {
   for (const path of ["/analytics/admin/query", "/analytics/admin/user", "/analytics/admin/onyxbot"]) {
     transform[`GET ${path}`] = (value, ctx) => value.filter((row) => inRange(row.date, ctx));
   }
-  return { routes, transform, reset, apps };
+  return { routes, transform, reset, apps, serviceUser, hasLogo: () => Boolean(data?.logo), federatedRows: () => state().federated.rows };
 }

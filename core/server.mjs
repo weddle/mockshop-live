@@ -83,8 +83,11 @@ const server = http.createServer(async (req, res) => {
         if (!b.keep || b.locale) state.locale = resolveLocale(m, b.locale).code;
         if (!b.keep || b.anchor) setAnchor(b.anchor ?? Date.now());
         if (!b.keep || b.overlays !== undefined) {
-          const overlays = [...editionOverlays(), ...(b.overlays || [])];
-          table.reload(overlays);
+          const edition = editionOverlays();
+          // GET includes the implicit edition prefix. Strip it from a roundtrip payload so both
+          // the fixture table and plugin keep the original caller's overlay namespace.
+          if (edition.length && Array.isArray(b.overlays) && edition.every((o, i) => b.overlays[i] === o)) b.overlays = b.overlays.slice(edition.length);
+          table.reload([...edition, ...(b.overlays || [])]);
         }
         await plugin.reset?.(b);
       }

@@ -1,8 +1,10 @@
 // Fictional group UI state only. No authorization engine, external writes or durable storage.
-export default function createAdminGroupsHandlers(core, { listDocumentSets, getUser }) {
+export default function createAdminGroupsHandlers(core, { listDocumentSets, getUser: getHuman, listConnectors, listAgents, serviceUser }) {
   let records = {}, permissionEdits = {}, limitEdits = {};
   const seed = () => core.fixture("GET", "/mockshop/admin-groups/seeds");
   const originals = () => core.fixture("GET", "/manage/admin/user-group") || [];
+  // Human Users plus the derived Service Account users (sole apiKeys store; no second user store).
+  const getUser = (identity) => getHuman(identity) || serviceUser?.(identity);
   const members = () => (core.state.adminGroupMembers ||= {});
   const reset = (body = {}) => {
     if (!body.keep) {
@@ -11,11 +13,13 @@ export default function createAdminGroupsHandlers(core, { listDocumentSets, getU
     }
   };
   const groupSeed = (id) => seed().groups.find((g) => g.id === Number(id));
-  const connectorRows = () => core.fixture("GET", "/manage/admin/connector/status") || [];
-  const docSets = listDocumentSets || (() => core.fixture("GET", "/manage/document-set") || []);
-  const agents = () => core.fixture("GET", "/admin/agents")?.items || [];
+  // Root composes the sole live connector/pair and agent stores.
+  const connectorRows = listConnectors;
+  const docSets = listDocumentSets;
+  const agents = listAgents;
   const select = (rows, ids, key = "id") => rows.filter((row) => ids.includes(row[key]));
   const groupRows = (incoming = originals()) => {
+    const connectors = connectorRows(), personas = agents(), sets = docSets();
     const ids = new Set(incoming.map((g) => g.id));
     return [...incoming, ...Object.values(records).filter((g) => !ids.has(g.id))]
       .filter((g) => !records[g.id]?.deleted).map((g) => {
@@ -23,21 +27,45 @@ export default function createAdminGroupsHandlers(core, { listDocumentSets, getU
         const value = { ...g,
           ...(config ? {
             name: config.name, manager_ids: config.manager_ids, permissions: seed().resource_permissions,
-            cc_pairs: select(connectorRows(), config.cc_pair_ids, "cc_pair_id").map((cc) => ({ ...cc, id: cc.cc_pair_id })),
-            document_sets: select(docSets(), config.document_set_ids),
-            personas: select(agents(), config.agent_ids),
+            cc_pairs: select(connectors, config.cc_pair_ids, "cc_pair_id").map((cc) => ({ ...cc, id: cc.cc_pair_id })),
+            document_sets: select(sets, config.document_set_ids),
+            personas: select(personas, config.agent_ids),
           } : {}), ...records[g.id] };
         // Seed once, then join every read to the actual mutable Users catalog.
         members()[g.id] ??= structuredClone(g.users || []);
         const current = members()[g.id].map((m) => getUser(m.id) || getUser(m.email)).filter(Boolean);
         members()[g.id] = current.map(({ id, email }) => ({ id, email }));
-        return { ...value,
+        // Saved resource snapshots keep only their selected IDs: refresh each row from the current owner
+        // (seed DTO fields stay, current metadata wins, rows no longer present drop).
+        const cc_pairs = (value.cc_pairs || []).flatMap((p) => {
+          const current = connectors.find((c) => c.cc_pair_id === (p.cc_pair_id ?? p.id));
+          return current ? [{ ...p, ...current, id: current.cc_pair_id }] : [];
+        });
+        const livePersonas = (value.personas || []).flatMap((p) => {
+          const current = personas.find((a) => a.id === p.id);
+          return current ? [{ ...p, ...current }] : [];
+        });
+        const document_sets = (value.document_sets || []).flatMap((p) => {
+          const current = sets.find((d) => d.id === p.id);
+          return current ? [{ ...p, ...current }] : [];
+        });
+        return { ...value, cc_pairs, document_sets, personas: livePersonas,
           manager_ids: value.manager_ids.map((id) => getUser(id)?.id ?? id),
           users: current.map(({ id, email, is_active }) => ({ id, email, is_active })),
         };
       });
   };
   const group = (id) => groupRows().find((g) => g.id === Number(id));
+  // Service Account Edit/New joins the account's synthetic user through the same member lists the Groups UI edits.
+  const groupsOf = (userId) => groupRows().filter((g) => g.users.some((u) => u.id === userId)).map(({ id, name }) => ({ id, name }));
+  const syncServiceGroups = (user, ids, replace) => {
+    const wanted = new Set(ids.map(Number));
+    for (const value of groupRows()) {
+      const list = members()[value.id], has = list.some((m) => m.id === user.id);
+      if (wanted.has(value.id) && !has) list.push({ id: user.id, email: user.email });
+      else if (replace && !wanted.has(value.id) && has) members()[value.id] = list.filter((m) => m.id !== user.id);
+    }
+  };
   const getGroup = (ctx) => {
     const value = group(ctx.params.id);
     if (!value) ctx.send(404, { detail: "Fictional group not found." });
@@ -62,9 +90,17 @@ export default function createAdminGroupsHandlers(core, { listDocumentSets, getU
     ctx.send(200, {});
   };
 
+  // Name only (same precedence as groupRows), without resource/membership joins; undefined when missing or deleted.
+  const groupName = (id) => {
+    const record = records[id];
+    if (record?.deleted) return undefined;
+    const original = originals().find((g) => g.id === Number(id));
+    return original || record ? record?.name ?? groupSeed(id)?.name ?? original?.name : undefined;
+  };
   return {
     reset,
     listGroups: groupRows,
+    groupName, groupsOf, syncServiceGroups,
     routes: [
       { method: "GET", path: "/manage/admin/user-group", handle(ctx) { ctx.send(200, groupRows()); } },
       { method: "POST", path: "/manage/admin/user-group", async handle(ctx) {

@@ -58,7 +58,7 @@
              toast.success(t("updateSuccess.message"));
            } else {
              const errorMsg = (await response.json()).detail;
-@@ -55,8 +68,9 @@
+@@ -55,9 +68,10 @@
            <Spacer rem={0.5} />
            <InputTextArea
              value={newCustomAnalyticsScript}

@@ -1,8 +1,10 @@
-# Exhaustive historical script coverage
+# Historical script knowledge and current feature contracts
 
 This ledger accounts for **all 227 YAML scripts**, including `_probe.yaml` and `_admin-agent-curation-original.yaml`, read from the historical `plugins/onyx/scenarios/` directory. They are now preserved under [`reference-examples/`](../../../reference-examples/README.md), outside default discovery. Their names below are provenance, not runtime dependencies. The core authoring contract is the linked feature section and its backend reference, not “copy this sample.”
 
 The accompanying [machine-readable index](script-coverage.json) contains only historical filenames/source hashes, hand-authored semantic dispositions, classifications and concrete guide anchors. It is **not a second script catalog**: no original steps, eval bodies, selector collection, fictional content, world payloads or screenshot recipes are embedded. Unique reusable operating knowledge is distilled into the linked domain guides and [native seed/API contracts](backend-fixtures.md). Complete historical sources remain in `reference-examples/`.
+
+The public machine-readable catalog remains unchanged. Current public examples are a small maintained set, not an exhaustive demo inventory. New functionality is documented as reusable contracts in the [admin guide](script-admin.md) and [Agent/settings guide](script-agents-settings.md): guarded indexing requests, OAuth diagnostic snapshots, saved model controls, Advanced Agent fields, finite Knowledge selection, live resource projections, federated lifecycle and Slack Answer Type readback. These contracts do not imply an additional example exists or that every native UI path was accepted.
 
 ## How to use this ledger
 
@@ -17,7 +19,7 @@ Classifications are nonexclusive:
 - **D — redundant example:** repeats an already documented feature/composite/route smoke; any distinct prerequisite or regression is described in its semantic row, without copying the original recipe.
 - **R — regression assertion:** exercises an invariant, invalid/empty/error branch, gate, persistence/reset or presentation expectation. “Assertion” means source intent, not a newly passed check.
 
-Every row is source-derived. This task ran **no tests, builds, linters, formatters or browser revalidation**. Existing private-source comments contain conflicting old “accepted,” “EDITONLY,” “unverified” and “pending” statements, sometimes in the same family. They are not promoted into a current pass. Parent separately reported current strict-shot evidence for the retained incident/follow-up examples and a six-shot world/cursor/completion smoke; that limited observation does not certify this entire ledger, every download, every edition or every locale.
+Every row is source-derived. Historical “accepted,” “EDITONLY,” “unverified” and “pending” notes are not promoted into current passes. Bounded observations of the maintained examples do not certify this ledger, all downloads, editions or locales. No new whole-catalog coverage audit or acceptance reconciliation is asserted here.
 
 ## Source ambiguities and nonclaims
 
@@ -26,7 +28,7 @@ Every row is source-derived. This task ran **no tests, builds, linters, formatte
 - Some old `notes:` values contain an unquoted YAML `#`, so the parsed string stops at that comment. Raw script comments and current handler/source reads, not the truncated field or acceptance number, determine the documented contract.
 - Old project/user-file/Craft acceptance sentences conflict with pending statements. They are not fresh proof. Craft custom bulk-policy and pre-transfer combobox validation callouts are disclosed historical observations whose exact current rendering needs actual inspection.
 - A source-row click can open another tab. The initial current macOS observation did not establish the new-tab result; a later smoke established the local source-viewer destination and vendor propagation, not an upstream connector visit.
-- Static fake success/no-op receipts are not implemented remote operations. Dynamic route precedence and raw fixture-only joins can prevent an edited record from appearing in a different resource selector. See [backend runtime](backend-runtime.md), [admin contracts](backend-admin.md) and [fixture inventory](backend-fixtures.md).
+- Static fake success/no-op receipts are not implemented remote operations. Dynamic precedence and explicitly fixture-only joins still matter; supported current cross-owner projections are described in [backend runtime](backend-runtime.md), [admin contracts](backend-admin.md) and [fixture inventory](backend-fixtures.md), not inferred from historical sample counts.
 - Exact-error allowlists contain historical compiled locations/ports. Preserve the positive native error and protected-state assertion; do not copy an obsolete source hash or broaden suppression. Download/copy clicks, image elements and iframe presence are weaker than completed bytes/decoded content/browser permission evidence.
 - Live chat DOM message IDs can be optimistic negative IDs. Current exact-send completion requires both the prepared backend turn and the latest native message wrapper; a prior completed answer is not sufficient.
 

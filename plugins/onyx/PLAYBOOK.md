@@ -36,6 +36,7 @@ Each feature guide uses this contract: **screen + scoped locator → operation/A
 - Distinguish modal drafts, browser-local settings, and server-owned state. `Escape` normally discards a modal draft, but some editors retain browser drafts. Backend reset does not clear localStorage, sessionStorage, cookies or stale component caches.
 - `state.world` is a persistent whole-background switch, not a temporary rewrite of individual people. Some stores survive by world namespace; others reseed on a namespace change even with keep. Use the [actual reset matrix](docs/backend-runtime.md#control-plane-and-reset-matrix).
 - Direct readback supplements a visible native write; it is not a substitute for clicking Save, confirming deletion, inspecting a pending state or reopening the screen.
+- Check the saved consumer, not only its picker: Advanced Agent fields, current Group/resource names, new federated IDs and Slack Answer Type must survive native reopen/reload. `keep:true` and a fresh reset test different boundaries; neither implies durable storage.
 - Deliberate error demonstrations require a narrow known-error allowance **and** positive native error UI, protected state and recovery. Never allowlist failed steps or every HTTP/console error.
 - Use fictional credentials and reserved domains. Provider tests, auth, permissions, MCP, Craft, indexing, scheduling, billing and model responses are local simulations, not connections to real services.
 - A route inventory, generated screenshot name or assertion in source says what a script intends to cover. It is not a claim that this checkout was run or accepted.
@@ -47,6 +48,8 @@ Keep question, answer, citation metadata, source body and saved history consiste
 Use the existing [cursor engine](../../docs/cursor.md), explicit pauses and meaningful end states. Avoid hovering a citation while opening Sources: layout reflow can move the tooltip over the answer. Route the pointer through empty margin when needed. Stills cannot establish temporal cursor motion or video readability.
 
 Native file inputs, clipboard APIs and new-tab behavior have browser/OS boundaries. Do not replace those boundaries with a fake success image. See the relevant guide for what the scripts actually stage and what still requires browser evidence.
+
+For finite Agent Knowledge browsing, author `/mockshop/user-knowledge-hierarchy` and document DTOs in the world; do not assume an indexer will discover folders. For a native chat submission that must retain its typed-question or Stop stage, arm a declared exact `turn/question` reply with `state:{turn:<key>,keep:true,resetChats:false}` immediately before the native click/Enter. The convenience `send` instead types and waits for completion. See [runtime contracts](docs/backend-runtime.md#screen-selection-and-exact-sends).
 
 ## Scope and evidence
 

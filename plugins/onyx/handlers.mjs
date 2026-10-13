@@ -2,7 +2,7 @@
 // Everything else is plain fixtures (fixtures/base/*.yaml).
 import fs from "node:fs";
 import path from "node:path";
-import { buildChatStream, pickScript, withContext, sessionFromNodes } from "./chat.mjs";
+import { buildChatStream, pickScript, withContext, sessionFromNodes, sourceLink } from "./chat.mjs";
 import createMcpHandlers from "./handlers-mcp.mjs";
 import createDocumentSetHandlers from "./handlers-document-sets.mjs";
 import createSaveControls from "./handlers-save-controls.mjs";
@@ -62,11 +62,13 @@ ${doc.blurb ? `<p class="blurb">${esc(doc.blurb)}</p>` : ""}${body ? mdToHtml(bo
 export default function createHandlers(core, fileCompanions = {}) {
   const state = core.state;
   const mcp = createMcpHandlers(core);
-  const documentSetForms = createDocumentSetHandlers(core);
+  // Lazy: Save Controls (created next) owns the sole connector/pair state both readers project.
+  const documentSetForms = createDocumentSetHandlers(core, { connectorRows: () => saveControls.connectorRows(), federatedRows: () => adminPages.federatedRows() });
   const saveControls = createSaveControls(core);
   const projects = createUserProjectHandlers(core, {
     getFile: (id) => userFiles.getFile(id),
     listChatSessions: () => sidebarSessions(),
+    listAgents: () => agentCatalog(),
   });
   const userFiles = createUserFilesHandlers(core, {
     ...fileCompanions,
@@ -88,6 +90,10 @@ export default function createHandlers(core, fileCompanions = {}) {
   const adminGroups = createAdminGroupsHandlers(core, {
     listDocumentSets: documentSetForms.list,
     getUser: (identity) => adminUsers.getUser(identity),
+    serviceUser: (identity) => adminPages.serviceUser(identity),
+    // Lazy: the sole live Save Controls pairs and root agent store.
+    listConnectors: () => saveControls.connectorRows(),
+    listAgents: () => adminAgentRows(),
   });
   const adminUsers = createAdminUsersHandlers(core, {
     ownsGroupWrites: true, listGroups: adminGroups.listGroups,
@@ -97,12 +103,19 @@ export default function createHandlers(core, fileCompanions = {}) {
   const userConditional = createUserConditional(core, { stageMember: authAnonymous.stageMember });
   // These mutually referenced boundaries stay lazy: neither factory calls them during construction.
   const adminPages = createAdminPages(core, {
+    connectors: () => saveControls.connectorList(),
+    // Lazy sole owners: live admin providers, root Agent store and DocSet forms.
+    providers: () => saveControls.providerRows(),
+    agent: (id) => fullAgent(id),
+    groupsOf: (id) => adminGroups.groupsOf(id),
+    syncServiceGroups: (user, ids, replace) => adminGroups.syncServiceGroups(user, ids, replace),
+    documentSets: () => documentSetForms.list(),
     listSkills: () => craft.listSkills(),
     afterAppWrite: (row, body) => craft.afterAppWrite(row, body),
     reconcileApps: (rows) => craft.reconcileApps(rows),
     listUsers: () => ({ ...core.fixture("GET", "/manage/users"), accepted: adminUsers.acceptedUsers() }),
   });
-  // Read the sole live #3 catalog and apply #65's saved defaults lazily.
+  // Read the sole live Save Controls catalog and apply Admin Pages' saved defaults lazily.
   const providerCatalog = () => adminPages.transform["GET /llm/provider"](state.saveControlsProviderCatalog());
   // Dynamic responses bypass fixture transforms; compose defaults on the same readers.
   const providerReads = new Set(["/admin/llm/provider", "/llm/provider", "/llm/persona/:id/providers"]);
@@ -174,13 +187,64 @@ export default function createHandlers(core, fileCompanions = {}) {
   const agentManager = () => agentPermission("manage:agents");
   const agentOrg = () => (state.agentOrgs[state.org] ||= { personas: {}, deleted: {}, pins: {}, nextId: null });
   const seedAgents = () => core.fixture("GET", "/persona") || [];
-  const fullAgent = (id) => agentOrg().deleted[id] ? null : agentOrg().personas[id] ||
-    (seedAgents().some((a) => a.id === id) ? extras.seedAgent(core.fixture("GET", `/persona/${id}`)) : null);
+  // Stored/seeded snapshots retain their selected IDs and DTO shape while DocSet metadata follows its sole store.
+  const currentDocumentSets = (agent) => {
+    if (!agent?.document_sets?.length) return agent;
+    const live = documentSetForms.list();
+    let selected = agent.document_sets;
+    for (let i = 0; i < selected.length; i++) {
+      const saved = selected[i], current = live.find((d) => d.id === saved.id);
+      if (!current || (saved.name === current.name && (!("description" in saved) || saved.description === current.description))) continue;
+      if (selected === agent.document_sets) selected = selected.slice();
+      selected[i] = { ...saved, name: current.name };
+      if ("description" in saved) selected[i].description = current.description;
+    }
+    return selected === agent.document_sets ? agent : { ...agent, document_sets: selected };
+  };
+  // The /tool catalog is composed once from the same readers as the route transforms (MCP, then saved OpenAPI actions).
+  const liveTools = () => adminPages.transform["GET /tool"](mcp.transform["GET /tool"](core.fixture("GET", "/tool") || []));
+  // Saved tool snapshots keep their selected IDs and DTO shape while display fields follow the live catalog.
+  const currentTools = (agent) => {
+    if (!agent?.tools?.length) return agent;
+    const live = liveTools();
+    let selected = agent.tools;
+    for (let i = 0; i < selected.length; i++) {
+      const saved = selected[i], current = live.find((t) => t.id === saved.id);
+      if (!current) continue;
+      const changed = ["name", "display_name", "description"].filter((k) => k in saved && k in current && saved[k] !== current[k]);
+      if (!changed.length) continue;
+      if (selected === agent.tools) selected = selected.slice();
+      selected[i] = { ...saved, ...Object.fromEntries(changed.map((k) => [k, current[k]])) };
+    }
+    return selected === agent.tools ? agent : { ...agent, tools: selected };
+  };
+  // Saved Group names (sole Groups store) refresh share/ownership snapshots' display names; IDs and permissions stay.
+  const currentGroupNames = (agent) => {
+    if (!agent || (!agent.group_shares?.length && !agent.owner_group)) return agent;
+    const nameOf = (id) => adminGroups.groupName(id);
+    let shares = agent.group_shares, owner = agent.owner_group;
+    for (let i = 0; i < (shares?.length || 0); i++) {
+      const name = nameOf(shares[i].group_id);
+      if (name === undefined || name === shares[i].group_name) continue;
+      if (shares === agent.group_shares) shares = shares.slice();
+      shares[i] = { ...shares[i], group_name: name };
+    }
+    const ownerName = owner ? nameOf(owner.id) : undefined;
+    if (ownerName !== undefined && ownerName !== owner.name) owner = { ...owner, name: ownerName };
+    return shares === agent.group_shares && owner === agent.owner_group ? agent : { ...agent, group_shares: shares, owner_group: owner };
+  };
+  const fullAgent = (id) => currentGroupNames(currentDocumentSets(currentTools(agentOrg().deleted[id] ? null : agentOrg().personas[id] ||
+    (seedAgents().some((a) => a.id === id) ? extras.seedAgent(core.fixture("GET", `/persona/${id}`)) : null))));
   const extras = createUserExtrasHandlers(core, {
     getAgent: fullAgent,
     patchAgent: (id, values) => { agentOrg().personas[id] = { ...fullAgent(id), ...values }; },
     deleteAgent: (id) => { agentOrg().deleted[id] = true; delete agentOrg().personas[id]; },
     currentUser: () => agentUser(),
+    // Sole stores: accepted Users and saved Groups. Seed /users DTOs are kept for unchanged people only.
+    users: () => adminUsers.acceptedUsers().map(({ id, email }) =>
+      (core.fixture("GET", "/users") || []).find((u) => u.id === id) || { id, email }),
+    groups: () => adminGroups.transform["GET /manage/user-groups/minimal"](
+      core.fixture("GET", "/manage/user-groups/minimal") || []),
   });
   const agentGroups = () => adminGroups.listGroups()
     .filter((g) => g.users?.some((u) => u.id === agentUser()?.id || u.email === agentUser()?.email)).map((g) => g.id);
@@ -224,6 +288,14 @@ export default function createHandlers(core, fileCompanions = {}) {
       .sort((a, b) => (a.display_priority ?? Infinity) - (b.display_priority ?? Infinity) || a.id - b.id)
       .map((a) => full ? agentSnapshot(a) : minimalAgent(agentSnapshot(a)));
   };
+  // Group resource rows: seeded admin agents overlaid with the current stored persona, minus deleted, plus created.
+  // Reads the store directly (no agentAccess projection) because that projection itself reads Groups.
+  const adminAgentRows = () => {
+    const org = agentOrg(), seeded = core.fixture("GET", "/admin/agents")?.items || [];
+    const rows = seeded.filter((a) => !org.deleted[a.id]).map((a) => ({ ...a, ...(fullAgent(a.id) || {}) }));
+    const ids = new Set(rows.map((a) => a.id));
+    return [...rows, ...Object.values(org.personas).filter((a) => !ids.has(a.id))];
+  };
   const curateAgent = async (ctx, field) => {
     if (!agentManager()) return ctx.send(403, { detail: "Not enough permissions" });
     const id = Number(ctx.params.id), persona = fullAgent(id);
@@ -237,6 +309,19 @@ export default function createHandlers(core, fileCompanions = {}) {
   const pinnedAgents = () => (agentOrg().pins[agentUser()?.id] ??
     extras.seedPins(core.fixture("GET", "/user/pinned-assistants") ?? agentUser()?.preferences?.pinned_assistants ?? []))
     .filter((id) => { const value = fullAgent(id); return value && agentAccess(value).view; });
+  // Picker catalog: optional fictional hierarchy fixture plus the search-seed documents the native pane already lists.
+  const knowledgeSeed = () => core.fixture("GET", "/mockshop/user-knowledge-hierarchy") || {};
+  const agentNode = (n) => ({ id: n.id, raw_node_id: n.raw_node_id ?? String(n.id), display_name: n.title, link: n.link ?? null,
+    source: n.source, node_type: n.node_type ?? "folder" });
+  const knowledgeCatalog = () => ({
+    nodes: knowledgeSeed().nodes || [],
+    documents: [...(knowledgeSeed().documents || []).map((d) => ({ link: null, parent_id: null, last_synced: d.last_modified ?? null, ...d })),
+      ...(core.fixture("GET", "/mockshop/user-search-seed")?.documents || []).map((d) => ({ id: d.id, title: d.title, link: sourceLink(d),
+        parent_id: null, last_modified: d.updated ?? null, last_synced: d.updated ?? null, source: d.source }))]
+      .map(({ id, title, link, parent_id, last_modified, last_synced, source }) =>
+        ({ id, title, link, parent_id, last_modified, last_synced, source })),
+  });
+  const knowledgeNodes = (source) => knowledgeCatalog().nodes.filter((n) => !source.length || source.includes(n.source));
   const saveAgent = async (ctx, id = null) => {
     const org = agentOrg(), body = await ctx.body(), existing = id == null ? null : fullAgent(id);
     if (id == null && !agentPermission("add:agents")) return ctx.send(403, { detail: "Not enough permissions" });
@@ -252,16 +337,22 @@ export default function createHandlers(core, fileCompanions = {}) {
     const duplicate = [...seedAgents().map((a) => fullAgent(a.id)), ...Object.values(org.personas)]
       .find((a) => a && a.id !== id && a.name === body.name && (agentManager() || a.owner?.id === agentUser()?.id));
     if (duplicate) return ctx.send(400, { detail: `Assistant with name '${body.name}' already exists. Please rename your assistant.` });
-    const tools = (core.fixture("GET", "/tool") || []).filter((t) => body.tool_ids.includes(t.id));
+    const tools = liveTools().filter((t) => body.tool_ids.includes(t.id));
     if (body.tool_ids.length && !tools.length) return ctx.send(400, { detail: "Tools not found" });
     const documentSets = documentSetForms.list().filter((d) => body.document_set_ids.includes(d.id));
     // Attach the current fictional document-set snapshots, including in-run edits.
     const files = core.fixture("GET", "/user/files/recent") || [];
     if (body.user_file_ids?.some((id) => !userFiles.getFile(id) && !files.some((f) => f.id === id)))
       return ctx.send(400, { detail: "user_files not found" });
-    const hierarchy = existing?.hierarchy_nodes || [], documents = existing?.attached_documents || [];
-    if (body.hierarchy_node_ids?.some((id) => !hierarchy.some((n) => n.id === id)) ||
-        body.document_ids?.some((id) => !documents.some((d) => d.id === id)))
+    // Selectable knowledge: the already-attached items plus the picker catalog (same reads the native pane uses).
+    const catalog = knowledgeCatalog();
+    const pick = (ids, attached, available, same) => ids.length === 0 ? [] : [...new Set(ids)].map((id) =>
+      attached.find((a) => same(a, id)) ?? available.find((a) => same(a, id)));
+    const hierarchy = body.hierarchy_node_ids == null ? existing?.hierarchy_nodes || [] :
+      pick(body.hierarchy_node_ids, existing?.hierarchy_nodes || [], catalog.nodes.map(agentNode), (n, id) => n.id === id);
+    const documents = body.document_ids == null ? existing?.attached_documents || [] :
+      pick(body.document_ids, existing?.attached_documents || [], catalog.documents, (d, id) => d.id === id);
+    if (hierarchy.includes(undefined) || documents.includes(undefined))
       return ctx.send(400, { detail: "Attached knowledge not found in fixtures" });
     const user = agentUser(), canPublish = !existing || agentAccess(existing).owner || agentManager();
     const users = body.users == null ? existing?.users || [] :
@@ -284,8 +375,7 @@ export default function createHandlers(core, fileCompanions = {}) {
       labels: body.label_ids == null ? existing?.labels || [] :
         extras.labels().filter((l) => body.label_ids.includes(l.id)),
       user_file_ids: body.user_file_ids ?? existing?.user_file_ids ?? [],
-      hierarchy_nodes: body.hierarchy_node_ids == null ? hierarchy : hierarchy.filter((n) => body.hierarchy_node_ids.includes(n.id)),
-      attached_documents: body.document_ids == null ? documents : documents.filter((d) => body.document_ids.includes(d.id)),
+      hierarchy_nodes: hierarchy, attached_documents: documents,
       owner: existing ? existing.owner : { id: user.id, email: user.email }, owner_group: existing?.owner_group ?? null,
       users, groups,
       user_shares: body.users == null ? existing?.user_shares || [] : users.map((u) => ({
@@ -316,7 +406,7 @@ export default function createHandlers(core, fileCompanions = {}) {
   const chatSession = (id) => state.chatSessions[chatKey(id)];
   const chatEdit = (id) => state.edits[chatKey(id)] || {};
   const edit = (id) => (state.edits[chatKey(id)] ||= {});
-  // #31 owns settings writes and GET /me. Read its lazy preference overlay without seeding or replacing it.
+  // User settings owns writes and GET /me. Read its lazy preference overlay without seeding or replacing it.
   const defaultChatModel = () => {
     if (Object.hasOwn(screenState(), "model")) return screenState().model;
     const user = core.fixture("GET", "/me");
@@ -369,7 +459,7 @@ export default function createHandlers(core, fileCompanions = {}) {
       prompts, nextPromptId: prompts.reduce((max, prompt) => Math.max(max, prompt.id), 0) + 1,
     });
   };
-  // Extras decorates the fixture first; #31 writes and explicit Craft edits win.
+  // Extras decorates the fixture first; user settings writes and explicit Craft edits win.
   // The public /me applies fake Auth last, after pins and Groups permissions.
   const currentUser = (value) => {
     if (value?.__status === 401) return value;
@@ -502,6 +592,7 @@ export default function createHandlers(core, fileCompanions = {}) {
   // Extras' dynamic reads bypass fixture transforms: compose only the real
   // overlapping notification readers, retaining both modules' owned state.
   const adminBannerDismiss = adminPages.routes.find((route) => route.path === "/notifications/65065/dismiss");
+  const adminLogo = adminPages.routes.find((route) => route.method === "GET" && route.path === "/enterprise-settings/logo");
   const extrasRoutes = extras.routes.map((route) => {
     if (route.method === "GET" && (route.path === "/notifications" || route.path === "/notifications/summary")) {
       const project = adminPages.transform[`GET ${route.path}`];
@@ -578,6 +669,8 @@ export default function createHandlers(core, fileCompanions = {}) {
       ...userConditional.routes,
       // The exact Admin banner dismiss must precede Extras' generic notification :id.
       adminBannerDismiss,
+      // A native-uploaded Admin logo wins over Extras' seeded branding PNG; otherwise fall through to it.
+      { ...adminLogo, handle: (ctx) => adminPages.hasLogo() ? adminLogo.handle(ctx) : false },
       ...extrasRoutes,
       ...adminPages.routes.filter((route) => route !== adminBannerDismiss),
       ...craft.routes,
@@ -594,6 +687,30 @@ export default function createHandlers(core, fileCompanions = {}) {
         if (!persona || !agentAccess(persona).view)
           return ctx.send(404, { detail: `Agent with ID ${ctx.params.id} does not exist` });
         ctx.send(200, agentSnapshot(persona));
+      } },
+      // Native Agent knowledge picker reads (folders by source, folder search, folder documents).
+      { method: "GET", path: "/hierarchy-nodes", handle(ctx) {
+        const sources = new URL(ctx.req.url, "http://mock").searchParams.getAll("source");
+        ctx.send(200, { nodes: knowledgeNodes(sources).map(({ id, title, link, parent_id }) => ({ id, title, link: link ?? null, parent_id: parent_id ?? null })) });
+      } },
+      { method: "GET", path: "/hierarchy-nodes/search", handle(ctx) {
+        const params = new URL(ctx.req.url, "http://mock").searchParams, query = (params.get("query") || "").toLowerCase();
+        ctx.send(200, { nodes: knowledgeNodes(params.getAll("source")).filter((n) => n.title.toLowerCase().includes(query))
+          .map(({ id, title, link, parent_id, source }) => ({ id, title, link: link ?? null, parent_id: parent_id ?? null, source })) });
+      } },
+      { method: "POST", path: "/hierarchy-nodes/documents", async handle(ctx) {
+        const body = await ctx.body(), byName = (body.sort_field || "last_updated") === "name", sign = body.sort_direction === "asc" ? 1 : -1;
+        // Source DocumentSummary DTO: required nullable link/parent/timestamps; rows without a timestamp sort last.
+        const rows = knowledgeCatalog().documents.filter((d) => d.parent_id === body.parent_hierarchy_node_id)
+          .map(({ id, title, link, parent_id, last_modified, last_synced }) => ({ id, title, link: link ?? null,
+            parent_id: parent_id ?? null, last_modified: last_modified ?? null, last_synced: last_synced ?? null }))
+          .sort((a, b) => {
+            if (byName) return a.title.localeCompare(b.title) * sign;
+            if (a.last_modified === b.last_modified) return a.title.localeCompare(b.title);
+            return a.last_modified == null ? 1 : b.last_modified == null ? -1 : (Date.parse(a.last_modified) - Date.parse(b.last_modified)) * sign;
+          });
+        ctx.send(200, { documents: rows, next_cursor: null, page_size: rows.length, sort_field: body.sort_field || "last_updated",
+          sort_direction: body.sort_direction || "desc", folder_position: body.folder_position || "on_top" });
       } },
       { method: "POST", path: "/persona", handle: (ctx) => saveAgent(ctx) },
       { method: "PATCH", path: "/persona/:id", handle: (ctx) => saveAgent(ctx, Number(ctx.params.id)) },
@@ -791,7 +908,8 @@ export default function createHandlers(core, fileCompanions = {}) {
         if (!regenerate) sess.nodes.push(userNode);
         const history = historyTo(sess, userNode.parent);
         const llm = answerModel(body.llm_override || modelOverride(sess.model), sess.persona_id);
-        let script = exact || pickScript(core.layerDirs("chat"), userNode.message || "", core.parseYaml, history, llm.model_version);
+        let script = exact ? withContext(exact, history, llm.model_version)
+          : pickScript(core.layerDirs("chat"), userNode.message || "", core.parseYaml, history, llm.model_version);
         if (!exact) {
           script = userSearch.selectChatScript(script, { ...body, message: userNode.message });
           script = browserExtension.selectChatScript(script, { ...body, message: userNode.message });

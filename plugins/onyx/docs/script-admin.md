@@ -14,7 +14,7 @@ At `/admin/language-models`, **Add** chooses a provider-specific native form. Th
 
 An existing card's `aria-label="Edit <provider-name>"` opens edit mode. **Test** calls `POST /api/admin/llm/test`, which checks finite required fields and returns a simulated receipt; it does not contact a model. **Update**/save calls `PUT /api/admin/llm/provider` with the existing ID, retaining its model identities/configuration. Saving without that ID creates a different provider. Credentials are replaced with fake/redacted markers. Cancel leaves the full catalog/default/access configuration unchanged.
 
-The native **Set default** operation posts `/api/admin/llm/default`; provider/model selection must refer to a member of the saved catalog. Separate naming, vision and Craft defaults have separate endpoints. Public chat and agent model catalogs project the same mutable inventory, so a renamed/hidden/default model should be checked there after Save. No provider-delete handler is implemented; a non-strict empty response is not a supported delete.
+The native **Set default** operation posts `/api/admin/llm/default`; selection must refer to a saved catalog member. Naming, vision and Craft defaults use separate endpoints. Public chat/Agent catalogs project the same inventory, so check renamed/hidden/default models there after Save. Native **Delete** uses the numeric-ID catalog route and confirmation; default deletion is disabled with multiple providers, and deleting the last requires the force warning. This deletes fictional local configuration, not an account.
 
 Available-model refresh reads the documented builtin/options or provider available-model endpoint. These return prepared arrays, not remote discovery. Opening a populated list or a successful Test is not proof that a real key works. Use [model branches](script-chat.md#composer-models-answer-models-and-branches) to demonstrate the saved catalog's actual native consumer.
 
@@ -34,6 +34,17 @@ The model row's rename affordance (legacy right-side button index 0/title editor
 
 The adjacent settings affordance (legacy right-side index 1) opens a dialog/popover with capability controls. Reasoning Low/Medium/High map to the finite effort range; lowering maximum clamps default, keyboard Home/End selects the allowed ends, and an unset maximum uses the highest supported value. The seeded default may be bounded at Medium. A reasoning model fixes/disables temperature at 1; ordinary chat temperature ranges 0–2 in 0.1 steps and a null slider can park at zero without meaning an explicitly saved zero. Context-window display is read-only; unknown shows an em dash/tooltip. Popover changes remain provider-form drafts until Update; canceling the enclosing form discards them.
 
+### Saved defaults, manual models and Auto Update
+
+A model row's **Set as Default** immediately writes `/api/admin/llm/default`, rather than a provider-form draft. Reopen the dialog and inspect the Default Model badge and actual public picker. Canceling an unrelated reopened form does not undo that submitted default. Keep retains it; dirty → fresh restores the original seed.
+
+Azure's **Enter model name** trims input; whitespace/duplicate names disable **Add Model**. Enter and the button are distinct commit paths. Added models remain drafts until provider **Update**, then appear with stable allocated IDs in admin/public catalogs. **More Models**/Cancel must not leak drafts. This manual form has no Auto Update.
+
+OpenAI's Auto Update changes draft `is_auto_mode` and finite prepared discovery/model inventory. Inspect native disabled choice/bulk controls, visibility and custom names before Update, then read the actual picker. Toggle/Cancel preserves saved state. No remote model discovery occurs.
+
+Community model access uses native **All Users & Agents** / **Named Groups & Agents**, Agent chips and Save/Cancel. A Community Group card can show zero members without fetching Enterprise group management. Author coherent catalog/group IDs and test dirty keep/fresh; do not import paid overlays to populate Community controls. Access remains local metadata, not a production ACL.
+
+
 ## Admin agent curation
 
 `/admin/agents` supports search, Created By/Actions filters, Name sort and a table footer. The source unit uses four nonbuiltin rows on one page. This pin has no table label-column filter or native row Start Chat/detail link; those actions belong to the user gallery/viewer. `data-testid="edit-agent-<id>"` opens the ordinary `/app/agents/edit/<id>?admin=true` editor; New Agent uses the same form and role-gated extra controls.
@@ -52,13 +63,13 @@ Frequency **Update** controls write `/property` with refresh/pruning names and *
 
 Google Drive **New Account** → **Connect** navigates to a local read-only fake-account landing returned by `/api/connector/oauth/authorize/<source>`. Only its explicit **Stage local fake account** POST creates the credential and redirects. A GET/prefetch must not mutate; there is no real Google consent or token exchange.
 
-A crucial cross-screen boundary: Admin Pages owns `GET /api/manage/connector` ahead of Save Controls, and Groups/Document Sets resource selectors use raw connector-status fixture snapshots. Newly created live pairs do not automatically populate every selector. Preseed those native DTO joins when a script spans creation and resource selection; do not claim complete propagation.
+Admin Pages owns `GET /api/manage/connector` ahead of Save Controls, but explicitly reads its sole live `connectorList()`. Group and Document Set selectors/validation use the same live pair projection. Binding is still required: a connector without a pair is not an indexed resource. Preserve coherent connector, credential and pair IDs, and check the actual selected-resource consumer after rename/save.
 
 ## File and website connectors
 
 Native file connector upload uses the actual multipart input and `/api/manage/admin/connector/file/upload`; it keeps filenames/IDs, not document bytes or embeddings. The resulting connector must still be bound before appearing as a pair. Existing file connector **Edit** → **Add Files** stages a new-file badge; **Save Changes** → **Confirm & Save** posts `/files/update` and can invoke local run-once. Patch0007 preserves the native FileList before input reset; a build without it cannot be repaired by a direct state write. Existing-file removal checkboxes and confirm update metadata arrays.
 
-Run-once for supported created pairs marks in-progress metadata; there is no worker that later completes indexing. Do not wait for an invented completion or reuse a static success receipt as job evidence. The static seeded low-ID paths and live created paths have different handler ownership, explained in backend admin.
+Run-once accepts native `{connector_id,credentialIds:[...],from_beginning:boolean}` for seeded and created pairs. Seeded requests remain `not_started`; new upload pairs use `in_progress`. Explicit `seededPairs` membership, not ID size, decides this. No worker completes indexing; document counts/attempt history/errors remain unchanged.
 
 Website/Sites form requires a base URL or uploaded archive path according to mode, and name validation. Its archive input is multiple files, not a promise to crawl/unpack any arbitrary ZIP. Native created-row labeling can prefer the base URL over the display name. These operations retain configuration/metadata only; they never crawl the network.
 
@@ -66,13 +77,15 @@ Website/Sites form requires a base URL or uploaded archive path according to mod
 
 The indexing table groups sources and supports search/expand-all. Native pair details show finite indexing attempts, timestamps, statuses, errors and configuration. **Advanced** separates **Indexing**, **Document Permission Sync**, and **Group Membership Sync** tabs. Their applicability is source-specific: Salesforce's inline ACL model can show both sync tabs not applicable; Drive has both applicable with empty staged history; Slack has document but not group sync; Zoom has neither; Confluence has both; a Jira failure can expose **View Details**/**View Full Trace**.
 
-Those are independent fixture data, not a live sync engine. Error selection and expanded trace should be scoped to the intended attempt. Controls like Resolve All/reindex/pause/delete may have only a fixture receipt or no dynamic implementation; consult backend fixture coverage before asserting that they change indexing. Search/row presence and screenshot coverage do not establish a running connector or permission enforcement.
+Those histories are seed data, not a sync engine. Scope errors/trace to the intended attempt. **Run Update**/**Re-index** stages the guarded run-once request; confirmation Cancel queues nothing. **Resolve All** uses targeted `error_ids` only when the pair already supports it; otherwise it uses full reindex. Paginated unresolved errors and targeted readback remain uncompleted (`not_started`), with no job-list/worker/completion panel. Author capability/error DTOs coherently, rather than turning an unsupported source into a targeted one.
+
+**Pause**/**Resume** changes pair status. **Delete** schedules only PAUSED/INVALID pairs as DELETING/PENDING and retains documents; pending deletion cannot be resumed by a status write. Keep/reload and dirty → fresh are separate checks. See [exact route guards](backend-admin.md#connector-setup-credentials-and-inline-files); local pending state is not production deletion.
 
 ## Document sets
 
 List/new/detail routes consume `GET /api/manage/document-set`; editable selectors can use `get_editable`. The native public/private toggle is a label-driven control, not necessarily the hidden checkbox. Name and at least one connector/federated source are required. Private group and connector search create selection chips. Save uses `POST /api/manage/admin/document-set` for creation and PATCH with the existing ID for edits; Cancel discards the draft.
 
-Delete is immediate in this native table, not a confirmation invented from other admin screens. It DELETEs the set and updates the live set catalog used by agent saves/Groups. Missing IDs display native missing-detail behavior. Public clears selected groups in the handler; it does not implement permissions propagation or retroactively rewrite saved agent snapshots. Connector choices remain fixture-bound even though document-set records themselves are live.
+Delete is immediate in this native table, not an invented confirmation. It removes the live set row used by Agent/Group readers. Missing IDs show native missing-detail behavior. Public clears selected groups, without permissions propagation or cascade deletion. Connector selectors/validation read current live pairs; federated selection reads the sole live collection. Saved Agent Knowledge and Group resource names refresh by selected set ID.
 
 ## Users, invitations, roles and Craft access
 
@@ -88,7 +101,7 @@ Per-user Craft access is managed on `/admin/craft/access`, not an imagined user-
 
 Groups list/create/detail aliases use the same group store. The native Name field and Add members search/checkbox/Done/Save Changes flow can issue sequential creation/membership/resource writes. A combined PATCH must preserve selected connector IDs when removing members; a member-only update must not erase connectors. Manager toggles use `/manager`, permissions use `/permissions`, incognito uses `/incognito`, and agent/document-set selection has separate association endpoints.
 
-Selected users join the live accepted-user store. Deleting a user removes its memberships. Document sets are live, but group agent/connector resource pickers are fixture snapshots; a newly created agent need not appear. Group agent association is not the same as the persona's `group_shares` and does not itself grant that share. Permission lists/incognito flags are display metadata, not a complete authorization/retention engine.
+Selected users join live accepted Users; deletion removes memberships. Group connector, Document Set and Agent resources use their sole live owners, including new/renamed records, and rehydrate saved selection by stable IDs. Group Agent association is still distinct from persona `group_shares` and grants no automatic share. Permissions/incognito remain display metadata, not a complete authorization/retention engine.
 
 Delete requires confirmation; missing detail and an empty list after deleting all seeded groups are separate native states. Group token-limit CRUD shares its owner with group detail/Usage views. Workspace/user limits have their own controls: name/scope, token/cost budget and period fields write finite limit rows. Enable/edit/delete/readback are supported metadata, but no requests are actually throttled and no timer resets spending. Craft's staged usage-limit banner is an independent response, not this budget engine.
 
@@ -99,6 +112,8 @@ MCP admin requires both native admin role and capability metadata. **View tools*
 **Manage** edits name/description/server URL/public/users/groups through the singular `/admin/mcp/server/<id>` route. Disconnect/status uses its status endpoint, while Delete confirms then removes the server/tools from projected catalogs. Add creates server metadata, then configures None/API Key/OAuth, shared versus per-user credentials, transport and auth fields. OAuth Auto Discovery/Known Provider has endpoint/scopes/extra-JSON fields; saving can enter Awaiting Auth, and local `/api/admin/mcp/oauth/connect` returns a finite native redirect. Every secret is fake; no tool or IdP is contacted. Craft availability is a separate flag and connection predicate.
 
 OpenAPI **Add definition** accepts JSON with paths/operations, then **Add Action** reviews parsed methods. `/api/admin/tool/custom/validate` extracts finite method metadata; it is not a complete OpenAPI validator or an API call. Native OAuth configuration fields and **Connect** save local config/tool records; custom headers are scrubbed. The tool appears in native selectable catalogs but has no execution backend. Do not send real credentials or claim the displayed operation ran.
+
+Agent Save resolves this composed MCP/OpenAPI catalog, including locally created actions. Saved Agent action readback refreshes current names/descriptions by stable ID; native Rename requires `permissions.edit` on custom actions. Check the gallery/viewer after save/rename, not only the picker. This does not add tool execution or another OAuth store.
 
 ## Chat preferences and gateway
 
@@ -130,15 +145,24 @@ Document Processing's API-key Save/Delete stores only the configured boolean thr
 
 Security switches and fields save `PUT /api/admin/security` only for keys present in the native seed. Password uppercase/length rules and lower-page JWT JWKS URL/audience/issuer commit through their native form/Enter/blur path. Saved metadata does not change actual authentication, SSRF/network policy, JWT validation or password storage.
 
-Service Accounts **New** posts `/api/admin/api-key` with name/groups and reveals a one-time fake key. Regenerate changes its display marker; row name/groups edits and confirmed Delete affect local records. Omitted groups can clear them, so preserve the complete native form. SCIM **Generate**/**Regenerate** replaces a single fake token metadata record; it does not synchronize a directory or validate an IdP.
+Service Accounts **New** posts `/api/admin/api-key` with name/groups and reveals a one-time fake key. Name/group edits and confirmed Delete use the local account record plus sole Groups memberships; Group rename/member edits read back there too. Omitted groups clears them. Regenerate changes the fake display marker. SCIM **Generate**/**Regenerate** replaces one fake metadata record; native Copy/Download needs the matching Enterprise build and explicit Enterprise settings, and should be checked against actual clipboard/download bytes. Metadata reads do not expose the raw token; there is no directory synchronization or IdP validation.
 
 SSO **Add** exposes Google, OIDC and SAML forms. A saved slug/name can become disabled while display name remains editable. OIDC needs client ID/secret/discovery URL; Verified Email/PKCE/scopes (Enter to commit chips) are separate fields. SAML needs IdP entity/URL/certificate and has optional SP entity/certificate/private key/email attributes. Secrets/certs are scrubbed to fake markers. Enable saves a flag, not a real connection. DNS verify endpoints only mark an in-memory flag—no DNS lookup—and domain-list fixture ownership is distinct. General SSO deletion is not implemented.
+
+### OAuth claim snapshots and rerun
+
+`/admin/oauth-test` is diagnostic readback, not authentication. Supply prepared claim/token/profile DTOs through `/api/admin/oauth-test/claims` and optional `/mockshop/admin-pages/oauth-claims-rerun`. **Re-run OAuth login** follows the native `/auth/oidc/authorize?next=/admin/oauth-test&redirect=true` link, replacing only the prepared snapshot and redirecting locally; actor, providers and unrelated Admin records remain unchanged.
+
+A fresh-reset POST with `admin_oauth_claims_fixture:"empty"` selects optional `/mockshop/admin-pages/oauth-claims-empty` and its native **No claims received.** maps. Neutral `found:false` is a distinct **No Snapshot** state. Keep retains the selected local snapshot; fresh without the selector restores the seed. No cookies, sessions or OAuth/IdP requests are created by this diagnostic path.
+
 
 ## Hooks, Slack, Discord and standard answers
 
 Hooks Connect/configure collects name, endpoint and fictional key. Validate adds a finite successful log, not an HTTP request. Deactivate/Disconnect changes status; the trash/delete affordance appears only in the supported disconnected context. Reconnect and confirmed Delete mutate the same local hook/log store. An empty execution log is a valid native view, not evidence the hook ran.
 
 Slack bot create/edit/list saves name/token/config metadata. Enable checkbox and confirmed Delete update the bot; deleting it removes its configured channels. Channel create/edit uses channel name, selected agent/document sets and native response toggles; Update and row Delete persist local channel configuration. There is no Slack connection, message posting or channel discovery.
+
+Saved channels project selected Agents and Document Sets from their sole current owners, preserving IDs as names change. **All Public** stores no persona; **Specific Document Sets** uses the fictional Slack-bot persona marker. Native **Answer Type** restores saved `channel_config.response_type`: Standard is `citations`, Detailed is `quotes`, and absent saved value defaults to Standard. This readback requires patch0017 in the selected artifact. Compare Update → Edit reopen/reload, Cancel, keep and dirty → fresh without overwriting other channel settings.
 
 Discord **Add Server** creates an unregistered/pending guild and displays a fake registration key. Removing it requires confirmation; it never actually joins Discord. Existing guild channel Enable All/Disable All and **Update Configuration** change finite channel flags. The corpus's registered guild is a staged fixture, not proof the registration receipt works externally.
 
@@ -148,7 +172,13 @@ Standard Answers list/new/detail has keyword, answer and category/tag fields; **
 
 Document Explorer is empty by default. Explicit fresh-reset control `admin_documents_fixture: "loaded"` opts into its synthetic document corpus; it is not a new keyed `state` field. Search POSTs `/api/admin/search`. Boost Edit/Save and Hidden toggle POST `/api/manage/admin/doc-boosts` and `/doc-hidden` against those rows. Document Feedback's liked/disliked ordering reads that same admin corpus, not ordinary chat votes or User Search. Reload/keep preserve mutations; a fresh reset re-seeds it.
 
-Query History aliases/detail show fixture history (not a live join of chats just sent). Federated detail edits are limited to the documented literal seeded ID and do not rewrite the whole federated/personal-connection catalog. OAuth Test has a native **No Snapshot** state; do not fabricate a successful snapshot. System Information displays version metadata. Export Logs creates a local ready/no-logs receipt and intended empty ZIP, but the generic Buffer serializer has a source-level binary caveat: do not assert a valid ZIP without observed bytes. None of these pages gives access to production logs or credentials.
+Query History aliases/detail remain fixture history, not chats just sent. System Information displays version metadata. Export Logs creates a ready/no-logs local receipt and automatically downloads the raw empty ZIP; its Download button repeats it and `?export=<32-hex id>` reopens the receipt. Inspect actual filename/bytes when verifying a download. None of these pages accesses production logs or credentials.
+
+### Federated configuration lifecycle
+
+The connector catalog and native setup/detail forms use `GET/POST /api/federated` and numeric `GET/PUT/DELETE /api/federated/<id>` backed by one local collection. Create allocates a non-reused ID; follow the returned/discovered ID rather than assuming the seeded detail ID. Back/Cancel must leave drafts unsaved; Update preserves omitted config/credentials, and secrets are scrubbed. Native Delete uses the real browser confirmation—handle that dialog, not a substituted `window.confirm`.
+
+List/detail and Document Set name/source selection read this same collection, including new IDs. Reopen/reload/keep retains mutations; fresh restores the authored seed. Unknown numeric IDs return404. Personal OAuth status remains separate and unchanged. No provider contact, ingestion or federated search execution is implemented.
 
 ## Analytics, reports and custom script
 
@@ -160,7 +190,7 @@ Custom Analytics requires the appropriate build/server `CUSTOM_ANALYTICS_SECRET_
 
 Theme/enterprise settings expose labeled name/greeting/header/footer/help/disclaimer fields, required-consent settings and announcement configuration. **Apply Changes** PUTs `/api/admin/enterprise-settings`; lower-page text and conditional controls should be asserted in the actual app, not only the form heading. A first-visit required notice blocks the app until its checkbox and **Start**; acknowledgement is browser-local. A published announcement uses the banner store and native popup/notification dismissal. Unpublishing/removing it removes that notification; dismissing it is different from deleting its configuration.
 
-Logo upload uses the real multipart image input and keeps in-memory bytes, but Admin Pages' generic serializer and Extras' possible route shadowing mean a successful upload receipt alone does not prove a byte-valid displayed logo. Use actual visual/response evidence before claiming that branch. A fresh backend reset restores configured branding/banner; clear browser consent keys separately to demonstrate the first-visit modal again.
+Logo upload uses the real multipart image input and retains selected bytes/type in memory. The raw logo response takes precedence over seeded branding; malformed/non-image upload returns400. Check actual decoding and native preview/sidebar after Apply Changes/reload, not just the success receipt. Remove clears the native use_custom_logo setting, not the retained upload buffer. Fresh restores branding/banner and the seeded logo; browser consent keys must be cleared separately to show first-visit consent again.
 
 ## License and Cloud billing
 
@@ -172,6 +202,6 @@ An active plan's **View Plan Details** must show the correct tier (Business is n
 
 ## Persistence and evidence boundaries
 
-Successful native admin writes generally survive reload and same-world keep transitions; a fresh/world reset re-seeds the owning store. Read-only fixture panels, browser-local drafts/consent, raw resource selector snapshots and separate health/status fixtures do not share that lifetime automatically. Every feature story should name the write, read its actual consumer, and assert reset/cancel separately where relevant.
+Successful native admin writes generally survive reload and same-world keep; fresh/world reset reseeds their owner. Read-only panels, browser drafts/consent and independent health/status fixtures have separate lifetimes. Sole-owner resource joins refresh supported saved names/metadata, not execution or universal propagation. Name the write, inspect its actual consumer, and assert reset/cancel separately.
 
 Historical aggregate route sweeps, provider-form screenshots and retired underscore scripts are provenance, not all-screen acceptance. See the [per-script coverage ledger](script-coverage.md) for which unit supplies a unique operation, duplicates another recipe or merely asserts a regression. Never turn an unimplemented route's non-strict `{}` into a claimed working feature.

@@ -1,0 +1,21 @@
+--- a/src/app/app/components/WelcomeMessage.tsx
++++ b/src/app/app/components/WelcomeMessage.tsx
+@@ -24,16 +24,14 @@
+   const t = useTranslations("chat.welcome");
+   const settings = useSettings();
+ 
+-  // Use a stable default for SSR, then randomize on client after hydration
++  // Use a stable default for SSR, then apply the custom or locale default greeting after hydration
+   const [greeting, setGreeting] = useState(t("greeting.helpText"));
+ 
+   useEffect(() => {
+     if (settings.enterprise?.custom_greeting_message) {
+       setGreeting(settings.enterprise.custom_greeting_message);
+     } else {
+-      setGreeting(
+-        Math.random() < 0.5 ? t("greeting.helpText") : t("greeting.startText")
+-      );
++      setGreeting(t("greeting.helpText"));
+     }
+   }, [settings.enterprise?.custom_greeting_message, t]);
+ 
