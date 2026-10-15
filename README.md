@@ -1,6 +1,6 @@
 # Mockshop
 
-**Experimental v0.3.0 · Onyx first**
+**Experimental v0.3.1 · Onyx first**
 
 Mockshop runs a real, pinned application frontend against a lightweight fixture backend. YAML scripts drive the UI with Playwright to produce screenshots or paced video walkthroughs, without running the application's production backend or using live accounts.
 
@@ -9,6 +9,8 @@ The included application is [Onyx](plugins/onyx/README.md). Its frontend is buil
 Version **0.2.0** adds reusable worlds, script-local content and exact replies, scenes/steps, independent presentation profiles, scoped overrides and render-source lookup. It retains macOS support from **0.1.1**. The public examples are now a small authoring reference; detailed operating guides preserve the knowledge from the historical sample collection. This is not a promise of full frontend coverage or production readiness.
 
 Version **0.3.0** extends Onyx's editable, resettable demo state: agent Advanced Options and knowledge selections; live connector, group, provider and document-set views; federated connector create/edit/delete; deterministic native greetings; and saved Slack answer-type readback. It retains artifact-free validation from **0.2.1** and the existing worlds/scripts/profiles architecture. Native frontend changes require a matching local rebuild; no production integrations or private operating material are included.
+
+Version **0.3.1** retains the script's selected world during an in-script fresh-state reset unless another overlay is explicitly selected. Captured frontends also retain the mocked WebSocket API when clients inspect its immediate prototype. This is an engine-only synchronization; public Onyx content, third-party license notices and the exclusion of private operating material are unchanged.
 
 ## What is included
 

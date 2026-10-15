@@ -280,7 +280,10 @@ export async function runScript(m, file, browser, opts = {}) {
         case "mark": case "keyframe": tl?.mark(arg, i, op); break;  // timeline label only; no browser action
         case "state": { // Fixture, armed-turn, and screen state retain the current session unless explicitly reset.
           const { cursor: _cursor, ...state } = arg;
-          const r = await fetch(`${MOCK}/__mockshop/state`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...state, url: page.url(), keep: state.keep ?? true, resetChats: state.resetChats ?? false }) });
+          // A fresh in-script reset clears mutable state, not the script's selected world.
+          // Explicit overlay changes still win; keep-only switches retain the server's current selection.
+          const overlays = state.overlays ?? (state.keep === false ? sc.overlays || [] : undefined);
+          const r = await fetch(`${MOCK}/__mockshop/state`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...state, overlays, url: page.url(), keep: state.keep ?? true, resetChats: state.resetChats ?? false }) });
           if (!r.ok) throw new Error(`mock state switch failed (${r.status})`);
           break;
         }

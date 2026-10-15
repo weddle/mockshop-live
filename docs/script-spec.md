@@ -94,7 +94,7 @@ Onyx adds `send: {text, reply: {text, queries, cites}}`, keeping a question and 
 | `shot` | name, or `{name, hover, delay, full_page, clip, mouse, hold, cursor}` | Shot mode: PNG `NN-<name>.png` (parks the mouse at `mouse` or the bottom-right corner, optional `hover` locator, waits `delay` ms (300), captures; `full_page`, `clip: {x,y,width,height}` crop). Clip mode: a *beat*, the cursor glides to `hover` and holds `hold` ms (default `clip.hold_ms`). Optional inline `cursor` overrides this shot. Also checks the manifest's `crash_text`. |
 | `pause` | ms | Clip-only pacing beat (no-op for screenshots). |
 | `card` | string or `{title, subtitle, ms, keep}` | Clip-only full-screen title card. `keep: true` leaves it up so the next `goto` crossfades out of it. |
-| `state` | `{overlays: [names]}` | Swaps the mock's fixture overlays mid-run (e.g. another persona or org; `[]` = base). Keeps in-run state (chats), the demo clock and locale. Follow with `goto` so the page reloads with the new data. Same as `./mockshop switch <p> <overlay...>` on a running instance. |
+| `state` | `{overlays: [names], keep?: bool, ...state}` | Swaps the mock's fixture overlays mid-run (e.g. another persona or org; `[]` = base). Keeps in-run state (chats), the demo clock and locale by default. `keep: false` clears mutable state while retaining the script's compiled world/overlays unless `overlays` is explicitly supplied. Follow with `goto` so the page reloads with the new data. Same overlay switch as `./mockshop switch <p> <overlay...>` on a running instance. |
 | `mark` / `keyframe` | name, or `{name, note}` | No browser action. Writes a labelled point on the clip timeline (see below). `keyframe` is an alias. |
 
 ### Locators

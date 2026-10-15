@@ -35,4 +35,15 @@ export async function routeCaptured(context, manifest, {anchor, clockOffset = an
     const hook = hooks.find((h) => new RegExp('^' + h.match.split('*').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$').test(ws.url()));
     if (hook) await hook.onConnect(ws, ctx); else ws.close({code:1008, reason:'Unmocked endpoint'});
   });
+  // Playwright's WebSocket mock uses an empty subclass. noVNC reflects only the
+  // immediate prototype, so expose the same inherited API without changing it.
+  await context.addInitScript(() => {
+    const prototype = WebSocket.prototype;
+    const inherited = Object.getPrototypeOf(prototype);
+    for (const key of ["send", "close", "binaryType", "onerror", "onmessage", "onopen", "onclose"]) {
+      if (Object.hasOwn(prototype, key)) continue;
+      const descriptor = Object.getOwnPropertyDescriptor(inherited, key);
+      if (descriptor) Object.defineProperty(prototype, key, descriptor);
+    }
+  });
 }
