@@ -1,0 +1,22 @@
+apps:
+  onyx:
+    state:
+      user_conditional:
+        staging:
+          enabled: true
+      auth_anonymous:
+        staging:
+          enabled: true
+          mode: member
+    fixtures:
+      GET /auth/type:
+        auth_type: basic
+        multi_tenant: false
+        requires_verification: false
+        anonymous_user_enabled: true
+        password_min_length: 8
+        password_max_length: 64
+        has_users: true
+        oauth_enabled: false
+        password_auth_enabled: true
+        sso_providers: []

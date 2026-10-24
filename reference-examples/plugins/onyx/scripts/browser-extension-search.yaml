@@ -1,0 +1,68 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-search
+title: Independent native NRF Search menu, loading, results, empty, exact staged failure and recovery
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+known_errors:
+  - match: '/^console: \[Toast\] Fictional search is temporarily unavailable\. Try another workshop query\. \[source: http:\/\/127\.0\.0\.1:3328\/_next\/static\/chunks\/[A-Za-z0-9_-]+\.js\]$/'
+    reason: 'Exact #30 staged error Toast from the assigned native compiled chunk; SearchUI.tsx66-71 calls toast.error. Visible error/query protection and native recovery are asserted. No other Toast, URL, HTTP error or failed step is allowed.'
+steps:
+  - goto: /nrf
+    id: goto-nrf
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - click: { role: button, name: Change app mode, exact: true }
+    id: click-change-app-mode
+  - shot: { name: nrf-search-chat-mode-menu, full_page: true }
+    id: shot-nrf-search-chat-mode-menu
+  - click: { selector: '[role="option"]:has-text("Quick search for documents")' }
+    id: click-role-option-has-text-quick-search-for-documents
+  - fill: { selector: '#onyx-chat-input-textbox', value: Find learning resources }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button', settle: 0 }
+    id: click-onyx-chat-input-send-button
+  - wait: 250
+    id: wait
+  - shot: { name: nrf-search-loading, full_page: true, delay: 0 }
+    id: shot-nrf-search-loading
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results
+  - shot: { name: nrf-search-results, full_page: true }
+    id: shot-nrf-search-results
+  - fill: { selector: '#onyx-chat-input-textbox', value: unlisted workshop }
+    id: fill-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { text: No results found, exact: true }
+    id: wait-no-results-found
+  - shot: { name: nrf-search-empty, full_page: true }
+    id: shot-nrf-search-empty
+  - fill: { selector: '#onyx-chat-input-textbox', value: search unavailable }
+    id: fill-onyx-chat-input-textbox-3
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-3
+  - wait: { text: Search failed, exact: true }
+    id: wait-search-failed
+  - wait: { text: Fictional search is temporarily unavailable. Try another workshop query., exact: true }
+    id: wait-fictional-search-is-temporarily-unavailable-try-another-wor
+  - eval: |
+      if (document.querySelector('#onyx-chat-input-textbox')?.textContent.trim() !== 'search unavailable' || document.querySelector('[data-testid="AgentMessage/toolbar"]')) throw new Error('Native Search error changed the query or created an assistant response');
+    id: eval-script
+  - shot: { name: nrf-search-error, full_page: true }
+    id: shot-nrf-search-error
+  - fill: { selector: '#onyx-chat-input-textbox', value: Find learning resources }
+    id: fill-onyx-chat-input-textbox-4
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-4
+  - wait: { text: 22 Results, exact: true }
+    id: wait-22-results-2
+  - shot: { name: nrf-search-recovered, full_page: true }
+    id: shot-nrf-search-recovered
+  - wait_gone: { text: Search failed, exact: true }
+    id: wait-gone-search-failed
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,102 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-signup
+title: "Independent native #69 unit: auth-signup"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/register$/'
+    reason: Only this unit’s deliberately staged native endpoint400; the visible error and recovery are required.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/auth\/register\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^console: \[Toast\] LOCAL FAKE DEMO — staged account creation failure; no account created\. \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/0se759_ajj\-mw\.js\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^console: \[Toast\] An account already exists with the specified email\. \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/0se759_ajj\-mw\.js\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+# Independent prerequisites: Fresh logged-out login entry; native Create an Account link, invalid/existing/error/direct prefill and real local signup→pending.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /auth/login
+    id: goto-auth-login-2
+  - wait: { testid: email }
+    id: wait
+  - click: { role: link, name: Create an Account, exact: true }
+    id: click-create-an-account
+  - wait: { role: button, name: Create Account, exact: true }
+    id: wait-create-account
+  - shot: auth-signup-link-empty
+    id: shot-auth-signup-link-empty
+  - fill: { testid: email, value: robin.guest@workshop.example }
+    id: fill
+  - fill: { testid: password, value: short }
+    id: fill-2
+  - press: Tab
+    id: press-tab
+  - eval: |
+      if (!document.querySelector('button[type="submit"]')?.disabled) throw new Error('Short signup input must fail native requirements');
+    id: eval-script-2
+  - shot: auth-signup-validation
+    id: shot-auth-signup-validation
+  - fill: { testid: password, value: MockOnly-Workshop1! }
+    id: fill-3
+  - shot: auth-signup-ready
+    id: shot-auth-signup-ready
+  - fill: { testid: email, value: staged.failure@workshop.example }
+    id: fill-4
+  - click: { role: button, name: Create Account, exact: true }
+    id: click-create-account
+  - wait: { text: 'LOCAL FAKE DEMO — staged account creation failure; no account created.' }
+    id: wait-local-fake-demo-staged-account-creation-failure-no-account-
+  - shot: auth-signup-error
+    id: shot-auth-signup-error
+  - fill: { testid: email, value: "{{people.alex-learner.email}}" }
+    id: fill-5
+  - click: { role: button, name: Create Account, exact: true }
+    id: click-create-account-2
+  - wait: { text: An account already exists with the specified email. }
+    id: wait-an-account-already-exists-with-the-specified-email
+  - shot: auth-signup-existing
+    id: shot-auth-signup-existing
+  - click: { role: link, name: Sign In, exact: true }
+    id: click-sign-in
+  - wait: { testid: email }
+    id: wait-2
+  - goto: /auth/signup?email=robin.guest%40workshop.example
+    id: goto-auth-signup-email-robin-guest-40workshop-example
+  - wait: { testid: email }
+    id: wait-3
+  - eval: |
+      if (document.querySelector('[data-testid="email"]')?.value !== 'robin.guest@workshop.example') throw new Error('Signup direct email was not prefilled');
+    id: eval-script-3
+  - shot: auth-signup-direct-prefilled
+    id: shot-auth-signup-direct-prefilled
+  - fill: { testid: password, value: MockOnly-Workshop1! }
+    id: fill-6
+  - click: { role: button, name: Create Account, exact: true }
+    id: click-create-account-3
+  - wait: { text: "it looks like you haven't verified your email yet.", exact: false }
+    id: wait-it-looks-like-you-haven-t-verified-your-email-yet
+  - shot: auth-signup-success-waiting
+    id: shot-auth-signup-success-waiting
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

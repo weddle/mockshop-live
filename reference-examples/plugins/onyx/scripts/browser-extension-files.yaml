@@ -1,0 +1,151 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-files
+title: Independent native file library, actual fictional uploads, cited answer, preview and saved-file replay
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  - goto: /nrf
+    id: goto-nrf
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - click: &attach { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814
+  - wait: { text: Upload Files, exact: true }
+    id: wait-upload-files
+  - press: ArrowUp
+    id: press-arrowup
+  - hover: { selector: '.opal-dropdown[data-state="open"]' }
+    id: hover-opal-dropdown-data-state-open
+  - scroll: { role: menuitem, name: All Recent Files, exact: true }
+    id: scroll-all-recent-files
+  - shot: { name: nrf-files-menu, full_page: true, hover: { role: menuitem, name: All Recent Files, exact: true } }
+    id: shot-nrf-files-menu
+  - click: { role: menuitem, name: All Recent Files, exact: true }
+    id: click-all-recent-files
+  - wait: { placeholder: Search files... }
+    id: wait
+  - fill: { placeholder: Search files..., value: No fictional matching file }
+    id: fill
+  - wait: { text: No files found, exact: true }
+    id: wait-no-files-found
+  - shot: { name: nrf-file-library-empty, full_page: true }
+    id: shot-nrf-file-library-empty
+  - fill: { placeholder: Search files..., value: library-reading }
+    id: fill-2
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha
+  - wait: { text: 1 file selected }
+    id: wait-1-file-selected
+  - shot: { name: nrf-file-library-selected, full_page: true }
+    id: shot-nrf-file-library-selected
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  - hover: { text: library-reading.txt, exact: true }
+    id: hover-library-reading-txt
+  - click: { selector: '#onyx-chat-input div.relative:has-text("library-reading.txt") button[aria-label="Remove"]' }
+    id: click-onyx-chat-input-div-relative-has-text-library-reading-txt-
+  - shot: { name: nrf-selected-file-removed, full_page: true }
+    id: shot-nrf-selected-file-removed
+  - click: *attach
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814-2
+  - click: { text: Upload Files, exact: true }
+    id: click-upload-files
+  - eval: |
+      const input = document.querySelector('input[type="file"][accept="*/*"]');
+      if (!input?.multiple) throw new Error('Missing native shared #28 upload input');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Disposable fictional education text, never user tab data.'], 'workshop-notes.txt', {type:'text/plain'}));
+      input.files = transfer.files;
+      input.dispatchEvent(new Event('change',{bubbles:true}));
+    id: eval-script
+  - wait: { text: Processing..., exact: true }
+    id: wait-processing
+  - eval: |
+      if (!document.querySelector('#onyx-chat-input-send-button').disabled) throw new Error('Native send was not gated by shared file processing');
+    id: eval-script-2
+  - shot: { name: nrf-file-processing, full_page: true }
+    id: shot-nrf-file-processing
+  - wait_gone: { text: Processing..., exact: true, timeout: 20000 }
+    id: wait-gone-processing
+  - shot: { name: nrf-file-ready, full_page: true }
+    id: shot-nrf-file-ready
+  - fill: { selector: '#onyx-chat-input-textbox', value: 'extension: summarize the attached fictional workshop notes' }
+    id: fill-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: 'This is a scripted educational demonstration, not an analysis of uploaded bytes.' }
+    id: wait-this-is-a-scripted-educational-demonstration-not-an-analysi
+  - wait: { testid: 'AgentMessage/toolbar', timeout: 30000 }
+    id: wait-2
+  - wait: { selector: '#onyx-human-message:has-text("workshop-notes.txt")' }
+    id: wait-onyx-human-message-has-text-workshop-notes-txt
+  - shot: { name: nrf-file-cited-answer, full_page: true }
+    id: shot-nrf-file-cited-answer
+  - click: { selector: '#onyx-human-message #onyx-file div:has-text("workshop-notes.txt") button[aria-label="Expand document"]' }
+    id: click-onyx-human-message-onyx-file-div-has-text-workshop-notes-t
+  - wait: { text: Synthetic workshop notes }
+    id: wait-synthetic-workshop-notes
+  - wait: { text: 'This preview is fixture text, not uploaded content.' }
+    id: wait-this-preview-is-fixture-text-not-uploaded-content
+  - shot: { name: nrf-file-human-preview, full_page: true }
+    id: shot-nrf-file-human-preview
+  - press: Escape
+    id: press-escape
+  - click: { role: button, name: Sources }
+    id: click-sources
+  - wait: { text: Cited Sources }
+    id: wait-cited-sources
+  - wait: { selector: '#onyx-chat-sidebar:has-text("workshop-notes.txt"):has-text("User Files")' }
+    id: wait-onyx-chat-sidebar-has-text-workshop-notes-txt-has-text-user
+  - shot: { name: nrf-file-cited-sources, full_page: true }
+    id: shot-nrf-file-cited-sources
+  - click: { selector: '#onyx-chat-sidebar button:has-text("workshop-notes.txt")' }
+    id: click-onyx-chat-sidebar-button-has-text-workshop-notes-txt
+  - wait: { text: Synthetic workshop notes }
+    id: wait-synthetic-workshop-notes-2
+  - shot: { name: nrf-file-citation-preview, full_page: true }
+    id: shot-nrf-file-citation-preview
+  - press: Escape
+    id: press-escape-2
+  - click: { selector: '#onyx-chat-sidebar .sticky button', nth: 0 }
+    id: click-onyx-chat-sidebar-sticky-button
+  - click: { testid: 'AgentMessage/regenerate', last: true }
+    id: click
+  - wait: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+    id: wait-role-dialog-text-is-gpt-4-1
+  - click: { selector: '[role="dialog"] :text-is("GPT-4.1")' }
+    id: click-role-dialog-text-is-gpt-4-1
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("five-minute welcome circle") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-five-minute-welcome-ci
+  - shot: { name: nrf-file-regenerated-grounding, full_page: true }
+    id: shot-nrf-file-regenerated-grounding
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/chat/get-user-chat-sessions');
+        if (!response.ok) throw new Error('Native file conversation history could not be read');
+        const {sessions} = await response.json();
+        const session = sessions.find(item => item.name === 'Workshop file reflection');
+        if (!session) throw new Error('The actual native file conversation was not saved');
+        location.assign('/app?chatId=' + session.id);
+      })()
+    id: eval-script-3
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("five-minute welcome circle") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-five-minute-welcome-ci-2
+  - wait: { selector: '#onyx-human-message:has-text("workshop-notes.txt")' }
+    id: wait-onyx-human-message-has-text-workshop-notes-txt-2
+  - shot: { name: nrf-file-reopened-in-onyx, full_page: true }
+    id: shot-nrf-file-reopened-in-onyx
+  - eval: location.reload()
+    id: eval-script-4
+  - wait: { selector: '[data-testid="onyx-ai-message"]:has-text("five-minute welcome circle") [data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-onyx-ai-message-has-text-five-minute-welcome-ci-3
+  - wait: { selector: '#onyx-human-message:has-text("workshop-notes.txt")' }
+    id: wait-onyx-human-message-has-text-workshop-notes-txt-3
+  - shot: { name: nrf-file-fresh-replay, full_page: true }
+    id: shot-nrf-file-fresh-replay
+world: ../../../worlds/seaside/world.yaml

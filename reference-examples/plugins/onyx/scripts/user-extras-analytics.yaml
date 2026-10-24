@@ -1,0 +1,122 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-analytics
+title: Native Extras - analytics
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - click: { selector: '.h-30.w-30' }
+    id: click-h-30-w-30
+  - click: { text: Upload Image, exact: true }
+    id: click-upload-image
+  - eval: |
+      (async () => {
+        const config = await (await fetch('/api/mockshop/user-extras')).json();
+        const bytes = Uint8Array.from(atob(config.avatar_png_base64), c=>c.charCodeAt(0));
+        const transfer = new DataTransfer(); transfer.items.add(new File([bytes], 'fictional-education-avatar.png', {type:'image/png'}));
+        const input = document.querySelector('input[type="file"][accept="image/*"]');
+        input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+      })()
+    id: eval-script
+  - settle: 700
+    id: settle
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-2
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.uploaded_image_id?.startsWith('mock-user-extras-avatar-')) throw new Error('Native avatar upload marker did not persist');
+      })()
+    id: eval-script-2
+  # Lossless primary operations from the former monolithic proof.
+  - goto: /ee/agents/stats/11
+    id: goto-ee-agents-stats-11
+  - wait: { testid: admin-date-range-selector }
+    id: wait
+  - click: { role: button, name: 7D, exact: true }
+    id: click-7d
+  - settle: 500
+    id: settle-2
+  - eval: "if(!/Total Messages\\s*9/.test(document.body.textContent)) throw new Error('Seven-day native summary did not change to seeded nine messages')"
+    id: eval-script-3
+  - shot: { name: extras-57-analytics-seven-day-filter, full_page: true }
+    id: shot-extras-57-analytics-seven-day-filter
+  - click: { role: button, name: 1D, exact: true }
+    id: click-1d
+  - settle: 500
+    id: settle-3
+  - eval: "if(!/Total Messages\\s*0/.test(document.body.textContent)) throw new Error('One-day native summary did not become empty')"
+    id: eval-script-4
+  - wait: { text: No data found for this agent in the selected date range., exact: true }
+    id: wait-no-data-found-for-this-agent-in-the-selected-date-range
+  - shot: { name: extras-58-analytics-one-day-empty, full_page: true }
+    id: shot-extras-58-analytics-one-day-empty
+  - click: { role: button, name: 1M, exact: true }
+    id: click-1m
+  - settle: 500
+    id: settle-4
+  - eval: "if(!/Total Messages\\s*95/.test(document.body.textContent)) throw new Error('Month native summary did not return seeded 95 messages')"
+    id: eval-script-5
+  - shot: { name: extras-59-analytics-month-populated, full_page: true }
+    id: shot-extras-59-analytics-month-populated
+  - settle: 1200
+    id: settle-5
+  - hover: { selector: '.recharts-wrapper' }
+    id: hover-recharts-wrapper
+  - shot: { name: extras-59a-analytics-native-hover-tooltip, full_page: true, hover: { selector: '.recharts-wrapper' } }
+    id: shot-extras-59a-analytics-native-hover-tooltip
+  - click: { role: button, name: 3M, exact: true }
+    id: click-3m
+  - settle: 500
+    id: settle-6
+  - shot: { name: extras-60-analytics-three-month-filter, full_page: true }
+    id: shot-extras-60-analytics-three-month-filter
+  - click: { testid: admin-date-range-selector-button }
+    id: click-2
+  - shot: { name: extras-61-analytics-custom-calendar, full_page: true }
+    id: shot-extras-61-analytics-custom-calendar
+  - click: { selector: '.opal-calendar-nav button', nth: 0 }
+    id: click-opal-calendar-nav-button
+  - click: { selector: '.opal-calendar-nav button', nth: 1 }
+    id: click-opal-calendar-nav-button-2
+  - click: { selector: '.opal-calendar-cell--today button' }
+    id: click-opal-calendar-cell-today-button
+  - click: { selector: '.opal-calendar-cell--today button' }
+    id: click-opal-calendar-cell-today-button-2
+  - settle: 500
+    id: settle-7
+  - wait: { text: No data found for this agent in the selected date range., exact: true }
+    id: wait-no-data-found-for-this-agent-in-the-selected-date-range-2
+  - shot: { name: extras-62-analytics-custom-empty-result, full_page: true }
+    id: shot-extras-62-analytics-custom-empty-result
+  - goto: /ee/agents/stats/12
+    id: goto-ee-agents-stats-12
+  - wait: { testid: admin-date-range-selector }
+    id: wait-2
+  - wait: { text: No data found for this agent in the selected date range., exact: true }
+    id: wait-no-data-found-for-this-agent-in-the-selected-date-range-3
+  - shot: { name: extras-63-analytics-empty-agent-direct, full_page: true }
+    id: shot-extras-63-analytics-empty-agent-direct
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

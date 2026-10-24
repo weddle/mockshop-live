@@ -1,0 +1,253 @@
+# Issue #26: native Enterprise clicks, reload persistence, ordered pins, picker and explicit new-run reset.
+# Acceptance pending: parent runs against the exact pinned Enterprise runtime and inspects all PNGs. No clips.
+name: user-agents
+title: Create, edit, reload, pin and pick a fictional education agent
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /app
+    id: goto-app
+  - click: { testid: AppSidebar/more-agents }
+    id: click
+  - wait: { testid: AgentsPage/container }
+    id: wait
+  - eval: |
+      (async () => {
+      const gallery = document.querySelector('[data-testid="AgentsPage/container"]');
+      for (const name of ['{{teams.training.name}} & Onboarding Desk', 'Guest Ops Copilot', '{{teams.training.name}} Analyst', 'IT Helpdesk']) {
+        if (!gallery?.textContent.includes(name)) throw new Error(`Missing seeded agent: ${name}`);
+      }
+      const seeds = await (await fetch('/api/persona')).json();
+      sessionStorage.setItem('user-agents-seeds', JSON.stringify(seeds.map(a => ({id:a.id, name:a.name}))));
+      const me = await (await fetch('/api/me')).json();
+      sessionStorage.setItem('user-agents-seed-pins', JSON.stringify(me.preferences.pinned_assistants));
+      })()
+    id: eval-script
+  - shot: seeded-gallery
+    id: shot-seeded-gallery
+  - click: { label: AgentsPage/new-agent-button }
+    id: click-2
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - fill: { selector: 'input[name="name"]', value: Campus Learning Guide }
+    id: fill-input-name-name
+  - fill: { selector: 'textarea[name="description"]', value: A fictional education assistant for planning accessible study sessions. }
+    id: fill-textarea-name-description
+  - fill: { selector: 'textarea[name="instructions"]', value: Help educators plan inclusive study sessions. Use plain language and cite supplied learning materials. }
+    id: fill-textarea-name-instructions
+  - fill: { selector: 'input[name="starter_messages.0"]', value: Help me plan an accessible study session. }
+    id: fill-input-name-starter-messages-0
+  - shot: create-education-agent
+    id: shot-create-education-agent
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { text: Campus Learning Guide, exact: true }
+    id: wait-campus-learning-guide
+  - eval: |
+      (async () => {
+      const id = Number(new URL(location.href).searchParams.get('agentId'));
+      if (!id) throw new Error('Create did not open the created agent');
+      sessionStorage.setItem('user-agents-id', String(id));
+      if (!document.body.textContent.includes('Help me plan an accessible study session.')) throw new Error('Created starter not rendered');
+      const agent = await (await fetch(`/api/persona/${id}`)).json();
+      if (agent.name !== 'Campus Learning Guide' || !agent.system_prompt.includes('inclusive study sessions')) throw new Error('Create response was not persisted');
+      const me = await (await fetch('/api/me')).json();
+      if (agent.owner?.id !== me.id || agent.builtin_persona || agent.is_public) throw new Error('New private agent ownership incorrect');
+      })()
+    id: eval-script-2
+  - shot: created-agent-selected
+    id: shot-created-agent-selected
+  - click: { testid: AppSidebar/more-agents }
+    id: click-3
+  - fill: { placeholder: Search agents..., value: Campus Learning Guide }
+    id: fill
+  # Pinned source AgentCard header: stats, edit, share, pin. Footer Start Chat is outside this header.
+  - hover: { selector: '.radial-00:has-text("Campus Learning Guide")' }
+    id: hover-radial-00-has-text-campus-learning-guide
+  - click: { selector: '.radial-00:has-text("Campus Learning Guide") .h-24 button', nth: 1 }
+    id: click-radial-00-has-text-campus-learning-guide-h-24-button
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name-2
+  - eval: |
+      if (document.querySelector('input[name="name"]')?.value !== 'Campus Learning Guide') throw new Error('Editor did not load saved agent');
+    id: eval-script-3
+  - fill: { selector: 'input[name="name"]', value: Accessible Learning Guide }
+    id: fill-input-name-name-2
+  - fill: { selector: 'textarea[name="description"]', value: An education assistant for accessible study plans and revision checklists. }
+    id: fill-textarea-name-description-2
+  - fill: { selector: 'textarea[name="instructions"]', value: 'Help educators create accessible study plans and revision checklists. Use plain language, never invent sources, and explain accommodations.' }
+    id: fill-textarea-name-instructions-2
+  - fill: { selector: 'input[name="starter_messages.0"]', value: Create an accessible revision checklist. }
+    id: fill-input-name-starter-messages-0-2
+  - shot: edit-education-agent
+    id: shot-edit-education-agent
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - wait: { text: Accessible Learning Guide, exact: true }
+    id: wait-accessible-learning-guide
+  - eval: |
+      (async () => {
+      if (!document.body.textContent.includes('Create an accessible revision checklist.')) throw new Error('Edited starter not rendered');
+      const id = sessionStorage.getItem('user-agents-id');
+      const agent = await (await fetch(`/api/persona/${id}`)).json();
+      if (agent.name !== 'Accessible Learning Guide' || !agent.system_prompt.includes('never invent sources')) throw new Error('Edit was not persisted');
+      const seeds = JSON.parse(sessionStorage.getItem('user-agents-seeds'));
+      const catalog = await (await fetch('/api/persona')).json();
+      if (!seeds.every(s => catalog.some(a => a.id === s.id && a.name === s.name))) throw new Error('Edit dropped or replaced seeded agents');
+      })()
+    id: eval-script-4
+  # goto performs a native full document reload, not a client-only route change.
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { text: Accessible Learning Guide, exact: true }
+    id: wait-accessible-learning-guide-2
+  - eval: |
+      const gallery = document.querySelector('[data-testid="AgentsPage/container"]');
+      if (!gallery?.textContent.includes('An education assistant for accessible study plans and revision checklists.')) throw new Error('Reload lost edited description');
+      for (const name of ['{{teams.training.name}} & Onboarding Desk', 'Guest Ops Copilot', '{{teams.training.name}} Analyst', 'IT Helpdesk']) {
+        if (!gallery?.textContent.includes(name)) throw new Error(`Reload lost seed: ${name}`);
+      }
+    id: eval-script-5
+  - shot: edited-gallery-after-reload
+    id: shot-edited-gallery-after-reload
+  - fill: { placeholder: Search agents..., value: Accessible Learning Guide }
+    id: fill-2
+  - hover: { selector: '.radial-00:has-text("Accessible Learning Guide")' }
+    id: hover-radial-00-has-text-accessible-learning-guide
+  - click: { selector: '.radial-00:has-text("Accessible Learning Guide") .h-24 button', nth: 1 }
+    id: click-radial-00-has-text-accessible-learning-guide-h-24-button
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name-3
+  - eval: |
+      const values = {
+        'input[name="name"]': 'Accessible Learning Guide',
+        'textarea[name="description"]': 'An education assistant for accessible study plans and revision checklists.',
+        'textarea[name="instructions"]': 'Help educators create accessible study plans and revision checklists. Use plain language, never invent sources, and explain accommodations.',
+        'input[name="starter_messages.0"]': 'Create an accessible revision checklist.',
+      };
+      for (const [selector, expected] of Object.entries(values)) {
+        if (document.querySelector(selector)?.value !== expected) throw new Error(`Reload lost saved editor field: ${selector}`);
+      }
+    id: eval-script-6
+  - shot: edited-detail-after-reload
+    id: shot-edited-detail-after-reload
+  - goto: /app/agents
+    id: goto-app-agents-2
+  - fill: { placeholder: Search agents..., value: Accessible Learning Guide }
+    id: fill-3
+  - hover: { selector: '.radial-00:has-text("Accessible Learning Guide")' }
+    id: hover-radial-00-has-text-accessible-learning-guide-2
+  - click: { selector: '.radial-00:has-text("Accessible Learning Guide") .h-24 button', last: true }
+    id: click-radial-00-has-text-accessible-learning-guide-h-24-button-2
+  - settle: 600
+    id: settle
+  # AgentButton uses SidebarTab's empty overlay link, named by aria-label.
+  # The visible title is a sibling clamped to one line, not link text.
+  - wait: { selector: '.opal-sidebar-tab a[aria-label="Accessible Learning Guide"]' }
+    id: wait-opal-sidebar-tab-a-aria-label-accessible-learning-guide
+  - eval: |
+      (async () => {
+      const id = Number(sessionStorage.getItem('user-agents-id'));
+      const me = await (await fetch('/api/me')).json();
+      if (!me.preferences.pinned_assistants.includes(id)) throw new Error('Pin click did not persist');
+      const link = document.querySelector(`.opal-sidebar-tab a[href="/app?agentId=${id}"][aria-label="Accessible Learning Guide"]`);
+      const title = link?.closest('.opal-sidebar-tab')?.querySelector('[title="Accessible Learning Guide"]');
+      if (!link?.getClientRects().length || title?.textContent !== 'Accessible Learning Guide' || !title.getClientRects().length) throw new Error('Pinned agent missing from sidebar');
+      })()
+    id: eval-script-7
+  - shot: pinned-agent
+    id: shot-pinned-agent
+  - goto: /app/agents
+    id: goto-app-agents-3
+  - wait: { selector: '.opal-sidebar-tab a[aria-label="Accessible Learning Guide"]' }
+    id: wait-opal-sidebar-tab-a-aria-label-accessible-learning-guide-2
+  - eval: |
+      (async () => {
+      const id = Number(sessionStorage.getItem('user-agents-id'));
+      const me = await (await fetch('/api/me')).json();
+      if (!me.preferences.pinned_assistants.includes(id)) throw new Error('Reload lost persisted pin');
+      const link = document.querySelector(`.opal-sidebar-tab a[href="/app?agentId=${id}"][aria-label="Accessible Learning Guide"]`);
+      const title = link?.closest('.opal-sidebar-tab')?.querySelector('[title="Accessible Learning Guide"]');
+      if (!link?.getClientRects().length || title?.textContent !== 'Accessible Learning Guide' || !title.getClientRects().length) throw new Error('Reload lost pinned sidebar agent');
+      })()
+    id: eval-script-8
+  - shot: pinned-agent-after-reload
+    id: shot-pinned-agent-after-reload
+  - goto: /app/agents
+    id: goto-app-agents-4
+  - fill: { placeholder: Search agents..., value: Accessible Learning Guide }
+    id: fill-4
+  - hover: { selector: '.radial-00:has-text("Accessible Learning Guide")' }
+    id: hover-radial-00-has-text-accessible-learning-guide-3
+  - click: { selector: '.radial-00:has-text("Accessible Learning Guide") .h-24 button', last: true }
+    id: click-radial-00-has-text-accessible-learning-guide-h-24-button-3
+  - settle: 600
+    id: settle-2
+  - eval: |
+      (async () => {
+      const id = Number(sessionStorage.getItem('user-agents-id'));
+      const me = await (await fetch('/api/me')).json();
+      if (me.preferences.pinned_assistants.includes(id)) throw new Error('Unpin click did not persist');
+      if (document.querySelector(`.opal-sidebar-tab a[href="/app?agentId=${id}"]`)) throw new Error('Unpinned agent still in sidebar');
+      })()
+    id: eval-script-9
+  - goto: /app/agents
+    id: goto-app-agents-5
+  - fill: { placeholder: Search agents..., value: Accessible Learning Guide }
+    id: fill-5
+  - eval: |
+      (async () => {
+      const id = Number(sessionStorage.getItem('user-agents-id'));
+      const me = await (await fetch('/api/me')).json();
+      if (me.preferences.pinned_assistants.includes(id) || document.querySelector(`.opal-sidebar-tab a[href="/app?agentId=${id}"]`)) throw new Error('Reload restored removed pin');
+      })()
+    id: eval-script-10
+  - shot: unpinned-after-reload
+    id: shot-unpinned-after-reload
+  # Native user picker = gallery card's Start Chat; it selects and auto-pins the agent.
+  - click: { role: button, name: Start Chat, exact: true }
+    id: click-start-chat
+  - wait: { text: Create an accessible revision checklist., exact: true }
+    id: wait-create-an-accessible-revision-checklist
+  - eval: |
+      (async () => {
+      const id = Number(sessionStorage.getItem('user-agents-id'));
+      if (Number(new URL(location.href).searchParams.get('agentId')) !== id) throw new Error('Picker selected the wrong agent');
+      const me = await (await fetch('/api/me')).json();
+      if (!me.preferences.pinned_assistants.includes(id)) throw new Error('Picker did not auto-pin selected agent');
+      })()
+    id: eval-script-11
+  - shot: picker-selected-edited-agent
+    id: shot-picker-selected-edited-agent
+  - id: eval-script-12-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Control-plane reset is an explicit new run, unlike state/keep:true overlay switches.
+  - eval: |
+      (async () => {
+      const current = await (await fetch('/api/__mockshop/state')).json();
+      const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, anchor:current.demo_anchor, locale:'en', keep:false})});
+      if (!response.ok) throw new Error('Explicit new-run reset failed');
+      })()
+    id: eval-script-12
+  - goto: /app/agents
+    id: goto-app-agents-6
+  - wait: { text: "{{teams.training.name}} & Onboarding Desk", exact: true }
+    id: wait-training-onboarding-desk
+  - eval: |
+      (async () => {
+      const catalog = await (await fetch('/api/persona')).json();
+      const seeds = JSON.parse(sessionStorage.getItem('user-agents-seeds'));
+      if (catalog.length !== seeds.length || !seeds.every(s => catalog.some(a => a.id === s.id && a.name === s.name))) throw new Error('Reset did not restore seeded catalog');
+      const me = await (await fetch('/api/me')).json();
+      if (JSON.stringify(me.preferences.pinned_assistants) !== sessionStorage.getItem('user-agents-seed-pins')) throw new Error('Reset did not restore seed pins');
+      const gallery = document.querySelector('[data-testid="AgentsPage/container"]');
+      if (gallery?.textContent.includes('Accessible Learning Guide') || gallery?.textContent.includes('Campus Learning Guide')) throw new Error('Reset left created agent visible');
+      })()
+    id: eval-script-13
+  - shot: new-run-restores-seeds
+    id: shot-new-run-restores-seeds
+world: ../../../worlds/seaside/world.yaml

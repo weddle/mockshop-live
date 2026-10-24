@@ -1,0 +1,325 @@
+# Issue #29 derived native proof unit; EDIT-ONLY declaration, acceptance PENDING.
+# Independent runner start resets base fixtures, chats and browser context; never chain outputs.
+# Source pin b80667827f4e (v5.0.0-beta.2); actual #28 files / sole chat joins frozen.
+# Entry: /app/settings/chat-preferences → /app?projectId=2 → native Create.
+# Outcome: Required-name/cancel/reopen/create; default versus explicit model; rename/move/search/create-and-move; new chat/history/keep/fresh.
+# Original-step provenance and full precondition/outcome ledger: ../README.md Project proof units.
+name: user-projects-create-chat
+title: Required-name/cancel/reopen/create; default versus explicit model; rename/move/search/create-and-move; new chat/history/keep/fresh
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - wait: { text: Default Model, exact: true }
+    id: wait-default-model
+  # Independent setup / outcome: Remember actual native seed default for exact reset comparison.
+  - eval: |
+      const input = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Default Model'))?.querySelector('input');
+      if (!input) throw new Error('Native saved default input missing');
+      sessionStorage.setItem('project-original-default', input.value);
+    id: eval-script
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - click: { selector: 'label:has-text("Default Model") input' }
+    id: click-label-has-text-default-model-input
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - click: { role: button, name: OpenAI, exact: true }
+    id: click-openai
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - click: { text: GPT-5 mini, exact: true }
+    id: click-gpt-5-mini
+  # Existing accepted #27 native preference settling convention, then visible settings evidence.
+  - settle: 600
+    id: settle
+  - shot: { name: project-chat-saved-default-settings, full_page: true }
+    id: shot-project-chat-saved-default-settings
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - goto: /app?projectId=2
+    id: goto-app-projectid-2
+  # Independent setup / outcome: Existing #31/#27 native settings/model entry, same frozen handlers; makes default outcome non-pristine.
+  - wait: { text: No chats yet., exact: true }
+    id: wait-no-chats-yet
+  # Original user-projects step 125 (source line 170): Preserved native journey.
+  - hover: { selector: '.opal-sidebar-section__header:has-text("Projects")' }
+    id: hover-opal-sidebar-section-header-has-text-projects
+  # Original user-projects step 126 (source line 171): Preserved native journey.
+  - click: { selector: '.opal-sidebar-section__header:has-text("Projects") button' }
+    id: click-opal-sidebar-section-header-has-text-projects-button
+  # Original user-projects step 127 (source line 172): Preserved native journey.
+  - wait: { selector: 'input[name="projectName"]' }
+    id: wait-input-name-projectname
+  # Original user-projects step 128 (source line 173): Preserved native journey.
+  - eval: |
+      const create = [...document.querySelectorAll('button')].find(el => el.textContent.trim() === 'Create Project');
+      if (!create?.disabled) throw new Error('Empty project name is not disabled');
+    id: eval-script-2
+  # Original user-projects step 129 (source line 176): Preserved native journey.
+  - fill: { selector: 'input[name="projectName"]', value: '   ' }
+    id: fill-input-name-projectname
+  # Original user-projects step 130 (source line 177): Preserved native journey.
+  - press: Tab
+    id: press-tab
+  # Original user-projects step 131 (source line 178): Preserved native journey.
+  - wait: { text: Project name is required, exact: true }
+    id: wait-project-name-is-required
+  # Original user-projects step 132 (source line 179): Preserved native journey.
+  - shot: { name: project-create-required-error, full_page: true }
+    id: shot-project-create-required-error
+  # Original user-projects step 133 (source line 180): Preserved native journey.
+  - fill: { selector: 'input[name="projectName"]', value: Discarded workshop }
+    id: fill-input-name-projectname-2
+  # Original user-projects step 134 (source line 181): Preserved native journey.
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  # Original user-projects step 135 (source line 182): Preserved native journey.
+  - hover: { selector: '.opal-sidebar-section__header:has-text("Projects")' }
+    id: hover-opal-sidebar-section-header-has-text-projects-2
+  # Original user-projects step 136 (source line 183): Preserved native journey.
+  - click: { selector: '.opal-sidebar-section__header:has-text("Projects") button' }
+    id: click-opal-sidebar-section-header-has-text-projects-button-2
+  # Original user-projects step 137 (source line 184): Preserved native journey.
+  - fill: { selector: 'input[name="projectName"]', value: Study Circle }
+    id: fill-input-name-projectname-3
+  # Original user-projects step 138 (source line 185): Preserved native journey.
+  - shot: { name: project-create-reopened, full_page: true }
+    id: shot-project-create-reopened
+  # Original user-projects step 139 (source line 186): Preserved native journey.
+  - click: { role: button, name: Create Project, exact: true }
+    id: click-create-project
+  # Original user-projects step 140 (source line 187): Preserved native journey.
+  - wait: { selector: '.opal-content-xl [title="Study Circle"]' }
+    id: wait-opal-content-xl-title-study-circle
+  # Original user-projects step 141 (source line 188): Preserved native journey.
+  - eval: |
+      sessionStorage.setItem('created-project-id', new URL(location.href).searchParams.get('projectId'));
+      if (!document.body.textContent.includes('No chats yet.')) throw new Error('Created project is not empty');
+      if (document.body.textContent.includes('Discarded workshop')) throw new Error('Cancel persisted project');
+    id: eval-script-3
+  # Original user-projects step 142 (source line 192): Preserved native journey.
+  - shot: { name: project-created-empty, full_page: true }
+    id: shot-project-created-empty
+  # Original user-projects step 143 (source line 194): Preserved native journey.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+    id: hover-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000-
+  # Original user-projects step 144 (source line 195): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+    id: click-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000-
+  # Original user-projects step 145 (source line 196): Preserved native journey.
+  - click: { role: menuitem, name: Rename, exact: true }
+    id: click-rename
+  # Original user-projects step 146 (source line 197): Preserved native journey.
+  - fill: { selector: '.opal-sidebar-tab input', value: Study circle welcome notes }
+    id: fill-opal-sidebar-tab-input
+  # Original user-projects step 147 (source line 198): Preserved native journey.
+  - press: Enter
+    id: press-enter
+  # Original user-projects step 148 (source line 199): Preserved native journey.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+    id: hover-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000--2
+  # Original user-projects step 149 (source line 200): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+    id: click-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000--2
+  # Original user-projects step 150 (source line 201): Preserved native journey.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+    id: click-move-to-project
+  # Original user-projects step 151 (source line 202): Preserved native journey.
+  - fill: { placeholder: Search Projects, value: Study Circle }
+    id: fill
+  # Independent outcome: pinned ChatButton move view's back control returns to root menu.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+    id: click-move-to-project-2
+  - shot: { name: chat-move-back-to-options, full_page: true }
+    id: shot-chat-move-back-to-options
+  - click: { role: menuitem, name: Move to Project, exact: true }
+    id: click-move-to-project-3
+  - fill: { placeholder: Search Projects, value: Study Circle }
+    id: fill-2
+  # Original user-projects step 152 (source line 203): Preserved native journey.
+  - shot: { name: chat-move-project-search, full_page: true }
+    id: shot-chat-move-project-search
+  # Original user-projects step 153 (source line 204): Preserved native journey.
+  - click: { role: menuitem, name: Study Circle, exact: true }
+    id: click-study-circle
+  # Original user-projects step 154 (source line 205): Preserved native journey.
+  - goto: /app
+    id: goto-app
+  # Original user-projects step 155 (source line 206): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab button[aria-label="Study Circle"]' }
+    id: click-opal-sidebar-tab-button-aria-label-study-circle
+  # Original user-projects step 156 (source line 207): Preserved native journey.
+  - wait: { text: Study circle welcome notes, exact: true }
+    id: wait-study-circle-welcome-notes
+  # Original user-projects step 157 (source line 208): Preserved native journey.
+  - shot: { name: chat-moved-project-reload, full_page: true }
+    id: shot-chat-moved-project-reload
+  # Original user-projects step 158 (source line 210): Preserved native journey.
+  - fill: { selector: '#onyx-chat-input-textbox', value: Help me plan an accessible study session. }
+    id: fill-onyx-chat-input-textbox
+  # Original user-projects step 159 (source line 211): Preserved native journey.
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  # Original user-projects step 160 (source line 212): Preserved native journey.
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait
+  # Project welcome has no selector at this pin; its first actual answer consumes the saved native default.
+  - wait: { selector: '[data-testid="AgentMessage/regenerate"]:has-text("GPT-5 mini")', timeout: 30000 }
+    id: wait-data-testid-agentmessage-regenerate-has-text-gpt-5-mini
+  - shot: { name: project-chat-saved-default-first-answer, full_page: true }
+    id: shot-project-chat-saved-default-first-answer
+  # Original user-projects step 161 (source line 213): Preserved native journey.
+  - eval: |
+      (async () => {
+        const id = new URL(location.href).searchParams.get('chatId');
+        if (!id) throw new Error('Project composer did not create chat');
+        sessionStorage.setItem('project-new-chat-id', id);
+        const projectId = Number(sessionStorage.getItem('created-project-id'));
+        const details = await (await fetch(`/api/user/projects/${projectId}/details`)).json();
+        if (!details.project.chat_sessions.some(s => s.id === id && s.project_id === projectId)) throw new Error('New chat lost project membership');
+      })()
+    id: eval-script-4
+  # Original user-projects step 162 (source line 222): Preserved native journey.
+  - shot: { name: new-project-chat-answer, full_page: true }
+    id: shot-new-project-chat-answer
+  # AppPage's actual opened-chat selector, not its selector-free ProjectUI, owns explicit model choice.
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-5 mini")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-5-mini
+  - click: { selector: '[data-testid="model-selector"] button:has-text("GPT-5 mini")' }
+    id: click-data-testid-model-selector-button-has-text-gpt-5-mini
+  - click: { text: GPT-4.1, exact: true }
+    id: click-gpt-4-1
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1
+  - fill: { selector: '#onyx-chat-input-textbox', value: Add one accessible revision activity to this study session. }
+    id: fill-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { selector: '[data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-agentmessage-regenerate-has-text-gpt-4-1
+  - shot: { name: project-chat-explicit-model-follow-up, full_page: true }
+    id: shot-project-chat-explicit-model-follow-up
+  # Original user-projects step 163 (source line 223): Preserved native journey.
+  - goto: /app
+    id: goto-app-2
+  # Original user-projects step 164 (source line 224): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab button[aria-label="Study Circle"]' }
+    id: click-opal-sidebar-tab-button-aria-label-study-circle-2
+  # Original user-projects step 165 (source line 225): Preserved native journey.
+  - wait: { text: Study circle welcome notes, exact: true }
+    id: wait-study-circle-welcome-notes-2
+  # Original user-projects step 166 (source line 226): Preserved native journey.
+  - eval: |
+      const id = sessionStorage.getItem('project-new-chat-id');
+      if (!document.querySelector(`.opal-sidebar-tab a[href="/app?chatId=${id}"]`)) throw new Error('Reload lost new project chat in sidebar');
+    id: eval-script-5
+  # Original user-projects step 167 (source line 229): Preserved native journey.
+  - shot: { name: new-project-chat-membership-reload, full_page: true }
+    id: shot-new-project-chat-membership-reload
+  # Independent setup / outcome: Native existing sidebar link reopens the sole scripted chat; DOM model/answer attribution required.
+  - eval: |
+      const id = sessionStorage.getItem('project-new-chat-id');
+      const link = document.querySelector(`.opal-sidebar-tab a[href="/app?chatId=${id}"]`);
+      if (!link) throw new Error('New project chat link missing');
+      link.click();
+    id: eval-script-6
+  # Independent setup / outcome: Native existing sidebar link reopens the sole scripted chat; DOM model/answer attribution required.
+  - wait: { selector: '[data-testid="model-selector"] button:has-text("GPT-4.1")' }
+    id: wait-data-testid-model-selector-button-has-text-gpt-4-1-2
+  # Independent setup / outcome: Native existing sidebar link reopens the sole scripted chat; DOM model/answer attribution required.
+  - wait: { selector: '[data-testid="AgentMessage/regenerate"]:has-text("GPT-4.1")', timeout: 30000 }
+    id: wait-data-testid-agentmessage-regenerate-has-text-gpt-4-1-2
+  # Independent setup / outcome: Native existing sidebar link reopens the sole scripted chat; DOM model/answer attribution required.
+  - shot: { name: project-chat-model-history-reopened, full_page: true }
+    id: shot-project-chat-model-history-reopened
+  # Original user-projects step 208 (source line 307): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab button[aria-label="Study Circle"]' }
+    id: click-opal-sidebar-tab-button-aria-label-study-circle-3
+  # Original user-projects step 209 (source line 308): Preserved native journey.
+  - wait: { selector: '.opal-sidebar-tab a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]' }
+    id: wait-opal-sidebar-tab-a-href-app-chatid-11111111-0000-4000-8000-
+  # Original user-projects step 210 (source line 309): Preserved native journey.
+  - hover: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"])' }
+    id: hover-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000--3
+  # Original user-projects step 211 (source line 310): Preserved native journey.
+  - click: { selector: '.opal-sidebar-tab:has(a[href="/app?chatId=11111111-0000-4000-8000-000000000005"]) button[aria-label="Chat options"]' }
+    id: click-opal-sidebar-tab-has-a-href-app-chatid-11111111-0000-4000--3
+  # Original user-projects step 212 (source line 311): Preserved native journey.
+  - click: { role: menuitem, name: Move to Project, exact: true }
+    id: click-move-to-project-4
+  # Original user-projects step 213 (source line 312): Preserved native journey.
+  - fill: { placeholder: Search Projects, value: Literacy Circle }
+    id: fill-3
+  # Original user-projects step 214 (source line 313): Preserved native journey.
+  - shot: { name: chat-create-and-move-project, full_page: true }
+    id: shot-chat-create-and-move-project
+  # Original user-projects step 215 (source line 314): Preserved native journey.
+  - click: { role: menuitem, name: Create Literacy Circle, exact: true }
+    id: click-create-literacy-circle
+  # Original user-projects step 216 (source line 315): Preserved native journey.
+  - wait: { selector: '.opal-content-xl [title="Literacy Circle"]' }
+    id: wait-opal-content-xl-title-literacy-circle
+  # Original user-projects step 217 (source line 316): Preserved native journey.
+  - wait: { text: Study circle welcome notes, exact: true }
+    id: wait-study-circle-welcome-notes-3
+  # Original user-projects step 218 (source line 317): Preserved native journey.
+  - shot: { name: chat-created-project-membership, full_page: true }
+    id: shot-chat-created-project-membership
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - state:
+      world: ../../../worlds/seaside/world.yaml
+    id: state
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - goto: /app?projectId=3
+    id: goto-app-projectid-3
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - wait: { text: Set Instructions, exact: true }
+    id: wait-set-instructions
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - eval: |
+      if (!document.body.textContent.includes('Study Circle') || !document.querySelector(`.opal-sidebar-tab a[href="/app?chatId=${sessionStorage.getItem('project-new-chat-id')}"]`)) throw new Error('Keep lost created project chat');
+    id: eval-script-7
+  # Independent setup / outcome: Existing keep-state convention; visible dirty state must survive hard reload.
+  - shot: { name: project-create-chat-keep, full_page: true }
+    id: shot-project-create-chat-keep
+  - id: eval-script-8-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Independent setup / outcome: Existing control-plane fresh reset; never a product write.
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        const reset = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:state.demo_anchor,locale:'en',keep:false,resetChats:true})});
+        if (!reset.ok) throw new Error('Fresh reset failed');
+      })()
+    id: eval-script-8
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - goto: /app?projectId=1
+    id: goto-app-projectid-1
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - wait: { text: Set Instructions, exact: true }
+    id: wait-set-instructions-2
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - eval: |
+      if (document.body.textContent.includes('Study Circle') || document.body.textContent.includes('Literacy Circle') || document.querySelector(`a[href="/app?chatId=${sessionStorage.getItem('project-new-chat-id')}"]`)) throw new Error('Reset retained created projects/chat');
+    id: eval-script-9
+  # Independent setup / outcome: Consumer-visible reset outcome after native dirty setup.
+  - shot: { name: project-create-chat-fresh-reset, full_page: true }
+    id: shot-project-create-chat-fresh-reset
+  # Independent setup / outcome: Consumer settings reset after native changed saved default.
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-2
+  # Independent setup / outcome: Consumer settings reset after native changed saved default.
+  - wait: { text: Default Model, exact: true }
+    id: wait-default-model-2
+  # Independent setup / outcome: Consumer settings reset after native changed saved default.
+  - eval: |
+      const input = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Default Model'))?.querySelector('input');
+      if (input?.value !== sessionStorage.getItem('project-original-default')) throw new Error('Reset lost original saved default');
+    id: eval-script-10
+  # Independent setup / outcome: Consumer settings reset after native changed saved default.
+  - shot: { name: project-model-settings-fresh-reset, full_page: true }
+    id: shot-project-model-settings-fresh-reset
+world: ../../../worlds/seaside/world.yaml

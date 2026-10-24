@@ -1,0 +1,133 @@
+# Focused consumer proof: no upstream patch and no artificial second provider.
+name: single-provider
+title: Healthcare and education with one on-prem provider
+requires: enterprise
+viewport: [ 1440, 900 ]
+strict: true
+steps:
+  - goto: /app
+    id: goto-app
+  - eval: |
+      (async () => {
+        for (const path of ['/llm/provider', '/llm/persona/21/providers', '/admin/llm/provider']) {
+          const response = await fetch('/api' + path);
+          if (!response.ok) throw new Error('Provider endpoint failed: ' + path);
+          const data = await response.json();
+          if (data.providers.length !== 1 || data.providers[0].id !== 3) throw new Error('Provider count/ID mismatch: ' + path);
+          const names = data.providers[0].model_configurations.map(m => m.name);
+          if (names.length !== 2 || !names.includes('llama3.3:70b') || !names.includes('qwen3:32b')) throw new Error('Model mismatch: ' + path);
+          for (const key of ['default_text', 'default_vision', 'default_chat_naming']) {
+            if (data[key].provider_id !== 3 || !names.includes(data[key].model_name)) throw new Error('Unresolvable ' + key + ': ' + path);
+          }
+        }
+      })()
+    id: eval-script
+  - wait: { role: button, name: Llama 3.3 70B }
+    id: wait-llama-3-3-70b
+  - shot: healthcare-default-model
+    id: shot-healthcare-default-model
+  - click: { role: button, name: Llama 3.3 70B }
+    id: click-llama-3-3-70b
+  - wait: { text: Qwen3 32B, exact: true }
+    id: wait-qwen3-32b
+  - eval: |
+      (() => {
+        const visible = e => !!(e.getClientRects().length);
+        const texts = [...document.querySelectorAll('body *')].filter(visible).map(e => e.textContent.trim());
+        for (const model of ['Llama 3.3 70B', 'Qwen3 32B']) {
+          if (!texts.includes(model)) throw new Error('Flat picker missing ' + model);
+        }
+        for (const header of ['On-prem GPU cluster', 'Ollama', 'OpenAI', 'Anthropic']) {
+          if (texts.includes(header)) throw new Error('Unexpected provider header: ' + header);
+        }
+      })()
+    id: eval-script-2
+  - shot: healthcare-flat-picker
+    id: shot-healthcare-flat-picker
+  - click: { text: Qwen3 32B, exact: true }
+    id: click-qwen3-32b
+  - wait: { role: button, name: Qwen3 32B }
+    id: wait-qwen3-32b-2
+  - shot: healthcare-selected-qwen
+    id: shot-healthcare-selected-qwen
+  # Agent-restricted endpoint must also expose the same flat list.
+  - goto: /app?agentId=21
+    id: goto-app-agentid-21
+  - wait: { role: button, name: Llama 3.3 70B }
+    id: wait-llama-3-3-70b-2
+  - click: { role: button, name: Llama 3.3 70B }
+    id: click-llama-3-3-70b-2
+  - wait: { text: Qwen3 32B, exact: true }
+    id: wait-qwen3-32b-3
+  - shot: healthcare-agent-picker
+    id: shot-healthcare-agent-picker
+  - press: Escape
+    id: press-escape
+  - state:
+      world: ../../../worlds/snapshots/riverbend-health--demo-single-provider-healthcare--demo-single-provider-healthcare-admin.yaml
+    id: state
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  - wait: { role: button, name: Edit On-prem GPU cluster }
+    id: wait-edit-on-prem-gpu-cluster
+  - eval: |
+      (() => {
+        const edits = [...document.querySelectorAll('button[aria-label]')].filter(e => e.getAttribute('aria-label').startsWith('Edit '));
+        if (edits.length !== 1 || edits[0].getAttribute('aria-label') !== 'Edit On-prem GPU cluster') {
+          throw new Error('Expected exactly one configured provider card');
+        }
+      })()
+    id: eval-script-3
+  - shot: healthcare-one-provider-card
+    id: shot-healthcare-one-provider-card
+  - click: { role: button, name: Edit On-prem GPU cluster }
+    id: click-edit-on-prem-gpu-cluster
+  - wait: { text: Self-hosted Ollama, exact: true }
+    id: wait-self-hosted-ollama
+  - eval: |
+      (() => {
+        const inputs = [...document.querySelectorAll('input')];
+        if (!inputs.some(e => e.value === 'On-prem GPU cluster')) throw new Error('Provider display name mismatch');
+        if (!inputs.some(e => e.value === 'http://gpu-01.{{company.domain}}:11434')) throw new Error('Provider API base mismatch');
+        const text = document.body.innerText;
+        for (const model of ['Llama 3.3 70B', 'Qwen3 32B']) {
+          if (!text.includes(model)) throw new Error('Provider modal missing ' + model);
+        }
+      })()
+    id: eval-script-4
+  - shot: healthcare-provider-edit-modal
+    id: shot-healthcare-provider-edit-modal
+  - press: Escape
+    id: press-escape-2
+  # Reuse the model-only layer without replacing the university's user or agents.
+  - state:
+      world: ../../../worlds/snapshots/lakeshore-state--demo-single-provider-healthcare.yaml
+    id: state-2
+  - goto: /app
+    id: goto-app-2
+  - wait: { role: button, name: Llama 3.3 70B }
+    id: wait-llama-3-3-70b-3
+  - click: { role: button, name: Llama 3.3 70B }
+    id: click-llama-3-3-70b-3
+  - wait: { text: Qwen3 32B, exact: true }
+    id: wait-qwen3-32b-4
+  - eval: |
+      (() => {
+        const visible = e => !!e.getClientRects().length;
+        const texts = [...document.querySelectorAll('body *')].filter(visible).map(e => e.textContent.trim());
+        if (!texts.includes('Llama 3.3 70B') || !texts.includes('Qwen3 32B')) throw new Error('University picker missing models');
+        if (texts.includes('On-prem GPU cluster') || texts.includes('Ollama')) throw new Error('University picker has a provider header');
+      })()
+    id: eval-script-5
+  - shot: university-flat-picker
+    id: shot-university-flat-picker
+  - click: { text: Qwen3 32B, exact: true }
+    id: click-qwen3-32b-2
+  - wait: { role: button, name: Qwen3 32B }
+    id: wait-qwen3-32b-5
+  - shot: university-selected-qwen
+    id: shot-university-selected-qwen
+world: ../../../worlds/riverbend-health/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-single-provider-healthcare.yaml

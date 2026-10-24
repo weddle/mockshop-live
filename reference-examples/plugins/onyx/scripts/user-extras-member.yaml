@@ -1,0 +1,60 @@
+# #33 independent route proof; partial/unverified, no worker execution.
+
+name: user-extras-member
+title: Native Extras - member
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras-member.yaml
+      overlays: []
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait: { selector: '[aria-label="non-admin-name-prompt"]' }
+    id: wait-aria-label-non-admin-name-prompt
+  - shot: { name: extras-21-member-name-required, full_page: true }
+    id: shot-extras-21-member-name-required
+  - fill: { placeholder: Your name, value: "{{people.avery.name}} Learner" }
+    id: fill
+  - press: Enter
+    id: press-enter
+  - wait: { selector: '[aria-label="non-admin-confirmation"]' }
+    id: wait-aria-label-non-admin-confirmation
+  - shot: { name: extras-22-member-name-confirmation, full_page: true }
+    id: shot-extras-22-member-name-confirmation
+  - click: { label: Edit display name }
+    id: click
+  - fill: { placeholder: Your name, value: "{{people.avery.name}} Educator" }
+    id: fill-2
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - click: { selector: '[aria-label="non-admin-confirmation"] button' }
+    id: click-aria-label-non-admin-confirmation-button
+  - goto: /app
+    id: goto-app-3
+  - eval: |
+      (async () => {
+        const me = await (await fetch('/api/me')).json();
+        if (me.personalization.name !== '{{people.avery.name}} Educator') throw new Error('Member name edit did not persist');
+        if (document.querySelector('[aria-label="non-admin-name-prompt"]')) throw new Error('Saved member name prompt reopened');
+      })()
+    id: eval-script-2
+  - shot: { name: extras-23-member-saved-reload, full_page: true }
+    id: shot-extras-23-member-saved-reload
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-member.yaml

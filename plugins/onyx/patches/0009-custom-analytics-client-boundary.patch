@@ -1,0 +1,43 @@
+# License scope: Onyx Enterprise License, NOT Mockshop's MIT License.
+# This patch includes source excerpts/modifications from Onyx Enterprise code.
+# Copyright (c) 2023-present DanswerAI, Inc.; upstream rights are retained.
+# Source: Onyx f858083d6cbe37c4146834d379e39511260a9879, web/src/app/ee/.
+# See ONYX-ENTERPRISE-LICENSE.txt in this directory for the exact upstream terms.
+# Production use and distribution remain subject to those terms.
+#
+# Required native Custom Analytics boundary for pinned Onyx f858083d6cbe37c4146834d379e39511260a9879.
+# SettingsLayouts.Header is a Client Component; its icon function cannot cross RSC.
+# Bind the same native SvgBarChart inside a tiny client header, passing only title.
+# Keep server translations, app-name lookup, feature gate, disabled callout and form.
+--- a/src/app/ee/admin/performance/custom-analytics/page.tsx
++++ b/src/app/ee/admin/performance/custom-analytics/page.tsx
+@@ -7,6 +7,7 @@
+ import { Text } from "@opal/components";
+ import { Spacer } from "@opal/components";
+ import CustomAnalyticsUpdateForm from "./CustomAnalyticsUpdateForm";
++import CustomAnalyticsHeader from "./CustomAnalyticsHeader";
+ import { fetchAppName } from "@/lib/app/svcSS";
+ 
+ const route = ADMIN_ROUTES.CUSTOM_ANALYTICS;
+@@ -50,7 +51,7 @@
+     : route.title;
+   return (
+     <SettingsLayouts.Root>
+-      <SettingsLayouts.Header icon={route.icon} title={routeTitle} divider />
++      <CustomAnalyticsHeader title={routeTitle} />
+       <SettingsLayouts.Body>
+         <Main />
+       </SettingsLayouts.Body>
+--- /dev/null
++++ b/src/app/ee/admin/performance/custom-analytics/CustomAnalyticsHeader.tsx
+@@ -0,0 +1,10 @@
++"use client";
++
++import { SvgBarChart } from "@opal/icons";
++import { SettingsLayouts } from "@opal/layouts";
++
++export default function CustomAnalyticsHeader({ title }: { title: string }) {
++  return (
++    <SettingsLayouts.Header icon={SvgBarChart} title={title} divider />
++  );
++}

@@ -1,0 +1,8 @@
+apps:
+  onyx:
+    state:
+      auth_anonymous:
+        staging:
+          enabled: true
+          mode: member
+          impersonation_superuser: true

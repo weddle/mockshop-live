@@ -1,0 +1,108 @@
+name: demo-admin-llm-plugins
+title: Admin reviews the language model provider, features the planning helper, opens the MCP form and sets the chat naming model
+plugin: onyx
+strict: true
+steps:
+  # admin-open-provider-models (v5)
+  - id: models-open-language-models
+    goto: /admin/language-models
+  - id: models-wait-providers
+    wait: { text: Available Providers, exact: true }
+  - id: models-open-provider
+    click: { selector: 'button[aria-label^="Edit "]' }
+  - id: models-wait-standard-row
+    wait: { selector: '[role="dialog"] [data-model-name="{{apps.onyx.llm_providers.primary.models.standard.name}}"]' }
+  - id: models-wait-fast-row
+    wait: { selector: '[role="dialog"] [data-model-name="{{apps.onyx.llm_providers.primary.models.fast.name}}"]' }
+  - id: models-check-default-badge
+    eval: |
+      const row = document.querySelector('[role="dialog"] [data-model-name=' + JSON.stringify({{apps.onyx.llm_providers.primary.models.standard.name | json}}) + ']');
+      if (!row?.innerText.includes('Default Model')) throw new Error('Standard model row lacks the Default Model badge: ' + row?.innerText);
+  - id: models-shot
+    shot: provider-models
+
+  # admin-provider-set-default-model (v5)
+  - id: default-open-language-models
+    goto: /admin/language-models
+  - id: default-wait-providers
+    wait: { text: Available Providers, exact: true }
+  - id: default-open-provider
+    click: { selector: 'button[aria-label^="Edit "]' }
+  - id: default-set-fast
+    click: { selector: '[role="dialog"] [data-model-name="{{apps.onyx.llm_providers.primary.models.fast.name}}"] button:has-text("Set as Default")' }
+  - id: default-wait-badge
+    wait: { selector: '[role="dialog"] [data-model-name="{{apps.onyx.llm_providers.primary.models.fast.name}}"]:has-text("Default Model")' }
+  - id: default-close-dialog
+    click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+  - id: default-wait-dialog-gone
+    wait_gone: { role: dialog }
+  - id: default-reload-language-models
+    goto: /admin/language-models
+  - id: default-wait-providers-again
+    wait: { text: Available Providers, exact: true }
+  - id: default-check-selected
+    eval: |
+      const v = document.querySelector('input[placeholder="Select model"]')?.value;
+      if (v !== {{apps.onyx.llm_providers.primary.models.fast.display_name | json}}) throw new Error('Default Model shows ' + JSON.stringify(v));
+  - id: default-shot
+    shot: provider-default-moved
+
+  # admin-toggle-agent-featured (v5)
+  - id: featured-open-agents
+    goto: /admin/agents
+  - id: featured-wait-row
+    wait: { selector: 'tbody tr:has-text("{{agents.helper.name}}")' }
+  - id: featured-remove
+    click: { selector: 'tbody tr:has-text("{{agents.helper.name}}") button[aria-label="Remove Featured"]' }
+  - id: featured-confirm-unfeature
+    click: { selector: '[role="dialog"] button:has-text("Unfeature")' }
+  - id: featured-wait-unfeatured
+    wait: { selector: 'tbody tr:has-text("{{agents.helper.name}}") button[aria-label="Set as Featured"]' }
+  - id: featured-set
+    click: { selector: 'tbody tr:has-text("{{agents.helper.name}}") button[aria-label="Set as Featured"]' }
+  - id: featured-confirm-feature
+    click: { role: button, name: Feature, exact: true }
+  - id: featured-wait-featured
+    wait: { selector: 'tbody tr:has-text("{{agents.helper.name}}") button[aria-label="Remove Featured"]' }
+  - id: featured-shot
+    shot: agent-featured-again
+
+  # admin-add-custom-mcp-form (v5)
+  - id: mcp-open-plugins
+    goto: /admin/plugins
+  - id: mcp-wait-search
+    wait: { selector: 'input[placeholder="Search plugins"]' }
+  - id: mcp-click-add
+    click: { selector: 'button:has-text("Add")', last: true }
+  - id: mcp-choose-mcp
+    click: { role: menuitem, name: MCP }
+  - id: mcp-wait-custom
+    wait: { text: Add custom MCP server }
+  - id: mcp-click-custom
+    click: { text: Add custom MCP server }
+  - id: mcp-wait-form-title
+    wait: { text: Add MCP Server, exact: true }
+  - id: mcp-wait-url-field
+    wait: { selector: 'input[placeholder="https://your-mcp-server.com/mcp"]' }
+  - id: mcp-shot
+    shot: add-custom-mcp-form
+
+  # admin-set-chat-naming-model (v5.0)
+  - id: naming-open-chat-preferences
+    goto: /admin/chat-preferences
+  - id: naming-wait-label
+    wait: { text: Chat naming model }
+  - id: naming-open-combobox
+    click: { selector: ':nth-match(input[placeholder="Use Default model"], 1)' }
+  - id: naming-pick-model
+    click: { selector: '[role="option"]:has-text("{{apps.onyx.llm_providers.primary.models.standard.display_name}}")' }
+  - id: naming-reload-chat-preferences
+    goto: /admin/chat-preferences
+  - id: naming-wait-label-again
+    wait: { text: Chat naming model }
+  - id: naming-check-selected
+    eval: |
+      const v = document.querySelector('input[placeholder="Use Default model"]')?.value;
+      if (v !== {{apps.onyx.llm_providers.primary.models.standard.display_name | json}}) throw new Error('Chat naming model shows ' + JSON.stringify(v));
+  - id: naming-shot
+    shot: chat-naming-model

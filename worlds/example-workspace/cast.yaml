@@ -1,0 +1,14 @@
+# One shared content layer: every plugin consumes these same entities.
+includes:
+  - ../default/cast.yaml
+company:
+  name: Example Workspace
+people:
+  owner: {name: Example Owner}
+  admin: {name: Example Admin}
+  adminTwo: {name: Example AdminTwo}
+  member: {name: Example Member}
+  memberTwo: {name: Example MemberTwo}
+  memberThree: {name: Example MemberThree}
+  guest: {name: Example Guest}
+  guestTwo: {name: Example GuestTwo}

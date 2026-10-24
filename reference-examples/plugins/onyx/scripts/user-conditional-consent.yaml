@@ -1,0 +1,303 @@
+# #34 EDITONLY prepared native unit; no execution/acceptance claim. CE/other locales unverified.
+# Fictional LOCAL inputs only. Every run independently resets the same sole Auth owner.
+name: user-conditional-consent
+title: User Conditional Consent
+requires: enterprise
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 900
+overlays:
+  - edition-enterprise
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me$/'
+    reason: Sole Auth owner deliberately clears the synthetic member before native Sign in navigation; restored immediately afterwards.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact cleared fake identity diagnostic during required native Sign in return, not an unknown-error waiver.
+  - match: /^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: /^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: /^http 403 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 403 \(Forbidden\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: /^http 404 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 404 \(Not Found\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+  - match: /^http 503 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG$/
+    reason: Only this exact deliberately seeded native error; unit asserts its visible source-authored outcome and unchanged receipt.
+  - match: '/^console: Failed to load resource: the server responded with a status of 503 \(Service Unavailable\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/oauth-provider\/consent\?request=GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG\]$/'
+    reason: Exact seeded endpoint diagnostic, paired with required native error UI; no unknown request/page/console waiver.
+steps:
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-conditional.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+
+      \  if (!response.ok) throw new Error('Conditional independent reset failed');
+
+      \  const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+
+      \  if (Object.keys(receipt.callbacks).length || Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered) throw new Error('Conditional reset retained dirty receipts');
+
+      \  const me = await (await fetch('/api/me')).json();
+
+      \  if (me.email !== '{{people.alex-learner.email}}' || !me.password_configured) throw new Error('Sole Auth owner did not restore fictional member');
+
+      })()"
+    id: eval-script
+  - goto: /oauth-provider/authorize?request=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    id: goto-oauth-provider-authorize-request-aaaaaaaaaaaaaaaaaaaaaaaaaa
+  - wait:
+      text: Loading authorization request...
+      exact: true
+    id: wait-loading-authorization-request
+  - shot:
+      name: conditional-consent-loading
+      delay: 0
+    id: shot-conditional-consent-loading
+  - wait:
+      text: Allow Workshop Reader (fictional app) to search Onyx?
+      exact: true
+      timeout: 30000
+    id: wait-allow-workshop-reader-fictional-app-to-search-onyx
+  - wait:
+      text: Signed in as {{people.alex-learner.email}}
+      exact: true
+    id: wait-signed-in-as-alex-learner-workshop-example
+  - wait:
+      text: 'Workspace: Community Learning (fake demo)'
+      exact: true
+    id: wait-workspace-community-learning-fake-demo
+  - eval: 'if (!document.body.innerText.includes(''App address: ''+location.origin)) throw new Error(''Consent disclosed an external origin'');'
+    id: eval-script-2
+  - shot:
+      name: conditional-consent-disclosure
+      delay: 0
+    id: shot-conditional-consent-disclosure
+  - click:
+      role: button
+      name: Allow access
+      exact: true
+    id: click-allow-access
+  - wait:
+      text: Saving your choice...
+      exact: true
+    id: wait-saving-your-choice
+  - eval: if (document.querySelectorAll('button:disabled').length < 2) throw new Error('Native pending decision buttons were not disabled');
+    id: eval-script-3
+  - shot:
+      name: conditional-consent-allow-pending
+      delay: 0
+    id: shot-conditional-consent-allow-pending
+  - wait:
+      text: "{{people.alex-learner.email}}"
+      exact: true
+    id: wait-alex-learner-workshop-example
+  - eval: if (location.pathname !== '/app/settings/accounts-access' || new URL(location.href).searchParams.get('conditional_decision') !== 'allow') throw new Error('Allow did not follow same-origin LOCAL receipt');
+    id: eval-script-4
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(r.consents["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"] === "allow")) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-5
+  - shot:
+      name: conditional-consent-allow-local-return
+      delay: 0
+    id: shot-conditional-consent-allow-local-return
+  - goto: /oauth-provider/authorize?request=BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+    id: goto-oauth-provider-authorize-request-bbbbbbbbbbbbbbbbbbbbbbbbbb
+  - wait:
+      text: Allow access
+      exact: true
+    id: wait-allow-access
+  - click:
+      role: button
+      name: Deny
+      exact: true
+    id: click-deny
+  - wait:
+      text: Saving your choice...
+      exact: true
+    id: wait-saving-your-choice-2
+  - shot:
+      name: conditional-consent-deny-pending
+      delay: 0
+    id: shot-conditional-consent-deny-pending
+  - wait:
+      text: "{{people.alex-learner.email}}"
+      exact: true
+    id: wait-alex-learner-workshop-example-2
+  - eval: if (new URL(location.href).searchParams.get('conditional_decision') !== 'deny') throw new Error('Deny did not follow LOCAL return');
+    id: eval-script-6
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(r.consents["BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"] === "deny")) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-7
+  - shot:
+      name: conditional-consent-deny-local-return
+      delay: 0
+    id: shot-conditional-consent-deny-local-return
+  - goto: /oauth-provider/authorize?request=CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+    id: goto-oauth-provider-authorize-request-cccccccccccccccccccccccccc
+  - wait:
+      text: Allow access
+      exact: true
+    id: wait-allow-access-2
+  - click:
+      role: button
+      name: Allow access
+      exact: true
+    id: click-allow-access-2
+  - wait:
+      text: Authorization could not finish. Start again from your app.
+      exact: true
+    id: wait-authorization-could-not-finish-start-again-from-your-app
+  - eval: if (document.querySelectorAll('button:disabled').length < 2) throw new Error('Native failed decision buttons were not disabled');
+    id: eval-script-8
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(!r.consents["CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"])) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-9
+  - shot:
+      name: conditional-consent-submit-failure
+      delay: 0
+    id: shot-conditional-consent-submit-failure
+  - goto: /oauth-provider/authorize?request=DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+    id: goto-oauth-provider-authorize-request-dddddddddddddddddddddddddd
+  - wait:
+      text: Sign in to authorize this app.
+      exact: true
+    id: wait-sign-in-to-authorize-this-app
+  - shot:
+      name: conditional-consent-get-401
+      delay: 0
+    id: shot-conditional-consent-get-401
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(!r.consents["DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"])) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-10
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Sole Auth Sign in prerequisite staging failed');
+      })()
+    id: eval-script-11
+  - click:
+      role: link
+      name: Sign in
+      exact: true
+    id: click-sign-in
+  - wait:
+      testid: email
+    id: wait
+  - eval: if (new URL(location.href).searchParams.get('next') !== '/oauth-provider/authorize?request=DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD') throw new Error('Native Sign in lost consent return');
+    id: eval-script-12
+  - shot:
+      name: conditional-consent-sign-in-next
+      delay: 0
+    id: shot-conditional-consent-sign-in-next
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'member'})});
+        if (!r.ok) throw new Error('Sole Auth member restoration failed');
+      })()
+    id: eval-script-13
+  - goto: /oauth-provider/authorize?request=EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+    id: goto-oauth-provider-authorize-request-eeeeeeeeeeeeeeeeeeeeeeeeee
+  - wait:
+      text: You cannot authorize this app. Contact your workspace administrator.
+      exact: true
+    id: wait-you-cannot-authorize-this-app-contact-your-workspace-admini
+  - shot:
+      name: conditional-consent-get-403
+      delay: 0
+    id: shot-conditional-consent-get-403
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(!r.consents["EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"])) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-14
+  - eval: if ([...document.querySelectorAll('button,a')].some(x=>x.textContent.trim()==='Try again')) throw new Error('Native unavailable/forbidden unexpectedly offered retry');
+    id: eval-script-15
+  - goto: /oauth-provider/authorize?request=FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    id: goto-oauth-provider-authorize-request-ffffffffffffffffffffffffff
+  - wait:
+      text: This request expired or changed. Start again from your app.
+      exact: true
+    id: wait-this-request-expired-or-changed-start-again-from-your-app
+  - shot:
+      name: conditional-consent-get-404
+      delay: 0
+    id: shot-conditional-consent-get-404
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(!r.consents["FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"])) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-16
+  - eval: if ([...document.querySelectorAll('button,a')].some(x=>x.textContent.trim()==='Try again')) throw new Error('Native unavailable/forbidden unexpectedly offered retry');
+    id: eval-script-17
+  - goto: /oauth-provider/authorize?request=GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+    id: goto-oauth-provider-authorize-request-gggggggggggggggggggggggggg
+  - wait:
+      text: Onyx could not load this request. Try again.
+      exact: true
+    id: wait-onyx-could-not-load-this-request-try-again
+  - shot:
+      name: conditional-consent-get-503
+      delay: 0
+    id: shot-conditional-consent-get-503
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(!r.consents["GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"])) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-18
+  - click:
+      role: button
+      name: Try again
+      exact: true
+    id: click-try-again
+  - wait:
+      text: Allow access
+      exact: true
+    id: wait-allow-access-3
+  - shot:
+      name: conditional-consent-retry-recovered
+      delay: 0
+    id: shot-conditional-consent-retry-recovered
+  - eval: (async () => { const r = await (await fetch('/api/mockshop/user-conditional/receipts')).json(); if (!(r.retryRecovered && !r.consents["GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"])) throw new Error('Native interaction receipt mismatch'); })()
+    id: eval-script-19
+  - id: eval-script-20-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-conditional.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+
+      \  if (!response.ok) throw new Error('Conditional independent reset failed');
+
+      \  const receipt = await (await fetch('/api/mockshop/user-conditional/receipts')).json();
+
+      \  if (Object.keys(receipt.callbacks).length || Object.keys(receipt.consents).length || receipt.impersonated || receipt.passwordChanged || receipt.retryRecovered) throw new Error('Conditional reset retained dirty receipts');
+
+      \  const me = await (await fetch('/api/me')).json();
+
+      \  if (me.email !== '{{people.alex-learner.email}}' || !me.password_configured) throw new Error('Sole Auth owner did not restore fictional member');
+
+      })()"
+    id: eval-script-20
+  - goto: /oauth-provider/authorize?request=BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+    id: goto-oauth-provider-authorize-request-bbbbbbbbbbbbbbbbbbbbbbbbbb-2
+  - wait:
+      text: Allow access
+      exact: true
+    id: wait-allow-access-4
+  - shot:
+      name: conditional-consent-fresh-reset
+      delay: 0
+    id: shot-conditional-consent-fresh-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-conditional.yaml

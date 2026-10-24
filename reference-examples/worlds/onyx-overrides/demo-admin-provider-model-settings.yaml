@@ -1,0 +1,74 @@
+apps:
+  onyx:
+    llm_providers:
+      campus-model-policies:
+        id: 64
+        name: Campus Model Policies (local fake)
+        provider: portkey
+        api_key_set: true
+        api_base: https://campus-model-policies.invalid/messages
+        custom_config:
+          portkey_api_mode: messages
+        models:
+          workshop-reasoning-demo:
+            id: 6401
+            display_name: Workshop Reasoning (local fake)
+            default:
+              - text
+              - chat_naming
+            max_input_tokens: 64000
+            supports_image_input: true
+            reasoning_efforts:
+              - low
+              - medium
+              - high
+            reasoning_effort_max: null
+            reasoning_effort_default: null
+            temperature_default: 1
+            vendor: openai
+          workshop-chat-demo:
+            id: 6402
+            display_name: Workshop Chat (local fake)
+            reasoning_efforts: []
+            reasoning_effort_max: null
+            reasoning_effort_default: null
+            temperature_default: null
+            vendor: openai
+      openai: null
+      anthropic: null
+      onprem-gpu: null
+    fixtures:
+      GET /admin/llm/built-in/options/portkey:
+        name: portkey
+        known_models:
+          - id: 6401
+            name: workshop-reasoning-demo
+            display_name: Workshop Reasoning (local fake)
+            vendor: openai
+            is_visible: true
+            max_input_tokens: 64000
+            supports_image_input: true
+            supports_reasoning: true
+            supported_reasoning_efforts:
+              - low
+              - medium
+              - high
+            reasoning_effort_max: null
+            reasoning_effort_default: null
+            temperature_default: 1
+          - id: 6402
+            name: workshop-chat-demo
+            display_name: Workshop Chat (local fake)
+            vendor: openai
+            is_visible: true
+            max_input_tokens: null
+            supports_image_input: false
+            supports_reasoning: false
+            supported_reasoning_efforts: []
+            reasoning_effort_max: null
+            reasoning_effort_default: null
+            temperature_default: null
+        recommended_default_model:
+          name: workshop-reasoning-demo
+          display_name: Workshop Reasoning (local fake)
+      POST /admin/llm/portkey/available-models: []

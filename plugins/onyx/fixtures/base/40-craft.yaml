@@ -1,0 +1,108 @@
+# craft area routes, split from the former 00-core.yaml (base/*.yaml merge in file-name order).
+GET /mockshop/user-craft:
+  fake_credential: ""
+  next_run_at: ""
+  oauth_delay_ms: 0
+  packet_delay_ms: 0
+  generated_name: ""
+  answer: ""
+  task_output: ""
+  upload_text: ""
+  skill_defaults:
+    source: ""
+    is_available: false
+    unavailable_reason: null
+    is_valid: false
+    is_personal: false
+    enabled: false
+    can_toggle: false
+    author_user_id: ""
+    author_email: ""
+    owner:
+      id: ""
+      email: ""
+    ownership_vacant: false
+    created_at: ""
+    updated_at: ""
+    user_shares: []
+    group_shares: []
+    public_permission: null
+    user_permission: ""
+    external_app: null
+    files: []
+  skills:
+    builtins: []
+    customs: []
+  upload_bundle:
+    name: ""
+    description: ""
+    instructions_markdown: ""
+    files: []
+  github:
+    repository: ""
+    revision: ""
+    subpath: null
+    skills: []
+  credentials:
+    "7001":
+      authenticated: false
+      values: {}
+    "7002":
+      authenticated: false
+      supports_oauth: false
+      values: {}
+    "7003":
+      authenticated: false
+      supports_oauth: false
+      values: {}
+  session_defaults:
+    name: ""
+    status: ""
+    nextjs_port: null
+    sandbox:
+      id: ""
+      status: ""
+      container_id: null
+      created_at: ""
+      last_heartbeat: ""
+    sharing_scope: ""
+    origin: ""
+    agent_provider: ""
+    agent_model: ""
+    skills_stale: false
+    artifacts: []
+  sessions: []
+  tasks: []
+  runs:
+    task-clinic: []
+    task-campus: []
+    task-advanced: []
+  library: []
+  approvals: []
+  turn_packets: []
+  output_artifacts: []
+  webapp_info:
+    has_webapp: false
+    webapp_url: ""
+    status: ""
+    ready: false
+  preview_html: ""
+  output_files: []
+  downloads:
+    docx_file_id: ""
+    pdf_file_id: ""
+    image_file_id: ""
+  library_zip_entries: []
+  pptx_preview:
+    slide_count: 0
+    slide_paths: []
+    cached: false
+  presentation_base64: ""
+  archive_base64: ""
+GET /build/admin/apps: []
+GET /build/admin/apps/built-in/options: []
+GET /build/admin/base-instructions:
+  content: ""
+GET /skills:
+  builtins: []
+  customs: []

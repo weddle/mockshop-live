@@ -1,0 +1,20 @@
+name: zoom-blue
+title: Blue pointer with deliberate motion
+cursor:
+  style: signature_arc
+  screenshots: true
+  look:
+    shape: pointer
+    size: 36
+    fill: '#0B5CFF'
+    stroke: '#ffffff'
+    effect_color: '#60a5fa'
+  effects:
+    trail: false
+    glow: false
+    ripple: true
+clip:
+  type_ms: 2200
+  hold_ms: 2000
+  after_click_ms: 500
+viewport: [1440, 900]

@@ -1,0 +1,90 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-anonymous-entry
+title: "Independent native #69 unit: auth-anonymous-entry"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/tenants\/anonymous\-user\?anonymous_user_path=mock\-only\-invalid\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^console: \[Toast\] Your team does not have anonymous access enabled\. \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/_next\/static\/chunks\/0se759_ajj\-mw\.js\]$/'
+    reason: Exact deliberately staged native error and source; this unit asserts its visible error and recovery, never STEP/page errors.
+  - match: '/^http 400 POST http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/tenants\/anonymous-user\?anonymous_user_path=mock-only-invalid$/'
+    reason: Required native invalid anonymous-link branch; exact deliberately fake path only.
+  - match: 'console: Failed to login as anonymous user'
+    reason: AnonymousPage27–29 logs the deliberate invalid demo-path response before its native signup redirect.
+  - match: 'console: Error logging in as anonymous user: Error: Failed to login as anonymous user'
+    reason: AnonymousPage33–35 logs the same deliberate invalid-link error and redirects to signup?error=Anonymous; no pageerror is permitted.
+# Independent prerequisites: Fresh logged-out identity; invalid native anonymous redirect/error then valid guest cookie, login/continue and gallery/agent entries.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /anonymous/mock-only-invalid
+    id: goto-anonymous-mock-only-invalid
+  - wait: { role: button, name: Create Account, exact: true }
+    id: wait-create-account
+  - wait: { text: Your team does not have anonymous access enabled. }
+    id: wait-your-team-does-not-have-anonymous-access-enabled
+  - eval: |
+      if (location.pathname !== '/auth/signup' || new URL(location.href).searchParams.get('error') !== 'Anonymous') throw new Error('Invalid anonymous entry did not follow native signup error redirect');
+    id: eval-script-2
+  - shot: anonymous-invalid-link-signup-error
+    id: shot-anonymous-invalid-link-signup-error
+  - goto: /anonymous/workshop-demo
+    id: goto-anonymous-workshop-demo
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      (async () => {const me = await (await fetch('/api/me')).json(); if (!me.is_anonymous_user || location.pathname !== '/app') throw new Error('Native anonymous redirect/session did not complete');})()
+    id: eval-script-3
+  - shot: anonymous-native-redirect-chat
+    id: shot-anonymous-native-redirect-chat
+  - click: { selector: '#onyx-user-dropdown' }
+    id: click-onyx-user-dropdown
+  - wait: { text: Log in, exact: true }
+    id: wait-log-in
+  - shot: anonymous-account-login-menu
+    id: shot-anonymous-account-login-menu
+  - click: { text: Log in, exact: true }
+    id: click-log-in
+  - wait: { role: link, name: or continue as guest, exact: true }
+    id: wait-or-continue-as-guest
+  - shot: anonymous-login-continue-guest
+    id: shot-anonymous-login-continue-guest
+  - click: { role: link, name: or continue as guest, exact: true }
+    id: click-or-continue-as-guest
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox-2
+  - click: { text: More Agents, exact: true }
+    id: click-more-agents
+  - wait: { text: Featured Agents }
+    id: wait-featured-agents
+  - shot: anonymous-agent-gallery
+    id: shot-anonymous-agent-gallery
+  - goto: /app?agentId=11
+    id: goto-app-agentid-11
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox-3
+  - shot: anonymous-agent-selected
+    id: shot-anonymous-agent-selected
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

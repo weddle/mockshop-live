@@ -1,0 +1,49 @@
+apps:
+  onyx:
+    llm_providers:
+      campus-model-names:
+        id: 63
+        name: Campus Model Names (local fake)
+        provider: portkey
+        api_key_set: true
+        api_base: https://campus-models.invalid/messages
+        custom_config:
+          portkey_api_mode: messages
+        models:
+          learning-notes-demo:
+            id: 6301
+            display_name: Learning Notes (local fake)
+            default:
+              - text
+              - chat_naming
+            max_input_tokens: 32768
+          workshop-summary-demo:
+            id: 6302
+            display_name: Workshop Summary (local fake)
+            visible: false
+            max_input_tokens: 32768
+      openai: null
+      anthropic: null
+      onprem-gpu: null
+    fixtures:
+      GET /admin/llm/built-in/options/portkey:
+        name: portkey
+        known_models:
+          - id: 6301
+            name: learning-notes-demo
+            display_name: Learning Notes (local fake)
+            is_visible: true
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+          - id: 6302
+            name: workshop-summary-demo
+            display_name: Workshop Summary (local fake)
+            is_visible: false
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+        recommended_default_model:
+          name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+      POST /admin/llm/portkey/available-models: []

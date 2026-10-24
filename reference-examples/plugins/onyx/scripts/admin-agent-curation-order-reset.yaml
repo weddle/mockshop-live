@@ -1,0 +1,225 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset; direct admin seed/pin read, then real native editor Feature Save/reload for {{agents.it-helpdesk.name}}. No previous-unit state or API curation writes.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+#
+# Thin journey: entities come from the world ({{agents.<key>.*}}); backend state is read with assert_state / snapshot_state.
+
+name: admin-agent-curation-order-reset
+title: Native pointer reorder, gallery priority and protected dirty keep/fresh reset
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - wait: { testid: "agent-row-actions-{{agents.it-helpdesk.id}}" }
+    id: wait
+  - snapshot_state: { as: seed-desk, entity: agents.training-onboarding-desk }
+    id: snapshot-seed-desk
+  - snapshot_state: { as: seed-ops, entity: agents.guest-ops-copilot }
+    id: snapshot-seed-ops
+  - snapshot_state: { as: seed-analyst, entity: agents.training-analyst }
+    id: snapshot-seed-analyst
+  - snapshot_state: { as: seed-it, entity: agents.it-helpdesk }
+    id: snapshot-seed-it
+  - snapshot_state: { as: pins-before, entity: user.pinned_agents }
+    id: snapshot-pins
+  - assert_state: { list: agents, where: { builtin_persona: false }, keys: [training-onboarding-desk, guest-ops-copilot, training-analyst, it-helpdesk] }
+    id: assert-seeded-order
+  - hover: { testid: "agent-row-actions-{{agents.it-helpdesk.id}}" }
+    id: hover
+  - click: { testid: "edit-agent-{{agents.it-helpdesk.id}}" }
+    id: click
+  - wait: { selector: 'input[name="name"][value="{{agents.it-helpdesk.name}}"]' }
+    id: wait-editor-name
+  - scroll: { text: Feature This Agent, exact: true }
+    id: scroll-feature-this-agent
+  - click: { selector: 'button#is_featured' }
+    id: click-button-is-featured
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+    id: wait-button-is-featured-aria-checked-true
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - goto: "/app/agents/edit/{{agents.it-helpdesk.id}}?admin=true"
+    id: goto-agent-editor
+  - wait: { selector: 'input[name="name"][value="{{agents.it-helpdesk.name}}"]' }
+    id: wait-editor-name-2
+  - scroll: { text: Feature This Agent, exact: true }
+    id: scroll-feature-this-agent-2
+  - wait: { selector: 'button#is_featured[aria-checked="true"]' }
+    id: wait-button-is-featured-aria-checked-true-2
+  - assert_state: { entity: agents.it-helpdesk, field: is_featured, equals: true }
+    id: assert-editor-feature-saved
+  - assert_state: { entity: agents.it-helpdesk, field: is_listed, equals: true }
+    id: assert-editor-still-listed
+  - assert_state: { entity: agents.it-helpdesk, field: name, equals: "{{agents.it-helpdesk.name}}" }
+    id: assert-editor-name-kept
+  - snapshot_state: { as: editor-saved, entity: agents.it-helpdesk }
+    id: snapshot-editor-saved
+  - goto: /admin/agents
+    id: goto-admin-agents-2
+  - wait: { testid: "agent-row-actions-{{agents.it-helpdesk.id}}" }
+    id: wait-2
+  - hover: { selector: 'tr:has([data-testid="agent-row-actions-{{agents.it-helpdesk.id}}"])' }
+    id: hover-row
+  # Existing runner pointer-dispatch convention, native dnd-kit public handle only.
+  - eval: |
+      (async () => {
+        const source = document.querySelector('tr:has([data-testid="agent-row-actions-{{agents.it-helpdesk.id}}"]) button[aria-label="Drag to reorder"]');
+        const target = document.querySelector('tr:has([data-testid="agent-row-actions-{{agents.training-onboarding-desk.id}}"])');
+        if (!source || !target) throw new Error('Native drag handle/target missing');
+        const a = source.getBoundingClientRect(), b = target.getBoundingClientRect();
+        const start = {x:a.left+a.width/2,y:a.top+a.height/2}, end = {x:start.x,y:b.top+b.height/2};
+        const event = (type,x,y,buttons) => new PointerEvent(type,{bubbles:true,cancelable:true,composed:true,isPrimary:true,pointerId:58,pointerType:'mouse',button:0,buttons,clientX:x,clientY:y});
+        source.dispatchEvent(event('pointerdown',start.x,start.y,1));
+        await new Promise(resolve => setTimeout(resolve,100));
+        document.dispatchEvent(event('pointermove',start.x,start.y-12,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointermove',end.x,end.y,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointermove',end.x,end.y,1));
+        await new Promise(resolve => setTimeout(resolve,250));
+        document.dispatchEvent(event('pointerup',end.x,end.y,0));
+      })()
+    id: drag-reorder
+  - settle: 600
+    id: settle
+  - eval: |
+      const rows = [...document.querySelectorAll('tbody [data-testid^="agent-row-actions-"]')].map(e => e.dataset.testid);
+      const want = ['{{agents.it-helpdesk.id}}','{{agents.training-onboarding-desk.id}}','{{agents.guest-ops-copilot.id}}','{{agents.training-analyst.id}}'].map(id => 'agent-row-actions-' + id);
+      if (rows.join(',') !== want.join(',')) throw new Error('Native drag did not change visible order');
+    id: check-visible-order
+  - shot: reordered-admin
+    id: shot-reordered-admin
+  - goto: /admin/agents
+    id: goto-admin-agents-3
+  - wait: { testid: "agent-row-actions-{{agents.it-helpdesk.id}}" }
+    id: wait-3
+  - eval: |
+      const rows = [...document.querySelectorAll('tbody [data-testid^="agent-row-actions-"]')].map(e => e.dataset.testid);
+      const want = ['{{agents.it-helpdesk.id}}','{{agents.training-onboarding-desk.id}}','{{agents.guest-ops-copilot.id}}','{{agents.training-analyst.id}}'].map(id => 'agent-row-actions-' + id);
+      if (rows.join(',') !== want.join(',')) throw new Error('Reload lost native drag order');
+    id: check-reload-order
+  - assert_state: { list: agents, where: { builtin_persona: false }, order_by: display_priority, keys: [it-helpdesk, training-onboarding-desk, guest-ops-copilot, training-analyst] }
+    id: assert-catalog-order
+  - assert_state: { entity: agents.it-helpdesk, field: display_priority, equals: 0 }
+    id: assert-priority-it-helpdesk
+  - assert_state: { entity: agents.training-onboarding-desk, field: display_priority, equals: 1 }
+    id: assert-priority-training-onboarding-desk
+  - assert_state: { entity: agents.guest-ops-copilot, field: display_priority, equals: 2 }
+    id: assert-priority-guest-ops-copilot
+  - assert_state: { entity: agents.training-analyst, field: display_priority, equals: 3 }
+    id: assert-priority-training-analyst
+  - shot: reordered-admin-reload-readback
+    id: shot-reordered-admin-reload-readback
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { selector: '.radial-00:has-text("{{agents.it-helpdesk.name}}")' }
+    id: wait-gallery-first
+  - eval: |
+      const want = ['{{agents.it-helpdesk.name}}','{{agents.training-onboarding-desk.name}}','{{agents.guest-ops-copilot.name}}','{{agents.training-analyst.name}}'];
+      const names = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')].map(card => want.find(name => card.textContent.includes(name)));
+      if (names.join(',') !== want.join(',')) throw new Error('Native gallery sections do not honor saved display priorities');
+    id: check-gallery-order
+  - shot: reordered-featured-gallery
+    id: shot-reordered-featured-gallery
+  # Dirty visibility too, then prove keep preserves all three curation dimensions.
+  - goto: /admin/agents
+    id: goto-admin-agents-4
+  - wait: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: wait-4
+  - hover: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: hover-2
+  - click: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Agent actions"]' }
+    id: click-agent-actions
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent
+  - click: { selector: '[role="dialog"] button:has-text("Unlist")' }
+    id: click-confirm-unlist
+  - wait: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Re-list Agent"]' }
+    id: wait-relist-button
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+    id: state
+  - goto: /app/agents
+    id: goto-app-agents-2
+  - wait: { selector: '.radial-00:has-text("{{agents.it-helpdesk.name}}")' }
+    id: wait-gallery-first-2
+  - wait_gone: { selector: '.radial-00:has-text("{{agents.guest-ops-copilot.name}}")' }
+    id: wait-gone-gallery-unlisted
+  - wait: { selector: '.opal-sidebar-tab a[aria-label="{{agents.guest-ops-copilot.name}}"]' }
+    id: wait-sidebar-pin
+  # Keep retained every protected field; only the three curation dimensions changed.
+  - assert_state: { entity: agents.training-onboarding-desk, unchanged_since: seed-desk, except: [is_listed, is_featured, display_priority] }
+    id: assert-keep-desk
+  - assert_state: { entity: agents.guest-ops-copilot, unchanged_since: seed-ops, except: [is_listed, is_featured, display_priority] }
+    id: assert-keep-ops
+  - assert_state: { entity: agents.training-analyst, unchanged_since: seed-analyst, except: [is_listed, is_featured, display_priority] }
+    id: assert-keep-analyst
+  - assert_state: { entity: agents.it-helpdesk, unchanged_since: editor-saved, except: [is_listed, is_featured, display_priority] }
+    id: assert-keep-it
+  - assert_state: { list: agents, where: { builtin_persona: false, is_listed: false }, keys: [guest-ops-copilot] }
+    id: assert-keep-listed
+  - assert_state: { list: agents, where: { builtin_persona: false, is_featured: false }, keys: [training-analyst] }
+    id: assert-keep-featured
+  - assert_state: { list: agents, where: { builtin_persona: false }, order_by: display_priority, keys: [it-helpdesk, training-onboarding-desk, guest-ops-copilot, training-analyst] }
+    id: assert-keep-order
+  - shot: keep-dirty-feature-visibility-order
+    id: shot-keep-dirty-feature-visibility-order
+  - goto: /admin/agents
+    id: goto-admin-agents-5
+  - wait: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: wait-5
+  - wait: { selector: 'tr:has([data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"]):has-text("Unlisted")' }
+    id: wait-unlisted-row
+  - shot: keep-unlisted-admin-manageable
+    id: shot-keep-unlisted-admin-manageable
+  # Fresh reset of the world (not a substitute for native product writes).
+  - id: fresh-reset
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+      keep: false
+      resetChats: true
+  - goto: /admin/agents
+    id: goto-admin-agents-6
+  - wait: { testid: "agent-row-actions-{{agents.it-helpdesk.id}}" }
+    id: wait-6
+  - wait_gone: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Re-list Agent"]' }
+    id: wait-gone-relist-button
+  - assert_state: { entity: agents.training-onboarding-desk, unchanged_since: seed-desk }
+    id: assert-reset-desk
+  - assert_state: { entity: agents.guest-ops-copilot, unchanged_since: seed-ops }
+    id: assert-reset-ops
+  - assert_state: { entity: agents.training-analyst, unchanged_since: seed-analyst }
+    id: assert-reset-analyst
+  - assert_state: { entity: agents.it-helpdesk, unchanged_since: seed-it }
+    id: assert-reset-it
+  - assert_state: { entity: user.pinned_agents, equals_snapshot: pins-before }
+    id: assert-reset-pins
+  - assert_state: { list: agents, where: { builtin_persona: false }, keys: [training-onboarding-desk, guest-ops-copilot, training-analyst, it-helpdesk] }
+    id: assert-reset-order
+  - shot: fresh-reset-admin-seeds
+    id: shot-fresh-reset-admin-seeds
+  - goto: /app/agents
+    id: goto-app-agents-3
+  - wait: { selector: '.radial-00:has-text("{{agents.guest-ops-copilot.name}}")' }
+    id: wait-gallery-ops
+  - eval: |
+      const want = ['{{agents.training-onboarding-desk.name}}','{{agents.guest-ops-copilot.name}}','{{agents.training-analyst.name}}','{{agents.it-helpdesk.name}}'];
+      const cards = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')];
+      const names = cards.map(card => want.find(name => card.textContent.includes(name)));
+      if (names.join(',') !== want.join(',')) throw new Error('Fresh reset left dirty visible gallery order');
+      for (const card of cards) {
+        const featured = card.closest('.grid')?.parentElement?.textContent.includes('Featured');
+        const expected = card.textContent.includes(want[0]) || card.textContent.includes(want[1]);
+        if (Boolean(featured) !== expected) throw new Error('Fresh reset left dirty gallery Featured section');
+      }
+    id: check-gallery-reset
+  - shot: fresh-reset-gallery-seeds
+    id: shot-fresh-reset-gallery-seeds
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

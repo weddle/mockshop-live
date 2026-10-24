@@ -1,0 +1,18 @@
+apps:
+  onyx:
+    state:
+      user_extras:
+        options:
+          enabled: true
+          empty_sidebar: true
+          empty_gallery: true
+          notifications: []
+          settings:
+            disable_default_assistant: true
+          branding:
+            show_first_visit_notice: false
+    fixtures:
+      GET /chat/get-user-chat-sessions:
+        sessions: []
+      GET /user/projects: []
+      GET /user/files: []

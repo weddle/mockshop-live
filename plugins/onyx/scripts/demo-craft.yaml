@@ -1,0 +1,87 @@
+name: demo-craft
+title: Craft skills, scheduled tasks and plugins
+strict: true
+requires: enterprise
+scenes:
+  - id: skills-catalog
+    steps:
+      - id: open-skills-goto
+        goto: /craft/v1/skills
+      - id: open-skills-tour
+        wait: { text: Meet Craft, exact: true }
+      - id: open-skills-close-tour
+        click: { role: button, name: Close, exact: true }
+      - id: open-skills-tour-gone
+        wait_gone: { text: Meet Craft, exact: true }
+      - id: open-skills-search
+        wait: { placeholder: Search skills... }
+      - id: open-skills-create
+        wait: { role: button, name: Create skill, exact: true }
+      - id: open-skills-settle
+        settle: 800
+      - id: open-skills-shot
+        shot: craft-skills-list
+  - id: create-menu
+    steps:
+      - id: menu-goto
+        goto: /craft/v1/skills
+      - id: menu-wait-create
+        wait: { role: button, name: Create skill, exact: true }
+      - id: menu-click-create
+        click: { role: button, name: Create skill, exact: true }
+      - id: menu-scratch
+        wait: { text: Start from scratch, exact: true }
+      - id: menu-upload
+        wait: { text: Upload a skill, exact: true }
+      - id: menu-github
+        wait: { text: Import from GitHub, exact: true }
+      - id: menu-shot
+        shot: craft-skill-create-menu
+  - id: skill-editor
+    steps:
+      - id: editor-goto
+        goto: /craft/v1/skills
+      - id: editor-click-create
+        click: { role: button, name: Create skill, exact: true }
+      - id: editor-click-scratch
+        click: { text: Start from scratch, exact: true }
+      - id: editor-wait-name
+        wait: { selector: 'input[name="name"]' }
+      - id: editor-fill-name
+        fill: { selector: 'input[name="name"]', value: "{{vars.new_skill.name}}" }
+      - id: editor-fill-description
+        fill: { selector: 'textarea[name="description"]', value: "{{vars.new_skill.description}}" }
+      - id: editor-fill-instructions
+        fill: { selector: 'textarea[name="instructions_markdown"]', value: "{{vars.new_skill.instructions}}" }
+      - id: editor-rendered
+        click: { role: button, name: Rendered markdown, exact: true }
+      - id: editor-shot
+        shot: { name: craft-skill-editor-filled, full_page: true }
+  - id: scheduled-tasks
+    steps:
+      - id: tasks-goto
+        goto: /craft/v1/tasks
+      - id: tasks-new-button
+        wait: { testid: new-task-button }
+      - id: tasks-heading
+        wait: { text: Scheduled Tasks, exact: true }
+      - id: tasks-next-run
+        wait: { text: Next run, exact: true }
+      - id: tasks-settle
+        settle: 800
+      - id: tasks-shot
+        shot: craft-tasks-list
+  - id: craft-plugins
+    steps:
+      - id: plugins-goto
+        goto: /craft/v1/skills
+      - id: plugins-click
+        click: { role: button, name: Plugins, exact: true }
+      - id: plugins-search
+        wait: { placeholder: Search plugins }
+      - id: plugins-connected
+        click: { text: Connected, exact: true }
+      - id: plugins-settle
+        settle: 800
+      - id: plugins-shot
+        shot: craft-plugins-connected

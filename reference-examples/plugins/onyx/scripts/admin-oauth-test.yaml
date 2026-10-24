@@ -1,0 +1,22 @@
+# #65 route-sized native proof: OAuth Test native no-snapshot state.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-oauth-test
+title: OAuth Test native no-snapshot state - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/oauth-test
+    id: goto-admin-oauth-test
+  - shot: inventory-oauth-test-native-no-snapshot
+    id: shot-inventory-oauth-test-native-no-snapshot
+  - goto: /admin/oauth-test
+    id: goto-admin-oauth-test-2
+  - shot: oauth-test-native-no-snapshot
+    id: shot-oauth-test-native-no-snapshot
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

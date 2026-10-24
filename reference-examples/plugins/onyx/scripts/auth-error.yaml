@@ -1,0 +1,68 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-error
+title: "Independent native #69 unit: auth-error"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Independent prerequisites: Fresh browser storage ensures first stale-link restart, second native error; generic/raw/known/support/return states preserved.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /auth/error
+    id: goto-auth-error
+  - wait: { text: 'Possible Issues:', exact: true }
+    id: wait-possible-issues
+  - shot: auth-error-generic
+    id: shot-auth-error-generic
+  - goto: /auth/error?error=LOCAL%20FAKE%20DEMO%20%E2%80%94%20staged%20sign-in%20error
+    id: goto-auth-error-error-local-20fake-20demo-20-e2-80-94-20staged-2
+  - wait: { text: LOCAL FAKE DEMO — staged sign-in error, exact: true }
+    id: wait-local-fake-demo-staged-sign-in-error
+  - shot: auth-error-editable-message
+    id: shot-auth-error-editable-message
+  - goto: /auth/error?error=LOGIN_BAD_CREDENTIALS
+    id: goto-auth-error-error-login-bad-credentials
+  - wait: { text: "This account can't sign in. It may be deactivated. Contact your workspace admin." }
+    id: wait-this-account-can-t-sign-in-it-may-be-deactivated-contact-yo
+  - shot: auth-error-known-code
+    id: shot-auth-error-known-code
+  - goto: /auth/error?error=OAUTH_INVALID_STATE
+    id: goto-auth-error-error-oauth-invalid-state
+  - wait: { testid: email }
+    id: wait
+  - shot: auth-error-stale-auto-restart
+    id: shot-auth-error-stale-auto-restart
+  - goto: /auth/error?error=OAUTH_INVALID_STATE
+    id: goto-auth-error-error-oauth-invalid-state-2
+  - wait: { text: This sign-in link has expired or is no longer valid. Please sign in again. }
+    id: wait-this-sign-in-link-has-expired-or-is-no-longer-valid-please-
+  - shot: auth-error-stale-link
+    id: shot-auth-error-stale-link
+  - click: { role: link, name: Return to Login Page, exact: true }
+    id: click-return-to-login-page
+  - wait: { testid: email }
+    id: wait-2
+  - shot: auth-error-return-login
+    id: shot-auth-error-return-login
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

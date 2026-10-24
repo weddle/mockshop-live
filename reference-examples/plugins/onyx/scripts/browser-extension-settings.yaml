@@ -1,0 +1,111 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-settings
+title: Independent native new-tab prompt, settings, backgrounds, theme and saved preference replay
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  - goto: /nrf?user-prompt=extension%3A%20outline%20a%20fictional%20workshop
+    id: goto-nrf-user-prompt-extension-3a-20outline-20a-20fictional-20wo
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      if (!document.querySelector('#onyx-chat-input-textbox').textContent.includes('extension: outline')) throw new Error('Native extension URL prompt was not editable/prefilled');
+      if ([...document.querySelectorAll('#onyx-chat-input button')].some(button => button.innerText.trim() === 'Read this tab')) throw new Error('New tab wrongly renders side-panel context control');
+    id: eval-script
+  - shot: { name: nrf-new-tab-direct-prefill, full_page: true }
+    id: shot-nrf-new-tab-direct-prefill
+  - click: { selector: '.absolute.top-0.end-0.p-4 button' }
+    id: click-absolute-top-0-end-0-p-4-button
+  - wait: { text: Use Onyx as new tab page }
+    id: wait-use-onyx-as-new-tab-page
+  - shot: { name: nrf-settings-open, full_page: true }
+    id: shot-nrf-settings-open
+  - click: { role: switch }
+    id: click
+  - wait: { role: button, name: Turn off, exact: true }
+    id: wait-turn-off
+  - shot: { name: nrf-turn-off-confirmation, full_page: true }
+    id: shot-nrf-turn-off-confirmation
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - eval: |
+      if (localStorage.getItem('useOnyxAsDefaultNewTab') === 'false') throw new Error('Cancel disabled new-tab preference');
+    id: eval-script-2
+  - shot: { name: nrf-turn-off-cancelled, full_page: true }
+    id: shot-nrf-turn-off-cancelled
+  - click: { role: switch }
+    id: click-2
+  - click: { role: button, name: Turn off, exact: true }
+    id: click-turn-off
+  - eval: |
+      if (localStorage.getItem('useOnyxAsDefaultNewTab') !== 'false') throw new Error('Native confirm did not save new-tab preference');
+    id: eval-script-3
+  - shot: { name: nrf-new-tab-off, full_page: true }
+    id: shot-nrf-new-tab-off
+  - click: { role: switch }
+    id: click-3
+  - eval: |
+      if (localStorage.getItem('useOnyxAsDefaultNewTab') !== 'true') throw new Error('Native re-enable did not save preference');
+    id: eval-script-4
+  - click: { role: button, name: Clouds background, exact: true }
+    id: click-clouds-background
+  - wait: { role: button, name: 'Clouds background (selected)', exact: true }
+    id: wait-clouds-background-selected
+  - shot: { name: nrf-background-clouds, full_page: true }
+    id: shot-nrf-background-clouds
+  - click: { role: button, name: Hills background, exact: true }
+    id: click-hills-background
+  - wait: { role: button, name: 'Hills background (selected)', exact: true }
+    id: wait-hills-background-selected
+  - shot: { name: nrf-background-hills, full_page: true }
+    id: shot-nrf-background-hills
+  - click: { role: button, name: Plants background, exact: true }
+    id: click-plants-background
+  - wait: { role: button, name: 'Plants background (selected)', exact: true }
+    id: wait-plants-background-selected
+  - shot: { name: nrf-background-plants, full_page: true }
+    id: shot-nrf-background-plants
+  - click: { role: button, name: Mountains background, exact: true }
+    id: click-mountains-background
+  - wait: { role: button, name: 'Mountains background (selected)', exact: true }
+    id: wait-mountains-background-selected
+  - shot: { name: nrf-background-mountains, full_page: true }
+    id: shot-nrf-background-mountains
+  - click: { role: button, name: Night background, exact: true }
+    id: click-night-background
+  - wait: { role: button, name: 'Night background (selected)', exact: true }
+    id: wait-night-background-selected
+  - shot: { name: nrf-background-night, full_page: true }
+    id: shot-nrf-background-night
+  - click: { role: button, name: None background, exact: true }
+    id: click-none-background
+  - wait: { role: button, name: 'None background (selected)', exact: true }
+    id: wait-none-background-selected
+  - click: { selector: '.fixed.top-0.end-0 button', nth: 0 }
+    id: click-fixed-top-0-end-0-button
+  - settle: 500
+    id: settle
+  - shot: { name: nrf-settings-theme, full_page: true }
+    id: shot-nrf-settings-theme
+  - click: { selector: '.fixed.top-0.end-0 button', nth: 1 }
+    id: click-fixed-top-0-end-0-button-2
+  - eval: location.reload()
+    id: eval-script-5
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox-2
+  - click: { selector: '.absolute.top-0.end-0.p-4 button' }
+    id: click-absolute-top-0-end-0-p-4-button-2
+  - eval: |
+      if (localStorage.getItem('useOnyxAsDefaultNewTab') !== 'true') throw new Error('New-tab preference did not replay');
+      if (!document.querySelector('button[aria-label="None background (selected)"]')) throw new Error('Background preference did not replay');
+    id: eval-script-6
+  - shot: { name: nrf-settings-replayed, full_page: true }
+    id: shot-nrf-settings-replayed
+  - click: { selector: '.fixed.top-0.end-0 button', nth: 1 }
+    id: click-fixed-top-0-end-0-button-3
+world: ../../../worlds/seaside/world.yaml

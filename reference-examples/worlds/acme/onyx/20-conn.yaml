@@ -1,0 +1,1002 @@
+apps:
+  onyx:
+    sources:
+      incident-channels:
+        id: 104
+        connector_id: 304
+        credential_id: 204
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 204
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          slack:
+            workspace: acme
+            channels:
+              - eng-media
+              - inc-2291-join-latency
+            channel_regex_enabled: true
+            index_private_channels: false
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: "{{vars.onyx_template_open}}ago:6m}}"
+          last_permission_sync_attempt_status: success
+          permission_syncing: false
+          last_permission_sync_attempt_finished: "{{vars.onyx_template_open}}ago:6m}}"
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 164300
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:8m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 104
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:8m}}"
+          docs_indexed: 164300
+          latest_index_attempt_docs_indexed: 1240
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10401
+              new_docs_indexed: 1240
+              total_docs_indexed: 1240
+              time_started: "{{vars.onyx_template_open}}ago:15m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:8m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10402
+              new_docs_indexed: 620
+              total_docs_indexed: 620
+              time_started: "{{vars.onyx_template_open}}ago:45m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:38m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10403
+              new_docs_indexed: 162440
+              total_docs_indexed: 162440
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        credential_by_vendor:
+          slack:
+            credential_json:
+              slack_bot_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      media-platform:
+        id: 101
+        connector_id: 301
+        credential_id: 201
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 201
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          github:
+            repo_owner: acme
+            repositories: media-platform
+            include_prs: true
+            include_issues: true
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 18420
+          number_of_index_attempts: 640
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:14m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 101
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:14m}}"
+          docs_indexed: 18420
+          latest_index_attempt_docs_indexed: 96
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10101
+              new_docs_indexed: 96
+              total_docs_indexed: 96
+              time_started: "{{vars.onyx_template_open}}ago:19m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:14m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10102
+              new_docs_indexed: 41
+              total_docs_indexed: 41
+              time_started: "{{vars.onyx_template_open}}ago:49m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:44m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10103
+              new_docs_indexed: 18283
+              total_docs_indexed: 18283
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        errors:
+          total_items: 0
+          items: []
+        permission_sync:
+          applicable: false
+          total_items: 0
+          items: []
+        group_sync:
+          applicable: false
+          total_items: 0
+          items: []
+        credential_by_vendor:
+          github:
+            credential_json:
+              github_access_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      postmortems:
+        id: 103
+        connector_id: 303
+        credential_id: 203
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 203
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          google_drive:
+            shared_drive_urls:
+              - https://docs.google.example/drive/folders/acme-postmortems
+            include_shared_drives: true
+            include_my_drive: false
+            include_files_shared_with_me: false
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: "{{vars.onyx_template_open}}ago:10m}}"
+          last_permission_sync_attempt_status: success
+          permission_syncing: false
+          last_permission_sync_attempt_finished: "{{vars.onyx_template_open}}ago:10m}}"
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 1286
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:12m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 103
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:12m}}"
+          docs_indexed: 1286
+          latest_index_attempt_docs_indexed: 9
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10301
+              new_docs_indexed: 9
+              total_docs_indexed: 9
+              time_started: "{{vars.onyx_template_open}}ago:16m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:12m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10302
+              new_docs_indexed: 4
+              total_docs_indexed: 4
+              time_started: "{{vars.onyx_template_open}}ago:46m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:42m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10303
+              new_docs_indexed: 1273
+              total_docs_indexed: 1273
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        credential_by_vendor:
+          google_drive:
+            credential_json:
+              google_tokens: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      incidents:
+        id: 105
+        connector_id: 305
+        credential_id: 205
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: public
+          credential_ids:
+            - 205
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          jira:
+            jira_base_url: https://acme.atlassian.example
+            project_key: SRE
+            comment_email_blacklist: []
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: public
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 14870
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:22m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 105
+          access_type: public
+          last_success: "{{vars.onyx_template_open}}ago:22m}}"
+          docs_indexed: 14870
+          latest_index_attempt_docs_indexed: 31
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10501
+              new_docs_indexed: 31
+              total_docs_indexed: 31
+              time_started: "{{vars.onyx_template_open}}ago:27m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:22m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10502
+              new_docs_indexed: 18
+              total_docs_indexed: 18
+              time_started: "{{vars.onyx_template_open}}ago:57m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:52m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10503
+              new_docs_indexed: 14821
+              total_docs_indexed: 14821
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        credential_by_vendor:
+          jira:
+            credential_json:
+              jira_user_email: svc-onyx@{{company.domain}}
+              jira_api_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      runbooks:
+        id: 102
+        connector_id: 302
+        credential_id: 202
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: public
+          credential_ids:
+            - 202
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          confluence:
+            wiki_base: https://acme.atlassian.example/wiki
+            space: RUN
+            is_cloud: true
+            page_id: ""
+            index_recursively: true
+            cql_query: null
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: public
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: true
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 41.7
+          supports_targeted_reindex: true
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: Space RUN · page 412 of ~560 · last cursor {{vars.onyx_template_open}}ago:970m}}
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 2940
+          number_of_index_attempts: 412
+          last_index_attempt_status: in_progress
+          last_indexed: "{{vars.onyx_template_open}}ago:31m}}"
+        row:
+          in_progress: true
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: in_progress
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 102
+          access_type: public
+          last_success: "{{vars.onyx_template_open}}ago:31m}}"
+          docs_indexed: 2940
+          latest_index_attempt_docs_indexed: 412
+        attempts:
+          total_items: 5
+          items:
+            - id: 10201
+              status: in_progress
+              from_beginning: false
+              new_docs_indexed: 412
+              docs_removed_from_index: 0
+              total_docs_indexed: 412
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              time_started: "{{vars.onyx_template_open}}ago:6m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:10s}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 2
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10202
+              new_docs_indexed: 37
+              total_docs_indexed: 37
+              time_started: "{{vars.onyx_template_open}}ago:37m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:31m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10203
+              new_docs_indexed: 12
+              total_docs_indexed: 12
+              time_started: "{{vars.onyx_template_open}}ago:67m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:64m}}"
+            - id: 10204
+              status: completed_with_errors
+              from_beginning: false
+              new_docs_indexed: 54
+              docs_removed_from_index: 0
+              total_docs_indexed: 54
+              error_msg: 2 pages could not be fetched (403 Forbidden)
+              error_count: 2
+              full_exception_trace: null
+              time_started: "{{vars.onyx_template_open}}ago:97m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:93m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10205
+              new_docs_indexed: 2874
+              total_docs_indexed: 2874
+              time_started: "{{vars.onyx_template_open}}ago:2835h}}"
+              time_updated: "{{vars.onyx_template_open}}ago:2832h}}"
+        credential_by_vendor:
+          confluence:
+            credential_json:
+              confluence_username: svc-onyx@{{company.domain}}
+              confluence_access_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      architecture:
+        id: 108
+        connector_id: 308
+        credential_id: 208
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 208
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          confluence:
+            wiki_base: https://acme.atlassian.example/wiki
+            space: ARCH
+            is_cloud: true
+            page_id: ""
+            index_recursively: true
+            cql_query: null
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: "{{vars.onyx_template_open}}ago:18m}}"
+          last_permission_sync_attempt_status: success
+          permission_syncing: false
+          last_permission_sync_attempt_finished: "{{vars.onyx_template_open}}ago:18m}}"
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 1744
+          number_of_index_attempts: 96
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:44m}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 108
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:44m}}"
+          docs_indexed: 1744
+          latest_index_attempt_docs_indexed: 12
+        attempts:
+          total_items: 4
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10801
+              new_docs_indexed: 12
+              total_docs_indexed: 12
+              time_started: "{{vars.onyx_template_open}}ago:49m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:44m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10802
+              new_docs_indexed: 3
+              total_docs_indexed: 3
+              time_started: "{{vars.onyx_template_open}}ago:79m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:75m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 1
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10803
+              new_docs_indexed: 21
+              total_docs_indexed: 21
+              time_started: "{{vars.onyx_template_open}}ago:109m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:104m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10804
+              new_docs_indexed: 1708
+              total_docs_indexed: 1708
+              time_started: "{{vars.onyx_template_open}}ago:2160h}}"
+              time_updated: "{{vars.onyx_template_open}}ago:2158h}}"
+        credential_by_vendor:
+          confluence:
+            credential_json:
+              confluence_username: svc-onyx@{{company.domain}}
+              confluence_access_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      support:
+        id: 106
+        connector_id: 306
+        credential_id: 206
+        connector:
+          input_type: poll
+          refresh_freq: 1800
+          prune_freq: 86400
+          indexing_start: null
+          access_type: sync
+          credential_ids:
+            - 206
+          time_created: "{{vars.onyx_template_open}}ago:120d}}"
+          time_updated: "{{vars.onyx_template_open}}ago:3d}}"
+        config_by_vendor:
+          zendesk:
+            content_type: tickets
+        detail:
+          creator: "{{apps.onyx.people.dana.id}}"
+          creator_email: "{{people.dana.email}}"
+          status: ACTIVE
+          in_repeated_error_state: false
+          latest_deletion_attempt: null
+          access_type: sync
+          is_editable_for_current_user: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          deletion_failure_message: null
+          indexing: false
+          last_pruned: "{{vars.onyx_template_open}}ago:9h}}"
+          overall_indexing_speed: 38.2
+          supports_targeted_reindex: false
+          groups: []
+          auto_sync_options: null
+          processing_mode: REGULAR
+          indexing_hold: null
+          latest_checkpoint_description: null
+          last_full_permission_sync: null
+          last_permission_sync_attempt_status: null
+          permission_syncing: false
+          last_permission_sync_attempt_finished: null
+          last_permission_sync_attempt_error_message: null
+          num_docs_indexed: 22415
+          number_of_index_attempts: 3
+          last_index_attempt_status: success
+          last_indexed: "{{vars.onyx_template_open}}ago:1h}}"
+        row:
+          in_progress: false
+          cc_pair_status: ACTIVE
+          last_finished_status: success
+          last_status: success
+          is_editable: true
+          permissions:
+            operate: true
+            edit: true
+            delete: true
+            publish: true
+          in_repeated_error_state: false
+          cc_pair_id: 106
+          access_type: sync
+          last_success: "{{vars.onyx_template_open}}ago:1h}}"
+          docs_indexed: 22415
+          latest_index_attempt_docs_indexed: 58
+        attempts:
+          total_items: 3
+          items:
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10601
+              new_docs_indexed: 58
+              total_docs_indexed: 58
+              time_started: "{{vars.onyx_template_open}}ago:65m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:60m}}"
+            - status: success
+              from_beginning: false
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10602
+              new_docs_indexed: 42
+              total_docs_indexed: 42
+              time_started: "{{vars.onyx_template_open}}ago:125m}}"
+              time_updated: "{{vars.onyx_template_open}}ago:120m}}"
+            - status: success
+              from_beginning: true
+              docs_removed_from_index: 0
+              error_msg: null
+              error_count: 0
+              full_exception_trace: null
+              id: 10603
+              new_docs_indexed: 22315
+              total_docs_indexed: 22315
+              time_started: "{{vars.onyx_template_open}}ago:120d}}"
+              time_updated: "{{vars.onyx_template_open}}ago:119d}}"
+        errors:
+          total_items: 0
+          items: []
+        permission_sync:
+          applicable: true
+          total_items: 1
+          items:
+            - id: 10611
+              status: success
+              error_message: null
+              full_exception_trace: null
+              total_docs_synced: 22415
+              docs_with_permission_errors: 0
+              time_created: "{{vars.onyx_template_open}}ago:1h}}"
+              time_started: "{{vars.onyx_template_open}}ago:1h}}"
+              time_finished: "{{vars.onyx_template_open}}ago:58m}}"
+        group_sync:
+          applicable: false
+          total_items: 0
+          items: []
+        credential_by_vendor:
+          zendesk:
+            credential_json:
+              zendesk_subdomain: acme-support
+              zendesk_email: svc-onyx@{{company.domain}}
+              zendesk_token: ••••••••
+            admin_public: true
+            user_id: null
+            user_email: "{{people.dana.email}}"
+            time_created: "{{vars.onyx_template_open}}ago:120d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:120d}}"
+            groups: []
+      file:
+        visible: false
+    fixtures:
+      GET /connector/oauth/details/github:
+        oauth_enabled: false
+        additional_kwargs: []
+      GET /connector/oauth/details/zendesk:
+        oauth_enabled: false
+        additional_kwargs: []
+      GET /federated/oauth-status:
+        - federated_connector_id: 901
+          source: gmail
+          name: "{{company.name}} notes (fake personal account)"
+          has_oauth_token: true
+          oauth_token_expires_at: null
+          authorize_url: /api/mockshop/personal-connectors/901/connect
+      GET /manage/admin/connector/status:
+        - cc_pair_id: 101
+          name: GitHub – acme/media-platform
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 301
+            name: GitHub – acme/media-platform
+            source: github
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 102
+          name: Confluence – Engineering Runbooks
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 302
+            name: Confluence – Engineering Runbooks
+            source: confluence
+          access_type: public
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 103
+          name: Google Drive – Postmortems
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 303
+            name: Google Drive – Postmortems
+            source: google_drive
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 104
+          name: "Slack – #inc-*, #eng-media"
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 304
+            name: "Slack – #inc-*, #eng-media"
+            source: slack
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 105
+          name: Jira – SRE incidents
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 305
+            name: Jira – SRE incidents
+            source: jira
+          access_type: public
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 106
+          name: Zendesk – Support escalations
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 306
+            name: Zendesk – Support escalations
+            source: zendesk
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true
+        - cc_pair_id: 108
+          name: Confluence – Platform Architecture
+          connector:
+            input_type: poll
+            connector_specific_config: {}
+            refresh_freq: 1800
+            prune_freq: null
+            indexing_start: null
+            id: 308
+            name: Confluence – Platform Architecture
+            source: confluence
+          access_type: sync
+          groups: []
+          status: ACTIVE
+          has_successful_run: true

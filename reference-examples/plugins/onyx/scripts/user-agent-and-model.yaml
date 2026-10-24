@@ -1,0 +1,49 @@
+# End user: browse agents -> pick an agent -> open the model picker -> switch model
+# -> ask a starter question with the new model.
+name: user-agent-and-model
+title: User picks an agent and switches model
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /app
+    id: goto-app
+  - click: { text: More Agents }
+    id: click-more-agents
+  - wait: { text: Featured Agents }
+    id: wait-featured-agents
+  - shot: agent-gallery
+    id: shot-agent-gallery
+  - click: { text: Start Chat, nth: 1 } # "Training & Onboarding Desk" card
+    id: click-start-chat
+  - settle: 800
+    id: settle
+  - shot: agent-selected
+    id: shot-agent-selected
+  - click: { role: button, name: GPT-5.2 }
+    id: click-gpt-5-2
+  - settle: 500
+    id: settle-2
+  - shot: model-picker-open
+    id: shot-model-picker-open
+  - click: { text: Anthropic }
+    id: click-anthropic
+  - settle: 400
+    id: settle-3
+  - shot: model-picker-anthropic
+    id: shot-model-picker-anthropic
+  - click: { text: Claude Sonnet 4.5 }
+    id: click-claude-sonnet-4-5
+  - settle: 500
+    id: settle-4
+  - shot: model-switched
+    id: shot-model-switched
+  - click: { text: "What training do new front desk hires need" }
+    id: click-what-training-do-new-front-desk-hires-need
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait
+  - settle: 1500
+    id: settle-5
+  - eval: "document.querySelector('[data-testid=chat-scroll-container]')?.scrollTo(0, 1e6)"
+    id: eval-script
+  - shot: answer-from-agent
+    id: shot-answer-from-agent
+world: ../../../worlds/seaside/world.yaml

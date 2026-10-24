@@ -1,0 +1,92 @@
+name: demo-agents-settings
+title: Create a review agent, switch the chat model, ask the planning helper, then set default model and preferences
+plugin: onyx
+strict: true
+scenes:
+  - id: create-agent
+    steps:
+      - id: create-agent-goto-gallery
+        goto: /app/agents
+      - id: create-agent-wait-gallery
+        wait: { testid: AgentsPage/container }
+      - id: create-agent-open-form
+        click: { label: AgentsPage/new-agent-button }
+      - id: create-agent-wait-form
+        wait: { selector: 'input[name="name"]' }
+      - id: create-agent-fill-name
+        fill: { selector: 'input[name="name"]', value: "{{vars.new_agent.name}}" }
+      - id: create-agent-fill-description
+        fill: { selector: 'textarea[name="description"]', value: "{{vars.new_agent.description}}" }
+      - id: create-agent-fill-instructions
+        fill: { selector: 'textarea[name="instructions"]', value: "{{vars.new_agent.instructions}}" }
+      - id: create-agent-fill-starter
+        fill: { selector: 'input[name="starter_messages.0"]', value: "{{vars.new_agent.starter}}" }
+      - id: create-agent-submit
+        click: { role: button, name: Create, exact: true }
+      - id: create-agent-wait-name
+        wait: { text: "{{vars.new_agent.name}}", exact: true }
+      - id: create-agent-wait-starter
+        wait: { text: "{{vars.new_agent.starter}}" }
+      - id: create-agent-shot
+        shot: agent-created
+  - id: planning-helper-chat
+    steps:
+      - id: helper-goto-agent
+        goto: "/app?agentId={{agents.helper.id}}"
+      - id: helper-wait-composer
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: helper-wait-name
+        wait: { text: "{{agents.helper.name}}" }
+      - id: helper-shot
+        shot: agent-selected
+      - id: model-open-picker
+        click: { selector: '[data-testid="model-selector"] button' }
+      - id: model-choose-fast
+        click: { selector: '[role="dialog"] :text-is("{{apps.onyx.llm_providers.primary.models.fast.display_name}}")' }
+      - id: model-wait-selected
+        wait: { selector: '[data-testid="model-selector"] button:has-text("{{apps.onyx.llm_providers.primary.models.fast.display_name}}")' }
+      - id: model-shot
+        shot: model-selected
+      - id: helper-ask-status
+        send:
+          text: "{{apps.onyx.replies.status.question}}"
+          reply: { use: apps.onyx.replies.status }
+      - id: helper-wait-answer
+        wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+      - id: helper-answer-shot
+        shot: status-answer
+  - id: settings
+    steps:
+      - id: default-model-goto
+        goto: /app/settings/chat-preferences
+      - id: default-model-wait-label
+        wait: { text: Default Model, exact: true }
+      - id: default-model-open
+        click: { selector: 'label:has-text("Default Model") [data-trigger="button"]' }
+      - id: default-model-choose
+        click: { text: "{{apps.onyx.llm_providers.primary.models.fast.display_name}}", exact: true, last: true }
+      - id: default-model-check
+        eval: |
+          const trigger = [...document.querySelectorAll('label')].find(l => l.textContent.includes('Default Model'))?.querySelector('[data-trigger="button"]');
+          const shown = trigger?.innerText.trim() || trigger?.querySelector('input')?.value || '';
+          if (!shown.includes({{apps.onyx.llm_providers.primary.models.fast.display_name | json}})) throw new Error('Default Model shows ' + JSON.stringify(shown));
+      - id: default-model-shot
+        shot: default-model-selected
+      - id: prefs-goto
+        goto: /app/settings/chat-preferences
+      - id: prefs-wait-label
+        wait: { text: Personal Preferences, exact: true }
+      - id: prefs-toggle-autoscroll
+        click: { selector: 'label:has-text("Chat Auto-scroll") [role="switch"]' }
+      - id: prefs-fill-instructions
+        fill: { placeholder: Describe how you want the system to behave and the tone it should use., value: "{{vars.personal.instructions}}" }
+      - id: prefs-blur
+        press: Tab
+      - id: prefs-settle
+        settle: 1500
+      - id: prefs-reopen
+        goto: /app/settings/chat-preferences
+      - id: prefs-wait-saved
+        wait: { text: "{{vars.personal.instructions}}" }
+      - id: prefs-shot
+        shot: { name: personal-preferences-saved, full_page: true }

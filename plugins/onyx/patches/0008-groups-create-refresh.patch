@@ -1,0 +1,37 @@
+# Required native Groups UX: newly created rows must appear after delete-all.
+# Reuse the pinned async refreshGroupLists helper already used by rename/manager edits;
+# await both caches before navigating. No backend, IDs, permissions or UI controls change.
+--- a/src/views/admin/GroupsPage/CreateGroupPage.tsx
++++ b/src/views/admin/GroupsPage/CreateGroupPage.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { IconLoader } from "@opal/loaders";
+ import { useMemo, useState } from "react";
++import { useSWRConfig } from "swr";
+ import { useRouter } from "next/navigation";
+ import { useTranslations } from "next-intl";
+ import { Table, Button, Divider } from "@opal/components";
+@@ -15,6 +16,7 @@
+ import useGroupMemberCandidates from "./useGroupMemberCandidates";
+ import {
+   createGroup,
++  refreshGroupLists,
+   updateAgentGroupSharing,
+   updateDocSetGroupSharing,
+   saveTokenLimits,
+@@ -30,6 +32,7 @@
+ function CreateGroupPage() {
+   const t = useTranslations("admin.groups");
+   const router = useRouter();
++  const { mutate } = useSWRConfig();
+   const [groupName, setGroupName] = useState("");
+   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+   const [searchTerm, setSearchTerm] = useState("");
+@@ -83,6 +86,7 @@
+       await updateAgentGroupSharing(groupId, [], selectedAgentIds);
+       await updateDocSetGroupSharing(groupId, [], selectedDocSetIds);
+       await saveTokenLimits(groupId, tokenLimits, []);
++      await refreshGroupLists(mutate);
+       toast.success(t("create.toasts.created", { name: trimmed }));
+       router.push("/admin/groups");
+     } catch (e) {

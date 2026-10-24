@@ -1,0 +1,97 @@
+name: demo-admin-people-knowledge
+title: Admin finds a team member, adds a colleague to the planning team, builds a document set and asks what was agreed
+strict: true
+requires: enterprise
+scenes:
+  - id: find-person
+    steps:
+      - id: users-open
+        goto: /admin/users
+      - id: users-ready
+        wait: { text: Users & Requests, exact: true }
+      - id: users-search
+        fill: { placeholder: Search users..., value: "{{people.member.email}}" }
+      - id: users-row
+        wait: { selector: 'tr:has-text("{{people.member.email}}")' }
+      - id: users-other-gone
+        wait_gone: { text: "{{people.owner.email}}", exact: true }
+      - id: users-shot
+        shot: user-search
+  - id: check-groups
+    steps:
+      - id: groups-users-open
+        goto: /admin/users
+      - id: groups-users-ready
+        wait: { text: Users & Requests, exact: true }
+      - id: groups-users-search
+        fill: { placeholder: Search users..., value: "{{people.member.email}}" }
+      - id: groups-users-row
+        wait: { selector: 'tr:has-text("{{people.member.email}}")' }
+      - id: groups-row-menu
+        click: { selector: 'tr:has-text("{{people.member.email}}") button[aria-label]:last-child' }
+      - id: groups-roles-entry
+        click: { text: Groups & Roles, exact: true }
+      - id: groups-dialog
+        wait: { selector: '[role="dialog"]:has-text("Edit User''s Groups"):has-text("{{teams.placeholder.name}}")' }
+      - id: groups-dialog-shot
+        shot: user-groups-dialog
+  - id: add-colleague
+    steps:
+      - id: team-open
+        goto: "/admin/groups/{{teams.placeholder.id}}"
+      - id: team-ready
+        wait: { text: Edit Group, exact: true }
+      - id: team-add
+        click: { role: button, name: Add, exact: true }
+      - id: team-find-colleague
+        fill: { placeholder: Search users and accounts..., value: "{{people.memberTwo.email}}" }
+      - id: team-colleague-row
+        wait: { text: "{{people.memberTwo.name}}", exact: true }
+      - id: team-pick-colleague
+        click: { selector: 'tbody [role="checkbox"]' }
+      - id: team-picker-done
+        click: { role: button, name: Done, exact: true }
+      - id: team-save
+        click: { role: button, name: Save Changes, exact: true }
+      - id: team-reopen
+        goto: "/admin/groups/{{teams.placeholder.id}}"
+      - id: team-colleague-listed
+        wait: { text: "{{people.memberTwo.email}}", exact: true }
+      - id: team-shot
+        shot: group-member-added
+  - id: build-document-set
+    steps:
+      - id: set-open
+        goto: /admin/documents/sets/new
+      - id: set-form-ready
+        wait: { placeholder: A name for the document set }
+      - id: set-name
+        fill: { placeholder: A name for the document set, value: "{{vars.new_document_set.name}}" }
+      - id: set-description
+        fill: { placeholder: Describe what the document set represents, value: "{{vars.new_document_set.description}}" }
+      - id: set-connector-search
+        click: { placeholder: Search for connectors... }
+      - id: set-connector-pick
+        click: { selector: '[role="menuitem"]:has-text("{{sources.knowledge.name}}")' }
+      - id: set-create
+        click: { selector: 'button:has-text("Create Document Set")' }
+      - id: set-created-toast
+        wait: { text: Successfully created document set!, exact: true }
+      - id: set-listed
+        wait: { text: "{{vars.new_document_set.name}}", exact: true }
+      - id: set-shot
+        shot: document-set-created
+  - id: ask-assistant
+    steps:
+      - id: chat-open
+        goto: /app
+      - id: chat-ready
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: chat-ask
+        send:
+          text: "{{apps.onyx.replies.planning.question}}"
+          reply: { use: apps.onyx.replies.planning }
+      - id: chat-answer-done
+        wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+      - id: chat-answer-shot
+        shot: answer-with-citations

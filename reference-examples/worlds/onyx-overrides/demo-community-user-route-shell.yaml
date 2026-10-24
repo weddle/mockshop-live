@@ -1,0 +1,4 @@
+apps:
+  onyx:
+    fixtures:
+      GET /enterprise-settings/custom-analytics-script: null

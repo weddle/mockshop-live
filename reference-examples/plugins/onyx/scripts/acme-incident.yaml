@@ -1,0 +1,52 @@
+name: acme-incident
+title: Investigate the relay rollback with Acme
+world: ../../../worlds/acme/world.yaml
+profile: ../../../profiles/zoom-blue.yaml
+strict: true
+viewport: [1440, 900]
+scenes:
+  - id: investigate
+    steps:
+      - id: open-workspace
+        goto: /app
+      - id: composer-ready
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: rollback-owner
+        send:
+          text: Who handled the rollback?
+          reply:
+            title: Relay rollback owner
+            queries: [INC-2291 rollback owner, relay-scorer rollback timeline]
+            cites: [rollback-thread, rollback]
+            text: "{{people.sam.name}} coordinated the rollback at 14:52 UTC. The relay rollback runbook describes the recovery checks. [1][2]"
+      - id: owner-answer
+        shot: rollback-owner
+      - id: rollback-owner-confirmation
+        send:
+          text: Who handled the rollback?
+          reply:
+            title: Confirmed rollback ownership
+            queries: [INC-2291 postmortem review owner]
+            cites: [postmortem]
+            text: "Confirmed: {{people.sam.name}} handled the rollback; {{people.dana.name}} owns the postmortem review. This is the separately authored confirmation, despite the identical question. [1]"
+      - id: confirmation-answer
+        shot: rollback-confirmation
+  - id: exact-screen
+    steps:
+      - id: focus-recent-history
+        state:
+          sidebar: [relay-rollback-runbook-walkthrough, weekend-on-call-handoff-notes]
+          model: gpt-5.2
+      - id: conversation-preserved
+        wait: { text: "Confirmed:" }
+      - id: focused-sidebar
+        shot: focused-sidebar
+      - id: open-indexing
+        goto: /admin/indexing-status
+      - id: focus-connectors
+        state:
+          connectors: [runbooks, incident-channels]
+      - id: connector-ready
+        wait: { text: Engineering Runbooks, exact: false }
+      - id: selected-connectors
+        shot: selected-connectors

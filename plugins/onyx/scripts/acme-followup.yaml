@@ -1,0 +1,53 @@
+name: acme-followup
+plugin: onyx
+title: Investigate a new incident without duplicating Acme
+world: ../../../worlds/acme/world.yaml
+profile: ../../../profiles/zoom-blue.yaml
+strict: true
+content:
+  vars:
+    incident: INC-2400
+  documents:
+    incident-2400:
+      source: runbooks
+      title: "{{vars.incident}} relay capacity review"
+      owners: [sam, dana]
+      body: |
+        # {{vars.incident}} relay capacity review
+        {{people.sam.name}} isolated the saturated relay pool and coordinated recovery.
+        {{people.dana.name}} approved the capacity review and owns the follow-up.
+        No rollback of relay-scorer-v2 was needed for this separate incident.
+  conversations:
+    incident-2400-handoff:
+      title: "{{vars.incident}} handoff"
+      messages:
+        - role: user
+          person: dana
+          text: "Who is coordinating {{vars.incident}}?"
+        - role: assistant
+          text: "{{people.sam.name}} is coordinating recovery. [1]"
+          documents: [incident-2400]
+scenes:
+  - id: new-incident
+    steps:
+      - id: open-workspace
+        goto: /app
+      - id: composer-ready
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: incident-2400-question
+        send:
+          text: "Who is handling {{vars.incident}}, and what happened?"
+          reply:
+            title: "{{vars.incident}} recovery summary"
+            queries: ["{{vars.incident}} recovery owner", "relay pool capacity review"]
+            cites: [incident-2400]
+            text: "{{people.sam.name}} isolated the saturated relay pool and coordinated recovery. {{people.dana.name}} owns the capacity-review follow-up. This incident did not require a relay-scorer-v2 rollback. [1]"
+      - id: new-incident-answer
+        shot: incident-2400-answer
+      - id: show-handoff
+        state:
+          sidebar: [incident-2400-handoff, relay-rollback-runbook-walkthrough]
+      - id: active-answer-preserved
+        wait: { text: "isolated the saturated relay pool", exact: false }
+      - id: shared-world-new-story
+        shot: shared-world-new-story

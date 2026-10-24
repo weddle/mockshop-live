@@ -1,0 +1,57 @@
+# #65 route-sized native proof: Craft Preferences.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-craft-preferences
+title: Craft Preferences - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/craft/preferences
+    id: goto-admin-craft-preferences
+  - shot: inventory-craft-preferences
+    id: shot-inventory-craft-preferences
+  - goto: /admin/craft/apps?tab=mcp
+    id: goto-admin-craft-apps-tab-mcp
+  - click: { selector: 'a[href="/admin/craft/preferences"]' }
+    id: click-a-href-admin-craft-preferences
+  - wait: { text: Workspace instructions, exact: true }
+    id: wait-workspace-instructions
+  - shot: craft-preferences-menu
+    id: shot-craft-preferences-menu
+  - goto: /admin/craft/preferences
+    id: goto-admin-craft-preferences-2
+  - fill: { placeholder: 'e.g. Always follow our brand guidelines and prefer concise, formal copy.', value: Prepare accessible fictional workshop examples. }
+    id: fill
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/craft/preferences
+    id: goto-admin-craft-preferences-3
+  - eval: |
+      if (![...document.querySelectorAll('textarea')].some(el => el.value === 'Prepare accessible fictional workshop examples.')) throw new Error('Craft instructions did not persist');
+    id: eval-script
+  - shot: craft-preferences-saved
+    id: shot-craft-preferences-saved
+  - click: { text: View base instructions, exact: true }
+    id: click-view-base-instructions
+  - shot: craft-preferences-base-panel
+    id: shot-craft-preferences-base-panel
+  - click: { role: button, name: Reset to default, exact: true }
+    id: click-reset-to-default
+  - wait: { role: dialog }
+    id: wait
+  - shot: craft-preferences-reset-confirm
+    id: shot-craft-preferences-reset-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Reset")' }
+    id: click-role-dialog-button-has-text-reset
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - shot: craft-preferences-reset
+    id: shot-craft-preferences-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

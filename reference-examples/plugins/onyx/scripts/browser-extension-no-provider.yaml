@@ -1,0 +1,46 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-no-provider
+title: Independent native new-tab and side-panel no-provider state with real admin target
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-browser-extension-no-provider.yaml
+    id: state
+  - goto: /nrf
+    id: goto-nrf
+  - wait: { role: button, name: Set up an LLM., exact: true }
+    id: wait-set-up-an-llm
+  - eval: |
+      if (document.querySelector('#onyx-chat-input-textbox')?.getAttribute('aria-disabled') !== 'true' || !document.querySelector('#onyx-chat-input-send-button')?.disabled) throw new Error('Native no-provider composer/send was not disabled');
+      const setup = [...document.querySelectorAll('button')].find(button => button.innerText.trim() === 'Set up an LLM.');
+      const box = setup.getBoundingClientRect();
+      if (!setup.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2))) throw new Error('Native Set up an LLM control is covered at its click center');
+    id: eval-script
+  - shot: { name: nrf-new-tab-no-provider, full_page: true }
+    id: shot-nrf-new-tab-no-provider
+  - click: { role: button, name: Set up an LLM., exact: true }
+    id: click-set-up-an-llm
+  - wait: { text: Language Models }
+    id: wait-language-models
+  - shot: { name: nrf-setup-llm-native-target, full_page: true }
+    id: shot-nrf-setup-llm-native-target
+  - goto: /nrf/side-panel
+    id: goto-nrf-side-panel
+  - wait: { role: button, name: Set up an LLM., exact: true }
+    id: wait-set-up-an-llm-2
+  - eval: |
+      if (document.querySelector('#onyx-chat-input-textbox')?.getAttribute('aria-disabled') !== 'true' || !document.querySelector('#onyx-chat-input-send-button')?.disabled) throw new Error('Native no-provider side-panel composer/send was not disabled');
+    id: eval-script-2
+  - shot: { name: nrf-side-panel-no-provider, full_page: true }
+    id: shot-nrf-side-panel-no-provider
+  # Existing #69 is the sole local fake auth owner; no second auth fixture/engine.
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-browser-extension-no-provider.yaml

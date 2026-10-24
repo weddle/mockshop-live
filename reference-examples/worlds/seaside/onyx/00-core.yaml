@@ -1,0 +1,3186 @@
+apps:
+  onyx:
+    viewer: maya
+    people:
+      maya:
+        id: 8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11
+      devon:
+        id: u2
+      priya:
+        id: u3
+      lena:
+        id: u4
+      marco:
+        id: u5
+      sam:
+        id: u6
+      noa:
+        id: u7
+      workshop-bot:
+        id: u8
+      visiting-educator:
+        id: u9
+      resource-indexer:
+        id: u10
+      teaching-lead:
+        id: fictional-other-owner
+    agents:
+      assistant:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.training.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 0
+        name: Assistant
+        description: Your everyday assistant, grounded in {{company.name}}'s connected knowledge.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 2
+            name: web_search
+            display_name: Web Search
+            description: Search the public web.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: WebSearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 4
+            name: python
+            display_name: Code Interpreter
+            description: Run Python to analyze data and build charts.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: PythonTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 3
+            name: image_generation
+            display_name: Image Generation
+            description: Generate images from a text prompt.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: ImageGenerationTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 0
+        is_featured: true
+        builtin_persona: true
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: null
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      training-onboarding-desk:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.training.name}}"
+            permission: VIEWER
+        public_permission: null
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 11
+        name: "{{teams.training.name}} & Onboarding Desk"
+        description: New-hire onboarding, required certifications and training schedules for property staff.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 31
+            name: get_group_block_status
+            display_name: Group block status
+            description: Look up a group block (rooms held, picked up, cut-off date) in the property management system.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 32
+            name: get_rooming_list_status
+            display_name: Rooming list status
+            description: Check whether a program's rooming list has been received and confirmed.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: New-hire training
+            message: What training do new front desk hires need in their first 30 days, and who is behind on it?
+          - name: Course outline
+            message: Give me a one-page outline of the food-safety refresher course before Thursday's session.
+        document_sets:
+          - id: 21
+            name: Learning & Development
+            description: Onboarding paths, training records and recorded training sessions
+            cc_pair_summaries:
+              - id: 105
+                name: Zoom – Meeting transcripts
+                source: zoom
+                access_type: sync
+            is_up_to_date: true
+            is_public: true
+            users: []
+            groups: []
+            permissions:
+              edit: true
+              manage_access: true
+              delete: true
+              publish: true
+            federated_connector_summaries: []
+        is_public: false
+        is_listed: true
+        display_priority: 1
+        is_featured: true
+        builtin_persona: false
+        labels:
+          - id: 1
+            name: "{{teams.training.name}}"
+        owner: maya
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Activity
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: |
+          You are the {{teams.training.name}} & Onboarding Desk for {{company.name}}. Answer questions about
+          staff onboarding, required certifications and training schedules using the onboarding
+          paths, training records, recorded sessions and #learning-* Slack.
+          Always cite sources, call out overdue training explicitly, and suggest a next step.
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      guest-ops-copilot:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.training.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 12
+        name: Guest Ops Copilot
+        description: Answers from property SOPs, runbooks and brand standards across all 14 properties.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Late checkout policy
+            message: What's our late checkout policy for {{company.name}} Rewards Gold members?
+          - name: Storm runbook
+            message: Walk me through the hurricane-watch runbook for the Key West property.
+        document_sets:
+          - id: 22
+            name: "{{teams.property-operations.name}}"
+            description: SOPs, runbooks and brand standards for every {{company.name}} property
+            cc_pair_summaries:
+              - id: 102
+                name: Confluence – OPS space
+                source: confluence
+                access_type: public
+            is_up_to_date: true
+            is_public: true
+            users: []
+            groups: []
+            permissions:
+              edit: true
+              manage_access: true
+              delete: true
+              publish: true
+            federated_connector_summaries: []
+        is_public: true
+        is_listed: true
+        display_priority: 2
+        is_featured: true
+        builtin_persona: false
+        labels:
+          - id: 2
+            name: Operations
+        owner: maya
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BooksStack
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      training-analyst:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.training.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 13
+        name: "{{teams.training.name}} Analyst"
+        description: Pulls course completion and certification data and runs quick analyses in Python.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 4
+            name: python
+            display_name: Code Interpreter
+            description: Run Python to analyze data and build charts.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: PythonTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 3
+        is_featured: false
+        builtin_persona: false
+        labels:
+          - id: 1
+            name: "{{teams.training.name}}"
+          - id: 2
+            name: Operations
+        owner: maya
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BarChart
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      it-helpdesk:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.training.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 14
+        name: IT Helpdesk
+        description: Troubleshooting for PMS, POS and Wi-Fi issues using the IT knowledge base.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 2
+            name: web_search
+            display_name: Web Search
+            description: Search the public web.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: WebSearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 4
+        is_featured: false
+        builtin_persona: false
+        labels:
+          - id: 3
+            name: IT Support
+          - id: 2
+            name: Operations
+        owner: maya
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Terminal
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+    documents:
+      file-learning-accessibility-checklist:
+        id: FILE__learning-accessibility-checklist
+        score: 0.99
+        updated: "{{vars.onyx_template_open}}ago:2h}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+          - tag_key: topic
+            tag_value: Accessibility
+        document_sets:
+          - Learning & Development
+        blurb: Prepare captions, large-print handouts, quiet breaks and accessible workshop seating.
+      learning-workshop-guide:
+        id: LEARNING-WORKSHOP-GUIDE
+        score: 0.95
+        updated: "{{vars.onyx_template_open}}ago:4d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+          - tag_key: topic
+            tag_value: Accessibility
+        document_sets:
+          - Learning & Development
+        blurb: "{{people.avery.name}} outlines inclusive group activities and a clear workshop agenda."
+      learning-health-handout:
+        id: LEARNING-HEALTH-HANDOUT
+        score: 0.9
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: topic
+            tag_value: Healthcare
+        document_sets:
+          - "{{teams.property-operations.name}}"
+        blurb: Fictional health-education handout using plain-language examples, not patient information.
+      learning-team-notes:
+        id: LEARNING-TEAM-NOTES
+        score: 0.85
+        updated: "{{vars.onyx_template_open}}ago:200d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional educator team agreed to share workshop agendas and check accessible formats.
+      learning-archived-handbook:
+        id: LEARNING-ARCHIVED-HANDBOOK
+        score: 0.8
+        updated: "{{vars.onyx_template_open}}ago:500d}}"
+        metadata: {}
+        tags:
+          - tag_key: status
+            tag_value: Archived
+        document_sets:
+          - Learning & Development
+        blurb: Archived fictional handbook retained to demonstrate the time and tag filter empty states.
+      learning-resource-06:
+        id: LEARNING-RESOURCE-06
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-07:
+        id: LEARNING-RESOURCE-07
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-08:
+        id: LEARNING-RESOURCE-08
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-09:
+        id: LEARNING-RESOURCE-09
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-10:
+        id: LEARNING-RESOURCE-10
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-11:
+        id: LEARNING-RESOURCE-11
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-12:
+        id: LEARNING-RESOURCE-12
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-13:
+        id: LEARNING-RESOURCE-13
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-14:
+        id: LEARNING-RESOURCE-14
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-15:
+        id: LEARNING-RESOURCE-15
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-16:
+        id: LEARNING-RESOURCE-16
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-17:
+        id: LEARNING-RESOURCE-17
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-18:
+        id: LEARNING-RESOURCE-18
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-19:
+        id: LEARNING-RESOURCE-19
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-20:
+        id: LEARNING-RESOURCE-20
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-21:
+        id: LEARNING-RESOURCE-21
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      learning-resource-22:
+        id: LEARNING-RESOURCE-22
+        score: 0.5
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+        metadata: {}
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+        document_sets:
+          - Learning & Development
+        blurb: Fictional workshop resource for inclusive community learning.
+      file-demo-reading:
+        id: FILE__demo-reading
+        blurb: Fictional reading-circle notes supplied by the local demo file registry.
+      file-demo-attendance:
+        id: FILE__demo-attendance
+        blurb: Fictional attendance notes supplied by the local demo file registry.
+      conf-ops-home:
+        id: CONF-OPS-HOME
+        blurb: "{{company.name}} operates 14 boutique coastal properties across California, Florida and the Carolinas."
+        updated: "{{vars.onyx_template_open}}ago:60d}}"
+      community-workshop-facilitation:
+        id: community-workshop-facilitation
+        blurb: Fictional education notes recommending a welcoming check-in, practical demonstration, small-group practice and a quiet reflection break.
+      gdrive-1xfdonboarding2026:
+        id: GDRIVE-1xFDONBOARDING2026
+        blurb: "Days 1–5: orientation, brand standards, guest privacy. By day 14: check-in/check-out systems and accessibility requests. By day 30: food-safety awareness and CPR/First Aid with AED."
+        updated: "{{vars.onyx_template_open}}ago:12d}}"
+      gdrive-1xtrainingrecordsq4:
+        id: GDRIVE-1xTRAININGRECORDSQ4
+        blurb: "14 front desk hires since Aug 1. 11 on track. 3 overdue on CPR/First Aid: Key West (2), Carmel (1). All 14 have completed guest-privacy training."
+        updated: "{{vars.onyx_template_open}}ago:2d}}"
+      zoom-rec-88123:
+        id: ZOOM-REC-88123
+        blurb: "Instructor (Coastal Health {{teams.training.name}}): “Every shift needs at least one certified first-aider on site, and the AED check belongs on the opening checklist.”"
+        updated: "{{vars.onyx_template_open}}ago:20d}}"
+      slack-c04learnkw-1727712000:
+        id: SLACK-C04LEARNKW-1727712000
+        blurb: "{{people.devon.name}}: the Oct 2 CPR/First Aid class at Key West was cancelled (instructor out sick). Two new hires still need it; next open date is Oct 23."
+        updated: "{{vars.onyx_template_open}}ago:9d}}"
+      conf-hr-tp-4412:
+        id: CONF-HR-TP-4412
+        blurb: "Front desk: CPR/First Aid within 30 days of hire, valid for 2 years. A property may extend the deadline once, by 14 days, if a class is cancelled."
+        updated: "{{vars.onyx_template_open}}ago:45d}}"
+      file-aed-opening-checklist:
+        id: FILE__aed-opening-checklist
+        blurb: "Before the lobby opens: AED status light green, pads in date, first-aid kit sealed and stocked, certified first-aider named on the shift board."
+        updated: "{{vars.onyx_template_open}}ago:30d}}"
+      conf-ops-fo-210:
+        id: CONF-OPS-FO-210
+        blurb: "Gold members: complimentary late checkout until 2 PM, subject to availability; Platinum until 4 PM."
+        updated: "{{vars.onyx_template_open}}ago:30d}}"
+      conf-ops-kw-77:
+        id: CONF-OPS-KW-77
+        blurb: "Watch (48h): notify arriving guests, secure pool furniture, check generator fuel, confirm the evacuation partner hotel."
+        updated: "{{vars.onyx_template_open}}ago:60d}}"
+    conversations:
+      food-safety-refresher-course-outline:
+        id: 11111111-0000-4000-8000-000000000001
+        time_created: "{{vars.onyx_template_open}}ago:3h}}"
+        time_updated: "{{vars.onyx_template_open}}ago:3h}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: training-onboarding-desk
+        turns:
+          - message: "{{conversations.food-safety-refresher-course-outline.messages.0.text}}"
+            script:
+              default: true
+              title: Quick question
+              queries:
+                - "{{company.name}} overview"
+              documents:
+                - id: "{{apps.onyx.documents.conf-ops-home.id}}"
+                  title: "{{documents.conf-ops-home.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/HR/pages/1/Company+Handbook
+                  blurb: "{{apps.onyx.documents.conf-ops-home.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-ops-home.updated}}"
+              answer: "{{conversations.food-safety-refresher-course-outline.messages.1.text}}"
+      late-checkout-policy-for-gold-members:
+        id: 11111111-0000-4000-8000-000000000002
+        time_created: "{{vars.onyx_template_open}}ago:1d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:1d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: guest-ops-copilot
+        turns:
+          - message: "{{conversations.late-checkout-policy-for-gold-members.messages.0.text}}"
+            script:
+              title: Late checkout policy for Gold members
+              queries:
+                - "{{company.name}} Rewards Gold late checkout"
+              documents:
+                - id: "{{apps.onyx.documents.conf-ops-fo-210.id}}"
+                  title: "{{documents.conf-ops-fo-210.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/OPS/pages/210/Late+checkout
+                  blurb: "{{apps.onyx.documents.conf-ops-fo-210.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-ops-fo-210.updated}}"
+              answer: "{{conversations.late-checkout-policy-for-gold-members.messages.1.text}}"
+          - message: "{{conversations.late-checkout-policy-for-gold-members.messages.2.text}}"
+            script:
+              title: Late checkout policy for Gold members
+              documents:
+                - id: "{{apps.onyx.documents.conf-ops-fo-210.id}}"
+                  title: "{{documents.conf-ops-fo-210.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/OPS/pages/210/Late+checkout
+                  blurb: Late checkout can't be guaranteed in advance for Gold; the front desk confirms it the evening before departure.
+                  updated: "{{apps.onyx.documents.conf-ops-fo-210.updated}}"
+              answer: "{{conversations.late-checkout-policy-for-gold-members.messages.3.text}}"
+      key-west-hurricane-watch-runbook:
+        id: 11111111-0000-4000-8000-000000000003
+        time_created: "{{vars.onyx_template_open}}ago:2d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:2d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: guest-ops-copilot
+        turns:
+          - message: "{{conversations.key-west-hurricane-watch-runbook.messages.0.text}}"
+            script:
+              title: Key West hurricane-watch runbook
+              queries:
+                - Key West hurricane watch runbook
+              documents:
+                - id: "{{apps.onyx.documents.conf-ops-kw-77.id}}"
+                  title: "{{documents.conf-ops-kw-77.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/OPS/pages/77/Hurricane+runbook
+                  blurb: "{{apps.onyx.documents.conf-ops-kw-77.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-ops-kw-77.updated}}"
+              answer: "{{conversations.key-west-hurricane-watch-runbook.messages.1.text}}"
+      q3-training-completion-by-property:
+        id: 11111111-0000-4000-8000-000000000004
+        time_created: "{{vars.onyx_template_open}}ago:4d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:4d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: training-analyst
+        turns:
+          - message: "{{conversations.q3-training-completion-by-property.messages.0.text}}"
+            script:
+              match: training|new.hire|onboarding|first.aid|certification
+              title: New-hire front desk training & overdue certifications
+              chunk_delay_ms: 70
+              reasoning: |
+                The user wants the 30-day training plan for new front desk hires and who is behind on it. I should check the onboarding path for the required modules, the training-records export for completion, the train-the-trainer session and Slack for scheduling problems, and the training policy for deadlines.
+              queries:
+                - New-hire front desk training first 30 days
+                - Overdue CPR first aid certification new hires
+                - First aid class schedule Key West Carmel
+              documents:
+                - id: "{{apps.onyx.documents.gdrive-1xfdonboarding2026.id}}"
+                  title: "{{documents.gdrive-1xfdonboarding2026.title}}"
+                  source: "{{sources.policies-procedures.vendor}}"
+                  link: https://docs.google.example/document/d/1xFDONBOARDING2026/edit
+                  blurb: "{{apps.onyx.documents.gdrive-1xfdonboarding2026.blurb}}"
+                  updated: "{{apps.onyx.documents.gdrive-1xfdonboarding2026.updated}}"
+                  owners:
+                    - "{{people.maya.email}}"
+                - id: "{{apps.onyx.documents.gdrive-1xtrainingrecordsq4.id}}"
+                  title: "{{documents.gdrive-1xtrainingrecordsq4.title}}"
+                  source: "{{sources.policies-procedures.vendor}}"
+                  link: https://docs.google.example/spreadsheets/d/1xTRAININGRECORDSQ4/edit
+                  blurb: "{{apps.onyx.documents.gdrive-1xtrainingrecordsq4.blurb}}"
+                  updated: "{{apps.onyx.documents.gdrive-1xtrainingrecordsq4.updated}}"
+                  owners:
+                    - "{{people.maya.email}}"
+                    - "{{people.devon.email}}"
+                - id: "{{apps.onyx.documents.zoom-rec-88123.id}}"
+                  title: "{{documents.zoom-rec-88123.title}}"
+                  source: "{{sources.meeting-transcripts.vendor}}"
+                  link: https://zoom.example/rec/share/first-aid-train-the-trainer
+                  blurb: "{{apps.onyx.documents.zoom-rec-88123.blurb}}"
+                  updated: "{{apps.onyx.documents.zoom-rec-88123.updated}}"
+                - id: "{{apps.onyx.documents.slack-c04learnkw-1727712000.id}}"
+                  title: "{{documents.slack-c04learnkw-1727712000.title}}"
+                  source: "{{sources.learning-ops.vendor}}"
+                  link: https://seasidecollection.slack.example/archives/C04LEARNKW/p1727712000
+                  blurb: "{{apps.onyx.documents.slack-c04learnkw-1727712000.blurb}}"
+                  updated: "{{apps.onyx.documents.slack-c04learnkw-1727712000.updated}}"
+                - id: "{{apps.onyx.documents.conf-hr-tp-4412.id}}"
+                  title: "{{documents.conf-hr-tp-4412.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/HR/pages/4412/Required+certifications+by+role
+                  blurb: "{{apps.onyx.documents.conf-hr-tp-4412.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-hr-tp-4412.updated}}"
+                - id: "{{apps.onyx.documents.file-aed-opening-checklist.id}}"
+                  title: "{{documents.file-aed-opening-checklist.title}}"
+                  source: "{{sources.file.vendor}}"
+                  blurb: "{{apps.onyx.documents.file-aed-opening-checklist.blurb}}"
+                  updated: "{{apps.onyx.documents.file-aed-opening-checklist.updated}}"
+              answer: "{{conversations.q3-training-completion-by-property.messages.1.text}}"
+      draft-welcome-email-for-new-hires:
+        id: 11111111-0000-4000-8000-000000000005
+        time_created: "{{vars.onyx_template_open}}ago:6d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:6d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: assistant
+        turns:
+          - message: "{{conversations.draft-welcome-email-for-new-hires.messages.0.text}}"
+            script:
+              match: training|new.hire|onboarding|first.aid|certification
+              title: New-hire front desk training & overdue certifications
+              chunk_delay_ms: 70
+              reasoning: |
+                The user wants the 30-day training plan for new front desk hires and who is behind on it. I should check the onboarding path for the required modules, the training-records export for completion, the train-the-trainer session and Slack for scheduling problems, and the training policy for deadlines.
+              queries:
+                - New-hire front desk training first 30 days
+                - Overdue CPR first aid certification new hires
+                - First aid class schedule Key West Carmel
+              documents:
+                - id: "{{apps.onyx.documents.gdrive-1xfdonboarding2026.id}}"
+                  title: "{{documents.gdrive-1xfdonboarding2026.title}}"
+                  source: "{{sources.policies-procedures.vendor}}"
+                  link: https://docs.google.example/document/d/1xFDONBOARDING2026/edit
+                  blurb: "{{apps.onyx.documents.gdrive-1xfdonboarding2026.blurb}}"
+                  updated: "{{apps.onyx.documents.gdrive-1xfdonboarding2026.updated}}"
+                  owners:
+                    - "{{people.maya.email}}"
+                - id: "{{apps.onyx.documents.gdrive-1xtrainingrecordsq4.id}}"
+                  title: "{{documents.gdrive-1xtrainingrecordsq4.title}}"
+                  source: "{{sources.policies-procedures.vendor}}"
+                  link: https://docs.google.example/spreadsheets/d/1xTRAININGRECORDSQ4/edit
+                  blurb: "{{apps.onyx.documents.gdrive-1xtrainingrecordsq4.blurb}}"
+                  updated: "{{apps.onyx.documents.gdrive-1xtrainingrecordsq4.updated}}"
+                  owners:
+                    - "{{people.maya.email}}"
+                    - "{{people.devon.email}}"
+                - id: "{{apps.onyx.documents.zoom-rec-88123.id}}"
+                  title: "{{documents.zoom-rec-88123.title}}"
+                  source: "{{sources.meeting-transcripts.vendor}}"
+                  link: https://zoom.example/rec/share/first-aid-train-the-trainer
+                  blurb: "{{apps.onyx.documents.zoom-rec-88123.blurb}}"
+                  updated: "{{apps.onyx.documents.zoom-rec-88123.updated}}"
+                - id: "{{apps.onyx.documents.slack-c04learnkw-1727712000.id}}"
+                  title: "{{documents.slack-c04learnkw-1727712000.title}}"
+                  source: "{{sources.learning-ops.vendor}}"
+                  link: https://seasidecollection.slack.example/archives/C04LEARNKW/p1727712000
+                  blurb: "{{apps.onyx.documents.slack-c04learnkw-1727712000.blurb}}"
+                  updated: "{{apps.onyx.documents.slack-c04learnkw-1727712000.updated}}"
+                - id: "{{apps.onyx.documents.conf-hr-tp-4412.id}}"
+                  title: "{{documents.conf-hr-tp-4412.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/HR/pages/4412/Required+certifications+by+role
+                  blurb: "{{apps.onyx.documents.conf-hr-tp-4412.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-hr-tp-4412.updated}}"
+                - id: "{{apps.onyx.documents.file-aed-opening-checklist.id}}"
+                  title: "{{documents.file-aed-opening-checklist.title}}"
+                  source: "{{sources.file.vendor}}"
+                  blurb: "{{apps.onyx.documents.file-aed-opening-checklist.blurb}}"
+                  updated: "{{apps.onyx.documents.file-aed-opening-checklist.updated}}"
+              answer: "{{conversations.draft-welcome-email-for-new-hires.messages.1.text}}"
+      opera-pms-sync-errors-at-carmel:
+        id: 11111111-0000-4000-8000-000000000006
+        time_created: "{{vars.onyx_template_open}}ago:9d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:9d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: it-helpdesk
+        turns:
+          - message: "{{conversations.opera-pms-sync-errors-at-carmel.messages.0.text}}"
+            script:
+              default: true
+              title: Quick question
+              queries:
+                - "{{company.name}} overview"
+              documents:
+                - id: "{{apps.onyx.documents.conf-ops-home.id}}"
+                  title: "{{documents.conf-ops-home.title}}"
+                  source: "{{sources.ops-space.vendor}}"
+                  link: https://seaside.atlassian.example/wiki/spaces/HR/pages/1/Company+Handbook
+                  blurb: "{{apps.onyx.documents.conf-ops-home.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-ops-home.updated}}"
+              answer: "{{conversations.opera-pms-sync-errors-at-carmel.messages.1.text}}"
+    replies:
+      99-default:
+        default: true
+        title: Quick question
+        queries:
+          - "{{company.name}} overview"
+        text: |
+          {{company.name}} runs **14 boutique coastal properties** across California, Florida and the Carolinas [1]. Ask me about staff training, property SOPs, or IT issues — I'll pull from Salesforce, Confluence, Slack, Google Drive and Zoom.
+        cites:
+          - conf-ops-home
+      11-follow-up-summary:
+        after: .
+        match: "^follow-up: summari[sz]e that"
+        title: "{{vars.onyx_template_open}}first.title}}"
+        chunk_delay_ms: 30
+        regenerate:
+          - |
+            Regenerated follow-up to "{{vars.onyx_template_open}}first.message}}": the earlier answer on **{{vars.onyx_template_open}}prev.title}}** still stands. *(Placeholder regenerate text.)*
+        text: |
+          Follow-up to your first question in this chat, "{{vars.onyx_template_open}}first.message}}":
+
+          In one sentence: my earlier answer on **{{vars.onyx_template_open}}prev.title}}** is the summary of record, and nothing new has been added since. *(Placeholder follow-up text; final wording to come.)*
+        cites: []
+      12-slow-placeholder:
+        match: "^placeholder: long answer"
+        title: Placeholder long answer
+        chunk_delay_ms: 450
+        text: |
+          This is a deliberately long placeholder answer used to show the Stop button. It streams slowly, one short chunk at a time, so that a scenario has several seconds to press Stop before it finishes.
+
+          Paragraph two of the placeholder answer continues with more neutral filler text. Nothing here refers to a real organization, person or document; it only exists to give the stream some length.
+
+          Paragraph three keeps going in the same way, and paragraph four would follow it if the user had not stopped the answer already.
+        cites: []
+      09-sharing-feedback:
+        match: library sharing follow-up
+        title: Accessible library workshop
+        chunk_delay_ms: 15
+        text: |
+          **Future shared library activity**
+
+          Add an optional paired-reading activity with a large-print handout. Keep the quiet reflection option available. This fictional activity was added after the local share link was created.
+        cites: []
+      00-model-answer-variants:
+        match: community learning workshop
+        title: Community learning workshop
+        queries: []
+        regenerate:
+          - "Common workshop revision after {{vars.onyx_template_open}}prev.title}}: choose a topic together, discuss it in pairs, and close with a shared reflection."
+        model_variants:
+          gpt-5.2:
+            title: Workshop planning guide
+            answer: |
+              **Workshop planning guide**
+
+              1. Ask each learner to name a practical learning goal.
+              2. Build a short activity around the most common goal.
+              3. Offer written and spoken ways to participate.
+              4. Finish with an individual next-step card.
+            regenerate:
+              - "Planning revision after {{vars.onyx_template_open}}prev.title}}: collect learning goals, select one activity, offer two participation formats, and write next-step cards."
+          gpt-4.1:
+            title: Workshop facilitation guide
+            answer: |
+              **Workshop facilitation guide**
+
+              Open with a welcoming check-in, demonstrate the activity, and let small groups practise at their own pace.
+              Use a quiet reflection break before inviting volunteers to share what helped them learn. [1]
+            regenerate:
+              - "Facilitation revision after {{vars.onyx_template_open}}prev.title}}: welcome the group, demonstrate the activity, allow small-group practice, and pause for reflection. [1]"
+            documents:
+              - id: "{{apps.onyx.documents.community-workshop-facilitation.id}}"
+                title: "{{documents.community-workshop-facilitation.title}}"
+                source: "{{sources.web.vendor}}"
+                link: https://learning.example/workshop-facilitation
+                blurb: "{{apps.onyx.documents.community-workshop-facilitation.blurb}}"
+                owners:
+                  - Community Learning Team
+            citations:
+              "1": community-workshop-facilitation
+        text: |
+          **Community learning workshop**
+
+          Invite learners to choose one topic, discuss it in pairs, and share one reflection with the group.
+          This common fixture response is used when the selected model has no override.
+        cites: []
+      10-new-hire-training:
+        match: training|new.hire|onboarding|first.aid|certification
+        title: New-hire front desk training & overdue certifications
+        chunk_delay_ms: 70
+        reasoning: |
+          The user wants the 30-day training plan for new front desk hires and who is behind on it. I should check the onboarding path for the required modules, the training-records export for completion, the train-the-trainer session and Slack for scheduling problems, and the training policy for deadlines.
+        queries:
+          - New-hire front desk training first 30 days
+          - Overdue CPR first aid certification new hires
+          - First aid class schedule Key West Carmel
+        text: |
+          Here's the **30-day training plan** for new front desk hires, and where the current group stands [1][2].
+
+          **What new hires complete in their first 30 days** [1]
+          1. Days 1–5: orientation, brand standards and guest privacy.
+          2. By day 14: check-in/check-out systems and accessibility requests.
+          3. By day 30: food-safety awareness and **CPR/First Aid with AED**.
+
+          **Who is behind**
+          - **3 of 14 hires are overdue on CPR/First Aid**: two at Key West and one at Carmel [2]. Everyone has finished guest-privacy training.
+          - **Key West's class was cancelled.** The Oct 2 session was dropped when the instructor was out sick; the next open date is **Oct 23** [4]. The policy allows a one-time 14-day extension when a class is cancelled [5].
+
+          **Suggested next steps**
+          - Log the 14-day extension for the two Key West hires and book them into the Oct 23 class [4][5].
+          - Until they're certified, make sure every Key West shift still has a certified first-aider on site, as the trainer asked [3], and keep the AED check on the opening checklist [6].
+        cites:
+          - gdrive-1xfdonboarding2026
+          - gdrive-1xtrainingrecordsq4
+          - zoom-rec-88123
+          - slack-c04learnkw-1727712000
+          - conf-hr-tp-4412
+          - file-aed-opening-checklist
+      98-follow-up:
+        follow_up_default: true
+        title: "{{vars.onyx_template_open}}prev.title}}"
+        text: |
+          Building on my earlier answer about **{{vars.onyx_template_open}}prev.title}}**: I don't have more detail on that in the connected sources yet. *(Placeholder follow-up text.)*
+        cites: []
+      08-browser-extension:
+        match: "^extension:"
+        title: Fictional browser learning conversation
+        chunk_delay_ms: 90
+        regenerate:
+          - |
+            Alternative outline without reading a browser tab: welcome, accessible practice, quiet break, reflection.
+        text: |
+          **No tab context was supplied.**
+
+          I can suggest an accessible workshop outline, but I am not claiming to read any browser tab.
+          Use a short orientation, accessible materials, a scheduled break, and a reflection.
+        cites: []
+    teams:
+      training:
+        id: 1
+        managers:
+          - maya
+      property-operations:
+        id: 2
+        managers:
+          - lena
+      front-office:
+        id: 3
+        managers:
+          - sam
+    fixtures:
+      GET /mockshop/user-conditional/content:
+        label: LOCAL FAKE CONDITIONAL DEMO — no provider, password or real identity operation
+        callback_state: mock-only-conditional-state
+        demo_key: MockOnly-Conditional-Key
+        impersonate_email: robin.guest@workshop.example
+        old_demo_input: MockOnly-Workshop1!
+        new_demo_input: MockOnly-Workshop2!
+        form_delay_ms: 5000
+        messages:
+          callback_invalid: LOCAL FAKE DEMO — incomplete fictional callback marker.
+          consent_unavailable: LOCAL FAKE DEMO — fictional consent request unavailable.
+          consent_failed: LOCAL FAKE DEMO — fictional consent choice could not finish.
+          impersonate_failed: LOCAL FAKE DEMO — fictional impersonation rejected; identity unchanged.
+          password_failed: LOCAL FAKE DEMO — fictional password change rejected; demo state unchanged.
+        callbacks:
+          federated:
+            receipt:
+              source: Workshop Archive (fictional receipt)
+              redirect_url: /app/settings/accounts-access
+            cases:
+              mock-only-success:
+                status: 200
+                delay_ms: 25000
+              mock-only-validation:
+                status: 400
+                body:
+                  detail: "validation errors: fictional configuration"
+              mock-only-client-secret:
+                status: 400
+                body:
+                  detail: "client_secret: fictional configuration"
+              mock-only-oauth:
+                status: 400
+                body:
+                  detail: "oauth: fictional refusal"
+              mock-only-generic:
+                status: 400
+                body:
+                  detail: LOCAL FAKE DEMO — fictional callback refused.
+          oauth-config:
+            receipt:
+              service_name: Workshop Tools (fictional receipt)
+              redirect_url: /app/settings/accounts-access
+            cases:
+              mock-only-success:
+                status: 200
+                delay_ms: 25000
+              mock-only-generic:
+                status: 400
+                body:
+                  error: LOCAL FAKE DEMO — fictional callback refused.
+          mcp/oauth:
+            receipt:
+              success: true
+              server_id: 3401
+              server_name: Workshop MCP (fictional receipt)
+              message: LOCAL FAKE DEMO — no tool or token obtained
+              redirect_url: /app/settings/accounts-access
+            cases:
+              mock-only-success:
+                status: 200
+                delay_ms: 25000
+              mock-only-state:
+                status: 400
+                body:
+                  detail: "state: fictional link expired"
+              mock-only-timeout:
+                status: 400
+                body:
+                  detail: "No tokens found: fictional timeout"
+              mock-only-exchange:
+                status: 400
+                body:
+                  detail: "token exchange: fictional refusal"
+              mock-only-server:
+                status: 400
+                body:
+                  detail: "server not configured: fictional server"
+              mock-only-generic:
+                status: 400
+                body:
+                  detail: LOCAL FAKE DEMO — fictional callback refused.
+        consent:
+          return_path: /app/settings/accounts-access
+          info:
+            client_name: Workshop Reader (fictional app)
+            redirect_origin: LOCAL current web origin
+            account_email: "{{people.alex-learner.email}}"
+            workspace_name: Community Learning (fake demo)
+            scopes:
+              - search:read
+              - web:read
+            csrf_token: mock-only-conditional-csrf
+          requests:
+            AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:
+              status: 200
+              delay_ms: 25000
+              submit_delay_ms: 5000
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB:
+              status: 200
+              submit_delay_ms: 5000
+            CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC:
+              status: 200
+              submit_failure: true
+            DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD:
+              status: 401
+            EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:
+              status: 403
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF:
+              status: 404
+            GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG:
+              status: 503
+              retry_once: true
+      GET /manage/admin/user-group:
+        - id: 1
+          name: "{{teams.training.name}}"
+          users:
+            - id: "{{apps.onyx.people.maya.id}}"
+              email: "{{people.maya.email}}"
+            - id: "{{apps.onyx.people.devon.id}}"
+              email: "{{people.devon.email}}"
+            - id: "{{apps.onyx.people.priya.id}}"
+              email: "{{people.priya.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.maya.id}}"
+          cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+        - id: 2
+          name: "{{teams.property-operations.name}}"
+          users:
+            - id: "{{apps.onyx.people.lena.id}}"
+              email: "{{people.lena.email}}"
+            - id: "{{apps.onyx.people.marco.id}}"
+              email: "{{people.marco.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.lena.id}}"
+          cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+        - id: 3
+          name: "{{teams.front-office.name}}"
+          users:
+            - id: "{{apps.onyx.people.sam.id}}"
+              email: "{{people.sam.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.sam.id}}"
+          cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+      GET /manage/user-groups/minimal:
+        - id: 1
+          name: "{{teams.training.name}}"
+        - id: 2
+          name: "{{teams.property-operations.name}}"
+        - id: 3
+          name: "{{teams.front-office.name}}"
+      GET /manage/users:
+        accepted:
+          - id: "{{apps.onyx.people.maya.id}}"
+            email: "{{people.maya.email}}"
+          - id: "{{apps.onyx.people.devon.id}}"
+            email: "{{people.devon.email}}"
+          - id: "{{apps.onyx.people.priya.id}}"
+            email: "{{people.priya.email}}"
+        invited: []
+        slack_users: []
+        accepted_pages: 1
+        invited_pages: 0
+        slack_users_pages: 0
+      GET /user/projects:
+        - id: 1
+          name: Accessible Learning Lab
+          description: null
+          created_at: "{{vars.onyx_template_open}}ago:7d}}"
+          user_id: "{{apps.onyx.people.maya.id}}"
+          instructions: Use plain language and provide accessible learning activities. Cite supplied materials.
+          chat_sessions: []
+          chat_session_ids:
+            - 11111111-0000-4000-8000-000000000001
+          file_ids:
+            - uf-demo-reading
+            - uf-demo-guide
+            - uf-demo-diagram
+            - uf-demo-protected
+            - uf-demo-attendance
+        - id: 2
+          name: Revision Workshop
+          description: null
+          created_at: "{{vars.onyx_template_open}}ago:2d}}"
+          user_id: "{{apps.onyx.people.maya.id}}"
+          instructions: null
+          chat_sessions: []
+          chat_session_ids: []
+          file_ids: []
+      GET /mockshop/browser-extension/seed:
+        active_tab: education
+        tabs:
+          education:
+            title: Accessible workshop plan
+            url: https://campus.example/learning/accessible-workshop
+            content: |
+              Cedar Learning Center runs a fictional ninety-minute accessible workshop.
+              Start with a ten-minute orientation, use captions and large-print handouts,
+              offer a quiet break halfway through, and finish with an anonymous reflection.
+              This is synthetic education content, not a captured website or personal record.
+          healthcare:
+            title: Community health learning session
+            url: https://clinic.example/education/community-session
+            content: |
+              Harbor Community Clinic hosts a fictional public learning session.
+              Provide plain-language handouts, optional interpretation, a quiet seating area,
+              and a short question period. Do not collect patient details in this exercise.
+              This is synthetic healthcare education content, not medical advice or patient data.
+        script:
+          match: "^extension:"
+          title: Fictional browser learning conversation
+          chunk_delay_ms: 90
+          answer: |
+            **{{vars.onyx_template_open}}tab.title}}**
+
+            The selected fictional page is {{vars.onyx_template_open}}tab.url}}.
+
+            {{vars.onyx_template_open}}tab.content}}
+
+            Use a short orientation, accessible materials, a scheduled break, and a reflection. [1]
+          disabled_answer: |
+            **No tab context was supplied.**
+
+            Read this tab is off, waiting for a genuine extension parent, or this is the new-tab page.
+            I can suggest an accessible workshop outline, but I am not claiming to read any browser tab.
+          regenerate:
+            - |
+              Alternative outline without reading a browser tab: welcome, accessible practice, quiet break, reflection.
+          error:
+            error: Fictional extension answer is temporarily unavailable. Try again.
+            stack_trace: "Mockshop fixture65: deliberate local answer failure; no provider request."
+            error_code: SERVICE_UNAVAILABLE
+            is_retryable: true
+      GET /admin/web-search/search-providers:
+        - id: 6501
+          name: Learning web search (fake)
+          provider_type: serper
+          is_active: true
+          config: {}
+          masked_api_key: mock-only-not-a-secret
+      GET /admin/web-search/content-providers:
+        - id: 6502
+          name: Onyx Web Crawler
+          provider_type: onyx_web_crawler
+          is_active: true
+          config: {}
+          masked_api_key: null
+      GET /admin/voice/voices:
+        - id: alloy
+          name: Alloy
+      GET /admin/tracing/providers:
+        - provider_type: braintrust
+          connected: false
+          source: none
+          enabled: false
+          config: {}
+          masked_api_key: null
+        - provider_type: langfuse
+          connected: false
+          source: none
+          enabled: false
+          config: {}
+          masked_api_key: null
+      GET /admin/code-interpreter/health:
+        connected: true
+        error: ""
+      GET /admin/default-assistant/configuration:
+        tool_ids:
+          - 1
+        system_prompt: null
+        default_system_prompt: Support fictional learning and operations questions with clear, accessible explanations.
+      GET /admin/security:
+        user_directory_admin_only: false
+        incognito_availability: off
+        incognito_record_mode: usage_only
+        allow_connector_group_restrictions: false
+        track_external_idp_expiry: false
+        allow_same_provider_subject_relink: false
+        ssrf_protection_level: validate_all
+        mask_credential_prefix: true
+        llm_custom_config_env_injection: false
+        valid_email_domains: []
+        password_min_length: 8
+        password_max_length: 64
+        password_require_uppercase: false
+        password_require_lowercase: false
+        password_require_digit: false
+        password_require_special_char: false
+        password_auth_enabled: true
+        jwt_public_key_url: null
+        jwt_expected_audience: null
+        jwt_expected_issuer: null
+      GET /admin/sso/provider-type:
+        - GOOGLE_OAUTH
+        - OIDC
+        - SAML
+      GET /admin/api-key:
+        - api_key_id: 6501
+          api_key_display: mock-only-demo-key
+          api_key: null
+          api_key_name: Learning archive (fake service)
+          groups: []
+          user_id: fake-service-6501
+      GET /manage/admin/slack-app/bots:
+        - id: 6501
+          name: Learning Desk (fake Slack bot)
+          enabled: true
+          configs_count: 1
+          bot_token: mock-only-not-a-secret
+          app_token: mock-only-not-a-secret
+          user_token: ""
+          slack_channel_configs:
+            - id: 6501
+              is_default: false
+              channel_config:
+                channel_name: learning-workshop
+      GET /manage/admin/slack-app/channel:
+        - id: 6501
+          slack_bot_id: 6501
+          persona_id: null
+          persona: null
+          enable_auto_filters: false
+          standard_answer_categories: []
+          is_default: false
+          channel_config:
+            channel_name: learning-workshop
+            respond_tag_only: true
+            respond_to_bots: false
+            is_ephemeral: false
+            show_continue_in_web_ui: true
+            respond_member_group_list: []
+            answer_filters: []
+            follow_up_tags: []
+            disabled: false
+      GET /manage/admin/discord-bot/config:
+        configured: true
+        created_at: "{{vars.onyx_template_open}}ago:7d}}"
+      GET /manage/admin/discord-bot/guilds:
+        - id: 6501
+          guild_id: 6501
+          guild_name: Learning Workshop (fake guild)
+          registered_at: "{{vars.onyx_template_open}}ago:7d}}"
+          default_persona_id: null
+          enabled: true
+      GET /manage/admin/discord-bot/guilds/6501/channels:
+        - id: 6501
+          channel_id: 6501
+          channel_name: workshop-notes
+          channel_type: text
+          is_private: false
+          require_bot_invocation: true
+          thread_only_mode: false
+          persona_override_id: null
+          enabled: true
+      GET /admin/hooks/specs:
+        - hook_point: query_processing
+          display_name: Query Processing
+          description: Fictional local extension configuration
+          docs_url: null
+          input_schema:
+            type: object
+            properties: {}
+          output_schema:
+            type: object
+            properties: {}
+          default_timeout_seconds: 10
+          default_fail_strategy: soft
+          fail_hard_description: Stop the fictional request if the extension fails
+        - hook_point: document_ingestion
+          display_name: Document Ingestion
+          description: Fictional local extension configuration
+          docs_url: null
+          input_schema:
+            type: object
+            properties: {}
+          output_schema:
+            type: object
+            properties: {}
+          default_timeout_seconds: 10
+          default_fail_strategy: soft
+          fail_hard_description: Stop the fictional request if the extension fails
+        - hook_point: document_push
+          display_name: Document Push
+          description: Fictional local extension configuration
+          docs_url: null
+          input_schema:
+            type: object
+            properties: {}
+          output_schema:
+            type: object
+            properties: {}
+          default_timeout_seconds: 10
+          default_fail_strategy: soft
+          fail_hard_description: Stop the fictional request if the extension fails
+      GET /manage/admin/standard-answer/category:
+        - id: 6501
+          name: Learning operations
+      GET /manage/admin/standard-answer:
+        - id: 6501
+          keyword: workshop-hours
+          answer: The fictional learning workshop runs from 09:00 to 16:00 on weekdays.
+          match_regex: false
+          match_any_keywords: false
+          categories:
+            - id: 6501
+              name: Learning operations
+      GET /analytics/admin/query:
+        - date: 2026-10-08
+          total_queries: 24
+          total_likes: 8
+          total_dislikes: 1
+        - date: 2026-10-09
+          total_queries: 32
+          total_likes: 12
+          total_dislikes: 0
+      GET /analytics/admin/user:
+        - date: 2026-10-08
+          total_active_users: 6
+        - date: 2026-10-09
+          total_active_users: 8
+      GET /analytics/admin/onyxbot:
+        - date: 2026-10-08
+          total_queries: 7
+          auto_resolved: 5
+      GET /admin/usage/export:
+        start: 2026-10-01
+        end: 2026-10-09
+        users:
+          - email: "{{people.learning-coordinator.email}}"
+            totals:
+              input_tokens: 12000
+              output_tokens: 3000
+              cache_read_tokens: 2000
+              cache_creation_tokens: 0
+              cost_cents: 24
+            records:
+              - model: gpt-5.2
+                provider: OpenAI
+                flow: chat
+                day: 2026-10-08
+                input_tokens: 12000
+                output_tokens: 3000
+                cache_read_tokens: 2000
+                cache_creation_tokens: 0
+                cost_cents: 24
+      GET /admin/usage/system:
+        start: 2026-10-01
+        end: 2026-10-09
+        categories:
+          - category: chat
+            totals:
+              input_tokens: 12000
+              output_tokens: 3000
+              cache_read_tokens: 2000
+              cache_creation_tokens: 0
+              cost_cents: 24
+            records:
+              - attribution: ATTRIBUTED
+                model: gpt-5.2
+                provider: OpenAI
+                flow: chat
+                day: 2026-10-08
+                input_tokens: 12000
+                output_tokens: 3000
+                cache_read_tokens: 2000
+                cache_creation_tokens: 0
+                cost_cents: 24
+      GET /admin/chat-session-history:
+        items:
+          - id: 6501
+            user_email: "{{people.learning-coordinator.email}}"
+            name: Workshop accessibility
+            first_user_message: How should we prepare accessible workshop notes?
+            first_ai_message: Provide clear headings and plain-language summaries.
+            assistant_id: 0
+            assistant_name: Assistant
+            time_created: "{{vars.onyx_template_open}}ago:1d}}"
+            feedback_type: like
+            flow_type: chat
+            conversation_length: 2
+        total_items: 1
+      GET /admin/chat-session-history/6501:
+        id: 6501
+        user_email: "{{people.learning-coordinator.email}}"
+        name: Workshop accessibility
+        assistant_id: 0
+        assistant_name: Assistant
+        time_created: "{{vars.onyx_template_open}}ago:1d}}"
+        flow_type: chat
+        messages:
+          - id: 65001
+            message: How should we prepare accessible workshop notes?
+            message_type: user
+            documents: []
+            feedback_type: null
+            feedback_text: null
+            time_created: "{{vars.onyx_template_open}}ago:1d}}"
+          - id: 65002
+            message: Provide clear headings and plain-language summaries.
+            message_type: assistant
+            documents: []
+            feedback_type: like
+            feedback_text: Clear and helpful.
+            time_created: "{{vars.onyx_template_open}}ago:1d}}"
+      GET /admin/oauth-test/claims:
+        found: false
+        email: "{{people.learning-coordinator.email}}"
+        captured_at: null
+        oauth_name: null
+        id_token_claims: null
+        userinfo: null
+        directory_profile: null
+        directory_source: null
+        resolved_profile: null
+        enrichment_enabled: false
+        token_meta: null
+      GET /mockshop/admin-pages/documents:
+        - document_id: admin65-reading-guide
+          semantic_identifier: Workshop reading guide (fake)
+          link: https://learning.example.invalid/reading-guide
+          source_type: file
+          blurb: Fictional workshop reading guide with a short comprehension exercise.
+          boost: 2
+          hidden: false
+          score: 0.9
+          chunk_ind: 0
+          match_highlights: []
+          metadata: {}
+          updated_at: 2026-10-08T14:00:00Z
+          is_internet: false
+          feedback_bucket: liked
+        - document_id: admin65-summaries-workbook
+          semantic_identifier: Workshop summaries workbook (fake)
+          link: https://learning.example.invalid/summaries-workbook
+          source_type: file
+          blurb: Fictional workshop workbook for comparing concise summaries.
+          boost: -1
+          hidden: false
+          score: 0.7
+          chunk_ind: 0
+          match_highlights: []
+          metadata: {}
+          updated_at: 2026-10-08T14:00:00Z
+          is_internet: false
+          feedback_bucket: disliked
+      GET /mockshop/admin-pages/defaults:
+        fake_secret: mock-only-not-a-secret
+        checkout_feedback_delay_ms: 2500
+        settings:
+          onyx_craft_available: true
+          hooks_enabled: true
+        billing_tiers:
+          active: business
+          trialing: business
+          canceling: business
+          expired: business
+        api_key_display: mock-only-demo-key
+        scim_name: Learning directory (fake)
+        hook_creator: "{{people.learning-coordinator.email}}"
+        export_csv: |
+          date,activity,count
+          2026-10-08,fictional workshops,24
+      GET /mockshop/admin-pages/billing-snapshots:
+        none:
+          subscribed: false
+        active:
+          tenant_id: fictional-workshop-65
+          status: active
+          plan_type: null
+          seats: 15
+          billing_period: monthly
+          current_period_start: 2026-10-01T14:00:00Z
+          current_period_end: 2026-11-01T14:00:00Z
+          cancel_at_period_end: false
+          canceled_at: null
+          trial_start: null
+          trial_end: null
+          payment_method_enabled: false
+        trialing:
+          tenant_id: fictional-workshop-65
+          status: trialing
+          plan_type: null
+          seats: 15
+          billing_period: monthly
+          current_period_start: 2026-10-01T14:00:00Z
+          current_period_end: 2026-11-01T14:00:00Z
+          cancel_at_period_end: false
+          canceled_at: null
+          trial_start: 2026-10-01T14:00:00Z
+          trial_end: 2026-10-15T14:00:00Z
+          payment_method_enabled: false
+        canceling:
+          tenant_id: fictional-workshop-65
+          status: active
+          plan_type: null
+          seats: 15
+          billing_period: annual
+          current_period_start: 2026-10-01T14:00:00Z
+          current_period_end: 2026-10-29T14:00:00Z
+          cancel_at_period_end: true
+          canceled_at: 2026-10-08T14:00:00Z
+          trial_start: null
+          trial_end: null
+          payment_method_enabled: false
+        expired:
+          tenant_id: fictional-workshop-65
+          status: expired
+          plan_type: null
+          seats: 15
+          billing_period: annual
+          current_period_start: 2026-10-01T14:00:00Z
+          current_period_end: 2026-10-08T14:00:00Z
+          cancel_at_period_end: true
+          canceled_at: 2026-10-01T14:00:00Z
+          trial_start: null
+          trial_end: null
+          payment_method_enabled: false
+      GET /mockshop/admin-groups/seeds:
+        groups:
+          - id: 1
+            name: "{{teams.training.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.maya.id}}"
+            cc_pair_ids:
+              - 108
+            document_set_ids:
+              - 21
+            agent_ids:
+              - 11
+            enabled_permissions:
+              - add:agents
+              - create:user_api_keys
+            token_limits:
+              - token_id: 601
+                enabled: true
+                token_budget: 100
+                period_hours: 24
+                cost_budget_cents: 500
+          - id: 2
+            name: "{{teams.property-operations.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.lena.id}}"
+            cc_pair_ids:
+              - 102
+            document_set_ids:
+              - 22
+            agent_ids:
+              - 12
+            enabled_permissions:
+              - read:query_history
+            token_limits: []
+          - id: 3
+            name: "{{teams.front-office.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.sam.id}}"
+            cc_pair_ids: []
+            document_set_ids: []
+            agent_ids: []
+            enabled_permissions: []
+            token_limits: []
+        connectors:
+          - cc_pair_id: 102
+            name: Confluence – OPS space
+            connector:
+              id: 302
+              name: Confluence – OPS space
+              source: confluence
+            credential:
+              id: 202
+            groups:
+              - id: 2
+                name: "{{teams.property-operations.name}}"
+            status: ACTIVE
+            access_type: private
+            has_successful_run: true
+          - cc_pair_id: 108
+            name: Confluence – {{teams.training.name}} space
+            connector:
+              id: 308
+              name: Confluence – {{teams.training.name}} space
+              source: confluence
+            credential:
+              id: 208
+            groups:
+              - id: 1
+                name: "{{teams.training.name}}"
+            status: ACTIVE
+            access_type: private
+            has_successful_run: true
+        resource_permissions:
+          manage: true
+          manage_members: true
+          delete: true
+          edit_permissions: true
+          edit_token_limits: true
+        create_defaults:
+          manager_ids: []
+          cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+      GET /persona/labels:
+        - id: 1
+          name: "{{teams.training.name}}"
+        - id: 2
+          name: Operations
+        - id: 3
+          name: IT Support
+      GET /user/pinned-assistants:
+        - 0
+        - 11
+        - 12
+      GET /manage/document-set:
+        - id: 21
+          name: Learning & Development
+          description: Onboarding paths, training records and recorded training sessions
+          cc_pair_summaries:
+            - id: 105
+              name: Zoom – Meeting transcripts
+              source: zoom
+              access_type: sync
+          is_up_to_date: true
+          is_public: true
+          users: []
+          groups: []
+          permissions:
+            edit: true
+            manage_access: true
+            delete: true
+            publish: true
+          federated_connector_summaries: []
+        - id: 22
+          name: "{{teams.property-operations.name}}"
+          description: SOPs, runbooks and brand standards for every {{company.name}} property
+          cc_pair_summaries:
+            - id: 102
+              name: Confluence – OPS space
+              source: confluence
+              access_type: public
+          is_up_to_date: true
+          is_public: true
+          users: []
+          groups: []
+          permissions:
+            edit: true
+            manage_access: true
+            delete: true
+            publish: true
+          federated_connector_summaries: []
+      GET /manage/admin/index-attempt/10301/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10302/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10303/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10401/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10402/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10403/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10501/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10502/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10503/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10601/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10602/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10603/stage-metrics:
+        stages: []
+      GET /mockshop/user-files:
+        upload_delay_ms: 1800
+        processing_delay_ms: 3600
+        delete_delay_ms: 1000
+        preview_delay_ms: 1200
+        rejection_reason: Offline demo accepts only the fictional filenames listed in fixture 58; no caller bytes are stored.
+        answer_title: Workshop file reflection
+        answer_intro: "This is a scripted educational demonstration, not an analysis of uploaded bytes. The attached synthetic files suggest:"
+        seed_ids:
+          - reading-note
+          - study-guide
+          - activity-diagram
+          - protected-reading
+          - attendance
+        catalog:
+          - key: reading-note
+            id: uf-demo-reading
+            file_id: demo-reading
+            name: library-reading.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 42
+            chunk_count: 1
+            preview: |
+              Synthetic demo reading note
+              Read a short passage together. Invite each learner to share one question.
+              This text is editable fixture content; uploaded bytes are discarded.
+            answer: Invite each learner to share one question about a short passage.
+          - key: study-guide
+            id: uf-demo-guide
+            file_id: demo-guide
+            name: study-guide.md
+            file_type: text/markdown
+            chat_file_type: plain_text
+            token_count: 48
+            chunk_count: 1
+            preview: |
+              # Synthetic study guide
+              - Begin with an accessible warm-up.
+              - Work in pairs with written and spoken instructions.
+              - Finish with a reflection circle.
+            answer: Provide both written and spoken instructions for paired learning.
+          - key: activity-diagram
+            id: uf-demo-diagram
+            file_id: demo-diagram
+            name: learning-diagram.svg
+            file_type: image/svg+xml
+            chat_file_type: image
+            token_count: 0
+            chunk_count: 0
+            preview: <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#e5f1f8"/><text x="40" y="70" font-size="28" fill="#16354d">Synthetic learning diagram</text><rect x="40" y="120" width="160" height="80" rx="12" fill="#bbdfc9"/><rect x="240" y="120" width="160" height="80" rx="12" fill="#f7df9e"/><rect x="440" y="120" width="160" height="80" rx="12" fill="#d7c5ed"/><text x="65" y="170" font-size="22">Read</text><text x="260" y="170" font-size="22">Discuss</text><text x="460" y="170" font-size="22">Reflect</text><text x="40" y="280" font-size="18">Fictional fixture artwork; never an uploaded image.</text></svg>
+            answer: Use the fictional Read, Discuss, Reflect learning sequence.
+          - key: protected-reading
+            id: uf-demo-protected
+            file_id: demo-protected
+            name: protected-reading.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 24
+            chunk_count: 1
+            assistant_names:
+              - Fictional Reading Circle
+            preview: Synthetic reading-circle resource. The demo assistant association prevents library deletion.
+            answer: Keep the reading-circle resource available to the fictional assistant.
+          - key: workshop-notes
+            id: uf-demo-workshop
+            file_id: demo-workshop
+            name: workshop-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 55
+            chunk_count: 1
+            preview: |
+              Synthetic workshop notes
+              Begin with a five-minute welcome circle.
+              Offer large-print instructions and quiet reflection time.
+              End with one question from each learner.
+              This preview is fixture text, not uploaded content.
+            answer: Begin with a five-minute welcome circle, offer large-print instructions, and end with one question from each learner.
+          - key: reflection
+            id: uf-demo-reflection
+            file_id: demo-reflection
+            name: reflection.md
+            file_type: text/markdown
+            chat_file_type: plain_text
+            token_count: 32
+            chunk_count: 1
+            preview: |
+              # Synthetic reflection exercise
+              Ask each learner to name one new idea and one next step.
+              This is editable fictional demo content.
+            answer: Ask each learner to name one new idea and one next step.
+          - key: attendance
+            id: uf-demo-attendance
+            file_id: demo-attendance
+            name: attendance-demo.csv
+            file_type: text/csv
+            chat_file_type: tabular
+            token_count: 128001
+            chunk_count: 1
+            preview: |
+              Activity,Participants
+              Reading circle,6
+              Reflection circle,4
+            answer: The fictional reading circle has six participants and reflection circle has four.
+          - key: unsupported-preview
+            id: uf-demo-unsupported
+            file_id: demo-unsupported
+            name: demo-resource.bin
+            file_type: application/octet-stream
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic download-only resource. No caller bytes are retained.
+            answer: Treat this fictional resource as a download-only attachment.
+          - key: failed-upload
+            id: uf-demo-failed
+            file_id: demo-failed
+            name: failed-demo.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            final_status: FAILED
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic failure-stage demonstration.
+            answer: This failed file is not ready to attach.
+          - key: rejected-upload
+            id: uf-demo-rejected
+            file_id: demo-rejected
+            name: rejected-demo.exe
+            reject: true
+            file_type: application/octet-stream
+            chat_file_type: document
+            preview: Rejected demo fixture; never stored as a user file.
+          - key: code-example
+            id: uf-demo-code
+            file_id: demo-code
+            name: learning-example.py
+            file_type: text/x-python
+            chat_file_type: plain_text
+            token_count: 12
+            chunk_count: 1
+            preview: |
+              print('Welcome every learner')
+            answer: The fictional Python example welcomes every learner.
+          - key: structured-data
+            id: uf-demo-data
+            file_id: demo-data
+            name: learning-demo.json
+            file_type: application/json
+            chat_file_type: plain_text
+            token_count: 12
+            chunk_count: 1
+            preview: '{"activity":"Reading circle","participants":6,"synthetic":true}'
+            answer: The fictional reading-circle data has six participants.
+          - key: learning-pdf
+            id: uf-demo-pdf
+            file_id: demo-pdf
+            name: learning-handout.pdf
+            file_type: application/pdf
+            chat_file_type: document
+            token_count: 20
+            chunk_count: 1
+            answer: The synthetic learning handout welcomes every learner.
+            preview_base64: JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggMTMwID4+CnN0cmVhbQpCVCAvRjEgMjAgVGYgNTAgNzIwIFRkIChTeW50aGV0aWMgbGVhcm5pbmcgaGFuZG91dCkgVGogMCAtNDAgVGQgL0YxIDEyIFRmIChXZWxjb21lIGV2ZXJ5IGxlYXJuZXIuIFRoaXMgaXMgZml4dHVyZSBjb250ZW50LikgVGogRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1OCAwMDAwMCBuIAowMDAwMDAwMTE1IDAwMDAwIG4gCjAwMDAwMDAyNDEgMDAwMDAgbiAKMDAwMDAwMDMxMSAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjQ5MQolJUVPRgo=
+          - key: learning-docx
+            id: uf-demo-docx
+            file_id: demo-docx
+            name: learning-handout.docx
+            file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            chat_file_type: document
+            token_count: 20
+            chunk_count: 1
+            answer: Offer quiet reflection time in the synthetic learning handout.
+            preview_base64: UEsDBBQAAAAIAAAAIVz3S4B1wgAAAHYBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbH2QuQ7CMAyGX6XKiqgRAwOiLMAKDLyAlbptRC7FLsfbk3INCBjt//gsLw7XSFxcnPVcqU4kzgFYd+SQyxDJZ6UJyaHkMbUQUR+xJZhOJjPQwQt5GcvQoZaLNTXYWyk2l7xmE3ylEllWxephHFiVwhit0ShZh5OvPyjjJ6HMybuHOxN5lA0KvhIG5TfgmdudKCVTU7HHJFt02QXnkGqog+5dTpb/a77cGZrGaHrnh7aYgiZm41tny7fi0PjX/XB/9/IGUEsDBBQAAAAIAAAAIVxhey9DiQAAAPIAAAALAAAAX3JlbHMvLnJlbHONzzsOAiEQBuCrEA6ws1pYGKCy2dZ4AQLDIy6PDBj19lJYrMbCcuaffH9GnHHVPZbcQqyNPdKam+Sh93oEaCZg0m0qFfNIXKGk+xjJQ9Xmqj3Cfp4PQFuDK7E12WIlp8XuOLs8K/5jF+eiwVMxt4S5/6j4uhiyJo9d8nshC/a9ngbLQQn4eFG9AFBLAwQUAAAACAAAACFcrbHWouAAAAB9AQAAEQAAAHdvcmQvZG9jdW1lbnQueG1sbVBBasQwDPyKyQPWadiWEtL8YKGwh569jhIbbMuVlabp62snhEDpZTyj0UhY3dIOqGcPgcW3dyG1y1tlmGMrZdIGvEoXjBCyNyJ5xVnSJBekIRJqSMmGyTvZ1PWL9MqGqu+W9oHDWt5YgApwf18DG2CrhQNFIceEUWHAmTtZ/IK0Yfwb/QCn0YOAL6B1jwOJHBY4jpl9zhZYEIwONFsMgq2Hy79jU+5438bG6f4jlvLdp6a51lXmJvPn18zl3nBTlKuMMdevewvZyfApH8iM/tQOxsOV29JjnzyOIs+D979QSwECFAMUAAAACAAAACFc90uAdcIAAAB2AQAAEwAAAAAAAAAAAAAAgAEAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAxQAAAAIAAAAIVxhey9DiQAAAPIAAAALAAAAAAAAAAAAAACAAfMAAABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAAAAIVytsdai4AAAAH0BAAARAAAAAAAAAAAAAACAAaUBAAB3b3JkL2RvY3VtZW50LnhtbFBLBQYAAAAAAwADALkAAAC0AgAAAAA=
+          - key: learning-workbook
+            id: uf-demo-xlsx
+            file_id: demo-xlsx
+            name: learning-workbook.xlsx
+            file_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+            chat_file_type: tabular
+            token_count: 20
+            chunk_count: 1
+            answer: The synthetic workbook records six reading-circle participants.
+            parsed_preview:
+              sheets:
+                - name: Learning
+                  csv: |
+                    Activity,Participants
+                    Reading circle,6
+                  truncated: false
+                - name: Empty reflection
+                  csv: ""
+                  truncated: false
+                - name: Truncated demonstration
+                  csv: ""
+                  truncated: true
+            preview_base64: UEsDBBQAAAAIAAAAIVwcdPw42AAAAPYBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbK2RvU4DMQzHX+WUtWpcGDqgXhfKCgy8gJvz9aLLl2K3XN++uVAYUIGFyUr+Hz9L3rydE3EzeRe4VYNIegBgM5BH1jFRKEofs0cpz3yAhGbEA8H9arUGE4NQkKXMHWq72VGPRyfN01S+2cbQqkyOVfP4YZxZrcKUnDUoRYdT6L5RlleCLsnq4cEmXhSDgpuEWfkZcM29nChn21Hzilme0RcXTA7eYx73MY7695IbW8a+t4a6aI6+RDSnTNjxQCTe6Tq1RxsWf/OrmaGOu39e5Kv/cw+o595eAFBLAwQUAAAACAAAACFc/luGcooAAADwAAAACwAAAF9yZWxzLy5yZWxzjc8xDsIwDAXQq1Q+QF0YGFDaiaUr4gImddqqTRw5QZTbk7EgBkbrf70vmyuvlGcJaZpjqja/htTClHM8IyY7sadUS+RQEifqKZdTR4xkFxoZj01zQt0b0Jm9WfVDC9oPB6hur8j/2OLcbPki9uE55B8TX40ik46cW9hWfIoud5GlLihgZ/Djwe4NUEsDBBQAAAAIAAAAIVzlp8WJkwAAAOYAAAAPAAAAeGwvd29ya2Jvb2sueG1sjY8xDoMwDEWvgnyAGjp0QMDUBamXSMGQCGJHdqr2+EVQ9k72/19+X27eostTZCk+cWVrweecakQbPEVnF0nEWzKJRpc3qTNaUnKjeaIcV7yW5Q2jCwwHodZ/GDJNYaC7DK9InA+I0upyEDYfkkHX7A32mwW7SC08yCkHnqHY3X5soYJC67At2o8VYNfgeYjnb90XUEsDBBQAAAAIAAAAIVy2VKrPjgAAAPEAAAAaAAAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHONzz0OwjAMBeCrVDlA3TIwoCYTS1fEBaLUbaI2P7KNgNsTMaAiMTBZfpa+Jw8X3KyEnNiHws0jbom18iLlBMDOY7Tc5oKpXuZM0UpdaYFi3WoXhEPXHYH2hjLD3mzGSSsap14112fBf+w8z8HhObtbxCQ/KuCeaWWPKBW1tKBo9YkY3qNvq6rADPD1oXkBUEsDBBQAAAAIAAAAIVwXDT8nswAAACkBAAAYAAAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1sdZA7DsIwDIavEuUAmHbogNJIIE5ATxCCoVHzqByrwO1JOlQwMFiyf9ufH+qZaMojIotX8DH3cmSeDwDZjhhM3qUZY8ncEwXDJaQH5JnQ3Nam4KHd7zsIxkWp1aqdDRutKD0F9bIpqq3OsZGCe+midxEHpqK7rBXr4R15RHZWeDQUXXyIutM1pUkBawW1DGyxgty47cZt/3AvZccKs46sx1/U2nmqjEV3CpbvAfB1BGzf0R9QSwECFAMUAAAACAAAACFcHHT8ONgAAAD2AQAAEwAAAAAAAAAAAAAAgAEAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAxQAAAAIAAAAIVz+W4ZyigAAAPAAAAALAAAAAAAAAAAAAACAAQkBAABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAAAAIVzlp8WJkwAAAOYAAAAPAAAAAAAAAAAAAACAAbwBAAB4bC93b3JrYm9vay54bWxQSwECFAMUAAAACAAAACFctlSqz44AAADxAAAAGgAAAAAAAAAAAAAAgAF8AgAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHNQSwECFAMUAAAACAAAACFcFw0/J7MAAAApAQAAGAAAAAAAAAAAAAAAgAFCAwAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1sUEsFBgAAAAAFAAUARQEAACsEAAAAAA==
+          - key: legacy-word
+            id: uf-demo-doc
+            file_id: demo-doc
+            name: legacy-handout.doc
+            file_type: application/msword
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic legacy-format download-only demonstration.
+            answer: Download the synthetic legacy resource to view it.
+          - key: word-preview-error
+            id: uf-demo-broken-docx
+            file_id: demo-broken-docx
+            name: broken-demo.docx
+            file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic deliberately invalid DOCX, for the native preview error state.
+            answer: This synthetic resource demonstrates the native preview error message.
+          - key: pasted-notes
+            id: uf-demo-paste
+            file_id: demo-paste
+            name: pasted-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 15
+            chunk_count: 1
+            preview: "Synthetic pasted learning note: allow time for reflection."
+            answer: Allow time for reflection in the learning circle.
+          - key: dropped-notes
+            id: uf-demo-drop
+            file_id: demo-drop
+            name: dropped-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 15
+            chunk_count: 1
+            preview: "Synthetic dropped learning note: provide accessible instructions."
+            answer: Provide accessible instructions for every learner.
+          - key: preview-unavailable
+            id: uf-demo-unavailable
+            file_id: demo-unavailable
+            name: unavailable-demo.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 0
+            chunk_count: 0
+            preview_error: true
+            preview: Synthetic unavailable-preview demonstration.
+            answer: This fictional file demonstrates the native unavailable-preview state.
+      GET /me:
+        id: "{{apps.onyx.people.maya.id}}"
+        email: "{{people.maya.email}}"
+        is_active: true
+        is_superuser: true
+        is_verified: true
+        role: admin
+        account_type: STANDARD
+        is_admin: true
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - admin
+          - basic
+        admin_capabilities:
+          - admin
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 11
+            - 12
+          default_model: null
+          recent_assistants:
+            - 0
+            - 11
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.maya.name}}"
+          role: "{{people.maya.title}}"
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /user/usage:
+        per_day_by_model:
+          - day: 2026-10-08
+            model: gpt-5.2
+            input_tokens: 12000
+            output_tokens: 3000
+            cache_read_tokens: 4000
+            cache_creation_tokens: 0
+            cost_cents: 24
+          - day: 2026-10-09
+            model: gpt-5-mini
+            input_tokens: 8000
+            output_tokens: 2000
+            cache_read_tokens: 0
+            cache_creation_tokens: 0
+            cost_cents: 18
+        window_cost_cents: 42
+        budget_cents: 1000
+        budget_remaining_cents: 958
+        budget_period_hours: 720
+        budget_reset_at: "{{vars.onyx_template_open}}in:7d}}"
+        selected_model_price:
+          model: gpt-5.2
+          provider: OpenAI
+          input_per_mtok: 1.75
+          output_per_mtok: 14
+          cache_per_mtok: 0.175
+        available_model_prices:
+          - model: gpt-5.2
+            provider: OpenAI
+            input_per_mtok: 1.75
+            output_per_mtok: 14
+            cache_per_mtok: 0.175
+          - model: gpt-5-mini
+            provider: OpenAI
+            input_per_mtok: 0.25
+            output_per_mtok: 2
+            cache_per_mtok: 0.025
+      GET /chat/max-selected-document-tokens:
+        max_tokens: 128000
+      GET /chat/available-context-tokens/:id:
+        available_tokens: 128000
+      GET /users:
+        - id: "{{apps.onyx.people.maya.id}}"
+          email: "{{people.maya.email}}"
+        - id: "{{apps.onyx.people.devon.id}}"
+          email: "{{people.devon.email}}"
+        - id: "{{apps.onyx.people.priya.id}}"
+          email: "{{people.priya.email}}"
+      GET /manage/users/accepted/all:
+        - account_type: STANDARD
+          is_admin: true
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.maya.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.training.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.maya.id}}"
+          email: "{{people.maya.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.devon.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.training.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.devon.id}}"
+          email: "{{people.devon.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.priya.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.training.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.priya.id}}"
+          email: "{{people.priya.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.lena.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups:
+            - id: 2
+              name: "{{teams.property-operations.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.lena.id}}"
+          email: "{{people.lena.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.marco.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups:
+            - id: 2
+              name: "{{teams.property-operations.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.marco.id}}"
+          email: "{{people.marco.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.sam.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups:
+            - id: 3
+              name: "{{teams.front-office.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.sam.id}}"
+          email: "{{people.sam.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: false
+          password_configured: true
+          personal_name: "{{people.noa.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: null
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: u7
+          email: "{{people.noa.email}}"
+        - account_type: BOT
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.workshop-bot.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: u8
+          email: "{{people.workshop-bot.email}}"
+        - account_type: EXT_PERM_USER
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.visiting-educator.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: u9
+          email: "{{people.visiting-educator.email}}"
+        - account_type: SERVICE_ACCOUNT
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.resource-indexer.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-09T13:30:00Z
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: u10
+          email: "{{people.resource-indexer.email}}"
+      GET /manage/users/invited:
+        - email: "{{people.iris.email}}"
+        - email: "{{people.ellis.email}}"
+      GET /tenants/users/pending:
+        - email: "{{people.robin.email}}"
+      GET /manage/users/counts:
+        account_type_counts:
+          STANDARD: 7
+          BOT: 1
+          EXT_PERM_USER: 1
+          SERVICE_ACCOUNT: 1
+        status_counts:
+          active: 9
+          inactive: 1
+      GET /manage/users/mock-feedback:
+        simulated: true
+        invite_message: Simulated invitation only; no email is sent and no account is created.
+        reset_password: DEMO-ONLY-NOT-A-CREDENTIAL
+      GET /mockshop/auth-anonymous/content:
+        label: LOCAL FAKE AUTH DEMO — no email sent, no real account or authentication
+        email: "{{people.alex-learner.email}}"
+        join_email: robin.guest@workshop.example
+        error_email: staged.failure@workshop.example
+        name: "{{people.alex-learner.name}}"
+        guest_name: Workshop Visitor (fake demo)
+        team: Community Learning (fake demo)
+        demo_input: MockOnly-Workshop1!
+        verify_token: mock-only-verify-workshop
+        reset_token: mock-only-reset-workshop
+        anonymous_path: workshop-demo
+        upload_name: workshop-notes.txt
+        upload_text: LOCAL FAKE DEMO — disposable fictional workshop input; not a real document.
+        authorize_delay_ms: 2000
+        auth_profiles:
+          mixed:
+            multi_tenant: false
+            password_auth_enabled: true
+            sso_providers:
+              - name: workshop-google
+                display_name: Workshop Google (fake)
+                provider_type: GOOGLE_OAUTH
+                authorize_url: /api/mockshop/auth-anonymous/authorize/google
+              - name: workshop-oidc
+                display_name: Workshop OIDC (fake)
+                provider_type: OIDC
+                authorize_url: /api/mockshop/auth-anonymous/authorize/oidc
+              - name: workshop-saml
+                display_name: Workshop SAML (fake)
+                provider_type: SAML
+                authorize_url: /api/mockshop/auth-anonymous/authorize/saml
+          sso-only:
+            multi_tenant: false
+            password_auth_enabled: false
+            sso_providers:
+              - name: workshop-google
+                display_name: Workshop Google (fake)
+                provider_type: GOOGLE_OAUTH
+                authorize_url: /api/mockshop/auth-anonymous/authorize/google
+              - name: workshop-oidc
+                display_name: Workshop OIDC (fake)
+                provider_type: OIDC
+                authorize_url: /api/mockshop/auth-anonymous/authorize/oidc
+              - name: workshop-saml
+                display_name: Workshop SAML (fake)
+                provider_type: SAML
+                authorize_url: /api/mockshop/auth-anonymous/authorize/saml
+          auto-sso:
+            multi_tenant: false
+            password_auth_enabled: false
+            sso_providers:
+              - name: workshop-oidc
+                display_name: Workshop OIDC (fake)
+                provider_type: OIDC
+                authorize_url: /api/mockshop/auth-anonymous/authorize/oidc
+          first-user:
+            multi_tenant: false
+            has_users: false
+          multitenant:
+            multi_tenant: true
+            password_auth_enabled: true
+            sso_providers: []
+        messages:
+          login_error: LOCAL FAKE DEMO — staged sign-in failure; no authentication attempted.
+          register_error: LOCAL FAKE DEMO — staged account creation failure; no account created.
+          email_error: LOCAL FAKE DEMO — staged email-link failure; no email sent.
+          verify_error: LOCAL FAKE DEMO — invalid or expired demo verification link.
+          reset_error: LOCAL FAKE DEMO — invalid or expired demo reset link.
+          password_error: LOCAL FAKE DEMO — use the displayed fictional demo input, not a real password.
+          authorize_error: LOCAL FAKE DEMO — staged provider start failure; no IdP contacted.
+          discovery_error: LOCAL FAKE DEMO — staged SSO lookup failure; no workspace queried.
+          verify_subject: LOCAL FAKE DEMO — verify workshop email (not sent)
+          reset_subject: LOCAL FAKE DEMO — reset workshop demo input (not sent)
+      GET /user/pats/scopes:
+        - scope: read:search
+          group_label: Search
+          label: Read
+          description: Use search and query endpoints.
+          min_tier: community
+          implies: []
+        - scope: read:chat
+          group_label: Chat
+          label: Read
+          description: View chat sessions and messages.
+          min_tier: community
+          implies: []
+        - scope: write:chat
+          group_label: Chat
+          label: Write
+          description: Create sessions and send messages.
+          min_tier: community
+          implies:
+            - read:chat
+        - scope: use:llm_gateway
+          group_label: LLM Gateway
+          label: Use
+          description: Call the LLM gateway from external tools.
+          min_tier: business
+          implies: []
+      GET /mockshop/user-search-seed:
+        chat_query_match: learning resources|workshop resources
+        search_delay_ms: 1200
+        chat_title: Community learning resources
+        auto_search_match: find|search|locate|documents|resources
+        empty_query_match: no matching workshop|unlisted workshop
+        error_query_match: search unavailable
+        error_text: Fictional search is temporarily unavailable. Try another workshop query.
+        answer_intro: Here are the fictional learning resources matching the selected sources and filters.
+        empty_answer: No fictional learning resources match these filters. Enable a source or clear the filters and try again.
+        tags:
+          - tag_key: audience
+            tag_value: Educators
+          - tag_key: topic
+            tag_value: Accessibility
+          - tag_key: topic
+            tag_value: Healthcare
+          - tag_key: status
+            tag_value: Archived
+        documents:
+          - source: "{{sources.file.vendor}}"
+            score: 0.99
+            updated: "{{apps.onyx.documents.file-learning-accessibility-checklist.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+              - tag_key: topic
+                tag_value: Accessibility
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.file-learning-accessibility-checklist.blurb}}"
+            content: "{{documents.file-learning-accessibility-checklist.body}}"
+            id: "{{apps.onyx.documents.file-learning-accessibility-checklist.id}}"
+            title: "{{documents.file-learning-accessibility-checklist.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.95
+            updated: "{{apps.onyx.documents.learning-workshop-guide.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+              - tag_key: topic
+                tag_value: Accessibility
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-workshop-guide.blurb}}"
+            content: "{{documents.learning-workshop-guide.body}}"
+            id: "{{apps.onyx.documents.learning-workshop-guide.id}}"
+            title: "{{documents.learning-workshop-guide.title}}"
+          - source: "{{sources.policies-procedures.vendor}}"
+            score: 0.9
+            updated: "{{apps.onyx.documents.learning-health-handout.updated}}"
+            owners:
+              - "{{people.morgan.name}}"
+            metadata: {}
+            tags:
+              - tag_key: topic
+                tag_value: Healthcare
+            document_sets:
+              - "{{teams.property-operations.name}}"
+            blurb: "{{apps.onyx.documents.learning-health-handout.blurb}}"
+            content: "{{documents.learning-health-handout.body}}"
+            id: "{{apps.onyx.documents.learning-health-handout.id}}"
+            title: "{{documents.learning-health-handout.title}}"
+          - source: "{{sources.learning-ops.vendor}}"
+            score: 0.85
+            updated: "{{apps.onyx.documents.learning-team-notes.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-team-notes.blurb}}"
+            content: "{{documents.learning-team-notes.body}}"
+            id: "{{apps.onyx.documents.learning-team-notes.id}}"
+            title: "{{documents.learning-team-notes.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.8
+            updated: "{{apps.onyx.documents.learning-archived-handbook.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: status
+                tag_value: Archived
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-archived-handbook.blurb}}"
+            content: "{{documents.learning-archived-handbook.body}}"
+            id: "{{apps.onyx.documents.learning-archived-handbook.id}}"
+            title: "{{documents.learning-archived-handbook.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-06.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-06.blurb}}"
+            content: "{{documents.learning-resource-06.body}}"
+            id: "{{apps.onyx.documents.learning-resource-06.id}}"
+            title: "{{documents.learning-resource-06.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-07.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-07.blurb}}"
+            content: "{{documents.learning-resource-07.body}}"
+            id: "{{apps.onyx.documents.learning-resource-07.id}}"
+            title: "{{documents.learning-resource-07.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-08.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-08.blurb}}"
+            content: "{{documents.learning-resource-08.body}}"
+            id: "{{apps.onyx.documents.learning-resource-08.id}}"
+            title: "{{documents.learning-resource-08.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-09.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-09.blurb}}"
+            content: "{{documents.learning-resource-09.body}}"
+            id: "{{apps.onyx.documents.learning-resource-09.id}}"
+            title: "{{documents.learning-resource-09.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-10.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-10.blurb}}"
+            content: "{{documents.learning-resource-10.body}}"
+            id: "{{apps.onyx.documents.learning-resource-10.id}}"
+            title: "{{documents.learning-resource-10.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-11.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-11.blurb}}"
+            content: "{{documents.learning-resource-11.body}}"
+            id: "{{apps.onyx.documents.learning-resource-11.id}}"
+            title: "{{documents.learning-resource-11.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-12.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-12.blurb}}"
+            content: "{{documents.learning-resource-12.body}}"
+            id: "{{apps.onyx.documents.learning-resource-12.id}}"
+            title: "{{documents.learning-resource-12.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-13.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-13.blurb}}"
+            content: "{{documents.learning-resource-13.body}}"
+            id: "{{apps.onyx.documents.learning-resource-13.id}}"
+            title: "{{documents.learning-resource-13.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-14.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-14.blurb}}"
+            content: "{{documents.learning-resource-14.body}}"
+            id: "{{apps.onyx.documents.learning-resource-14.id}}"
+            title: "{{documents.learning-resource-14.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-15.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-15.blurb}}"
+            content: "{{documents.learning-resource-15.body}}"
+            id: "{{apps.onyx.documents.learning-resource-15.id}}"
+            title: "{{documents.learning-resource-15.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-16.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-16.blurb}}"
+            content: "{{documents.learning-resource-16.body}}"
+            id: "{{apps.onyx.documents.learning-resource-16.id}}"
+            title: "{{documents.learning-resource-16.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-17.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-17.blurb}}"
+            content: "{{documents.learning-resource-17.body}}"
+            id: "{{apps.onyx.documents.learning-resource-17.id}}"
+            title: "{{documents.learning-resource-17.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-18.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-18.blurb}}"
+            content: "{{documents.learning-resource-18.body}}"
+            id: "{{apps.onyx.documents.learning-resource-18.id}}"
+            title: "{{documents.learning-resource-18.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-19.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-19.blurb}}"
+            content: "{{documents.learning-resource-19.body}}"
+            id: "{{apps.onyx.documents.learning-resource-19.id}}"
+            title: "{{documents.learning-resource-19.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-20.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-20.blurb}}"
+            content: "{{documents.learning-resource-20.body}}"
+            id: "{{apps.onyx.documents.learning-resource-20.id}}"
+            title: "{{documents.learning-resource-20.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-21.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-21.blurb}}"
+            content: "{{documents.learning-resource-21.body}}"
+            id: "{{apps.onyx.documents.learning-resource-21.id}}"
+            title: "{{documents.learning-resource-21.title}}"
+          - source: "{{sources.ops-space.vendor}}"
+            score: 0.5
+            updated: "{{apps.onyx.documents.learning-resource-22.updated}}"
+            owners:
+              - "{{people.avery.name}}"
+            metadata: {}
+            tags:
+              - tag_key: audience
+                tag_value: Educators
+            document_sets:
+              - Learning & Development
+            blurb: "{{apps.onyx.documents.learning-resource-22.blurb}}"
+            content: "{{documents.learning-resource-22.body}}"
+            id: "{{apps.onyx.documents.learning-resource-22.id}}"
+            title: "{{documents.learning-resource-22.title}}"
+      GET /mockshop/user-extras:
+        avatar_png_base64: iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAA+0lEQVR4nO3bsQGDMAxEUebJbCkycBZIkxXIBiCLkw8rv1DN/Veb7f397P98m3uA+wBwD3AfAO4B7gNg9gcfz9fptQKIBDtBygAU4TMg5AAV4ZUQMoAZ4RUQEgBHvArhMoAzXoGQBnBHqyAA6BKfRRgGcAeqEYYA3GEVCAB0jB9BAKBrfBQBgM7xEQQAAACgd/wZAgAAAAAAAAAAAEBrhKM+AAAA4BhgdYSzNgAiAKsiRLoAiAKshhBtAmAEYBWEkR7eB2QA7oqQ6QAgC3AniCv7eSeoAHAhKHbzVlgNUAlRsZP/BaoBMiAz9/DPkHuA+wBwD3AfAO4B7vsBkMfaewypk8IAAAAASUVORK5CYII=
+        branding:
+          application_name: Lakeshore Learning
+          use_custom_logo: true
+          use_custom_logotype: false
+          logo_display_style: logo_and_name
+          custom_nav_items: []
+          custom_lower_disclaimer_content: Fictional education workspace. Do not enter personal or clinical information.
+          custom_header_content: Lakeshore learning resources
+          two_lines_for_chat_header: true
+          custom_popup_header: Welcome to Lakeshore Learning
+          custom_popup_content: Use this fictional workspace to plan inclusive learning sessions. **All content is editable demo data.**
+          enable_consent_screen: true
+          consent_screen_prompt: I understand this is a fictional education workspace.
+          show_first_visit_notice: true
+          custom_greeting_message: What would you like to learn today?
+          custom_login_subtitle: Fictional learning workspace
+          custom_help_link_url: /app/agents
+          custom_help_link_label: Learning resources
+        notifications:
+          - id: 3301
+            notif_type: system_announcement
+            severity: warning
+            title: Learning workshop announcement
+            description: The fictional inclusive teaching workshop materials are ready.
+            dismissed: false
+            first_shown: "{{vars.onyx_template_open}}ago:2h}}"
+            last_shown: "{{vars.onyx_template_open}}ago:1h}}"
+            additional_data:
+              link: /app/agents
+          - id: 3302
+            notif_type: persona_shared
+            severity: info
+            title: Campus Learning Guide shared with your group
+            description: Learning Team can edit this fictional education agent.
+            dismissed: false
+            first_shown: "{{vars.onyx_template_open}}ago:3h}}"
+            last_shown: "{{vars.onyx_template_open}}ago:2h}}"
+            additional_data:
+              persona_id: 11
+              link: /app?agentId=11
+          - id: 3303
+            notif_type: assistant_files_ready
+            severity: info
+            title: Clinical Education Guide materials ready
+            description: Fictional training materials contain no patient information.
+            dismissed: true
+            first_shown: "{{vars.onyx_template_open}}ago:2d}}"
+            last_shown: "{{vars.onyx_template_open}}ago:1d}}"
+            additional_data:
+              persona_id: 12
+              link: /app?agentId=12
+          - id: 3304
+            notif_type: feature_announcement
+            severity: warning
+            title: Clinical education workshop reminder
+            description: Review the fictional education guide before the workshop.
+            dismissed: false
+            first_shown: "{{vars.onyx_template_open}}ago:6h}}"
+            last_shown: "{{vars.onyx_template_open}}ago:5h}}"
+            additional_data:
+              persona_id: 12
+              link: /app?agentId=12
+          - id: 3305
+            notif_type: assistant_files_ready
+            severity: info
+            title: Learning accessibility checklist updated
+            description: Fictional inclusive workshop checklist is ready to review.
+            dismissed: false
+            first_shown: "{{vars.onyx_template_open}}ago:4h}}"
+            last_shown: "{{vars.onyx_template_open}}ago:3h}}"
+            additional_data:
+              persona_id: 11
+              link: /app?agentId=11
+        agent_defaults:
+          "11":
+            name: Campus Learning Guide
+            description: Plan inclusive study sessions with the fictional Learning Team.
+            system_prompt: Help educators plan inclusive learning sessions using fictional materials.
+            starter_messages:
+              - name: Plan a study session
+                description: Help me plan an inclusive study session.
+            is_public: false
+            is_listed: true
+            owner_group: null
+            users: []
+            user_shares: []
+            groups:
+              - 330
+            group_shares:
+              - group_id: 330
+                group_name: Learning Team
+                permission: EDITOR
+            sharing_status: SHARED
+            public_permission: VIEWER
+          "12":
+            name: Clinical Education Guide
+            description: A fictional healthcare training guide with no patient data.
+            system_prompt: Explain fictional clinical education checklists without medical advice or patient data.
+            is_public: false
+            is_listed: true
+            owner: null
+            owner_group:
+              id: 331
+              name: Clinical Educators
+            users: []
+            user_shares: []
+            groups:
+              - 331
+            group_shares:
+              - group_id: 331
+                group_name: Clinical Educators
+                permission: VIEWER
+            sharing_status: SHARED
+            public_permission: VIEWER
+        daily_stats:
+          "11":
+            - days_ago: 28
+              total_messages: 12
+              total_unique_users: 3
+            - days_ago: 21
+              total_messages: 18
+              total_unique_users: 5
+            - days_ago: 14
+              total_messages: 24
+              total_unique_users: 6
+            - days_ago: 7
+              total_messages: 32
+              total_unique_users: 8
+            - days_ago: 1
+              total_messages: 9
+              total_unique_users: 2
+          "12": []
+      GET /mockshop/sharing-feedback/seeds:
+        errors:
+          share: Fictional share-link creation failed for this attempt.
+          private: Fictional privacy change failed for this attempt.
+          feedback: Fictional feedback submission failed for this attempt.
+          remove: Fictional feedback removal failed for this attempt.
+        sessions:
+          - id: 61616161-0000-4000-8000-000000000001
+            name: Accessible library workshop
+            persona_id: 0
+            owner_name: "{{people.alex-learning.name}}"
+            time_created: "{{vars.onyx_template_open}}ago:2h}}"
+            time_updated: "{{vars.onyx_template_open}}ago:1h}}"
+            shared_status: private
+            current_alternate_model: null
+            current_temperature_override: null
+            current_reasoning_effort_override: null
+            folder_id: null
+            project_id: null
+            turns:
+              - message: Outline a fictional library workshop with accessible reading activities.
+                files:
+                  - id: demo-reading
+                    type: plain_text
+                    name: library-reading.txt
+                    user_file_id: uf-demo-reading
+                  - id: demo-diagram
+                    type: image
+                    name: learning-diagram.svg
+                    user_file_id: uf-demo-diagram
+                  - id: demo-attendance
+                    type: tabular
+                    name: attendance-demo.csv
+                    user_file_id: uf-demo-attendance
+                script:
+                  title: Accessible library workshop
+                  chunk_delay_ms: 15
+                  reasoning: Compare the fictional reading activity and attendance notes, then propose an accessible workshop.
+                  queries:
+                    - Accessible library reading activity
+                  documents:
+                    - id: "{{apps.onyx.documents.file-demo-reading.id}}"
+                      title: "{{documents.file-demo-reading.title}}"
+                      source: "{{sources.file.vendor}}"
+                      blurb: "{{apps.onyx.documents.file-demo-reading.blurb}}"
+                    - id: "{{apps.onyx.documents.file-demo-attendance.id}}"
+                      title: "{{documents.file-demo-attendance.title}}"
+                      source: "{{sources.file.vendor}}"
+                      blurb: "{{apps.onyx.documents.file-demo-attendance.blurb}}"
+                  answer: |
+                    **Accessible library workshop**
+
+                    Start with a short reading circle. Offer large-print notes, a quiet seating option, and time for each learner to respond [1].
+
+                    | Activity | Minutes |
+                    | --- | --- |
+                    | Welcome and reading | 10 |
+                    | Paired discussion | 15 |
+
+                    Keep the fictional attendance sheet available to the facilitator, without requiring anyone to disclose personal health information.
+              - message: Add a closing reflection for the same fictional workshop.
+                script:
+                  title: Accessible library workshop
+                  chunk_delay_ms: 15
+                  answer: |
+                    **Closing reflection**
+
+                    Invite each learner to name one useful idea, or write it privately. Finish with a two-minute quiet reflection. All names, files, and activities in this conversation are fictional.
+          - id: 61616161-0000-4000-8000-000000000002
+            name: Empty shared library conversation
+            persona_id: 0
+            owner_name: "{{people.alex-learning.name}}"
+            time_created: "{{vars.onyx_template_open}}ago:1h}}"
+            time_updated: "{{vars.onyx_template_open}}ago:1h}}"
+            shared_status: public
+            current_alternate_model: null
+            current_temperature_override: null
+            current_reasoning_effort_override: null
+            folder_id: null
+            project_id: null
+            turns: []

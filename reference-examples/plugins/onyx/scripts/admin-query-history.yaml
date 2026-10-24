@@ -1,0 +1,52 @@
+# #65 route-sized native proof: Query History aliases and detail.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-query-history
+title: Query History aliases and detail - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/performance/query-history
+    id: goto-admin-performance-query-history
+  - shot: inventory-query-history-alias
+    id: shot-inventory-query-history-alias
+  - goto: /ee/admin/performance/query-history
+    id: goto-ee-admin-performance-query-history
+  - shot: inventory-query-history-ee
+    id: shot-inventory-query-history-ee
+  - goto: /admin/performance/query-history/6501
+    id: goto-admin-performance-query-history-6501
+  - shot: inventory-query-history-detail-alias
+    id: shot-inventory-query-history-detail-alias
+  - goto: /ee/admin/performance/query-history/6501
+    id: goto-ee-admin-performance-query-history-6501
+  - shot: inventory-query-history-detail-ee
+    id: shot-inventory-query-history-detail-ee
+  - goto: /admin/performance/query-history
+    id: goto-admin-performance-query-history-2
+  - wait: { text: How should we prepare accessible workshop notes?, exact: true }
+    id: wait-how-should-we-prepare-accessible-workshop-notes
+  - shot: query-history-menu-route
+    id: shot-query-history-menu-route
+  - click: { selector: 'a[href="/admin/performance/query-history"]' }
+    id: click-a-href-admin-performance-query-history
+  - shot: query-history-sidebar
+    id: shot-query-history-sidebar
+  - goto: /ee/admin/performance/query-history
+    id: goto-ee-admin-performance-query-history-2
+  - shot: query-history-ee-direct
+    id: shot-query-history-ee-direct
+  - goto: /admin/performance/query-history/6501
+    id: goto-admin-performance-query-history-6501-2
+  - shot: query-history-detail-alias
+    id: shot-query-history-detail-alias
+  - goto: /ee/admin/performance/query-history/6501
+    id: goto-ee-admin-performance-query-history-6501-2
+  - shot: query-history-detail-ee
+    id: shot-query-history-detail-ee
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

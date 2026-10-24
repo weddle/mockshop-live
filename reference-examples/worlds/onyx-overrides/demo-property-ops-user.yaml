@@ -1,0 +1,122 @@
+apps:
+  onyx:
+    fixtures:
+      GET /me:
+        id: u4
+        email: "{{people.lena.email}}"
+        is_active: true
+        is_superuser: false
+        is_verified: true
+        role: basic
+        account_type: STANDARD
+        is_admin: false
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - basic
+        admin_capabilities: []
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 12
+          default_model: null
+          recent_assistants:
+            - 0
+            - 12
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.lena.name}}"
+          role: "{{teams.property-operations.name}} Manager"
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /user/pinned-assistants:
+        - 0
+        - 12
+      GET /chat/get-user-chat-sessions:
+        has_more: false
+        sessions:
+          - id: 22222222-0000-4000-8000-000000000001
+            name: Late checkout policy for Gold members
+            persona_id: 12
+            time_created: "{{vars.onyx_template_open}}ago:1d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:1d}}"
+            shared_status: private
+            current_alternate_model: null
+            current_temperature_override: null
+            current_reasoning_effort_override: null
+          - id: 22222222-0000-4000-8000-000000000002
+            name: Key West hurricane-watch runbook
+            persona_id: 12
+            time_created: "{{vars.onyx_template_open}}ago:2d}}"
+            time_updated: "{{vars.onyx_template_open}}ago:2d}}"
+            shared_status: private
+            current_alternate_model: null
+            current_temperature_override: null
+            current_reasoning_effort_override: null
+    viewer: lena
+    documents:
+      conf-ops-fo-2210:
+        id: CONF-OPS-FO-2210
+        blurb: New front desk staff shadow a senior agent for their first 5 shifts and must hold CPR/First Aid within 30 days of hire. The front office manager signs off each step.
+        updated: "{{vars.onyx_template_open}}ago:30d}}"
+      slack-c05opskw-1728000000:
+        id: SLACK-C05OPSKW-1728000000
+        blurb: "Front desk lead: two new hires aren't certified yet, so we're scheduling a certified first-aider on every night shift until the Oct 23 class."
+        updated: "{{vars.onyx_template_open}}ago:8d}}"
+    replies:
+      10-new-hire-training-ops:
+        match: training|new.hire|onboarding|first.aid|certification
+        title: New-hire front desk training requirements
+        chunk_delay_ms: 70
+        reasoning: |
+          The user is asking about training for new front desk hires. I can search the sources available to this user's groups, which are operations wiki pages and #ops Slack channels.
+        queries:
+          - New-hire front desk training first 30 days
+          - First aid coverage per shift
+        text: |
+          From the operations sources I can see, here is what applies to **new front desk hires**:
+
+          - **Onboarding:** new staff shadow a senior agent for their first 5 shifts and need CPR/First Aid within **30 days** of hire [1].
+          - **Key West:** two new hires aren't certified yet, so the front desk is scheduling a certified first-aider on every night shift until the Oct 23 class [2].
+
+          I don't have access to individual training records. For those, check with the Learning & Development team.
+        cites:
+          - conf-ops-fo-2210
+          - slack-c05opskw-1728000000
+people:
+  lena:
+    name: Lena Brooks
+    title: Property Operations Manager
+    email: lena.brooks@{{company.domain}}
+documents:
+  conf-ops-fo-2210:
+    source: ops-space
+    title: "{{teams.front-office.name}} Onboarding SOP"
+    body: New front desk staff shadow a senior agent for their first 5 shifts and must hold CPR/First Aid within 30 days of hire. The front office manager signs off each step.
+  slack-c05opskw-1728000000:
+    source: learning-ops
+    title: "#ops-keywest — first-aider coverage on nights"
+    body: "Front desk lead: two new hires aren't certified yet, so we're scheduling a certified first-aider on every night shift until the Oct 23 class."

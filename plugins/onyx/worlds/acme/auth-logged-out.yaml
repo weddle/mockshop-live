@@ -1,0 +1,34 @@
+# Capability variant of acme: the fake local auth flow, logged out. Enabling staging replaces /me with a fake member, so only auth demos use this.
+# Identities come from the world cast; the unstated auth content (profiles, messages) keeps the seeded defaults.
+includes:
+  - ./world.yaml
+apps:
+  onyx:
+    state:
+      auth_anonymous:
+        staging:
+          enabled: true
+          mode: logged-out
+        content:
+          label: LOCAL FAKE DEMO
+          email: "{{people.dana.email}}"
+          join_email: "{{people.sam.email}}"
+          error_email: "{{people.member.email}}"
+          name: "{{people.dana.name}}"
+          guest_name: "{{people.sam.name}}"
+          team: "{{teams.reliability.name}}"
+          demo_input: MockOnly-Demo1!
+          verify_token: mock-verify-token
+          reset_token: mock-reset-token
+          anonymous_path: relay-demo
+          messages:
+            login_error: That email or password is not accepted in this local demo.
+            register_error: This email cannot register in this local demo.
+            email_error: The local demo could not send that email.
+            verify_error: That verification link is not valid.
+            reset_error: That reset link is not valid.
+            password_error: Use the demo password for this local demo.
+            authorize_error: The local demo identity provider declined the sign-in.
+            discovery_error: The local demo could not find a sign-in provider.
+            verify_subject: Verify your email
+            reset_subject: Reset your password

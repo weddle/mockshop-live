@@ -1,0 +1,62 @@
+# #65 route-sized native proof: Tracing.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-tracing
+title: Tracing - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/tracing
+    id: goto-admin-tracing
+  - shot: inventory-tracing
+    id: shot-inventory-tracing
+  - goto: /admin/sso-providers
+    id: goto-admin-sso-providers
+  - click: { selector: 'a[href="/admin/tracing"]' }
+    id: click-a-href-admin-tracing
+  - shot: tracing-menu-empty
+    id: shot-tracing-menu-empty
+  - goto: /admin/tracing
+    id: goto-admin-tracing-2
+  - click: { selector: '[aria-label="Braintrust"]' }
+    id: click-aria-label-braintrust
+  - wait: { role: dialog }
+    id: wait
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-not-a-secret }
+    id: fill-input-name-api-key
+  - fill: { selector: 'input[name="project"]', value: Learning Workshop }
+    id: fill-input-name-project
+  - shot: tracing-connect-dialog
+    id: shot-tracing-connect-dialog
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/tracing
+    id: goto-admin-tracing-3
+  - wait: { text: Connected, exact: true }
+    id: wait-connected
+  - shot: tracing-saved
+    id: shot-tracing-saved
+  - hover: { selector: '[aria-label="Braintrust"]' }
+    id: hover-aria-label-braintrust
+  - click: { role: button, name: Disconnect Braintrust, exact: true }
+    id: click-disconnect-braintrust
+  - wait: { role: dialog }
+    id: wait-2
+  - shot: tracing-disconnect-confirm
+    id: shot-tracing-disconnect-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+    id: click-role-dialog-button-has-text-disconnect
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - shot: tracing-disconnected
+    id: shot-tracing-disconnected
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

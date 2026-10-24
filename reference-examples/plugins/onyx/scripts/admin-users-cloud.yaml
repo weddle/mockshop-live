@@ -1,0 +1,77 @@
+# Requires the same pinned frontend compiled with NEXT_PUBLIC_CLOUD_ENABLED=true.
+# Enterprise alone and fake fixture flags cannot enable native Pending/Approve.
+# Unverified gate-specific inventory; no conditional no-op steps or acceptance claim.
+name: admin-users-cloud
+title: Native Cloud Users requests - Pending and Approve
+strict: true
+requires: enterprise-cloud
+locale: en
+steps:
+  - goto: /admin/documents/sets
+    id: goto-admin-documents-sets
+  - click: { selector: 'a[href="/admin/users"]' }
+    id: click-a-href-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  - wait: { role: button, name: Filter by requests to join, exact: true }
+    id: wait-filter-by-requests-to-join
+  - shot: users-cloud-menu-entry
+    id: shot-users-cloud-menu-entry
+  - goto: /admin/users
+    id: goto-admin-users
+  - wait: { role: button, name: Filter by requests to join, exact: true }
+    id: wait-filter-by-requests-to-join-2
+  - shot: users-cloud-direct-entry
+    id: shot-users-cloud-direct-entry
+  - click: { role: button, name: Filter by requests to join, exact: true }
+    id: click-filter-by-requests-to-join
+  - wait: { text: "{{people.robin.email}}", exact: true }
+    id: wait-robin-lee-learning-lab-example
+  - shot: users-cloud-pending-filter
+    id: shot-users-cloud-pending-filter
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions
+  - wait: { text: Approve, exact: true }
+    id: wait-approve
+  - shot: users-cloud-pending-menu
+    id: shot-users-cloud-pending-menu
+  - click: { text: Approve, exact: true }
+    id: click-approve
+  - wait_gone: { text: "{{people.robin.email}}", exact: true }
+    id: wait-gone-robin-lee-learning-lab-example
+  - shot: users-cloud-approved
+    id: shot-users-cloud-approved
+  - goto: /admin/users
+    id: goto-admin-users-2
+  - fill: { selector: 'input[placeholder="Search users..."]', value: robin.lee }
+    id: fill-input-placeholder-search-users
+  - wait: { text: "{{people.robin.email}}", exact: true }
+    id: wait-robin-lee-learning-lab-example-2
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions-2
+  - wait: { text: Cancel Invite, exact: true }
+    id: wait-cancel-invite
+  - shot: users-cloud-approved-invitation-persisted
+    id: shot-users-cloud-approved-invitation-persisted
+  - press: Escape
+    id: press-escape
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en'})});
+        if (!res.ok) throw new Error('Mock reset failed');
+        location.reload();
+      })()
+    id: eval-script
+  - wait: { role: button, name: Filter by requests to join, exact: true }
+    id: wait-filter-by-requests-to-join-3
+  - click: { role: button, name: Filter by requests to join, exact: true }
+    id: click-filter-by-requests-to-join-2
+  - wait: { text: "{{people.robin.email}}", exact: true }
+    id: wait-robin-lee-learning-lab-example-3
+  - shot: users-cloud-pending-reset
+    id: shot-users-cloud-pending-reset
+world: ../../../worlds/seaside/world.yaml

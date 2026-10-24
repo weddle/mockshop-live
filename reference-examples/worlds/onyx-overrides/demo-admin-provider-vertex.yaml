@@ -1,0 +1,40 @@
+apps:
+  onyx:
+    llm_providers:
+      campus-vertex:
+        id: 34
+        name: Campus Vertex (local fake)
+        provider: vertex_ai
+        custom_config:
+          vertex_auth_method: service_account_json
+          vertex_location: us-central1
+          vertex_credentials: '{"type":"service_account","project_id":"mock-campus-seed-project","client_email":"fictional-vertex@example.invalid","private_key":"mock-only-not-a-secret"}'
+        models:
+          learning-notes-demo:
+            id: 3401
+            display_name: Learning Notes (local fake)
+            default:
+              - text
+              - chat_naming
+            max_input_tokens: 32768
+      openai: null
+      anthropic: null
+      onprem-gpu: null
+    settings:  # sparse over the base /settings
+      ee_features_enabled: true
+      tier: "enterprise"
+      hooks_enabled: true
+    fixtures:
+      GET /admin/llm/built-in/options/vertex_ai:
+        name: vertex_ai
+        known_models:
+          - id: 3401
+            name: learning-notes-demo
+            display_name: Learning Notes (local fake)
+            is_visible: true
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+        recommended_default_model:
+          name: learning-notes-demo
+          display_name: Learning Notes (local fake)

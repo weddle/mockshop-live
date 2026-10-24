@@ -1,0 +1,84 @@
+apps:
+  onyx:
+    llm_providers:
+      openai:
+        id: 1
+        provider: openai
+        default: true
+        api_key: sk-••••••••••••3f9a
+        auto_mode: true
+        models:
+          gpt-5-2:
+            name: gpt-5.2
+            id: 1
+            display_name: GPT-5.2
+            default: true
+            max_input_tokens: 400000
+            supports_image_input: true
+            reasoning_efforts:
+              - low
+              - medium
+              - high
+            recommended: true
+          gpt-5-mini:
+            id: 2
+            display_name: GPT-5 mini
+            default:
+              - chat_naming
+            max_input_tokens: 400000
+            supports_image_input: true
+            reasoning_efforts:
+              - low
+              - medium
+              - high
+          gpt-4-1:
+            name: gpt-4.1
+            id: 3
+            display_name: GPT-4.1
+            max_input_tokens: 1000000
+            supports_image_input: true
+      anthropic:
+        id: 2
+        provider: anthropic
+        api_key: sk-ant-••••••••••••a71c
+        auto_mode: true
+        models:
+          claude-sonnet-4-5:
+            id: 11
+            display_name: Claude Sonnet 4.5
+            max_input_tokens: 200000
+            supports_image_input: true
+            reasoning_efforts:
+              - low
+              - medium
+              - high
+            recommended: true
+          claude-haiku-4-5:
+            id: 12
+            display_name: Claude Haiku 4.5
+            max_input_tokens: 200000
+            supports_image_input: true
+            reasoning_efforts:
+              - low
+              - medium
+              - high
+      onprem-gpu:
+        id: 3
+        name: "{{company.name}} GPU cluster"
+        provider: ollama_chat
+        api_base: http://gpu-01.{{company.domain}}:11434
+        models:
+          llama3-3-70b:
+            name: llama3.3:70b
+            id: 21
+            display_name: Llama 3.3 70B
+            max_input_tokens: 128000
+          qwen3-32b:
+            name: qwen3:32b
+            id: 22
+            display_name: Qwen3 32B
+            max_input_tokens: 128000
+            reasoning_efforts:
+              - low
+              - medium
+              - high

@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Onyx world application block (apps.onyx)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "viewer": { "type": "string", "description": "Shared person key. Defaults to the first declared person, or the neutral workspace viewer." },
+    "people": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "string" }, "role": { "enum": ["basic", "admin"], "description": "Native demo role. Shared people default to basic; administrator access must be selected explicitly." } }, "additionalProperties": false } },
+    "teams": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "integer", "minimum": 0 }, "managers": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } }, "additionalProperties": false } },
+    "agents": { "type": "object", "additionalProperties": { "type": "object", "required": ["name"], "properties": { "id": { "type": "integer", "minimum": 0 }, "name": { "type": "string" }, "description": { "type": "string" }, "owner": { "type": ["string", "null"] }, "sources": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } }, "additionalProperties": true } },
+    "sources": { "type": "object", "additionalProperties": { "$ref": "#/$defs/source" } },
+    "documents": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" }, "blurb": { "type": "string" }, "updated": { "type": "string" }, "metadata": { "type": "object" }, "url_vendor": { "type": "string" }, "score": { "type": ["number", "null"] }, "tags": { "type": "array" }, "document_sets": { "type": "array" } }, "additionalProperties": false } },
+    "conversations": { "type": "object", "additionalProperties": { "type": "object", "properties": { "id": { "type": "string" }, "agent": { "type": "string" }, "turns": { "type": "array", "items": { "type": "object", "required": ["message"], "properties": { "message": { "type": "string" }, "script": { "type": "object" } }, "additionalProperties": true } } }, "additionalProperties": true } },
+    "replies": { "type": "object", "additionalProperties": { "$ref": "#/$defs/reply" } },
+    "models": { "type": "object", "additionalProperties": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" } }, "additionalProperties": false } },
+    "settings": { "type": "object", "description": "Onyx workspace settings overriding neutral defaults and the active edition." },
+    "fixtures": { "type": "object", "propertyNames": { "pattern": "^(GET|POST|PUT|PATCH|DELETE|ANY) /\\S*$" }, "description": "Explicit Onyx API seed DTOs for specialized existing screens. This is the ordinary fixture response format, not a route-patch language. Shared connector and document snapshots are projected by the adapter." },
+    "history": { "type": "object", "additionalProperties": { "type": "object" } },
+    "source_bodies": { "type": "object", "additionalProperties": { "type": "string" } },
+    "llm_providers": { "type": ["object", "null"], "description": "LLM providers keyed by stable name (area: llm). Derives GET /llm/provider, GET /admin/llm/provider, GET /llm/persona/:id/providers and the v5 routing/cost routes. Absent keeps the neutral base fixtures; {} or null means no providers. Merging never deletes: a world layered over another drops an inherited provider with `<key>: null`, or the whole section with `llm_providers: null`.", "additionalProperties": { "$ref": "#/$defs/llm_provider" } },
+    "connectors": { "type": "object", "description": "Connector rows keyed by shared source key (area: conn). Adapter derivation: pending.", "additionalProperties": { "$ref": "#/$defs/connector" } },
+    "cc_pairs": { "type": "object", "description": "Connector/credential pair state keyed by shared source key (area: conn): the pair's status, access, document count and when it was created. With index_runs it drives the cc-pair detail, the indexing status page row (status bucket, latest attempt, queue position) and the old indexing-status rows (adapter/index-runs.mjs). A source with neither keeps the neutral indexed summary.", "additionalProperties": { "$ref": "#/$defs/cc_pair" } },
+    "index_runs": { "type": "object", "description": "Index attempts per shared source key, newest first (area: conn). Derives the pair's runs feed, index attempts, the fleet runs feed, per-attempt stage metrics, and (per request, handlers-index-monitoring.mjs) the throughput charts and the overview.", "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/index_run" } } },
+    "plugins": { "type": "object", "description": "Unified Plugins entries keyed by stable name (area: plug). Adapter derivation: pending.", "additionalProperties": { "$ref": "#/$defs/plugin" } },
+    "mcp_servers": { "type": "object", "description": "MCP servers keyed by stable name, with tool snapshots and per-user preferences (area: plug). Adapter derivation: pending.", "additionalProperties": { "$ref": "#/$defs/mcp_server" } },
+    "craft": { "$ref": "#/$defs/craft", "description": "Craft state: sessions, outputs, approvals, action policies, tasks, skills, apps (area: craft). Adapter derivation: pending." },
+    "billing": { "$ref": "#/$defs/billing" },
+    "tier": { "enum": ["community", "business", "enterprise"], "description": "Product tier the workspace reports in /settings.tier; Craft demos choose Business explicitly. Adapter derivation: pending." },
+    "state": { "$ref": "#/$defs/state", "description": "World state flags the handlers read per request (written to state.json). One strict area per behavior switch; replaces the per-demo GET /mockshop/* switch fixtures." }
+  },
+  "$defs": {
+    "storage_items": { "type": "array", "items": { "type": "object", "required": ["key", "value"], "properties": { "key": { "type": "string", "minLength": 1 }, "value": { "type": "string" } }, "additionalProperties": false } },
+    "llm_provider": { "type": ["object", "null"], "description": "One LLM provider (null drops an inherited one). Sparse: only `provider` is required.", "required": ["provider"], "additionalProperties": false, "properties": {
+      "id": { "type": "integer", "minimum": 0, "description": "Explicit provider ID; otherwise stable from the key." },
+      "name": { "type": "string", "description": "Display name; defaults to the provider's label." },
+      "provider": { "type": "string", "description": "Onyx provider id: openai, anthropic, azure, bedrock, vertex_ai, portkey, ollama_chat, litellm_proxy, ..." },
+      "provider_display_name": { "type": "string", "description": "Label in the public catalog; defaults to the known label of `provider`." },
+      "default": { "type": "boolean", "description": "The default provider: its default model also answers the vision and chat-naming defaults unless a model names those purposes." },
+      "api_key_set": { "type": "boolean", "description": "A key is stored (shown masked)." },
+      "api_key": { "type": ["string", "null"], "description": "Masked key text shown in the admin form; overrides api_key_set." },
+      "api_base": { "type": ["string", "null"] },
+      "api_version": { "type": ["string", "null"] },
+      "deployment_name": { "type": ["string", "null"] },
+      "custom_config": { "type": ["object", "null"] },
+      "auto_mode": { "type": "boolean", "description": "Onyx Auto mode (is_auto_mode)." },
+      "public": { "type": "boolean", "description": "Defaults to true when neither groups nor agents restrict the provider." },
+      "groups": { "type": "array", "items": { "type": "string" }, "description": "Team keys the provider is restricted to; [] = public." },
+      "agents": { "type": "array", "items": { "type": "string" }, "description": "Agent keys the provider is restricted to (drives /llm/persona/:id/providers)." },
+      "models": { "type": "object", "description": "Model configurations keyed by stable name; the key is the model name unless `name` is given.", "additionalProperties": { "type": "object", "additionalProperties": false, "properties": {
+        "id": { "type": "integer", "minimum": 0, "description": "Explicit model-configuration ID; otherwise stable from <provider key>/<model key>." },
+        "name": { "type": "string", "description": "Model name sent to the provider; defaults to the key." },
+        "display_name": { "type": "string" },
+        "visible": { "type": "boolean", "description": "is_visible; default true." },
+        "default": { "oneOf": [{ "type": "boolean" }, { "type": "array", "items": { "enum": ["text", "vision", "chat_naming", "craft"] } }], "description": "true = the default text model; a list names the purposes this model is the default for." },
+        "max_input_tokens": { "type": ["integer", "null"], "minimum": 0 },
+        "supports_image_input": { "type": "boolean" },
+        "supports_reasoning": { "type": "boolean", "description": "Defaults to true when reasoning_efforts is non-empty." },
+        "reasoning_efforts": { "type": "array", "items": { "type": "string" } },
+        "reasoning_effort_max": { "type": ["string", "null"] },
+        "reasoning_effort_default": { "type": ["string", "null"] },
+        "temperature_default": { "type": ["number", "null"] },
+        "recommended": { "type": "boolean", "description": "is_recommended_default." },
+        "vendor": { "type": "string", "description": "Defaults to the provider for openai and anthropic." } } } },
+      "v5": { "type": "object", "description": "v5.0.0-beta.2 fields.", "additionalProperties": false, "properties": {
+        "router_models": { "type": "array", "items": { "type": "string" }, "description": "Model keys of this provider that Auto mode may route to (GET /admin/llm/router-models)." },
+        "routing": { "type": "object", "additionalProperties": false, "properties": { "enabled": { "type": "boolean" }, "model": { "type": ["string", "null"], "description": "Model key of this provider used as the routing model." } } },
+        "cost_overrides": { "type": "object", "description": "Rows of GET /admin/cost-overrides, keyed by any stable name.", "additionalProperties": { "type": "object" } } } } } },
+    "connector": { "type": "object", "properties": { "id": { "type": "integer", "minimum": 0 }, "name": { "type": "string" }, "config": { "type": "object" }, "refresh_freq": { "type": ["integer", "null"] }, "prune_freq": { "type": ["integer", "null"] }, "indexing_start": { "type": ["string", "null"] } }, "additionalProperties": true },
+    "cc_pair": { "type": "object", "properties": { "id": { "type": "integer", "minimum": 0, "description": "The pair id; same as apps.onyx.sources.<key>.id when both are set." }, "status": { "enum": ["ACTIVE", "PAUSED", "DELETING", "INVALID", "SCHEDULED", "INITIAL_INDEXING"], "description": "ConnectorCredentialPairStatus; default ACTIVE." }, "access_type": { "enum": ["public", "private", "sync"] }, "indexing_hold": { "type": ["object", "null"] }, "pending_backfills": { "type": "array" }, "has_named_checks": { "type": "boolean" }, "docs_indexed": { "type": "integer", "minimum": 0, "description": "Documents in the index. Default: the running first attempt's new documents, else the world's documents of the source." }, "created": { "type": "string", "pattern": "^([0-9]+(\\.[0-9]+)?[smhdw])+$", "description": "How long ago the connector and its account were created, such as 50m; default 120d. Sets the overall indexing speed." }, "in_repeated_error_state": { "type": "boolean" } }, "additionalProperties": false },
+    "index_run": { "type": "object", "required": ["status"], "properties": { "id": { "type": "integer", "minimum": 0 }, "status": { "enum": ["not_started", "in_progress", "success", "completed_with_errors", "failed", "canceled", "interrupted", "invalid"] }, "created": { "type": "string", "description": "Durations before the demo clock, such as 45m or 2h30m. created defaults to started; a queued run has only created." }, "started": { "type": "string" }, "updated": { "type": "string", "description": "A running run's last update; default 1m. Sets its docs/min." }, "finished": { "type": "string", "description": "Required for a finished run, absent for a queued or running one." }, "new_docs": { "type": "integer", "minimum": 0 }, "total_docs": { "type": "integer", "minimum": 0, "description": "New plus updated documents; default new_docs." }, "removed_docs": { "type": "integer", "minimum": 0 }, "error": { "type": "string" }, "trace": { "type": "string" }, "error_count": { "type": "integer", "minimum": 0 }, "open_error_count": { "type": "integer", "minimum": 0 }, "from_beginning": { "type": "boolean", "description": "Default true for the oldest listed run only." }, "resolved": { "type": "string", "description": "When an admin resolved the run." }, "batches": { "type": "integer", "minimum": 1, "description": "Batches processed so far; required with stages." }, "stages": { "type": "object", "description": "IndexAttemptStage -> seconds per batch, or {avg, min?, max?, sd?} in seconds. BATCH_TOTAL and BATCH_UNACCOUNTED are derived; fetch and docprocessing totals must fit in the run's span.", "additionalProperties": { "oneOf": [{ "type": "number", "minimum": 0 }, { "type": "object", "required": ["avg"], "properties": { "avg": { "type": "number", "minimum": 0 }, "min": { "type": "number", "minimum": 0 }, "max": { "type": "number", "minimum": 0 }, "sd": { "type": "number", "minimum": 0 } }, "additionalProperties": false }] } } }, "additionalProperties": false },
+    "plugin": { "type": "object", "properties": { "id": { "type": "integer", "minimum": 0 }, "name": { "type": "string" }, "kind": { "enum": ["mcp", "openapi", "builtin"] }, "enabled": { "type": "boolean" }, "server": { "type": "string", "description": "mcp_servers key when kind is mcp." } }, "additionalProperties": true },
+    "mcp_server": { "type": "object", "required": ["name"], "properties": { "id": { "type": "integer", "minimum": 0 }, "name": { "type": "string" }, "url": { "type": "string" }, "auth": { "enum": ["none", "api_token", "oauth", "pt_oauth"] }, "status": { "type": "string" }, "connection_status": { "enum": ["not_connected", "connected", "reauth_required"], "description": "What the Plugins page shows to members; defaults to connected (Ready to use)." }, "default_chat_enabled": { "type": "boolean", "description": "Admin default for Main Chat; defaults to true." }, "user_enabled_in_chat": { "type": "boolean", "description": "The viewer's own chat toggle; defaults to true." }, "user_enabled_in_craft": { "type": "boolean", "description": "The viewer's own Craft toggle; defaults to false." }, "tools": { "type": "array", "items": { "type": "object" } }, "preferences": { "type": "object", "description": "Per-user and per-agent tool preferences." } }, "additionalProperties": true },
+    "craft": { "type": "object", "properties": { "sessions": { "type": "object" }, "outputs": { "type": "object" }, "approvals": { "type": "object" }, "action_policies": { "type": "object" }, "tasks": { "type": "object" }, "skills": { "type": "object" }, "apps": { "type": "object" }, "usage": { "type": "object" } }, "additionalProperties": true },
+    "billing": { "type": "object", "properties": { "plans": { "type": "object" }, "snapshots": { "type": "object" } }, "additionalProperties": true },
+    "state": {
+      "type": "object",
+      "properties": {
+        "billing": { "type": "object", "properties": { "case": { "enum": ["none", "trialing", "active", "canceling", "expired"], "description": "Cloud billing case: picks the billing snapshot and settings.tier." } }, "additionalProperties": false },
+        "user_extras": { "type": "object", "properties": { "options": { "type": "object", "description": "Per-demo user-extras overlay over the seed; `enabled: true` switches the extras on." } }, "additionalProperties": false },
+        "user_conditional": { "type": "object", "properties": { "staging": { "type": "object", "properties": { "enabled": { "type": "boolean" } }, "additionalProperties": false } }, "additionalProperties": false },
+        "auth_anonymous": { "type": "object", "properties": { "staging": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "mode": { "type": "string" }, "requires_verification": { "type": "boolean" }, "impersonation_superuser": { "type": "boolean" } }, "additionalProperties": false }, "content": { "type": "object", "description": "Replaces the seeded auth-anonymous content wholesale." } }, "additionalProperties": false },
+        "browser": { "type": "object", "properties": { "local_storage": { "$ref": "#/$defs/storage_items" }, "session_storage": { "$ref": "#/$defs/storage_items" } }, "additionalProperties": false, "description": "Web storage the runner seeds into the page origin at context creation (a list, so keys may use {{refs}})." }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "minimum": 0 },
+        "connector_id": { "type": "integer", "minimum": 0 },
+        "credential_id": { "type": "integer", "minimum": 0 },
+        "visible": { "type": "boolean" },
+        "name": { "type": "string" },
+        "config": { "type": "object" },
+        "config_vendor": { "type": "string" },
+        "config_by_vendor": { "type": "object", "additionalProperties": { "type": "object" } },
+        "credential_by_vendor": { "type": "object", "additionalProperties": { "type": "object" } },
+        "connector": { "type": "object" },
+        "credential": { "type": "object" },
+        "detail": { "type": "object" },
+        "row": { "type": "object" },
+        "attempts": { "type": "object" },
+        "errors": { "type": "object" },
+        "permission_sync": { "type": "object" },
+        "group_sync": { "type": "object" },
+        "url_vendor": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "reply": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string" },
+        "queries": { "type": "array", "items": { "type": "string" } },
+        "cites": { "type": "array", "items": { "type": "string" }, "description": "Ordered citations: world document keys, or URLs of this reply's web_search results / open_url pages." },
+        "title": { "type": "string" },
+        "reasoning": { "type": "string" },
+        "chunk_delay_ms": { "type": "number", "minimum": 0 },
+        "turn": { "type": "string", "minLength": 1, "description": "Exact prepared turn identity for an authored native submission armed by state.turn; excluded from manual regex selection." },
+        "question": { "type": "string", "description": "Exact native submitted question for the prepared turn guard." },
+        "match": { "type": "string" },
+        "after": { "type": "string" },
+        "default": { "type": "boolean" },
+        "follow_up_default": { "type": "boolean" },
+        "regenerate": { "type": "array", "items": { "type": "string" } },
+        "model_variants": { "type": "object" },
+        "web_search": { "description": "true marks the internal search step as an internet search (older flag). An object stages a separate native web search step.", "oneOf": [
+          { "type": "boolean" },
+          { "type": "object", "additionalProperties": false, "properties": {
+            "queries": { "type": "array", "items": { "type": "string" } },
+            "results": { "type": "array", "items": { "type": "object", "required": ["title", "url"], "additionalProperties": false, "properties": {
+              "title": { "type": "string" }, "url": { "type": "string", "pattern": "^https?://" }, "snippet": { "type": "string" }, "published": { "type": "string" } } } } } }
+        ] },
+        "open_url": { "type": "array", "minItems": 1, "description": "Pages read by a native Open URL step.", "items": { "oneOf": [
+          { "type": "string", "pattern": "^https?://" },
+          { "type": "object", "required": ["url"], "additionalProperties": false, "properties": { "url": { "type": "string", "pattern": "^https?://" }, "title": { "type": "string" } } }
+        ] } },
+        "code": { "type": "object", "required": ["source"], "additionalProperties": false, "description": "A native code interpreter (Python) step: code, output, error and generated files.", "properties": {
+          "source": { "type": "string", "minLength": 1 },
+          "output": { "type": "string" },
+          "error": { "type": "string" },
+          "files": { "type": "array", "items": { "$ref": "#/$defs/chat_file" } } } }
+      },
+      "additionalProperties": false
+    },
+    "chat_file": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "description": "A file the code step generated, linked from the answer as [name](name). Exactly one of body, rows or path.",
+      "properties": {
+        "name": { "type": "string", "pattern": "^[\\w.-]+$" },
+        "body": { "type": "string", "description": "Text content (body_file loads it from a relative file)." },
+        "rows": { "type": "array", "items": { "type": "array" }, "description": "CSV/TSV rows; the first row is the header." },
+        "path": { "type": "string", "description": "Binary or text file relative to the declaring YAML file, for example an authored PNG chart." },
+        "parsed_preview": {
+          "type": "object",
+          "description": "xlsx only: what GET /chat/file/<id>?parsed=true returns so the in-app spreadsheet preview renders values (not formulas).",
+          "required": ["sheets"],
+          "additionalProperties": false,
+          "properties": {
+            "sheets": { "type": "array", "minItems": 1, "items": {
+              "type": "object", "required": ["name", "csv"], "additionalProperties": false,
+              "properties": { "name": { "type": "string" }, "csv": { "type": "string" }, "truncated": { "type": "boolean", "default": false } } } }
+          }
+        }
+      }
+    }
+  }
+}

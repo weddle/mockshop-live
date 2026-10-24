@@ -1,0 +1,48 @@
+# Acme admin walkthrough: Connectors list, Groups (Reliability detail), LLM providers.
+name: acme-admin
+requires: enterprise
+strict: true
+title: "{{company.name}} admin - connectors, groups and LLM providers"
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: /admin/indexing-status
+    id: goto-admin-indexing-status
+  - wait: { text: Zendesk, exact: true }
+    id: wait-zendesk
+  - shot: acme-connectors
+    id: shot-acme-connectors
+  - click: { text: Expand All }
+    id: click-expand-all
+  - wait: { text: "GitHub – acme/media-platform" }
+    id: wait-github-acme-media-platform
+  - scroll: { text: Zendesk, exact: true }
+    id: scroll-zendesk
+  - shot: acme-connectors-expanded
+    id: shot-acme-connectors-expanded
+  - click: { selector: 'a[href="/admin/groups"]' }
+    id: click-a-href-admin-groups
+  - wait: { text: "{{teams.reliability.name}}", exact: true }
+    id: wait-reliability
+  - shot: acme-groups
+    id: shot-acme-groups
+  - click: { role: button, name: View group, exact: true, nth: 0 }
+    id: click-view-group
+  - wait: { placeholder: Search members... }
+    id: wait
+  - shot: acme-group-reliability
+    id: shot-acme-group-reliability
+  - scroll: { text: Shared with This Group, exact: true }
+    id: scroll-shared-with-this-group
+  - wait: { text: "Confluence – Engineering Runbooks" }
+    id: wait-confluence-engineering-runbooks
+  - shot: acme-group-reliability-resources
+    id: shot-acme-group-reliability-resources
+  - click: { selector: 'a[href="/admin/language-models"]' }
+    id: click-a-href-admin-language-models
+  - wait: { text: "{{company.name}} GPU cluster" }
+    id: wait-acme-gpu-cluster
+  - shot: acme-llm-providers
+    id: shot-acme-llm-providers
+world: ../../../worlds/acme/world.yaml

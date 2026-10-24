@@ -1,0 +1,320 @@
+# EDITONLY prepared; unexecuted/unaccepted. Fictional local inputs only.
+# Existing #33 first-run/name prerequisite and sole #3 provider store; no real provider calls.
+# Saved-form edit is NOT available in onboarding: connected card navigates /admin/language-models.
+# Cancel reopens a pristine NEW form; saved conditional ADMIN edit remains separate/unverified.
+# PortkeyModal56–76,104–109: exactly three API-mode tabs; switching known defaults
+# adjusts the base, but leaves a fictional self-hosted custom base and API key alone.
+# Native Restore default follows the selected mode; required API base/key guards.
+# This pin has NO gateway-config textarea or virtual-key control: do not invent either.
+# Final native save uses messages/custom .invalid base; sole owner retains mode/base and fake-key marker.
+name: user-provider-conditional-portkey
+title: Native onboarding Portkey API-mode tabs and mode-aware gateway fields
+requires: enterprise
+strict: true
+locale: en
+viewport:
+  - 1440
+  - 1000
+steps:
+  - goto: /app
+    id: goto-app
+  - eval: (async () => { const me=await (await fetch('/api/me')).json(); localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`); localStorage.removeItem('allUsersInitialPopupFlowCompleted'); })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait:
+      selector: '[aria-label="onboarding-flow"]'
+    id: wait-aria-label-onboarding-flow
+  - click:
+      role: button
+      name: Let's Go
+      exact: true
+    id: click-let-s-go
+  - wait:
+      placeholder: Your name
+    id: wait
+  - fill:
+      placeholder: Your name
+      value: Jordan Workshop Educator
+    id: fill
+  - settle: 900
+    id: settle
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"]'
+    id: wait-aria-label-onboarding-llm-step
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-2
+  - click:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Portkey")'
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-portke
+  - wait:
+      selector: '[role="dialog"]'
+    id: wait-role-dialog
+  - wait:
+      text: Learning Notes (local fake)
+      exact: true
+    id: wait-learning-notes-local-fake
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai/v1" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-3
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di
+  - shot:
+      name: portkey-api-key-required
+      full_page: true
+    id: shot-portkey-api-key-required
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Responses API")'
+    id: click-role-dialog-role-tab-has-text-responses-api
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai/v1" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-4
+  - shot:
+      name: portkey-responses-native-default-base
+      full_page: true
+    id: shot-portkey-responses-native-default-base
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Messages API")'
+    id: click-role-dialog-role-tab-has-text-messages-api
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-5
+  - shot:
+      name: portkey-messages-native-default-base
+      full_page: true
+    id: shot-portkey-messages-native-default-base
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Chat Completions API")'
+    id: click-role-dialog-role-tab-has-text-chat-completions-api
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai/v1") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-6
+  - fill:
+      selector: '[role="dialog"] input[name="api_base"]'
+      value: https://workshop-gateway.example.invalid/v1
+    id: fill-role-dialog-input-name-api-base
+  - fill:
+      selector: '[role="dialog"] input[name="api_key"]'
+      value: mock-canceled-portkey-key
+    id: fill-role-dialog-input-name-api-key
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Responses API")'
+    id: click-role-dialog-role-tab-has-text-responses-api-2
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://workshop-gateway.example.invalid/v1" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "mock-canceled-portkey-key") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-7
+  - shot:
+      name: portkey-responses-preserves-custom-base
+      full_page: true
+    id: shot-portkey-responses-preserves-custom-base
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Messages API")'
+    id: click-role-dialog-role-tab-has-text-messages-api-2
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://workshop-gateway.example.invalid/v1" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "mock-canceled-portkey-key") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-8
+  - shot:
+      name: portkey-messages-preserves-custom-base
+      full_page: true
+    id: shot-portkey-messages-preserves-custom-base
+  - click:
+      selector: '[role="dialog"] button[aria-label="Restore default API base URL"]'
+    id: click-role-dialog-button-aria-label-restore-default-api-base-url
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "mock-canceled-portkey-key") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-9
+  - shot:
+      name: portkey-native-restore-mode-default
+      full_page: true
+    id: shot-portkey-native-restore-mode-default
+  - fill:
+      selector: '[role="dialog"] input[name="api_base"]'
+      value: ''
+    id: fill-role-dialog-input-name-api-base-2
+  - press: Tab
+    id: press-tab
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di-2
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "mock-canceled-portkey-key") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-10
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-11
+  - shot:
+      name: portkey-api-base-required-cancel-draft
+      full_page: true
+    id: shot-portkey-api-base-required-cancel-draft
+  - click:
+      selector: '[role="dialog"] button:has-text("Cancel")'
+    id: click-role-dialog-button-has-text-cancel
+  - wait_gone:
+      selector: '[role="dialog"]'
+    id: wait-gone-role-dialog
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-12
+  - shot:
+      name: portkey-cancel-protected
+      full_page: true
+    id: shot-portkey-cancel-protected
+  - click:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Portkey")'
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-portke-2
+  - wait:
+      selector: '[role="dialog"]'
+    id: wait-role-dialog-2
+  - wait:
+      text: Learning Notes (local fake)
+      exact: true
+    id: wait-learning-notes-local-fake-2
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai/v1" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-13
+  - eval: const tabs=[...document.querySelectorAll('[role=dialog] [role=tab]')]; if(tabs.length!==3 || ['Chat Completions API','Responses API','Messages API'].some(name=>!tabs.some(tab=>tab.textContent.includes(name))) || !tabs.find(tab=>tab.textContent.includes('Chat Completions API'))?.matches('[aria-selected=true]') || document.querySelector('[role=dialog] button[aria-label="Restore default API base URL"]')) throw new Error('Native Portkey pristine tabs/default restore state mismatch');
+    id: eval-script-14
+  - shot:
+      name: portkey-cancel-reopen-pristine
+      full_page: true
+    id: shot-portkey-cancel-reopen-pristine
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Responses API")'
+    id: click-role-dialog-role-tab-has-text-responses-api-3
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai/v1") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-15
+  - click:
+      selector: '[role="dialog"] [role="tab"]:has-text("Messages API")'
+    id: click-role-dialog-role-tab-has-text-messages-api-3
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-16
+  - fill:
+      selector: '[role="dialog"] input[name="api_base"]'
+      value: https://workshop-gateway.example.invalid/v1
+    id: fill-role-dialog-input-name-api-base-3
+  - fill:
+      selector: '[role="dialog"] input[name="api_key"]'
+      value: mock-workshop-portkey-key
+    id: fill-role-dialog-input-name-api-key-2
+  - press: Tab
+    id: press-tab-2
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:enabled:not([aria-disabled="true"])'
+    id: wait-role-dialog-button-type-submit-enabled-not-aria-disabled-tr
+  - shot:
+      name: portkey-messages-ready-local-save
+      full_page: true
+    id: shot-portkey-messages-ready-local-save
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:enabled:not([aria-disabled="true"])'
+    id: wait-role-dialog-button-type-submit-enabled-not-aria-disabled-tr-2
+  - click:
+      selector: '[role="dialog"] button[type="submit"]'
+    id: click-role-dialog-button-type-submit
+  - wait_gone:
+      selector: '[role="dialog"]'
+    id: wait-gone-role-dialog-2
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Portkey") svg.stroke-status-success-05'
+    id: wait-aria-label-onboarding-llm-step-role-button-has-text-portkey
+  - &id001
+    eval: (async () => { const ar=await fetch('/api/admin/llm/provider'),ur=await fetch('/api/llm/provider'); if(!ar.ok || !ur.ok) throw new Error('Conditional provider metadata read failed'); const a=await ar.json(),u=await ur.json(),p=a.providers[0]; if(a.providers.length!==1 || p?.provider!=="portkey" || p.custom_config?.["portkey_api_mode"]!=="messages" || p.api_base!=="https://workshop-gateway.example.invalid/v1" || p.api_key!=='mock-only-not-a-secret' || JSON.stringify(a).includes("mock-workshop-portkey-key") || u.providers.length!==1 || u.providers[0].id!==p.id || u.default_text?.provider_id!==p.id || u.default_text?.model_name!=='learning-notes-demo' || !u.providers[0].model_configurations.some(m=>m.name==='learning-notes-demo' && m.is_visible)) throw new Error('Sole saved provider conditional metadata/redaction/default consumer mismatch'); })()
+    id: eval-script-17
+  - shot:
+      name: portkey-native-connected
+      full_page: true
+    id: shot-portkey-native-connected
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next-2
+  - wait:
+      role: button
+      name: Finish Setup
+      exact: true
+    id: wait-finish-setup
+  - click:
+      role: button
+      name: Edit LLM providers
+      exact: true
+    id: click-edit-llm-providers
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Portkey") svg.stroke-status-success-05'
+    id: wait-aria-label-onboarding-llm-step-role-button-has-text-portkey-2
+  - *id001
+  - shot:
+      name: portkey-saved-native-step-navigation
+      full_page: true
+    id: shot-portkey-saved-native-step-navigation
+  - eval: location.reload()
+    id: eval-script-18
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox
+  - *id001
+  - shot:
+      name: portkey-saved-native-reload
+      full_page: true
+    id: shot-portkey-saved-native-reload
+  - id: eval-script-19-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras-first-run.yaml
+      overlays: []
+  - eval: (async () => { const before=await (await fetch('/api/admin/llm/provider')).json(); if(before.providers.length!==1) throw new Error('Fresh reset lacks genuinely dirty created provider'); const current=await (await fetch('/api/__mockshop/state')).json(); const r=await fetch('/api/__mockshop/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,locale:'en',anchor:current.demo_anchor,keep:false,resetChats:true})}); if(!r.ok) throw new Error('Conditional provider dirty fresh reset failed'); })()
+    id: eval-script-19
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-20
+  - goto: /app
+    id: goto-app-3
+  - eval: (async () => { const me=await (await fetch('/api/me')).json(); localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`); localStorage.removeItem('allUsersInitialPopupFlowCompleted'); })()
+    id: eval-script-21
+  - goto: /app
+    id: goto-app-4
+  - wait:
+      selector: '[aria-label="onboarding-flow"]'
+    id: wait-aria-label-onboarding-flow-2
+  - click:
+      role: button
+      name: Let's Go
+      exact: true
+    id: click-let-s-go-2
+  - wait:
+      placeholder: Your name
+    id: wait-2
+  - fill:
+      placeholder: Your name
+      value: Jordan Workshop Educator
+    id: fill-2
+  - settle: 900
+    id: settle-2
+  - click:
+      role: button
+      name: Next
+      exact: true
+    id: click-next-3
+  - wait:
+      selector: '[aria-label="onboarding-llm-step"]'
+    id: wait-aria-label-onboarding-llm-step-2
+  - click:
+      selector: '[aria-label="onboarding-llm-step"] [role="button"]:has-text("Portkey")'
+    id: click-aria-label-onboarding-llm-step-role-button-has-text-portke-3
+  - wait:
+      selector: '[role="dialog"]'
+    id: wait-role-dialog-3
+  - wait:
+      text: Learning Notes (local fake)
+      exact: true
+    id: wait-learning-notes-local-fake-3
+  - eval: if (document.querySelector("[role=\"dialog\"] input[name=\"api_base\"]")?.value !== "https://api.portkey.ai/v1" || document.querySelector("[role=\"dialog\"] input[name=\"api_key\"]")?.value !== "") throw new Error('Native provider conditional field/reset mismatch');
+    id: eval-script-22
+  - eval: const tabs=[...document.querySelectorAll('[role=dialog] [role=tab]')]; if(tabs.length!==3 || ['Chat Completions API','Responses API','Messages API'].some(name=>!tabs.some(tab=>tab.textContent.includes(name))) || !tabs.find(tab=>tab.textContent.includes('Chat Completions API'))?.matches('[aria-selected=true]') || document.querySelector('[role=dialog] button[aria-label="Restore default API base URL"]')) throw new Error('Native Portkey pristine tabs/default restore state mismatch');
+    id: eval-script-23
+  - wait:
+      selector: '[role="dialog"] button[type="submit"]:disabled, [role="dialog"] [aria-disabled="true"] button[type="submit"]'
+    id: wait-role-dialog-button-type-submit-disabled-role-dialog-aria-di-3
+  - eval: (async () => { for(const path of ['/api/admin/llm/provider','/api/llm/provider']) { const r=await fetch(path); if(!r.ok) throw new Error('Provider catalog read failed'); const c=await r.json(); if(c.providers.length!==0 || c.default_text!==null) throw new Error('Canceled draft/fresh seed mutated configured provider catalog'); } })()
+    id: eval-script-24
+  - shot:
+      name: portkey-dirty-fresh-tabs-key-base-restored
+      full_page: true
+    id: shot-portkey-dirty-fresh-tabs-key-base-restored
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras-first-run.yaml

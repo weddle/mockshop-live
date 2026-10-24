@@ -1,0 +1,42 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import test from "node:test";
+import { Timeline } from "./timeline.mjs";
+
+test("a clip's timeline preserves source identities, exact timestamps, and its own inputs", async (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mockshop-timeline-"));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  let now = 0;
+  const inputs = [{ file: "/author/world.yaml", hash: "render-one-hash" }];
+  const origin = { file: "/author/script.yaml", line: 18, field: "scenes.0.steps.0" };
+  const scene = { id: "investigate", origin: { ...origin, line: 13, field: "scenes.0" } };
+  const timeline = new Timeline({ script: "incident", plugin: "example", source: origin.file, inputs, scenes: [scene], now: () => now });
+  const page = { async waitForTimeout(ms) { now += ms; } };
+  await timeline.begin({ i: 1, op: "press", arg: "Enter", step: { id: "question-submit", author_id: "question", scene: scene.id, origin, at: "1:02.5" }, page,
+    presentation: { cursor: { enabled: false, look: { fill: "#0B5CFF" } } } });
+  now += 375;
+  timeline.mark({ name: "submitted", note: "Exact prepared exchange" }, 1, "mark");
+  await timeline.end();
+  const base = path.join(dir, "first-render");
+  timeline.write(base, { clip: "first-render.mp4", duration_ms: now });
+  const saved = JSON.parse(fs.readFileSync(`${base}.timeline.json`, "utf8"));
+  assert.deepEqual(saved.inputs, inputs);
+  assert.deepEqual(saved.scenes, [scene]);
+  assert.equal(saved.source, origin.file);
+  assert.equal(saved.actions[0].start_ms, 62500);
+  assert.equal(saved.actions[0].end_ms, 62875);
+  assert.equal(saved.actions[0].step, 1);
+  assert.equal(saved.actions[0].id, "question-submit");
+  assert.equal(saved.actions[0].step_id, "question");
+  assert.equal(saved.actions[0].scene, "investigate");
+  assert.deepEqual(saved.actions[0].origin, origin);
+  assert.equal(saved.actions[0].presentation.cursor.enabled, false);
+  assert.equal(saved.marks[0].step_id, "question");
+  assert.deepEqual(saved.marks[0].origin, origin);
+  assert.match(fs.readFileSync(`${base}.vtt`, "utf8"), /00:01:02\.500 --> 00:01:02\.875/);
+  const later = new Timeline({ script: "incident", plugin: "example", inputs: [{ file: "/author/world.yaml", hash: "render-two-hash" }], now: () => 0 });
+  later.write(path.join(dir, "second-render"));
+  assert.equal(JSON.parse(fs.readFileSync(`${base}.timeline.json`, "utf8")).inputs[0].hash, "render-one-hash");
+});

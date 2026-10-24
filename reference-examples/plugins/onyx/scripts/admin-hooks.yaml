@@ -1,0 +1,138 @@
+# #65 route-sized native proof: Hook Extensions.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-hooks
+title: Hook Extensions - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/hooks
+    id: goto-admin-hooks
+  - shot: inventory-hooks
+    id: shot-inventory-hooks
+  - goto: /admin/hooks
+    id: goto-admin-hooks-2
+  - wait: { text: Query Processing, exact: true }
+    id: wait-query-processing
+  - shot: hooks-direct-empty
+    id: shot-hooks-direct-empty
+  - click: { selector: 'a[href="/admin/hooks"]' }
+    id: click-a-href-admin-hooks
+  - click: { role: button, name: Connect, exact: true, nth: 0 }
+    id: click-connect
+  - wait: { role: dialog }
+    id: wait
+  - fill: { selector: 'input[name="name"]', value: Workshop query notes (fake hook) }
+    id: fill-input-name-name
+  - fill: { selector: 'input[name="endpoint_url"]', value: 'https://workshop.example/hooks/query' }
+    id: fill-input-name-endpoint-url
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-not-a-secret }
+    id: fill-input-name-api-key
+  - shot: hooks-connect-dialog
+    id: shot-hooks-connect-dialog
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/hooks
+    id: goto-admin-hooks-3
+  - wait: { text: Workshop query notes (fake hook), exact: true }
+    id: wait-workshop-query-notes-fake-hook
+  - shot: hooks-created
+    id: shot-hooks-created
+  - hover: { text: Workshop query notes (fake hook), exact: true }
+    id: hover-workshop-query-notes-fake-hook
+  - click: { role: button, name: Configure hook, exact: true }
+    id: click-configure-hook
+  - wait: { role: dialog }
+    id: wait-2
+  - shot: hooks-manage-dialog
+    id: shot-hooks-manage-dialog
+  - press: Escape
+    id: press-escape
+  - click: { role: button, name: Re-validate hook, exact: true }
+    id: click-re-validate-hook
+  - shot: hooks-validated-local
+    id: shot-hooks-validated-local
+  - click: { role: button, name: Deactivate hook, exact: true }
+    id: click-deactivate-hook
+  - wait: { role: dialog }
+    id: wait-3
+  - shot: hooks-disconnect-confirm
+    id: shot-hooks-disconnect-confirm
+  - click: { role: button, name: Disconnect, exact: true }
+    id: click-disconnect
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - shot: hooks-disconnected
+    id: shot-hooks-disconnected
+  - click: { role: button, name: Reconnect, exact: true }
+    id: click-reconnect
+  - shot: hooks-reconnected
+    id: shot-hooks-reconnected
+  - hover: { text: Workshop query notes (fake hook), exact: true }
+    id: hover-workshop-query-notes-fake-hook-2
+  # The native trash action exists only while the hook is disconnected.
+  - click: { role: button, name: Deactivate hook, exact: true }
+    id: click-deactivate-hook-2
+  - wait: { role: dialog }
+    id: wait-4
+  - click: { role: button, name: Disconnect, exact: true }
+    id: click-disconnect-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+  - click: { role: button, name: Delete hook, exact: true }
+    id: click-delete-hook
+  - wait: { role: dialog }
+    id: wait-5
+  - shot: hooks-delete-confirm
+    id: shot-hooks-delete-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+    id: click-role-dialog-button-has-text-delete
+  - wait_gone: { role: dialog }
+    id: wait-gone-4
+  - shot: hooks-deleted
+    id: shot-hooks-deleted
+  - click: { role: button, name: Connect, exact: true, nth: 0 }
+    id: click-connect-2
+  - wait: { role: dialog }
+    id: wait-6
+  - fill: { selector: 'input[name="name"]', value: Workshop query notes (fake hook) }
+    id: fill-input-name-name-2
+  - fill: { selector: 'input[name="endpoint_url"]', value: 'https://workshop.example/hooks/query' }
+    id: fill-input-name-endpoint-url-2
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-not-a-secret }
+    id: fill-input-name-api-key-2
+  - shot: hooks-connect-dialog
+    id: shot-hooks-connect-dialog-2
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-5
+  - wait: { text: Workshop query notes (fake hook), exact: true }
+    id: wait-workshop-query-notes-fake-hook-2
+  - shot: hooks-reset-dirty-precondition
+    id: shot-hooks-reset-dirty-precondition
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+      })()
+    id: eval-script
+  - goto: /admin/hooks
+    id: goto-admin-hooks-4
+  - wait_gone: { text: Workshop query notes (fake hook), exact: true }
+    id: wait-gone-workshop-query-notes-fake-hook
+  - shot: reset-hooks-seed
+    id: shot-reset-hooks-seed
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

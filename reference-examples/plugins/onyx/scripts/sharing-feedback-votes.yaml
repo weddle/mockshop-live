@@ -1,0 +1,202 @@
+# DEVELOPMENT inventory; independent parent strict/every-PNG acceptance/publication remains pending.
+# Independent fresh reset uses the existing control plane; mutations under test use only native controls.
+
+name: sharing-feedback-votes
+title: Native answer copy and optional/required feedback lifecycle
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/http 400 (POST|DELETE) .*\/api\/chat\/(create|remove)-chat-message-feedback(\?chat_message_id=\d+)?$/'
+    reason: Original endpoint-specific staged native feedback/removal HTTP failures; unclassified console/resource errors remain strict.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/127\.0\.0\.1:\d+\/api\/chat\/create-chat-message-feedback\]$/'
+    reason: Actual changed strict witness attributes the one-shot rejected native Submit to this exact endpoint; visible error/draft and prior like plus saved vote remain protected.
+  - match: '/^console: \[Toast\] Failed to submit feedback - Fictional feedback submission failed for this attempt\. \[source: http:\/\/127\.0\.0\.1:\d+\/_next\/static\/chunks\/1h15gs0jly9g_\.js\]$/'
+    reason: Actual pinned Opal Toast source event from failed native Submit; controller rollback and saved like readback accompany the visible retained error modal. Unlocated or different-source events remain strict.
+  - match: '/^console: Failed to load resource: the server responded with a status of 400 \(Bad Request\) \[source: http:\/\/127\.0\.0\.1:\d+\/api\/chat\/remove-chat-message-feedback\?chat_message_id=1004\]$/'
+    reason: Actual changed strict witness attributes the one-shot rejected native removal to this exact saved answer endpoint; selected dislike and saved vote remain protected.
+  - match: '/^console: \[Toast\] Failed to remove feedback - Fictional feedback removal failed for this attempt\. \[source: http:\/\/127\.0\.0\.1:\d+\/_next\/static\/chunks\/1h15gs0jly9g_\.js\]$/'
+    reason: Actual pinned Opal Toast source event from native removal rollback; visible error, selected dislike and authoritative saved dislike readback are asserted. Unlocated or different-source events remain strict.
+steps:
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const currentResponse = await fetch('/api/__mockshop/state');
+        if (!currentResponse.ok) throw new Error('Independent Sharing seed read failed');
+        const current = await currentResponse.json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,locale:'en',keep:false,resetChats:true,anchor:current.demo_anchor})});
+        if (!response.ok) throw new Error('Independent Sharing reset failed');
+        sessionStorage.removeItem('sharing-workshop-id');
+        sessionStorage.removeItem('sharing-workshop-link');
+      })();
+    id: eval-script
+  # Native prerequisite replay only; original screenshots remain in their single primary owning unit.
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+    id: goto-app-chatid-61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+    id: wait-closing-reflection
+  - wait: { testid: 'AgentMessage/toolbar', nth: 1 }
+    id: wait
+  - settle: 1200
+    id: settle
+  - eval: |
+      const toolbars = [...document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')];
+      if (toolbars.length !== 2 || !document.body.innerText.includes('Start with a short reading circle.')) throw new Error('Seeded workshop did not replay both saved turns');
+      if (toolbars.some(t => !t.textContent.includes('GPT-5.2'))) throw new Error('Saved answer model labels did not replay');
+      if ([...toolbars[1].querySelectorAll('button')].some(b => b.textContent.trim() === 'Sources')) throw new Error('No-source closing reflection invented a Sources control');
+      sessionStorage.setItem('sharing-workshop-id', '61616161-0000-4000-8000-000000000001');
+    id: eval-script-2
+  # Primary original operations 49-107; every original interaction and named PNG is retained.
+  - click: { testid: 'AgentMessage/copy-button', nth: 1 }
+    id: click
+  - wait: { selector: '[data-testid="AgentMessage/copy-button"] >> nth=1 >> path[d="M13.5 4.5L6 12L2.5 8.5"]' }
+    id: wait-data-testid-agentmessage-copy-button-nth-1-path-d-m13-5-4-5
+  - shot: live-answer-copy-success
+    id: shot-live-answer-copy-success
+  - click: { testid: 'AgentMessage/like-button', nth: 1 }
+    id: click-2
+  - wait: { role: dialog }
+    id: wait-2
+  - wait: { placeholder: What did you like about this response? }
+    id: wait-3
+  - shot: like-feedback-optional-empty
+    id: shot-like-feedback-optional-empty
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="empty"]', nth: 1 }
+    id: wait-data-testid-agentmessage-like-button-data-interactive-state
+  - shot: like-cancel-no-vote
+    id: shot-like-cancel-no-vote
+  - click: { testid: 'AgentMessage/like-button', nth: 1 }
+    id: click-3
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-like-button-data-interactive-state-2
+  - shot: like-submitted-empty-optional
+    id: shot-like-submitted-empty-optional
+  - eval: location.reload()
+    id: eval-script-3
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-like-button-data-interactive-state-3
+  - shot: like-persists-reload
+    id: shot-like-persists-reload
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+    id: click-4
+  - wait: { placeholder: What did you dislike about this response? }
+    id: wait-4
+  - eval: |
+      const submit = [...document.querySelectorAll('[role="dialog"] button')].find(b => b.textContent === 'Submit');
+      if (!submit?.disabled) throw new Error('Negative feedback allows empty submission');
+      if (document.querySelector('[role="dialog"] select') || document.querySelector('[role="dialog"] [role="combobox"]')) throw new Error('Unexpected reason picker; pinned native modal is text-only');
+    id: eval-script-4
+  - shot: dislike-required-empty
+    id: shot-dislike-required-empty
+  - fill: { placeholder: What did you dislike about this response?, value: '   ' }
+    id: fill
+  - press: Tab
+    id: press-tab
+  - eval: |
+      const submit = [...document.querySelectorAll('[role="dialog"] button')].find(b => b.textContent === 'Submit');
+      if (!submit?.disabled) throw new Error('Negative feedback accepts whitespace-only details');
+    id: eval-script-5
+  - shot: dislike-whitespace-invalid
+    id: shot-dislike-whitespace-invalid
+  - fill: { placeholder: What did you dislike about this response?, value: Please include a large-print reflection option. }
+    id: fill-2
+  - shot: dislike-details-draft
+    id: shot-dislike-details-draft
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel-2
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+  - wait: { selector: '[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-like-button-data-interactive-state-4
+  - shot: dislike-cancel-preserves-like
+    id: shot-dislike-cancel-preserves-like
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+    id: click-5
+  - eval: |
+      if (document.querySelector('[role="dialog"] textarea')?.value !== '') throw new Error('Cancelled feedback draft leaked into reopened modal');
+    id: eval-script-6
+  - shot: dislike-reopened-empty
+    id: shot-dislike-reopened-empty
+  - fill: { placeholder: What did you dislike about this response?, value: Please include a large-print reflection option. }
+    id: fill-3
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/sharing-feedback/outcome', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({operation:'feedback', fail:true})}); if (!r.ok) throw new Error('Cannot stage local feedback failure'); })()
+    id: eval-script-7
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit-2
+  - wait: { text: Failed to submit feedback - Fictional feedback submission failed for this attempt., exact: true }
+    id: wait-failed-to-submit-feedback-fictional-feedback-submission-fai
+  - wait: { placeholder: What did you dislike about this response? }
+    id: wait-5
+  - eval: |
+      (async () => {
+        if (document.querySelector('[role="dialog"] textarea')?.value !== 'Please include a large-print reflection option.') throw new Error('Failed feedback discarded the native draft');
+        const toolbar = document.querySelectorAll('[data-testid="AgentMessage/toolbar"]')[1];
+        if (!toolbar?.querySelector('[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]')) throw new Error('Failed feedback did not restore the prior native like');
+        const response = await fetch('/api/chat/get-chat-session/61616161-0000-4000-8000-000000000001');
+        if (!response.ok) throw new Error('Cannot read saved feedback after native submission failure');
+        const session = await response.json();
+        const closing = session.messages.filter(message => message.message_type === 'assistant').at(-1);
+        if (closing?.current_feedback !== 'like') throw new Error('Failed submission changed the authoritative saved vote');
+      })();
+    id: eval-script-8
+  - shot: feedback-error-retains-modal
+    id: shot-feedback-error-retains-modal
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit-3
+  - wait_gone: { role: dialog }
+    id: wait-gone-4
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st
+  - eval: |
+      if (document.querySelectorAll('[data-testid="AgentMessage/like-button"][data-interactive-state="selected"]').length) throw new Error('Dislike did not replace like');
+    id: eval-script-9
+  - shot: dislike-submitted-replaces-like
+    id: shot-dislike-submitted-replaces-like
+  - eval: location.reload()
+    id: eval-script-10
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st-2
+  - shot: dislike-persists-reload
+    id: shot-dislike-persists-reload
+  - eval: |
+      (async () => { const r = await fetch('/api/mockshop/sharing-feedback/outcome', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({operation:'remove', fail:true})}); if (!r.ok) throw new Error('Cannot stage local removal failure'); })()
+    id: eval-script-11
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+    id: click-6
+  - wait: { text: Failed to remove feedback - Fictional feedback removal failed for this attempt., exact: true }
+    id: wait-failed-to-remove-feedback-fictional-feedback-removal-failed
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="selected"]' }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st-3
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/chat/get-chat-session/61616161-0000-4000-8000-000000000001');
+        if (!response.ok) throw new Error('Cannot read saved feedback after native removal failure');
+        const session = await response.json();
+        const closing = session.messages.filter(message => message.message_type === 'assistant').at(-1);
+        if (closing?.current_feedback !== 'dislike') throw new Error('Failed removal changed the authoritative saved vote');
+      })();
+    id: eval-script-12
+  - shot: feedback-remove-error-rolls-back
+    id: shot-feedback-remove-error-rolls-back
+  - click: { testid: 'AgentMessage/dislike-button', nth: 1 }
+    id: click-7
+  - wait: { selector: '[data-testid="AgentMessage/dislike-button"][data-interactive-state="empty"]', nth: 1 }
+    id: wait-data-testid-agentmessage-dislike-button-data-interactive-st-4
+  - shot: dislike-toggle-off
+    id: shot-dislike-toggle-off
+world: ../../../worlds/seaside/world.yaml

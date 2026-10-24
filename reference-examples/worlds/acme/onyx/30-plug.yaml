@@ -1,0 +1,285 @@
+apps:
+  onyx:
+    fixtures:
+      GET /tool:
+        - id: 1
+          name: internal_search
+          display_name: Internal Search
+          description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+          definition: null
+          custom_headers: []
+          in_code_tool_id: SearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 2
+          name: web_search
+          display_name: Web Search
+          description: Search the public web.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: WebSearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 3
+          name: image_generation
+          display_name: Image Generation
+          description: Generate images from a text prompt.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: ImageGenerationTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 4
+          name: python
+          display_name: Code Interpreter
+          description: Run Python to analyze data and build charts.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: PythonTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 31
+          name: get_oncall_schedule
+          display_name: On-call schedule
+          description: Look up who is on call for a service this week, with escalation order.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 32
+          name: get_service_status
+          display_name: Service status
+          description: Check current health and open incidents for a service or region.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+      GET /mcp/servers:
+        mcp_servers:
+          - id: 1
+            name: "{{company.name}} On-call (internal MCP)"
+            description: Read-only access to the on-call schedule and live service status.
+            server_url: https://oncall-mcp.{{company.domain}}/mcp
+            owner: "{{people.dana.email}}"
+            transport: STREAMABLE_HTTP
+            auth_type: NONE
+            auth_performer: ADMIN
+            oauth_provider_mode: AUTO_DISCOVERY
+            user_can_authenticate: true
+            status: CONNECTED
+            is_public: true
+            groups: []
+            users: []
+            available_in_craft: false
+            tool_count: 2
+            last_refreshed_at: "{{vars.onyx_template_open}}ago:1d}}"
+            permissions:
+              edit: true
+              delete: true
+              authenticate: true
+              manage_status: true
+      GET /mcp/servers/persona/11:
+        assistant_id: "11"
+        mcp_servers:
+          - id: 1
+            name: "{{company.name}} On-call (internal MCP)"
+            description: Read-only access to the on-call schedule and live service status.
+            server_url: https://oncall-mcp.{{company.domain}}/mcp
+            owner: "{{people.dana.email}}"
+            transport: STREAMABLE_HTTP
+            auth_type: NONE
+            auth_performer: ADMIN
+            oauth_provider_mode: AUTO_DISCOVERY
+            user_can_authenticate: true
+            status: CONNECTED
+            is_public: true
+            groups: []
+            users: []
+            available_in_craft: false
+            tool_count: 2
+            last_refreshed_at: "{{vars.onyx_template_open}}ago:1d}}"
+            permissions:
+              edit: true
+              delete: true
+              authenticate: true
+              manage_status: true
+      GET /admin/mcp/servers:
+        mcp_servers:
+          - id: 1
+            name: "{{company.name}} On-call (internal MCP)"
+            description: Read-only access to the on-call schedule and live service status.
+            server_url: https://oncall-mcp.{{company.domain}}/mcp
+            owner: "{{people.dana.email}}"
+            transport: STREAMABLE_HTTP
+            auth_type: NONE
+            auth_performer: ADMIN
+            oauth_provider_mode: AUTO_DISCOVERY
+            user_can_authenticate: true
+            status: CONNECTED
+            is_public: true
+            groups: []
+            users: []
+            available_in_craft: false
+            tool_count: 2
+            last_refreshed_at: "{{vars.onyx_template_open}}ago:1d}}"
+            permissions:
+              edit: true
+              delete: true
+              authenticate: true
+              manage_status: true
+      GET /admin/mcp/server/1/tools/snapshots:
+        - id: 31
+          name: get_oncall_schedule
+          display_name: On-call schedule
+          description: Look up who is on call for a service this week, with escalation order.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 32
+          name: get_service_status
+          display_name: Service status
+          description: Check current health and open incidents for a service or region.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: null
+          passthrough_auth: false
+          mcp_server_id: 1
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: false
+            delete: false
+            toggle: true
+            authenticate: false
+      GET /admin/mcp/mock-creation:
+        fake_credential: mock-only-not-a-secret
+        auth_feedback: Simulated authentication saved for this run only. No provider, key or external MCP server was used.
+        server:
+          name: "{{company.name}} Status Board (fake MCP)"
+          description: Fictional demo resources. Authentication and tools are simulated for this run only.
+          server_url: https://status-board.{{company.domain}}/mcp
+          owner: "{{people.dana.email}}"
+          transport: STREAMABLE_HTTP
+          auth_type: OAUTH
+          auth_performer: PER_USER
+          oauth_provider_mode: AUTO_DISCOVERY
+          auth_template:
+            headers: {}
+            required_fields: []
+          admin_credentials: {}
+          user_credentials: {}
+          user_can_authenticate: true
+          status: CREATED
+          is_public: true
+          groups: []
+          users: []
+          available_in_craft: false
+          tool_count: 0
+          last_refreshed_at: null
+          permissions:
+            edit: true
+            delete: true
+            authenticate: true
+            manage_status: true
+        tools:
+          - id: 31
+            name: get_status_board
+            display_name: Status board (fake)
+            description: Simulated read-only status board; no MCP execution.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 32
+            name: get_maintenance_windows
+            display_name: Maintenance windows (fake)
+            description: Simulated maintenance calendar; no external server is contacted.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false

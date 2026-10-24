@@ -1,0 +1,179 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-notifications
+title: Native Extras - notifications
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait: { text: You need to agree to the terms to access the application., exact: true }
+    id: wait-you-need-to-agree-to-the-terms-to-access-the-application
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start-2
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - click: { label: Next banner }
+    id: click-2
+  - wait: { text: Clinical education workshop reminder, exact: true }
+    id: wait-clinical-education-workshop-reminder
+  - click: { label: Previous banner }
+    id: click-3
+  - wait: { text: Learning workshop announcement, exact: true }
+    id: wait-learning-workshop-announcement
+  - click: { label: Next banner }
+    id: click-4
+  - click: { role: button, name: View, exact: true }
+    id: click-view
+  - wait: { testid: agent-name-display }
+    id: wait
+  - click: { label: Dismiss }
+    id: click-5
+  - wait: { text: Learning workshop announcement, exact: true }
+    id: wait-learning-workshop-announcement-2
+  - goto: /app
+    id: goto-app-3
+  - eval: "if(localStorage.getItem('allUsersInitialPopupFlowCompleted') !== 'true' || document.querySelector('[role=\"dialog\"]')) throw new Error('Consent dismissal did not survive reload')"
+    id: eval-script-2
+  # Lossless primary operations from the former monolithic proof.
+  - click: { selector: '#onyx-user-dropdown' }
+    id: click-onyx-user-dropdown
+  - click: { text: Notifications, exact: true }
+    id: click-notifications
+  - wait: { text: Campus Learning Guide shared with your group, exact: true }
+    id: wait-campus-learning-guide-shared-with-your-group
+  - wait: { text: Clinical Education Guide materials ready, exact: true }
+    id: wait-clinical-education-guide-materials-ready
+  - shot: { name: extras-32-notifications-new-older-pinned, full_page: true }
+    id: shot-extras-32-notifications-new-older-pinned
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+    id: hover-learning-accessibility-checklist-updated
+  - click: { selector: '[data-hover-group="notifications-popover/NotificationItem"]:has-text("Learning accessibility checklist updated") .hoverable-replace-hover button' }
+    id: click-data-hover-group-notifications-popover-notificationitem-ha
+  - settle: 500
+    id: settle
+  - wait: { selector: '#onyx-user-dropdown span.text-text-light-05:text-is("2")' }
+    id: wait-onyx-user-dropdown-span-text-text-light-05-text-is-2
+  - wait: { text: Older, exact: true }
+    id: wait-older
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+    id: hover-learning-accessibility-checklist-updated-2
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"]:has-text("Learning accessibility checklist updated") .hoverable-replace-hover button' }
+    id: wait-gone-data-hover-group-notifications-popover-notificationite
+  - shot: { name: extras-32a-notification-mark-one-read, full_page: true }
+    id: shot-extras-32a-notification-mark-one-read
+  # Stock pinned Onyx can retain the old popover header before reload; account and read-row outcomes above are native.
+  - eval: "location.reload()"
+    id: eval-script-3
+  - wait: { selector: '#onyx-user-dropdown span.text-text-light-05:text-is("2")' }
+    id: wait-onyx-user-dropdown-span-text-text-light-05-text-is-2-2
+  - click: { selector: '#onyx-user-dropdown' }
+    id: click-onyx-user-dropdown-2
+  - click: { text: Notifications, exact: true }
+    id: click-notifications-2
+  - wait: { selector: '[role="menuitem"] span.text-action-selection-05:text-is("2 unread")' }
+    id: wait-role-menuitem-span-text-action-selection-05-text-is-2-unrea
+  - wait: { text: Older, exact: true }
+    id: wait-older-2
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+    id: hover-learning-accessibility-checklist-updated-3
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"]:has-text("Learning accessibility checklist updated") .hoverable-replace-hover button' }
+    id: wait-gone-data-hover-group-notifications-popover-notificationite-2
+  - shot: { name: extras-32b-notification-one-read-native-reload, full_page: true }
+    id: shot-extras-32b-notification-one-read-native-reload
+  - click: { text: Campus Learning Guide shared with your group, exact: true }
+    id: click-campus-learning-guide-shared-with-your-group
+  - wait: { testid: agent-name-display }
+    id: wait-2
+  - eval: |
+      (async () => {
+        if (new URL(location.href).searchParams.get('agentId') !== '11') throw new Error('Notification did not open its native agent target');
+        const summary = await (await fetch('/api/notifications/summary')).json();
+        if (summary.undismissed_count !== 1) throw new Error('Opening native notification did not mark it read');
+      })()
+    id: eval-script-4
+  - shot: { name: extras-33-notification-open-native-target, full_page: true }
+    id: shot-extras-33-notification-open-native-target
+  - click: { selector: '#onyx-user-dropdown' }
+    id: click-onyx-user-dropdown-3
+  - click: { text: Notifications, exact: true }
+    id: click-notifications-3
+  - click: { selector: '[role="menuitem"] .flex-row:has(> span.text-action-selection-05) button' }
+    id: click-role-menuitem-flex-row-has-span-text-action-selection-05-b
+  - settle: 500
+    id: settle-2
+  - eval: |
+      (async () => {
+        const summary = await (await fetch('/api/notifications/summary')).json();
+        if (summary.undismissed_count !== 0) throw new Error('Mark All as Read did not persist');
+      })()
+    id: eval-script-5
+  - wait_gone: { selector: '#onyx-user-dropdown span.text-text-light-05' }
+    id: wait-gone-onyx-user-dropdown-span-text-text-light-05
+  - wait_gone: { selector: '.fixed.bottom-2.z-toast' }
+    id: wait-gone-fixed-bottom-2-z-toast
+  - wait: { text: Older, exact: true }
+    id: wait-older-3
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+    id: hover-learning-accessibility-checklist-updated-4
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"] .hoverable-replace-hover button' }
+    id: wait-gone-data-hover-group-notifications-popover-notificationite-3
+  - shot: { name: extras-34-notifications-dismiss-all, full_page: true }
+    id: shot-extras-34-notifications-dismiss-all
+  - click: { selector: '[role="menuitem"]:has-text("Notifications") button', nth: 0 }
+    id: click-role-menuitem-has-text-notifications-button
+  - wait: { text: Notifications, exact: true }
+    id: wait-notifications
+  - shot: { name: extras-34a-notifications-native-back, full_page: true }
+    id: shot-extras-34a-notifications-native-back
+  - press: Escape
+    id: press-escape
+  # Native hard reload reconciles the stock cached header; the original before-reload dismissal and Back states remain above.
+  - eval: "location.reload()"
+    id: eval-script-6
+  - wait: { testid: agent-name-display }
+    id: wait-3
+  - wait_gone: { selector: '#onyx-user-dropdown span.text-text-light-05' }
+    id: wait-gone-onyx-user-dropdown-span-text-text-light-05-2
+  - wait_gone: { selector: '.fixed.bottom-2.z-toast' }
+    id: wait-gone-fixed-bottom-2-z-toast-2
+  - click: { selector: '#onyx-user-dropdown' }
+    id: click-onyx-user-dropdown-4
+  - click: { text: Notifications, exact: true }
+    id: click-notifications-4
+  - wait: { text: Older, exact: true }
+    id: wait-older-4
+  - hover: { text: Learning accessibility checklist updated, exact: true }
+    id: hover-learning-accessibility-checklist-updated-5
+  - wait_gone: { selector: '[role="menuitem"] span.text-action-selection-05' }
+    id: wait-gone-role-menuitem-span-text-action-selection-05
+  - wait_gone: { selector: '[data-hover-group="notifications-popover/NotificationItem"] .hoverable-replace-hover button' }
+    id: wait-gone-data-hover-group-notifications-popover-notificationite-4
+  - shot: { name: extras-34b-notification-consumers-dismissed-reload, full_page: true }
+    id: shot-extras-34b-notification-consumers-dismissed-reload
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

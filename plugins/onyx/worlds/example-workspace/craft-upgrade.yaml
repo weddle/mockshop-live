@@ -1,0 +1,9 @@
+# Capability variant of example-workspace: Craft is not included in the plan (Community upsell). Only flips the settings; same cast and keys.
+includes:
+  - ./world.yaml
+apps:
+  onyx:
+    settings:
+      onyx_craft_enabled: false
+      onyx_craft_available: false
+      onyx_craft_requires_upgrade: true

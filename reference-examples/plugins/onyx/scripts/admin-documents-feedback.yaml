@@ -1,0 +1,104 @@
+# #65 route-sized native proof: Document Feedback.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-documents-feedback
+title: Document Feedback - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/documents/feedback
+    id: goto-admin-documents-feedback
+  - shot: inventory-documents-feedback
+    id: shot-inventory-documents-feedback
+  - goto: /admin/documents/feedback
+    id: goto-admin-documents-feedback-2
+  - shot: documents-feedback-empty
+    id: shot-documents-feedback-empty
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00', admin_documents_fixture: 'loaded' }) });
+        window.location.href = '/admin/documents/feedback';
+      })()
+    id: eval-script
+  - wait: { role: link, name: Workshop reading guide (fake), exact: true }
+    id: wait-workshop-reading-guide-fake
+  - wait: { role: link, name: Workshop summaries workbook (fake), exact: true }
+    id: wait-workshop-summaries-workbook-fake
+  - shot: documents-feedback-liked-disliked-loaded
+    id: shot-documents-feedback-liked-disliked-loaded
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") button[aria-label="Edit"]' }
+    id: click-tr-has-text-workshop-reading-guide-fake-button-aria-label-
+  - fill: { selector: 'tr:has-text("Workshop reading guide (fake)") input:not([type="checkbox"])', value: '5' }
+    id: fill-tr-has-text-workshop-reading-guide-fake-input-not-type-chec
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") button[aria-label="Save"]' }
+    id: click-tr-has-text-workshop-reading-guide-fake-button-aria-label--2
+  - wait: { text: Updated score!, exact: true }
+    id: wait-updated-score
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Hide document"]' }
+    id: click-tr-has-text-workshop-reading-guide-fake-aria-label-hide-do
+  - wait: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Unhide document"]' }
+    id: wait-tr-has-text-workshop-reading-guide-fake-aria-label-unhide-d
+  - shot: documents-feedback-liked-boost-hidden
+    id: shot-documents-feedback-liked-boost-hidden
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") button[aria-label="Edit"]' }
+    id: click-tr-has-text-workshop-summaries-workbook-fake-button-aria-l
+  - fill: { selector: 'tr:has-text("Workshop summaries workbook (fake)") input:not([type="checkbox"])', value: '3' }
+    id: fill-tr-has-text-workshop-summaries-workbook-fake-input-not-type
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") button[aria-label="Save"]' }
+    id: click-tr-has-text-workshop-summaries-workbook-fake-button-aria-l-2
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Hide document"]' }
+    id: click-tr-has-text-workshop-summaries-workbook-fake-aria-label-hi
+  - wait: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Unhide document"]' }
+    id: wait-tr-has-text-workshop-summaries-workbook-fake-aria-label-unh
+  - shot: documents-feedback-disliked-boost-hidden
+    id: shot-documents-feedback-disliked-boost-hidden
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/documents/feedback
+    id: goto-admin-documents-feedback-3
+  - wait: { selector: 'tr:has-text("Workshop reading guide (fake)") button:has-text("5")' }
+    id: wait-tr-has-text-workshop-reading-guide-fake-button-has-text-5
+  - wait: { selector: 'tr:has-text("Workshop summaries workbook (fake)") button:has-text("3")' }
+    id: wait-tr-has-text-workshop-summaries-workbook-fake-button-has-tex
+  - wait: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Unhide document"]' }
+    id: wait-tr-has-text-workshop-reading-guide-fake-aria-label-unhide-d-2
+  - wait: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Unhide document"]' }
+    id: wait-tr-has-text-workshop-summaries-workbook-fake-aria-label-unh-2
+  - shot: documents-feedback-navigation-readback
+    id: shot-documents-feedback-navigation-readback
+  - click: { selector: 'tr:has-text("Workshop reading guide (fake)") [aria-label="Unhide document"]' }
+    id: click-tr-has-text-workshop-reading-guide-fake-aria-label-unhide-
+  - click: { selector: 'tr:has-text("Workshop summaries workbook (fake)") [aria-label="Unhide document"]' }
+    id: click-tr-has-text-workshop-summaries-workbook-fake-aria-label-un
+  - shot: documents-feedback-visible-again
+    id: shot-documents-feedback-visible-again
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/documents/feedback';
+      })()
+    id: eval-script-2
+  - wait_gone: { role: link, name: Workshop reading guide (fake), exact: true }
+    id: wait-gone-workshop-reading-guide-fake
+  - wait_gone: { role: link, name: Workshop summaries workbook (fake), exact: true }
+    id: wait-gone-workshop-summaries-workbook-fake
+  - wait: { text: Most Liked Documents, exact: true }
+    id: wait-most-liked-documents
+  - wait_gone: { selector: 'svg[role="status"]' }
+    id: wait-gone-svg-role-status
+  - shot: reset-documents-feedback-empty
+    id: shot-reset-documents-feedback-empty
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,64 @@
+name: demo-projects-files
+title: Start a planning project, add the notes and ask what the team agreed
+strict: true
+scenes:
+  - id: create-project
+    steps:
+      - id: open-home
+        goto: /app
+      - id: wait-home-composer
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: click-new-project
+        click: { text: New Project, exact: true }
+      - id: wait-project-dialog
+        wait: { selector: '[role="dialog"] input' }
+      - id: fill-project-name
+        fill: { selector: '[role="dialog"] input', value: "{{vars.new_project.name}}" }
+      - id: confirm-project
+        click: { selector: '[role="dialog"] button:has-text("Create")' }
+      - id: wait-project-home
+        wait: { text: "{{vars.new_project.name}}", exact: true }
+      - id: shot-project-created
+        shot: { name: project-created, full_page: true }
+  - id: instructions
+    steps:
+      - id: click-set-instructions
+        click: { text: Set Instructions }
+      - id: wait-instructions-dialog
+        wait: { selector: '[role="dialog"] textarea' }
+      - id: fill-instructions
+        fill: { selector: '[role="dialog"] textarea', value: "{{vars.new_project.instructions}}" }
+      - id: save-instructions
+        click: { selector: '[role="dialog"] button:has-text("Save")' }
+      - id: wait-instructions-closed
+        wait_gone: { role: dialog }
+      - id: wait-instructions-shown
+        wait: { text: "{{vars.new_project.instructions}}" }
+      - id: shot-instructions-saved
+        shot: { name: project-instructions-saved, full_page: true }
+  - id: upload-notes
+    steps:
+      - id: upload-planning-notes
+        eval: |
+          const input = document.querySelector('input[type="file"][tabindex="-1"]');
+          if (!input) throw new Error('Project drop zone input missing');
+          const transfer = new DataTransfer();
+          transfer.items.add(new File([{{vars.upload.planning_notes.text | json}}], {{vars.upload.planning_notes.name | json}}, {type: 'text/plain', lastModified: 0}));
+          input.files = transfer.files;
+          input.dispatchEvent(new Event('change', {bubbles: true}));
+      - id: wait-notes-listed
+        wait: { text: "{{vars.upload.planning_notes.name}}", exact: true }
+      - id: shot-project-file-uploaded
+        shot: { name: project-file-uploaded, full_page: true }
+  - id: ask-in-project
+    steps:
+      - id: wait-project-composer
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: ask-planning-question
+        send:
+          text: "{{apps.onyx.replies.planning.question}}"
+          reply: { use: apps.onyx.replies.planning }
+      - id: wait-planning-answer
+        wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+      - id: shot-project-answer
+        shot: project-answer

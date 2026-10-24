@@ -1,0 +1,79 @@
+# End user opens cited sources (#25). Link sources open the mock's local document viewer
+# (/api/mockshop/source/<id>) instead of a dead external URL; a "file" source opens in Onyx's own preview modal.
+# Onyx opens links in a new tab; the eval below makes window.open navigate this tab so the shot can show it.
+name: user-open-cited-source
+title: User opens a cited source (file preview, citation chip, Sources panel, direct link)
+viewport: [ 1440, 900 ]
+strict: true
+steps:
+  - goto: /app
+    id: goto-app
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox
+  - type: { selector: "#onyx-chat-input-textbox", value: "What training do new front desk hires need in their first 30 days, and who is behind on it?" }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait
+  - wait: { text: "opening checklist", timeout: 30000 }
+    id: wait-opening-checklist
+  - settle: 1500
+    id: settle
+  - eval: "document.querySelector('[data-testid=chat-scroll-container]')?.scrollTo(0, 1e6)"
+    id: eval-script
+  - shot: answer-with-citations
+    id: shot-answer-with-citations
+  # citation chip of a file source -> Onyx's preview modal (GET /chat/file/aed-opening-checklist)
+  - click: { role: button, name: File, exact: true }
+    id: click-file
+  - wait: { text: "Before the lobby opens", timeout: 15000 }
+    id: wait-before-the-lobby-opens
+  - settle: 600
+    id: settle-2
+  - shot: file-preview-from-chip
+    id: shot-file-preview-from-chip
+  - press: Escape
+    id: press-escape
+  - wait_gone: { text: "Before the lobby opens" }
+    id: wait-gone-before-the-lobby-opens
+  # citation chip of a link source -> local viewer
+  - eval: "window.open = (u) => { location.href = u; return null; }"
+    id: eval-script-2
+  - click: { role: button, name: Confluence, exact: true }
+    id: click-confluence
+  - wait: { testid: mockshop-source }
+    id: wait-2
+  - shot: source-viewer-from-chip
+    id: shot-source-viewer-from-chip
+  # Sources panel entry -> local viewer (the chat is the first one created in this run)
+  - goto: /app?chatId=00000000-0000-4000-8000-000000000001
+    id: goto-app-chatid-00000000-0000-4000-8000-000000000001
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait-3
+  - settle: 800
+    id: settle-3
+  - click: { role: button, name: Sources }
+    id: click-sources
+  - wait: { text: "Cited Sources" }
+    id: wait-cited-sources
+  - settle: 600
+    id: settle-4
+  - shot: sources-panel
+    id: shot-sources-panel
+  - eval: "window.open = (u) => { location.href = u; return null; }"
+    id: eval-script-3
+  - click: { role: button, has_text: "Front Desk Onboarding Path 2026.pdf" }
+    id: click
+  - wait: { testid: mockshop-source }
+    id: wait-4
+  - shot: source-viewer-from-sources-panel
+    id: shot-source-viewer-from-sources-panel
+  # direct link (the validator only accepts page routes in goto, so navigate by URL)
+  - eval: "location.href = '/api/mockshop/source/SLACK-C04LEARNKW-1727712000'"
+    id: eval-script-4
+  - wait: { testid: mockshop-source }
+    id: wait-5
+  - shot: source-viewer-direct-link
+    id: shot-source-viewer-direct-link
+world: ../../../worlds/seaside/world.yaml

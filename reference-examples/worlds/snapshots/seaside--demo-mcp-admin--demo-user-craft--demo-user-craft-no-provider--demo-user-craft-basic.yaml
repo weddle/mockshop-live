@@ -1,0 +1,6 @@
+includes:
+  - ../seaside/world.yaml
+  - ../onyx-overrides/demo-mcp-admin.yaml
+  - ../onyx-overrides/demo-user-craft.yaml
+  - ../onyx-overrides/demo-user-craft-no-provider.yaml
+  - ../onyx-overrides/demo-user-craft-basic.yaml

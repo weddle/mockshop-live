@@ -1,0 +1,100 @@
+# World B. Acme's reliability cast (worlds/acme) mapped onto the default semantic keys; different agents, replies, models and settings.
+includes:
+  - ../default/world.yaml
+  - ../../../../worlds/acme/world.yaml
+people:
+  owner: {name: "{{people.dana.name}}", email: "{{people.dana.email}}", title: "{{people.dana.title}}"}
+  admin: {name: "{{people.sam.name}}", email: "{{people.sam.email}}", title: "{{people.sam.title}}"}
+  member: {name: Priya Natarajan, email: "priya@{{company.domain}}", title: Media Platform Engineer}
+teams:
+  placeholder:
+    name: Reliability Council
+documents:
+  placeholder_one:
+    source: runbooks
+    title: Relay capacity review
+    summary: Capacity headroom for the relay pool and the owners of each follow-up.
+    body: "{{people.dana.name}} reviews relay capacity weekly; {{people.sam.name}} owns the follow-ups."
+    author: dana
+  placeholder_two:
+    source: incident-channels
+    title: Rollback status thread
+    summary: Where the relay rollback stands and what is left.
+    body: "{{people.sam.name}} confirmed the rollback finished; the remaining checks are with {{teams.reliability.name}}."
+    author: sam
+sources:
+  wiki:
+    name: Engineering Wiki
+    vendor: confluence
+    url: "https://wiki.{{company.domain}}"
+vars:
+  new_project:
+    name: Relay Capacity Planning
+    instructions: Answer from the Acme runbooks and name the engineer who owns each follow-up.
+  upload:
+    planning_notes:
+      name: relay-capacity-notes.txt
+      text: The relay capacity notes list headroom per region, the owning engineer and the rollback checks.
+  new_agent:
+    name: Incident Handoff Coordinator
+    description: Coordinates on-call handoffs and tracks open rollback checks.
+    instructions: Summarize the Acme runbooks and list the open checks with their owners.
+    starter: What is open on the relay rollback?
+  personal:
+    name: Kenji
+    instructions: Lead with severity and the owning engineer; keep answers short.
+  new_document_set:
+    name: Relay Runbooks
+    description: Relay capacity and rollback runbooks for on-call engineers.
+  new_skill:
+    name: rollback-handoff
+    description: Turns relay rollback notes into an on-call handoff.
+    instructions: Summarize the rollback state, then list open checks with the owning engineer.
+  new_token:
+    name: relay-oncall-token
+apps:
+  onyx:
+    sources:
+      wiki: {id: 6101, connector_id: 6201, credential_id: 6301}
+    mcp_servers:
+      docs:
+        name: Acme Runbook MCP
+        description: Read-only access to the Acme engineering runbooks and the on-call schedule.
+        url: "https://runbooks.{{company.domain}}/mcp"
+        tools:
+          - {name: find_runbook, display_name: Find runbook, description: Find a runbook by title.}
+          - {name: get_oncall, display_name: Get on-call, description: Show who is on call for a service.}
+    viewer: admin
+    agents:
+      helper:
+        name: Relay Reliability Copilot
+        description: Answers incident and rollback questions from the engineering runbooks.
+        sources: [runbooks]
+    replies:
+      planning:
+        question: What did the team agree for the next review?
+        match: next review
+        text: "{{people.dana.name}} reviews relay capacity next, with {{people.sam.name}} owning the follow-ups [1]."
+        regenerate:
+          - "{{people.dana.name}} chairs the next relay capacity review and {{people.sam.name}} tracks the follow-ups [1]."
+      status:
+        question: Where does the status update stand?
+        match: status update
+        text: "{{people.sam.name}} confirmed the relay rollback finished; {{teams.reliability.name}} owns the remaining checks [1]."
+      overview:
+        question: Give me an overview of the plan and the status.
+        text: "{{people.dana.name}} reviews relay capacity [1] and {{people.sam.name}} confirmed the rollback status [2]."
+    llm_providers:
+      primary:
+        provider: anthropic
+        default: true
+        api_key_set: true
+        v5: {router_models: [standard, fast], routing: {enabled: false}}
+        models:
+          standard: {name: acme-sonnet, display_name: Acme Sonnet, default: true, max_input_tokens: 200000}
+          fast: {name: acme-haiku, display_name: Acme Haiku, default: [chat_naming], max_input_tokens: 200000}
+    settings:
+      onyx_craft_enabled: true
+      onyx_craft_available: true
+      auto_scroll: false
+      deep_research_enabled: false

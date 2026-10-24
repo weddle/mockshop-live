@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/weddle/mockshop-live/schema/profile.schema.json",
+  "title": "Mockshop presentation profile",
+  "description": "One reusable set of cursor, clip pacing/encoding, and frame defaults. Contains no content or actions. CLI --profile replaces the script's selected profile.",
+  "$ref": "script.schema.json#/$defs/profile"
+}

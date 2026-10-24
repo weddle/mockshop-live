@@ -1,0 +1,94 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-provider-conditions
+title: "Craft native provider-required admin/basic and nonadmin Manage absence"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft--demo-user-craft-no-provider.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+      })()
+    id: eval-script-2
+  - goto: /craft/v1
+    id: goto-craft-v1
+  - wait: { text: Connect a model provider, exact: true }
+    id: wait-connect-a-model-provider
+  - shot: craft-provider-required-admin
+    id: shot-craft-provider-required-admin
+  - id: eval-script-3-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft--demo-user-craft-no-provider--demo-user-craft-basic.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+      })()
+    id: eval-script-3
+  - goto: /craft/v1
+    id: goto-craft-v1-2
+  - wait: { text: An LLM provider is required, exact: true }
+    id: wait-an-llm-provider-is-required
+  - shot: craft-provider-required-nonadmin
+    id: shot-craft-provider-required-nonadmin
+  - goto: /craft/v1/apps
+    id: goto-craft-v1-apps
+  - eval: if ([...document.querySelectorAll('a,button')].some(e => e.textContent.trim() === 'Manage apps')) throw new Error('Native nonadmin Manage control unexpectedly present');
+    id: eval-script-4
+  - shot: craft-apps-nonadmin-condition
+    id: shot-craft-apps-nonadmin-condition
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+      })()
+    id: eval-script-5
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-6
+  - goto: "/craft/v1"
+    id: goto-craft-v1-3
+  - wait: { "selector": "[contenteditable=\"true\"][role=\"textbox\"]" }
+    id: wait-contenteditable-true-role-textbox
+  - shot: "craft-unit-provider-conditions-reset"
+    id: shot-craft-unit-provider-conditions-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

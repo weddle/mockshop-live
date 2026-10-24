@@ -1,0 +1,320 @@
+# #34 EDITONLY prepared; no execution/acceptance claim.
+# Existing base null/light preferences and sole #31 owner; no new overlay/backend/Auth writes.
+# SettingsPage566–581,783–830 + named chatBackgrounds constants and AppChrome647–703.
+# Five bundled image choices and None are actual native immediate buttons: no draft/cancel
+# exists. Native image choices also write their LIGHT/DARK theme; None clears background
+# to null but retains current theme. PATCH {chat_background}, PATCH {theme_preference};
+# selected native control and real /app CSS wallpaper, navigation/reload/keep/readback,
+# explicit dirty clouds→fresh null reset. No generated/copied images or source patches.
+name: user-settings-general-background
+title: Native General six-background choices, app consumers and saved reset
+requires: enterprise
+strict: true
+locale: en
+overlays:
+  - edition-enterprise
+viewport:
+  - 1440
+  - 1000
+steps:
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const r = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:\"en\",keep:false,resetChats:true})});
+
+      \  if (!r.ok) throw new Error('Independent General preference fresh reset failed');
+
+      })()"
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - wait:
+      selector: '#onyx-user-dropdown'
+    id: wait-onyx-user-dropdown
+  - click:
+      selector: '#onyx-user-dropdown'
+    id: click-onyx-user-dropdown
+  - wait:
+      selector: a[href="/app/settings"]
+    id: wait-a-href-app-settings
+  - shot: general-background-settings-menu-entry
+    id: shot-general-background-settings-menu-entry
+  - click:
+      selector: a[href="/app/settings"]
+    id: click-a-href-app-settings
+  - wait:
+      selector: a[href="/app/settings/general"]
+    id: wait-a-href-app-settings-general
+  - eval: if(location.pathname !== '/app/settings/general') throw new Error('Native Settings menu did not enter General');
+    id: eval-script-2
+  - wait:
+      role: button
+      name: None background (selected)
+      exact: true
+    id: wait-none-background-selected
+  - scroll:
+      text: Chat Background
+      exact: true
+    id: scroll-chat-background
+  - eval: const labels=['None','Clouds','Hills','Plants','Mountains','Night']; const buttons=[...document.querySelectorAll('button[aria-label]')]; if(labels.some(label=>!buttons.some(b=>b.getAttribute('aria-label')===label+' background' || b.getAttribute('aria-label')===label+' background (selected)'))) throw new Error('Native six-background option inventory missing');
+    id: eval-script-3
+  - eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed'); const p=(await r.json()).preferences; if (p.language !== "en" || document.documentElement.lang !== "en" || p.chat_background !== null || p.theme_preference !== "light" || !document.documentElement.classList.contains("light")) throw new Error('Native General UI/readback preference mismatch'); })()
+    id: eval-script-4
+  - shot: general-background-initial-none-options
+    id: shot-general-background-initial-none-options
+  - click:
+      role: button
+      name: Clouds background
+      exact: true
+    id: click-clouds-background
+  - wait:
+      role: button
+      name: Clouds background (selected)
+      exact: true
+    id: wait-clouds-background-selected
+  - shot: general-background-clouds-selected
+    id: shot-general-background-clouds-selected
+  - goto: /app
+    id: goto-app-3
+  - wait:
+      selector: div.bg-cover[style*="/chat-backgrounds/clouds.jpg"]
+    id: wait-div-bg-cover-style-chat-backgrounds-clouds-jpg
+  - eval: (async () => { const r=await fetch('/api/me'); if(!r.ok) throw new Error('Background readback failed'); const p=(await r.json()).preferences; const wall=document.querySelector("div.bg-cover[style*=\"/chat-backgrounds/clouds.jpg\"]"); if(p.chat_background!=="clouds" || p.theme_preference!=="light" || !document.documentElement.classList.contains("light") || !wall || wall.getBoundingClientRect().width<=0 || wall.getBoundingClientRect().height<=0 || !getComputedStyle(wall).backgroundImage.includes("/chat-backgrounds/clouds.jpg")) throw new Error('Native app wallpaper/preference/theme consumer mismatch'); })()
+    id: eval-script-5
+  - shot: general-background-clouds-native-wallpaper
+    id: shot-general-background-clouds-native-wallpaper
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - click:
+      role: button
+      name: Hills background
+      exact: true
+    id: click-hills-background
+  - wait:
+      role: button
+      name: Hills background (selected)
+      exact: true
+    id: wait-hills-background-selected
+  - shot: general-background-hills-selected
+    id: shot-general-background-hills-selected
+  - goto: /app
+    id: goto-app-4
+  - wait:
+      selector: div.bg-cover[style*="/chat-backgrounds/hills.jpg"]
+    id: wait-div-bg-cover-style-chat-backgrounds-hills-jpg
+  - eval: (async () => { const r=await fetch('/api/me'); if(!r.ok) throw new Error('Background readback failed'); const p=(await r.json()).preferences; const wall=document.querySelector("div.bg-cover[style*=\"/chat-backgrounds/hills.jpg\"]"); if(p.chat_background!=="hills" || p.theme_preference!=="light" || !document.documentElement.classList.contains("light") || !wall || wall.getBoundingClientRect().width<=0 || wall.getBoundingClientRect().height<=0 || !getComputedStyle(wall).backgroundImage.includes("/chat-backgrounds/hills.jpg")) throw new Error('Native app wallpaper/preference/theme consumer mismatch'); })()
+    id: eval-script-6
+  - shot: general-background-hills-native-wallpaper
+    id: shot-general-background-hills-native-wallpaper
+  - goto: /app/settings/general
+    id: goto-app-settings-general-2
+  - click:
+      role: button
+      name: Plants background
+      exact: true
+    id: click-plants-background
+  - wait:
+      role: button
+      name: Plants background (selected)
+      exact: true
+    id: wait-plants-background-selected
+  - shot: general-background-plant-selected
+    id: shot-general-background-plant-selected
+  - goto: /app
+    id: goto-app-5
+  - wait:
+      selector: div.bg-cover[style*="/chat-backgrounds/plant.jpg"]
+    id: wait-div-bg-cover-style-chat-backgrounds-plant-jpg
+  - eval: (async () => { const r=await fetch('/api/me'); if(!r.ok) throw new Error('Background readback failed'); const p=(await r.json()).preferences; const wall=document.querySelector("div.bg-cover[style*=\"/chat-backgrounds/plant.jpg\"]"); if(p.chat_background!=="plant" || p.theme_preference!=="dark" || !document.documentElement.classList.contains("dark") || !wall || wall.getBoundingClientRect().width<=0 || wall.getBoundingClientRect().height<=0 || !getComputedStyle(wall).backgroundImage.includes("/chat-backgrounds/plant.jpg")) throw new Error('Native app wallpaper/preference/theme consumer mismatch'); })()
+    id: eval-script-7
+  - shot: general-background-plant-native-wallpaper
+    id: shot-general-background-plant-native-wallpaper
+  - goto: /app/settings/general
+    id: goto-app-settings-general-3
+  - click:
+      role: button
+      name: Mountains background
+      exact: true
+    id: click-mountains-background
+  - wait:
+      role: button
+      name: Mountains background (selected)
+      exact: true
+    id: wait-mountains-background-selected
+  - shot: general-background-mountains-selected
+    id: shot-general-background-mountains-selected
+  - goto: /app
+    id: goto-app-6
+  - wait:
+      selector: div.bg-cover[style*="/chat-backgrounds/mountains.jpg"]
+    id: wait-div-bg-cover-style-chat-backgrounds-mountains-jpg
+  - eval: (async () => { const r=await fetch('/api/me'); if(!r.ok) throw new Error('Background readback failed'); const p=(await r.json()).preferences; const wall=document.querySelector("div.bg-cover[style*=\"/chat-backgrounds/mountains.jpg\"]"); if(p.chat_background!=="mountains" || p.theme_preference!=="dark" || !document.documentElement.classList.contains("dark") || !wall || wall.getBoundingClientRect().width<=0 || wall.getBoundingClientRect().height<=0 || !getComputedStyle(wall).backgroundImage.includes("/chat-backgrounds/mountains.jpg")) throw new Error('Native app wallpaper/preference/theme consumer mismatch'); })()
+    id: eval-script-8
+  - shot: general-background-mountains-native-wallpaper
+    id: shot-general-background-mountains-native-wallpaper
+  - goto: /app/settings/general
+    id: goto-app-settings-general-4
+  - click:
+      role: button
+      name: Night background
+      exact: true
+    id: click-night-background
+  - wait:
+      role: button
+      name: Night background (selected)
+      exact: true
+    id: wait-night-background-selected
+  - shot: general-background-night-selected
+    id: shot-general-background-night-selected
+  - goto: /app
+    id: goto-app-7
+  - wait:
+      selector: div.bg-cover[style*="/chat-backgrounds/night.jpg"]
+    id: wait-div-bg-cover-style-chat-backgrounds-night-jpg
+  - eval: (async () => { const r=await fetch('/api/me'); if(!r.ok) throw new Error('Background readback failed'); const p=(await r.json()).preferences; const wall=document.querySelector("div.bg-cover[style*=\"/chat-backgrounds/night.jpg\"]"); if(p.chat_background!=="night" || p.theme_preference!=="dark" || !document.documentElement.classList.contains("dark") || !wall || wall.getBoundingClientRect().width<=0 || wall.getBoundingClientRect().height<=0 || !getComputedStyle(wall).backgroundImage.includes("/chat-backgrounds/night.jpg")) throw new Error('Native app wallpaper/preference/theme consumer mismatch'); })()
+    id: eval-script-9
+  - shot: general-background-night-native-wallpaper
+    id: shot-general-background-night-native-wallpaper
+  - goto: /app/settings/general
+    id: goto-app-settings-general-5
+  - wait:
+      role: button
+      name: Night background (selected)
+      exact: true
+    id: wait-night-background-selected-2
+  - scroll:
+      text: Chat Background
+      exact: true
+    id: scroll-chat-background-2
+  - eval: location.reload()
+    id: eval-script-10
+  - wait:
+      role: button
+      name: Night background (selected)
+      exact: true
+    id: wait-night-background-selected-3
+  - scroll:
+      text: Chat Background
+      exact: true
+    id: scroll-chat-background-3
+  - eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed'); const p=(await r.json()).preferences; if (p.chat_background !== "night" || p.theme_preference !== "dark" || !document.documentElement.classList.contains("dark")) throw new Error('Native General UI/readback preference mismatch'); })()
+    id: eval-script-11
+  - shot: general-background-saved-reload
+    id: shot-general-background-saved-reload
+  - id: eval-script-12-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const r = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:\"en\",keep:true,resetChats:false})});
+
+      \  if (!r.ok) throw new Error('Independent General preference keep failed');
+
+      })()"
+    id: eval-script-12
+  - goto: /app
+    id: goto-app-8
+  - wait:
+      selector: div.bg-cover[style*="/chat-backgrounds/night.jpg"]
+    id: wait-div-bg-cover-style-chat-backgrounds-night-jpg-2
+  - eval: (async () => { const r=await fetch('/api/me'); if(!r.ok) throw new Error('Background readback failed'); const p=(await r.json()).preferences; const wall=document.querySelector("div.bg-cover[style*=\"/chat-backgrounds/night.jpg\"]"); if(p.chat_background!=="night" || p.theme_preference!=="dark" || !document.documentElement.classList.contains("dark") || !wall || wall.getBoundingClientRect().width<=0 || wall.getBoundingClientRect().height<=0 || !getComputedStyle(wall).backgroundImage.includes("/chat-backgrounds/night.jpg")) throw new Error('Native app wallpaper/preference/theme consumer mismatch'); })()
+    id: eval-script-13
+  - shot: general-background-dirty-keep
+    id: shot-general-background-dirty-keep
+  - goto: /app/settings/general
+    id: goto-app-settings-general-6
+  - click:
+      role: button
+      name: None background
+      exact: true
+    id: click-none-background
+  - wait:
+      role: button
+      name: None background (selected)
+      exact: true
+    id: wait-none-background-selected-2
+  - scroll:
+      text: Chat Background
+      exact: true
+    id: scroll-chat-background-4
+  - eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed'); const p=(await r.json()).preferences; if (p.chat_background !== null || p.theme_preference !== "dark" || !document.documentElement.classList.contains("dark")) throw new Error('Native General UI/readback preference mismatch'); })()
+    id: eval-script-14
+  - shot: general-background-none-clears-keeps-theme
+    id: shot-general-background-none-clears-keeps-theme
+  - goto: /app
+    id: goto-app-9
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox
+  - eval: (async () => { const p=(await (await fetch('/api/me')).json()).preferences; if(p.chat_background!==null || p.theme_preference!=="dark" || !document.documentElement.classList.contains("dark") || document.querySelector('div.bg-cover[style*="/chat-backgrounds/"]')) throw new Error('Native None/reset wallpaper consumer mismatch'); })()
+    id: eval-script-15
+  - shot: general-background-none-native-app
+    id: shot-general-background-none-native-app
+  - goto: /app/settings/general
+    id: goto-app-settings-general-7
+  - click:
+      role: button
+      name: Clouds background
+      exact: true
+    id: click-clouds-background-2
+  - wait:
+      role: button
+      name: Clouds background (selected)
+      exact: true
+    id: wait-clouds-background-selected-2
+  - eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed'); const p=(await r.json()).preferences; if (p.chat_background !== "clouds" || p.theme_preference !== "light" || !document.documentElement.classList.contains("light")) throw new Error('Native General UI/readback preference mismatch'); })()
+    id: eval-script-16
+  - shot: general-background-reset-dirty-clouds
+    id: shot-general-background-reset-dirty-clouds
+  - id: eval-script-17-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays:
+        - edition-enterprise
+  - eval: "(async () => {
+
+      \  const current = await (await fetch('/api/__mockshop/state')).json();
+
+      \  const r = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:\"en\",keep:false,resetChats:true})});
+
+      \  if (!r.ok) throw new Error('Independent General preference fresh reset failed');
+
+      })()"
+    id: eval-script-17
+  - goto: /app/settings/general
+    id: goto-app-settings-general-8
+  - wait:
+      role: button
+      name: None background (selected)
+      exact: true
+    id: wait-none-background-selected-3
+  - scroll:
+      text: Chat Background
+      exact: true
+    id: scroll-chat-background-5
+  - eval: (async () => { const r=await fetch('/api/me'); if (!r.ok) throw new Error('General preference readback failed'); const p=(await r.json()).preferences; if (p.language !== "en" || document.documentElement.lang !== "en" || p.chat_background !== null || p.theme_preference !== "light" || !document.documentElement.classList.contains("light")) throw new Error('Native General UI/readback preference mismatch'); })()
+    id: eval-script-18
+  - shot: general-background-dirty-fresh-reset
+    id: shot-general-background-dirty-fresh-reset
+  - goto: /app
+    id: goto-app-10
+  - wait:
+      selector: '#onyx-chat-input-textbox'
+    id: wait-onyx-chat-input-textbox-2
+  - eval: (async () => { const p=(await (await fetch('/api/me')).json()).preferences; if(p.chat_background!==null || p.theme_preference!=="light" || !document.documentElement.classList.contains("light") || document.querySelector('div.bg-cover[style*="/chat-backgrounds/"]')) throw new Error('Native None/reset wallpaper consumer mismatch'); })()
+    id: eval-script-19
+  - shot: general-background-fresh-app-no-wallpaper
+    id: shot-general-background-fresh-app-no-wallpaper
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,119 @@
+# #65 route-sized native proof: Security and Hardening.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-security
+title: Security and Hardening - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/security
+    id: goto-admin-security
+  - shot: inventory-security
+    id: shot-inventory-security
+  - goto: /admin/scim
+    id: goto-admin-scim
+  - click: { selector: 'a[href="/admin/security"]' }
+    id: click-a-href-admin-security
+  - wait: { text: Password Policy, exact: true }
+    id: wait-password-policy
+  - shot: security-menu
+    id: shot-security-menu
+  - goto: /admin/security
+    id: goto-admin-security-2
+  - click: { selector: 'label:has-text("Require Uppercase Letter") [role="switch"]' }
+    id: click-label-has-text-require-uppercase-letter-role-switch
+  - goto: /admin/scim
+    id: goto-admin-scim-2
+  - goto: /admin/security
+    id: goto-admin-security-3
+  - wait: { selector: 'label:has-text("Require Uppercase Letter") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-require-uppercase-letter-role-switch-aria-ch
+  - shot: security-fake-policy-saved
+    id: shot-security-fake-policy-saved
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/security';
+      })()
+    id: eval-script
+  - wait: { selector: 'label:has-text("Require Uppercase Letter") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-require-uppercase-letter-role-switch-aria-ch-2
+  - shot: reset-security-seed
+    id: shot-reset-security-seed
+  # Parent inspection: the original four shots expose only the JWT heading.
+  # Pinned SecurityHardeningPage.tsx:91–153,561–605 commits these fields on blur/Enter.
+  - wait: { selector: 'input[placeholder="https://idp.example.com/.well-known/jwks.json"]' }
+    id: wait-input-placeholder-https-idp-example-com-well-known-jwks-jso
+  - wait: { selector: 'input[placeholder="onyx"]' }
+    id: wait-input-placeholder-onyx
+  - wait: { selector: 'input[placeholder="https://idp.example.com"]' }
+    id: wait-input-placeholder-https-idp-example-com
+  - scroll: { selector: 'input[placeholder="https://idp.example.com"]' }
+    id: scroll-input-placeholder-https-idp-example-com
+  - eval: |
+      (() => {
+        for (const placeholder of ['https://idp.example.com/.well-known/jwks.json', 'onyx', 'https://idp.example.com']) {
+          if (document.querySelector(`input[placeholder="${placeholder}"]`).value !== '') throw new Error('JWT seed input is not empty');
+        }
+      })()
+    id: eval-script-2
+  - shot: security-jwt-loaded-empty
+    id: shot-security-jwt-loaded-empty
+  - fill: { selector: 'input[placeholder="https://idp.example.com/.well-known/jwks.json"]', value: 'https://workshop-idp.example.invalid/.well-known/jwks.json' }
+    id: fill-input-placeholder-https-idp-example-com-well-known-jwks-jso
+  - press: Enter
+    id: press-enter
+  - fill: { selector: 'input[placeholder="onyx"]', value: workshop-audience }
+    id: fill-input-placeholder-onyx
+  - press: Enter
+    id: press-enter-2
+  - fill: { selector: 'input[placeholder="https://idp.example.com"]', value: 'https://workshop-idp.example.invalid' }
+    id: fill-input-placeholder-https-idp-example-com
+  - press: Enter
+    id: press-enter-3
+  - shot: security-jwt-edited
+    id: shot-security-jwt-edited
+  - goto: /admin/scim
+    id: goto-admin-scim-3
+  - goto: /admin/security
+    id: goto-admin-security-4
+  - wait: { selector: 'input[placeholder="https://idp.example.com/.well-known/jwks.json"][value="https://workshop-idp.example.invalid/.well-known/jwks.json"]' }
+    id: wait-input-placeholder-https-idp-example-com-well-known-jwks-jso-2
+  - wait: { selector: 'input[placeholder="onyx"][value="workshop-audience"]' }
+    id: wait-input-placeholder-onyx-value-workshop-audience
+  - wait: { selector: 'input[placeholder="https://idp.example.com"][value="https://workshop-idp.example.invalid"]' }
+    id: wait-input-placeholder-https-idp-example-com-value-https-worksho
+  - scroll: { selector: 'input[placeholder="https://idp.example.com"]' }
+    id: scroll-input-placeholder-https-idp-example-com-2
+  - shot: security-jwt-navigation-readback
+    id: shot-security-jwt-navigation-readback
+  - id: eval-script-3-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/security';
+      })()
+    id: eval-script-3
+  - wait: { selector: 'input[placeholder="https://idp.example.com/.well-known/jwks.json"][value=""]' }
+    id: wait-input-placeholder-https-idp-example-com-well-known-jwks-jso-3
+  - wait: { selector: 'input[placeholder="onyx"][value=""]' }
+    id: wait-input-placeholder-onyx-value
+  - wait: { selector: 'input[placeholder="https://idp.example.com"][value=""]' }
+    id: wait-input-placeholder-https-idp-example-com-value
+  - scroll: { selector: 'input[placeholder="https://idp.example.com"]' }
+    id: scroll-input-placeholder-https-idp-example-com-3
+  - shot: reset-security-jwt-seed
+    id: shot-reset-security-jwt-seed
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

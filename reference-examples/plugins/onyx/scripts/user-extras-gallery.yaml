@@ -1,0 +1,103 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-gallery
+title: Native Extras - gallery
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  # Lossless primary operations from the former monolithic proof.
+  - click: { testid: AppSidebar/more-agents }
+    id: click-2
+  - wait: { text: Campus Learning Guide, exact: true }
+    id: wait-campus-learning-guide
+  - shot: { name: extras-35-group-agents-gallery-menu, full_page: true }
+    id: shot-extras-35-group-agents-gallery-menu
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { text: Clinical Education Guide, exact: true }
+    id: wait-clinical-education-guide
+  - click: { role: tab, name: Your Agents, exact: true }
+    id: click-your-agents
+  - shot: { name: extras-36-gallery-your-agents, full_page: true }
+    id: shot-extras-36-gallery-your-agents
+  - click: { role: tab, name: All Agents, exact: true }
+    id: click-all-agents
+  - fill: { placeholder: Search agents..., value: no-such-education-agent }
+    id: fill
+  - wait: { text: No Agents found, exact: true }
+    id: wait-no-agents-found
+  - shot: { name: extras-37-gallery-search-empty, full_page: true }
+    id: shot-extras-37-gallery-search-empty
+  - fill: { placeholder: Search agents..., value: "" }
+    id: fill-2
+  - click: { role: button, name: Everyone, exact: true }
+    id: click-everyone
+  - click: { text: "{{people.devon.email}}", exact: true }
+    id: click-devon-ortiz-seasidecollection-example
+  - press: Escape
+    id: press-escape
+  - wait: { text: No Agents found, exact: true }
+    id: wait-no-agents-found-2
+  - shot: { name: extras-37a-gallery-created-by-empty, full_page: true }
+    id: shot-extras-37a-gallery-created-by-empty
+  - click: { selector: '.relative:has(> button:has-text("By {{people.devon.email}}")) > .absolute button' }
+    id: click-relative-has-button-has-text-by-devon-ortiz-seasidecollect
+  - click: { role: button, name: All Actions, exact: true }
+    id: click-all-actions
+  - click: { text: Image Generation, exact: true }
+    id: click-image-generation
+  - press: Escape
+    id: press-escape-2
+  - wait: { text: No Agents found, exact: true }
+    id: wait-no-agents-found-3
+  - shot: { name: extras-37b-gallery-actions-empty, full_page: true }
+    id: shot-extras-37b-gallery-actions-empty
+  - click: { selector: '.relative:has(> button:has-text("Image Generation")) > .absolute button' }
+    id: click-relative-has-button-has-text-image-generation-absolute-but
+  - fill: { placeholder: Search agents..., value: Campus Learning Guide }
+    id: fill-3
+  - click: { selector: '.radial-00:has-text("Campus Learning Guide") .h-24' }
+    id: click-radial-00-has-text-campus-learning-guide-h-24
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog
+  - shot: { name: extras-38-shared-agent-viewer, full_page: true }
+    id: shot-extras-38-shared-agent-viewer
+  - click: { label: Fold Actions & Tools }
+    id: click-3
+  - click: { label: Fold More Info }
+    id: click-4
+  - shot: { name: extras-38a-viewer-sections-collapsed, full_page: true }
+    id: shot-extras-38a-viewer-sections-collapsed
+  - click: { label: Expand Actions & Tools }
+    id: click-5
+  - click: { label: Expand More Info }
+    id: click-6
+  - shot: { name: extras-39-shared-agent-viewer-more-info, full_page: true }
+    id: shot-extras-39-shared-agent-viewer-more-info
+  - press: Escape
+    id: press-escape-3
+  - click: { role: button, name: Start Chat, exact: true }
+    id: click-start-chat
+  - wait: { testid: agent-name-display }
+    id: wait
+  - eval: "if(new URL(location.href).searchParams.get('agentId') !== '11') throw new Error('Native shared-agent picker selected wrong agent')"
+    id: eval-script
+  - shot: { name: extras-39a-group-shared-agent-picker, full_page: true }
+    id: shot-extras-39a-group-shared-agent-picker
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

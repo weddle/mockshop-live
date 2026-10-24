@@ -1,0 +1,32 @@
+name: acme-followup
+title: Investigate a new incident without duplicating Acme
+world: ../../../worlds/acme/world.yaml
+profile: ../../../profiles/zoom-blue.yaml
+strict: true
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-acme-followup.yaml
+scenes:
+  - id: new-incident
+    steps:
+      - id: open-workspace
+        goto: /app
+      - id: composer-ready
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: incident-2400-question
+        send:
+          text: "Who is handling {{vars.incident}}, and what happened?"
+          reply:
+            title: "{{vars.incident}} recovery summary"
+            queries: ["{{vars.incident}} recovery owner", "relay pool capacity review"]
+            cites: [incident-2400]
+            text: "{{people.sam.name}} isolated the saturated relay pool and coordinated recovery. {{people.dana.name}} owns the capacity-review follow-up. This incident did not require a relay-scorer-v2 rollback. [1]"
+      - id: new-incident-answer
+        shot: incident-2400-answer
+      - id: show-handoff
+        state:
+          sidebar: [incident-2400-handoff, relay-rollback-runbook-walkthrough]
+      - id: active-answer-preserved
+        wait: { text: "isolated the saturated relay pool", exact: false }
+      - id: shared-world-new-story
+        shot: shared-world-new-story

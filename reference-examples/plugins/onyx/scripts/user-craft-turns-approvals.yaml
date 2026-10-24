@@ -1,0 +1,162 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-turns-approvals
+title: "Craft finite turns, queued messages, approvals and created-session deletion"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: "/craft/v1"
+    id: goto-craft-v1
+  - wait: { "selector": "[contenteditable=\"true\"][role=\"textbox\"]" }
+    id: wait-contenteditable-true-role-textbox
+  - fill: { selector: '[contenteditable="true"][role="textbox"]', value: /campus }
+    id: fill-contenteditable-true-role-textbox
+  - shot: craft-slash-picker-filtered
+    id: shot-craft-slash-picker-filtered
+  - press: Escape
+    id: press-escape
+  - fill: { selector: '[contenteditable="true"][role="textbox"]', value: Prepare a fictional accessible workshop handout. }
+    id: fill-contenteditable-true-role-textbox-2
+  - eval: |
+      const input = document.querySelector('input[type="file"][multiple]');
+      if (!input) throw new Error('Native Craft attachment input missing');
+      const files = new DataTransfer();
+      files.items.add(new File(['Synthetic teaching notes.'], 'clinic-notes.txt', {type:'text/plain'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-2
+  - wait: { text: clinic-notes.txt, exact: true }
+    id: wait-clinic-notes-txt
+  - shot: craft-composer-attachment
+    id: shot-craft-composer-attachment
+  - click: { role: button, name: Send, exact: true }
+    id: click-send
+  - wait: { role: button, name: Stop generating, exact: true }
+    id: wait-stop-generating
+  - shot: craft-turn-running
+    id: shot-craft-turn-running
+  - fill: { selector: '[contenteditable="true"][role="textbox"]', value: A second fictional instruction for later. }
+    id: fill-contenteditable-true-role-textbox-3
+  - click: { role: button, name: Queue message, exact: true }
+    id: click-queue-message
+  - shot: craft-turn-queued
+    id: shot-craft-turn-queued
+  - click: { selector: '[data-testid="queued-message-bar"] button' }
+    id: click-data-testid-queued-message-bar-button
+  - wait: { text: 'Fictional Craft output: prepare accessible workshop notes', exact: false }
+    id: wait-fictional-craft-output-prepare-accessible-workshop-notes
+  - settle: 3000
+    id: settle
+  - shot: craft-turn-output-and-subagent
+    id: shot-craft-turn-output-and-subagent
+  - click: { selector: '[aria-label="Switch agent"]' }
+    id: click-aria-label-switch-agent
+  - shot: craft-subagent-menu
+    id: shot-craft-subagent-menu
+  - click: { text: Review accessibility, exact: true }
+    id: click-review-accessibility
+  - shot: craft-subagent-read-only
+    id: shot-craft-subagent-read-only
+  - click: { selector: '[aria-label="Switch agent"]' }
+    id: click-aria-label-switch-agent-2
+  - click: { text: Accessible workshop plan, exact: true }
+    id: click-accessible-workshop-plan
+  - shot: craft-subagent-returned
+    id: shot-craft-subagent-returned
+  - eval: |
+      (async () => {
+        const id = new URL(location.href).searchParams.get('sessionId');
+        if (!id) throw new Error('Native session URL missing');
+        sessionStorage.setItem('craft-created-session', id);
+        const messages = await (await fetch('/api/build/sessions/' + id + '/messages')).json();
+        if (!messages.messages.some(m => m.type === 'user' && m.content.includes('accessible workshop'))) throw new Error('Prompt was not persisted');
+      })()
+    id: eval-script-3
+  - click: { selector: ':nth-match([aria-label="Show details"], 1)' }
+    id: click-nth-match-aria-label-show-details-1
+  - shot: craft-approval-details
+    id: shot-craft-approval-details
+  - click: { selector: ':nth-match([aria-label="Approve this action once"], 1)' }
+    id: click-nth-match-aria-label-approve-this-action-once-1
+  - settle: 1200
+    id: settle-2
+  - click: { selector: ':nth-match(button:has-text("Approve for session"), 1)' }
+    id: click-nth-match-button-has-text-approve-for-session-1
+  - settle: 1200
+    id: settle-3
+  - click: { selector: ':nth-match([aria-label="Reject this action"], 1)' }
+    id: click-nth-match-aria-label-reject-this-action-1
+  - shot: craft-approval-decisions
+    id: shot-craft-approval-decisions
+  - eval: location.reload()
+    id: eval-script-4
+  - wait: { text: 'Fictional Craft output: prepare accessible workshop notes', exact: false }
+    id: wait-fictional-craft-output-prepare-accessible-workshop-notes-2
+  - shot: craft-turn-reopened
+    id: shot-craft-turn-reopened
+  - fill: { selector: '[contenteditable="true"][role="textbox"]', value: Start another fictional handout draft. }
+    id: fill-contenteditable-true-role-textbox-4
+  - click: { role: button, name: Send, exact: true }
+    id: click-send-2
+  - wait: { role: button, name: Stop generating, exact: true }
+    id: wait-stop-generating-2
+  - click: { role: button, name: Stop generating, exact: true }
+    id: click-stop-generating
+  - shot: craft-turn-interrupted
+    id: shot-craft-turn-interrupted
+  - click: { selector: '.opal-sidebar-tab:has-text("Accessible workshop plan") button[aria-label="Session options"]' }
+    id: click-opal-sidebar-tab-has-text-accessible-workshop-plan-button-
+  - click: { text: Delete, exact: true }
+    id: click-delete
+  - shot: craft-session-delete-confirmation
+    id: shot-craft-session-delete-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+    id: click-role-dialog-button-has-text-delete
+  - eval: |
+      (async () => {
+        const sessions = await (await fetch('/api/build/sessions')).json();
+        if (sessions.sessions.some(s => s.id === sessionStorage.getItem('craft-created-session'))) throw new Error('Native session delete did not persist');
+      })()
+    id: eval-script-5
+  - shot: craft-session-deleted
+    id: shot-craft-session-deleted
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-6
+  - goto: "/craft/v1"
+    id: goto-craft-v1-2
+  - wait: { "selector": "[contenteditable=\"true\"][role=\"textbox\"]" }
+    id: wait-contenteditable-true-role-textbox-2
+  - shot: "craft-unit-turns-approvals-reset"
+    id: shot-craft-unit-turns-approvals-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

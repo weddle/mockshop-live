@@ -1,0 +1,111 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-anonymous-branches
+title: "Independent native #69 unit: auth-anonymous-branches"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Independent prerequisites: Native guest entry and Claude welcome answer independently provide real parent IDs; regenerate/edit cancel/submit/stop/reload.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /anonymous/workshop-demo
+    id: goto-anonymous-workshop-demo
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      (async () => {const me = await (await fetch('/api/me')).json(); if (!me.is_anonymous_user || location.pathname !== '/app') throw new Error('Native anonymous redirect/session did not complete');})()
+    id: eval-script-2
+  - click: { role: button, name: GPT-5.2, exact: true }
+    id: click-gpt-5-2
+  - click: { text: Anthropic, exact: true }
+    id: click-anthropic
+  - click: { text: Claude Sonnet 4.5, exact: true }
+    id: click-claude-sonnet-4-5
+  - type: { selector: '#onyx-chat-input-textbox', value: 'Local fake workshop welcome' }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: 'No provider, authentication, real document search or email service was contacted.', exact: false }
+    id: wait-no-provider-authentication-real-document-search-or-email-se
+  - wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+    id: wait
+  - settle: 600
+    id: settle
+  - click: { testid: AgentMessage/regenerate, last: true }
+    id: click
+  - shot: anonymous-regenerate-menu
+    id: shot-anonymous-regenerate-menu
+  - click: { text: Claude Sonnet 4.5, exact: true, last: true }
+    id: click-claude-sonnet-4-5-2
+  - wait: { text: Regenerated workshop welcome, exact: false }
+    id: wait-regenerated-workshop-welcome
+  - settle: 600
+    id: settle-2
+  - shot: anonymous-regenerated
+    id: shot-anonymous-regenerated
+  - hover: { text: Local fake workshop welcome, exact: true }
+    id: hover-local-fake-workshop-welcome
+  - click: { testid: HumanMessage/edit-button, last: true }
+    id: click-2
+  - fill: { selector: 'textarea:focus', value: Local fake workshop accessible welcome }
+    id: fill-textarea-focus
+  - shot: anonymous-editing
+    id: shot-anonymous-editing
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - shot: anonymous-edit-cancelled
+    id: shot-anonymous-edit-cancelled
+  - hover: { text: Local fake workshop welcome, exact: true }
+    id: hover-local-fake-workshop-welcome-2
+  - click: { testid: HumanMessage/edit-button, last: true }
+    id: click-3
+  - fill: { selector: 'textarea:focus', value: Local fake workshop accessible welcome }
+    id: fill-textarea-focus-2
+  - click: { role: button, name: Submit, exact: true }
+    id: click-submit
+  - wait: { selector: '#onyx-chat-input-send-button:disabled', timeout: 30000 }
+    id: wait-onyx-chat-input-send-button-disabled
+  - settle: 600
+    id: settle-3
+  - shot: anonymous-edited-branch
+    id: shot-anonymous-edited-branch
+  - type: { selector: '#onyx-chat-input-textbox', value: 'Follow-up: workshop checklist' }
+    id: type-onyx-chat-input-textbox-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-2
+  - wait: 400
+    id: wait-2
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button-3
+  - settle: 600
+    id: settle-4
+  - shot: anonymous-stopped
+    id: shot-anonymous-stopped
+  - eval: location.reload()
+    id: eval-script-3
+  - wait: { text: 'Follow-up: workshop checklist', exact: true }
+    id: wait-follow-up-workshop-checklist
+  - shot: anonymous-reloaded-state
+    id: shot-anonymous-reloaded-state
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

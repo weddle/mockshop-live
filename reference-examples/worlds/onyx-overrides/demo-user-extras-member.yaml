@@ -1,0 +1,22 @@
+apps:
+  onyx:
+    state:
+      user_extras:
+        options:
+          enabled: true
+          personalization:
+            name: ""
+          user_fields:
+            role: basic
+            is_admin: false
+            is_superuser: false
+            effective_permissions:
+              - basic
+            admin_capabilities: []
+          empty_sidebar: true
+          notifications: []
+          branding:
+            show_first_visit_notice: false
+    fixtures:
+      GET /chat/get-user-chat-sessions:
+        sessions: []

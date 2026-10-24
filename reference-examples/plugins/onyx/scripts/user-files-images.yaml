@@ -1,0 +1,210 @@
+# Issue #28 independent native proof unit; no acceptance claim.
+# Fresh runner start resets base fixtures, chats and browser; never chain unit outputs.
+
+# Source/core/artifacts frozen; native file inputs only; no generic error allowances.
+name: user-files-images
+title: Native image previews, association guard and decoded composer thumbnail
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^console: \[Toast\] Cannot delete file\. It is associated with assistants: Fictional Reading Circle \[source: http:\/\/127\.0\.0\.1:\d+\/_next\/static\/chunks\/1h15gs0jly9g_\.js\]$/'
+    reason: 'Required fixture58 protected-reading association state; the scenario asserts this exact native toast and that protected-reading.txt remains in the library. Other deletion errors and failed steps remain strict.'
+steps:
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - goto: /app?projectId=1
+    id: goto-app-projectid-1
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - wait: { text: View All, exact: true }
+    id: wait-view-all
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - click: { text: View All, exact: true }
+    id: click-view-all
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - wait: { text: Project Files, exact: true }
+    id: wait-project-files
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - fill: { placeholder: Search files..., value: protected-reading.txt }
+    id: fill
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - hover: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("protected-reading.txt")' }
+    id: hover-role-dialog-opal-attachment-item-button-has-text-protected
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - click: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("protected-reading.txt") .opal-attachment-item-button-action button', nth: 1 }
+    id: click-role-dialog-opal-attachment-item-button-has-text-protected
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - wait_gone: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("protected-reading.txt")' }
+    id: wait-gone-role-dialog-opal-attachment-item-button-has-text-prote
+  # Native Project1 unlink prerequisite preserving original assistant-only toast.
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  # Independent native library entry.
+  - goto: /app
+    id: goto-app
+  # Independent native library entry.
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  # Independent native library entry.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814
+  # Independent native library entry.
+  - click: { text: All Recent Files, exact: true }
+    id: click-all-recent-files
+  # Independent native library entry.
+  - wait: { placeholder: Search files... }
+    id: wait
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 20.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 21.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("study-guide.md")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-2
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 22.
+  - wait: { text: 2 files selected, exact: true }
+    id: wait-2-files-selected
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 24.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 16 12"])' }
+    id: click-role-dialog-button-has-svg-viewbox-0-0-16-12
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 27.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 15 15"])' }
+    id: click-role-dialog-button-has-svg-viewbox-0-0-15-15
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 28.
+  - wait: { text: 0 files selected, exact: true }
+    id: wait-0-files-selected
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 29.
+  - wait: { text: No files found, exact: true }
+    id: wait-no-files-found
+  # Meaningful selected-only/deselect-all prerequisite; replay of old step 31.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 16 12"])' }
+    id: click-role-dialog-button-has-svg-viewbox-0-0-16-12-2
+  # Original user-files step 59, source line 86.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-diagram.svg")' }
+    id: hover-role-dialog-role-button-has-opal-attachment-item-button-ha
+  # Original user-files step 60, source line 87.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("learning-diagram.svg") button:has(svg path[d^="M12 8.66667"])' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-3
+  # Original user-files step 61, source line 88.
+  - wait: { selector: '[role="dialog"] img[alt="learning-diagram.svg"]' }
+    id: wait-role-dialog-img-alt-learning-diagram-svg
+  # Original user-files step 62, source line 89.
+  - eval: |
+      const img = document.querySelector('[role="dialog"] img[alt="learning-diagram.svg"]');
+      if (!img?.complete || !img.naturalWidth) throw new Error('Synthetic SVG preview did not decode');
+    id: eval-script
+  # Original user-files step 63, source line 92.
+  - shot: image-preview
+    id: shot-image-preview
+  # Original user-files step 64, source line 93.
+  - click: { selector: '[role="dialog"]:has(img[alt="learning-diagram.svg"]) button:has(svg path[d^="M12.75 12.75L9.85 9.85M6.08333"])' }
+    id: click-role-dialog-has-img-alt-learning-diagram-svg-button-has-sv
+  # Original user-files step 65, source line 94.
+  - wait: { text: 125%, exact: true }
+    id: wait-125
+  # Original user-files step 66, source line 95.
+  - shot: image-preview-zoomed
+    id: shot-image-preview-zoomed
+  # Original user-files step 67, source line 96.
+  - click: { selector: '[role="dialog"]:has(img[alt="learning-diagram.svg"]) button:has(svg path[d^="M12.75 12.75L9.85 9.85M4.08333"])' }
+    id: click-role-dialog-has-img-alt-learning-diagram-svg-button-has-sv-2
+  # Original user-files step 68, source line 97.
+  - wait: { text: 100%, exact: true }
+    id: wait-100
+  # Original user-files step 69, source line 98.
+  - shot: image-preview-zoom-reset
+    id: shot-image-preview-zoom-reset
+  # Original user-files step 70, source line 99.
+  # Parent bounded observer must prove browser download completion/failure and actual bytes; clicks alone are not acceptance.
+  - click: { selector: '[role="dialog"]:has(img[alt="learning-diagram.svg"]) a[download="learning-diagram.svg"]' }
+    id: click-role-dialog-has-img-alt-learning-diagram-svg-a-download-le
+  # Original user-files step 71, source line 100.
+  - press: Escape
+    id: press-escape
+  # Original user-files step 72, source line 101.
+  - wait: { placeholder: Search files... }
+    id: wait-2
+  # Original user-files step 73, source line 102.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("protected-reading.txt")' }
+    id: hover-role-dialog-role-button-has-opal-attachment-item-button-ha-2
+  # Original user-files step 74, source line 103.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("protected-reading.txt") button:has(svg path[d^="M2 3.99998"])' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-4
+  # Original user-files step 75, source line 104.
+  - wait: { text: 'Cannot delete file. It is associated with assistants: Fictional Reading Circle' }
+    id: wait-cannot-delete-file-it-is-associated-with-assistants-fiction
+  # Original user-files step 76, source line 105.
+  - wait: { text: protected-reading.txt, exact: true }
+    id: wait-protected-reading-txt
+  # Original user-files step 77, source line 106.
+  - shot: library-associated-delete-error
+    id: shot-library-associated-delete-error
+  # Original user-files step 78, source line 107.
+  - click: { role: button, name: Done, exact: true }
+    id: click-done-2
+  # Original user-files step 79, source line 108.
+  - eval: |
+      if (document.querySelector('#onyx-chat-input').textContent.includes('library-reading.txt')) throw new Error('Deselect-all left a file attached to the composer');
+    id: eval-script-2
+  # Original user-files step 80, source line 110.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814-2
+  # Original user-files step 81, source line 111.
+  - click: { text: learning-diagram.svg, exact: true }
+    id: click-learning-diagram-svg
+  # Original user-files step 82, source line 112.
+  - wait: { selector: '#onyx-chat-input img[alt="learning-diagram.svg"]' }
+    id: wait-onyx-chat-input-img-alt-learning-diagram-svg
+  # Positive decoded/rendered composer thumbnail witness before original shot17.
+  - eval: |
+      (async () => {
+        const image = document.querySelector('#onyx-chat-input img[alt="learning-diagram.svg"]');
+        if (!image) throw new Error('Native composer image is missing');
+        await image.decode();
+        await new Promise(requestAnimationFrame);
+        const bounds = image.getBoundingClientRect();
+        const style = getComputedStyle(image);
+        if (!image.complete || image.naturalWidth !== 640 || image.naturalHeight !== 360 || bounds.width <= 0 || bounds.height <= 0 || style.visibility !== 'visible' || Number(style.opacity) === 0) throw new Error('Composer thumbnail did not decode and render the synthetic diagram');
+      })()
+    id: eval-script-3
+  # Original user-files step 83, source line 113.
+  - shot: image-attached
+    id: shot-image-attached
+  # Original user-files step 84, source line 114.
+  - hover: { selector: '#onyx-chat-input img[alt="learning-diagram.svg"]' }
+    id: hover-onyx-chat-input-img-alt-learning-diagram-svg
+  # Original user-files step 85, source line 115.
+  - click: { selector: '#onyx-chat-input button[aria-label="Remove"]' }
+    id: click-onyx-chat-input-button-aria-label-remove
+  # Original user-files step 86, source line 116.
+  - wait_gone: { selector: '#onyx-chat-input img[alt="learning-diagram.svg"]' }
+    id: wait-gone-onyx-chat-input-img-alt-learning-diagram-svg
+  # Original user-files step 87, source line 117.
+  - shot: composer-attachment-removed
+    id: shot-composer-attachment-removed
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  # Owning dirty/reset outcome restores removed Project association.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const result = await fetch('/api/__mockshop/state', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, anchor: current.demo_anchor, locale: 'en', keep: false, resetChats: true})});
+        if (!result.ok) throw new Error('File state control failed');
+      })()
+    id: eval-script-4
+  # Owning dirty/reset outcome restores removed Project association.
+  - goto: /app?projectId=1
+    id: goto-app-projectid-1-2
+  # Owning dirty/reset outcome restores removed Project association.
+  - wait: { text: View All, exact: true }
+    id: wait-view-all-2
+  # Owning dirty/reset outcome restores removed Project association.
+  - click: { text: View All, exact: true }
+    id: click-view-all-2
+  # Owning dirty/reset outcome restores removed Project association.
+  - fill: { placeholder: Search files..., value: protected-reading.txt }
+    id: fill-2
+  # Owning dirty/reset outcome restores removed Project association.
+  - wait: { selector: '[role="dialog"] .opal-attachment-item-button:has-text("protected-reading.txt")' }
+    id: wait-role-dialog-opal-attachment-item-button-has-text-protected-
+world: ../../../worlds/seaside/world.yaml

@@ -1,0 +1,221 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-entry-library
+title: "Craft menu, tour, model and native library inventory"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: /app
+    id: goto-app-2
+  - eval: |
+      (async () => {
+        const state = await (await fetch('/api/__mockshop/state')).json();
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(state.overlays));
+        const me = await (await fetch('/api/me')).json();
+        localStorage.removeItem('onyx:craftOnboardingSeen:' + me.id);
+        const skills = await (await fetch('/api/skills')).json();
+        if (!Array.isArray(skills.builtins) || !Array.isArray(skills.customs)) throw new Error('Skills must be {builtins,customs}, not a flat array');
+      })()
+    id: eval-script-2
+  - click: { selector: 'a[href="/craft/v1"]' }
+    id: click-a-href-craft-v1
+  - wait: { text: Meet Craft, exact: true }
+    id: wait-meet-craft
+  - shot: craft-menu-entry-tour-prompt
+    id: shot-craft-menu-entry-tour-prompt
+  - click: { role: button, name: Next, exact: true }
+    id: click-next
+  - shot: craft-tour-machine
+    id: shot-craft-tour-machine
+  - click: { role: button, name: Next, exact: true }
+    id: click-next-2
+  - shot: craft-tour-output
+    id: shot-craft-tour-output
+  - click: { role: button, name: Back, exact: true }
+    id: click-back
+  - click: { role: button, name: Next, exact: true }
+    id: click-next-3
+  - click: { role: button, name: Next, exact: true }
+    id: click-next-4
+  - shot: craft-tour-constellation
+    id: shot-craft-tour-constellation
+  - click: { role: button, name: Put Craft to work, exact: true }
+    id: click-put-craft-to-work
+  - wait: { selector: '[contenteditable="true"][role="textbox"]' }
+    id: wait-contenteditable-true-role-textbox
+  - shot: craft-welcome-pristine
+    id: shot-craft-welcome-pristine
+  - click: { role: button, name: GPT-5.2, exact: true }
+    id: click-gpt-5-2
+  - shot: craft-model-picker
+    id: shot-craft-model-picker
+  - click: { text: Anthropic, exact: true }
+    id: click-anthropic
+  - wait: { text: Claude Sonnet 4.5, exact: true }
+    id: wait-claude-sonnet-4-5
+  - shot: craft-model-provider-expanded
+    id: shot-craft-model-provider-expanded
+  - click: { text: Claude Sonnet 4.5, exact: true }
+    id: click-claude-sonnet-4-5
+  - shot: craft-model-selected
+    id: shot-craft-model-selected
+  - goto: /craft
+    id: goto-craft
+  - wait: { selector: '[contenteditable="true"][role="textbox"]' }
+    id: wait-contenteditable-true-role-textbox-2
+  - eval: if (location.pathname !== '/craft/v1') throw new Error('/craft must redirect to /craft/v1');
+    id: eval-script-3
+  - shot: craft-route-alias
+    id: shot-craft-route-alias
+  - goto: /craft/v1
+    id: goto-craft-v1
+  - click: { role: button, name: Open add menu, exact: true }
+    id: click-open-add-menu
+  - shot: craft-entry-menu
+    id: shot-craft-entry-menu
+  - click: { text: Library, exact: true }
+    id: click-library
+  - click: { text: Manage library…, exact: true }
+    id: click-manage-library
+  - wait: { text: Library, exact: true }
+    id: wait-library
+  - shot: craft-library-loaded
+    id: shot-craft-library-loaded
+  - click: { role: button, name: Toggle Teaching, exact: true }
+    id: click-toggle-teaching
+  - shot: craft-library-expanded
+    id: shot-craft-library-expanded
+  - fill: { placeholder: Search files..., value: not-a-teaching-file }
+    id: fill
+  - wait: { text: No files match your search, exact: true }
+    id: wait-no-files-match-your-search
+  - shot: craft-library-search-empty
+    id: shot-craft-library-search-empty
+  - fill: { placeholder: Search files..., value: "" }
+    id: fill-2
+  - click: { role: button, name: New folder, exact: true }
+    id: click-new-folder
+  - shot: craft-library-folder-required
+    id: shot-craft-library-folder-required
+  - fill: { placeholder: Enter folder name, value: Learning reflections }
+    id: fill-3
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { text: Learning reflections, exact: true }
+    id: wait-learning-reflections
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      if (!input) throw new Error('Native library upload input missing');
+      const files = new DataTransfer();
+      files.items.add(new File(['Synthetic workshop notes.'], 'workshop-notes.txt', {type:'text/plain'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-4
+  - wait: { text: workshop-notes.txt, exact: true }
+    id: wait-workshop-notes-txt
+  - shot: craft-library-uploaded
+    id: shot-craft-library-uploaded
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      const files = new DataTransfer(); files.items.add(new File(['Synthetic ZIP marker; server uses the editable fictional bundle.'], 'workshop.zip', {type:'application/zip'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-5
+  - wait: { text: Workshop, exact: true }
+    id: wait-workshop
+  - click: { selector: '[aria-label="Toggle Workshop"]' }
+    id: click-aria-label-toggle-workshop
+  - shot: craft-library-zip-extracted
+    id: shot-craft-library-zip-extracted
+  - click: { selector: '[aria-label="Toggle Learning reflections"] button[aria-label="Upload to this folder"]' }
+    id: click-aria-label-toggle-learning-reflections-button-aria-label-u
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      const files = new DataTransfer(); files.items.add(new File(['Synthetic nested learning notes.'], 'nested-handout.txt', {type:'text/plain'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-6
+  - click: { selector: '[aria-label="Toggle Learning reflections"]' }
+    id: click-aria-label-toggle-learning-reflections
+  - wait: { text: nested-handout.txt, exact: true }
+    id: wait-nested-handout-txt
+  - shot: craft-library-folder-upload
+    id: shot-craft-library-folder-upload
+  - click: { selector: '[aria-label="Toggle Learning reflections"] button[aria-label="Delete"]' }
+    id: click-aria-label-toggle-learning-reflections-button-aria-label-d
+  - shot: craft-library-folder-delete-confirmation
+    id: shot-craft-library-folder-delete-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+    id: click-role-dialog-button-has-text-delete
+  - fill: { placeholder: Search files..., value: workshop-notes.txt }
+    id: fill-4
+  - click: { role: button, name: Delete, exact: true }
+    id: click-delete
+  - shot: craft-library-file-delete-confirmation
+    id: shot-craft-library-file-delete-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Delete")' }
+    id: click-role-dialog-button-has-text-delete-2
+  - fill: { placeholder: Search files..., value: "" }
+    id: fill-5
+  - shot: craft-library-deletions
+    id: shot-craft-library-deletions
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  - click: { role: button, name: Open add menu, exact: true }
+    id: click-open-add-menu-2
+  - click: { text: Library, exact: true }
+    id: click-library-2
+  - wait: { text: Manage library…, exact: true }
+    id: wait-manage-library
+  - shot: craft-entry-library-files
+    id: shot-craft-entry-library-files
+  - press: Escape
+    id: press-escape
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-7
+  - goto: "/craft/v1"
+    id: goto-craft-v1-2
+  - wait: { "selector": "[contenteditable=\"true\"][role=\"textbox\"]" }
+    id: wait-contenteditable-true-role-textbox-3
+  - click: { role: button, name: Open add menu, exact: true }
+    id: click-open-add-menu-3
+  - click: { text: Library, exact: true }
+    id: click-library-3
+  - click: { text: Manage library…, exact: true }
+    id: click-manage-library-2
+  - wait: { text: Library, exact: true }
+    id: wait-library-2
+  - wait: { "text": "Teaching", "exact": true }
+    id: wait-teaching
+  - shot: "craft-unit-entry-library-reset"
+    id: shot-craft-unit-entry-library-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

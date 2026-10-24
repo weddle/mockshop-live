@@ -1,0 +1,173 @@
+# Source prerequisites: user.temperature_override_enabled=true (named overlay), reasoning_override_enabled=true (base).
+# Voice controls are unconditionally present at SettingsPage:1648–1713. Smooth Streaming is an upstream cookie, not backend state.
+name: user-settings-controls-defaults
+title: Native Smooth Streaming, temperature, reasoning and voice playback
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - click: { selector: 'a[href="/app/settings/chat-preferences"]' }
+    id: click-a-href-app-settings-chat-preferences
+  - wait: { selector: 'label:has-text("Default Temperature") [role="slider"]' }
+    id: wait-label-has-text-default-temperature-role-slider
+  - wait: { selector: 'label:has-text("Default Reasoning Level") [role="slider"][aria-valuenow="2"]' }
+    id: wait-label-has-text-default-reasoning-level-role-slider-aria-val
+  - wait: { selector: 'label:has-text("Playback Speed") input[type="range"][value="1"]' }
+    id: wait-label-has-text-playback-speed-input-type-range-value-1
+  - wait: { selector: 'label:has-text("Smooth Streaming") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-smooth-streaming-role-switch-aria-checked-tr
+  - shot: { name: defaults-native-source-prerequisites, full_page: true }
+    id: shot-defaults-native-source-prerequisites
+  - wait: { selector: 'label:has-text("Auto-Playback") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-auto-playback-role-switch-aria-checked-false
+  - scroll: { selector: 'label:has-text("Playback Speed")' }
+    id: scroll-label-has-text-playback-speed
+  - eval: |
+      const playback = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Auto-Playback'))?.querySelector('[role="switch"]');
+      const speed = document.querySelector('input[type="range"]');
+      if ([playback, speed].some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Baseline voice controls must be inside the visible viewport');
+    id: eval-script
+  - shot: { name: defaults-voice-source-prerequisites, full_page: true }
+    id: shot-defaults-voice-source-prerequisites
+  - click: { selector: 'label:has-text("Smooth Streaming") [role="switch"]' }
+    id: click-label-has-text-smooth-streaming-role-switch
+  # Focus only uses the public DOM; actual value changes/commits use native keyboard events.
+  - scroll: { selector: 'label:has-text("Default Temperature") [role="slider"]' }
+    id: scroll-label-has-text-default-temperature-role-slider
+  - click: { selector: 'label:has-text("Default Temperature") [role="slider"]' }
+    id: click-label-has-text-default-temperature-role-slider
+  - press: End
+    id: press-end
+  - press: ArrowLeft
+    id: press-arrowleft
+  - wait: { selector: 'label:has-text("Default Temperature") [role="slider"][aria-valuenow="1.9"]' }
+    id: wait-label-has-text-default-temperature-role-slider-aria-valueno
+  - click: { selector: 'label:has-text("Default Reasoning Level") [role="slider"]' }
+    id: click-label-has-text-default-reasoning-level-role-slider
+  - press: Home
+    id: press-home
+  - press: ArrowRight
+    id: press-arrowright
+  - wait: { selector: 'label:has-text("Default Reasoning Level") [role="slider"][aria-valuenow="1"]' }
+    id: wait-label-has-text-default-reasoning-level-role-slider-aria-val-2
+  - click: { selector: 'label:has-text("Auto-Playback") [role="switch"]' }
+    id: click-label-has-text-auto-playback-role-switch
+  - click: { selector: 'label:has-text("Playback Speed") input[type="range"]' }
+    id: click-label-has-text-playback-speed-input-type-range
+  - press: End
+    id: press-end-2
+  - press: ArrowLeft
+    id: press-arrowleft-2
+  - wait: { selector: 'label:has-text("Playback Speed") input[type="range"][value="1.9"]' }
+    id: wait-label-has-text-playback-speed-input-type-range-value-1-9
+  - shot: { name: defaults-native-changed, full_page: true }
+    id: shot-defaults-native-changed
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences
+  - wait: { selector: 'label:has-text("Smooth Streaming") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-smooth-streaming-role-switch-aria-checked-fa
+  - wait: { selector: 'label:has-text("Default Temperature") [role="slider"][aria-valuenow="1.9"]' }
+    id: wait-label-has-text-default-temperature-role-slider-aria-valueno-2
+  - wait: { selector: 'label:has-text("Default Reasoning Level") [role="slider"][aria-valuenow="1"]' }
+    id: wait-label-has-text-default-reasoning-level-role-slider-aria-val-3
+  - wait: { selector: 'label:has-text("Auto-Playback") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-auto-playback-role-switch-aria-checked-true
+  - wait: { selector: 'label:has-text("Playback Speed") input[type="range"][value="1.9"]' }
+    id: wait-label-has-text-playback-speed-input-type-range-value-1-9-2
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-settings-preferences.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const user = await (await fetch('/api/me')).json();
+        if (user.preferences.temperature_default !== 1.9 || user.preferences.reasoning_effort_default !== 'low' ||
+            user.preferences.voice_playback_speed !== 1.9 || !user.preferences.voice_auto_playback ||
+            !document.cookie.split('; ').includes('smoothStreamingEnabled=false')) throw new Error('Native preference DTO/cookie readback mismatch');
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+    id: eval-script-2
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-2
+  - wait: { selector: 'label:has-text("Default Temperature") [role="slider"][aria-valuenow="1.9"]' }
+    id: wait-label-has-text-default-temperature-role-slider-aria-valueno-3
+  - wait: { selector: 'label:has-text("Default Reasoning Level") [role="slider"][aria-valuenow="1"]' }
+    id: wait-label-has-text-default-reasoning-level-role-slider-aria-val-4
+  - wait: { selector: 'label:has-text("Playback Speed") input[type="range"][value="1.9"]' }
+    id: wait-label-has-text-playback-speed-input-type-range-value-1-9-3
+  - wait: { selector: 'label:has-text("Smooth Streaming") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-smooth-streaming-role-switch-aria-checked-fa-2
+  - shot: { name: defaults-native-reloaded-kept, full_page: true }
+    id: shot-defaults-native-reloaded-kept
+  - wait: { selector: 'label:has-text("Auto-Playback") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-auto-playback-role-switch-aria-checked-true-2
+  - scroll: { selector: 'label:has-text("Playback Speed")' }
+    id: scroll-label-has-text-playback-speed-2
+  - eval: |
+      const playback = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Auto-Playback'))?.querySelector('[role="switch"]');
+      const speed = document.querySelector('input[type="range"]');
+      if ([playback, speed].some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Kept voice controls must be inside the visible viewport');
+    id: eval-script-3
+  - shot: { name: defaults-voice-reloaded-kept, full_page: true }
+    id: shot-defaults-voice-reloaded-kept
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-settings-preferences.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+    id: eval-script-4
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-3
+  - wait: { selector: 'label:has-text("Default Temperature") [role="slider"][aria-valuenow="0"]' }
+    id: wait-label-has-text-default-temperature-role-slider-aria-valueno-4
+  - wait: { selector: 'label:has-text("Default Reasoning Level") [role="slider"][aria-valuenow="2"]' }
+    id: wait-label-has-text-default-reasoning-level-role-slider-aria-val-5
+  - wait: { selector: 'label:has-text("Playback Speed") input[type="range"][value="1"]' }
+    id: wait-label-has-text-playback-speed-input-type-range-value-1-2
+  - wait: { selector: 'label:has-text("Auto-Playback") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-auto-playback-role-switch-aria-checked-false-2
+  # Backend reset must not counterfeit a browser-cookie reset. Native toggle restores the default explicitly.
+  - wait: { selector: 'label:has-text("Smooth Streaming") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-smooth-streaming-role-switch-aria-checked-fa-3
+  - shot: { name: defaults-backend-reset-cookie-retained, full_page: true }
+    id: shot-defaults-backend-reset-cookie-retained
+  - scroll: { selector: 'label:has-text("Playback Speed")' }
+    id: scroll-label-has-text-playback-speed-3
+  - eval: |
+      const playback = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Auto-Playback'))?.querySelector('[role="switch"]');
+      const speed = document.querySelector('input[type="range"]');
+      if ([playback, speed].some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Reset voice controls must be inside the visible viewport');
+    id: eval-script-5
+  - shot: { name: defaults-voice-backend-reset, full_page: true }
+    id: shot-defaults-voice-backend-reset
+  - click: { selector: 'label:has-text("Smooth Streaming") [role="switch"]' }
+    id: click-label-has-text-smooth-streaming-role-switch-2
+  - goto: /app/settings/chat-preferences
+    id: goto-app-settings-chat-preferences-4
+  - wait: { selector: 'label:has-text("Smooth Streaming") [role="switch"][aria-checked="true"]' }
+    id: wait-label-has-text-smooth-streaming-role-switch-aria-checked-tr-2
+  - shot: { name: defaults-streaming-restored-native, full_page: true }
+    id: shot-defaults-streaming-restored-native
+  - wait: { selector: 'label:has-text("Auto-Playback") [role="switch"][aria-checked="false"]' }
+    id: wait-label-has-text-auto-playback-role-switch-aria-checked-false-3
+  - wait: { selector: 'label:has-text("Playback Speed") input[type="range"][value="1"]' }
+    id: wait-label-has-text-playback-speed-input-type-range-value-1-3
+  - scroll: { selector: 'label:has-text("Playback Speed")' }
+    id: scroll-label-has-text-playback-speed-4
+  - eval: |
+      const playback = [...document.querySelectorAll('label')].find(el => el.textContent.includes('Auto-Playback'))?.querySelector('[role="switch"]');
+      const speed = document.querySelector('input[type="range"]');
+      if ([playback, speed].some(el => !el || el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().bottom > innerHeight - 32)) throw new Error('Restored voice controls must be inside the visible viewport');
+    id: eval-script-6
+  - shot: { name: defaults-voice-streaming-restored, full_page: true }
+    id: shot-defaults-voice-streaming-restored
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-settings-preferences.yaml

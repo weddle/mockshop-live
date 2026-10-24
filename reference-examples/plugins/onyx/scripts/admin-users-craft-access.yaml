@@ -1,0 +1,211 @@
+# #59 joined Craft/accepted-Users proof only, not certification of #65's whole route inventory.
+# Native AccessCell stores null when a switch matches the default; Users has no Craft dropdown.
+# Runner starts fresh base fixtures53/54/56 and existing core settings (default false).
+name: admin-users-craft-access
+title: Native Craft access true false null and accepted Users join reset
+strict: true
+requires: enterprise
+locale: en
+steps:
+  - goto: /admin/users
+    id: goto-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  - click: { selector: 'a[href="/admin/craft/access"]' }
+    id: click-a-href-admin-craft-access
+  - wait: { text: Per-user access, exact: true }
+    id: wait-per-user-access
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="false"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role
+  - shot: users-craft-menu-entry
+    id: shot-users-craft-menu-entry
+  # Seed default is false. Toggling on writes explicit true through the real #65 setter.
+  - click: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"]' }
+    id: click-tr-has-text-maya-chen-seasidecollection-example-button-rol
+  - wait: { text: Craft enabled for user, exact: true }
+    id: wait-craft-enabled-for-user
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="true"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-2
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== true || me.craft_enabled !== true) throw new Error('Accepted Users/current-user Craft override did not preserve true');
+      })()
+    id: eval-script
+  - shot: users-craft-enabled
+    id: shot-users-craft-enabled
+  - goto: /admin/users
+    id: goto-admin-users-2
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests-2
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users-2
+  - wait: { text: "{{people.maya.name}}", exact: true }
+    id: wait-maya-chen
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== true || me.craft_enabled !== true) throw new Error('Accepted Users/current-user Craft override did not preserve true');
+      })()
+    id: eval-script-2
+  - shot: users-craft-enabled-users-readback
+    id: shot-users-craft-enabled-users-readback
+  - goto: /admin/craft/access
+    id: goto-admin-craft-access
+  - wait: { text: Per-user access, exact: true }
+    id: wait-per-user-access-2
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users-3
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="true"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-3
+  - shot: users-craft-direct-persisted
+    id: shot-users-craft-direct-persisted
+  # Matching the workspace default clears the override to null; it is not a fabricated Default menu.
+  - click: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"]' }
+    id: click-tr-has-text-maya-chen-seasidecollection-example-button-rol-2
+  - wait: { text: Craft disabled for user, exact: true }
+    id: wait-craft-disabled-for-user
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="false"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-4
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== null || me.craft_enabled !== null) throw new Error('Accepted Users/current-user Craft override did not preserve null');
+      })()
+    id: eval-script-3
+  - shot: users-craft-default-null
+    id: shot-users-craft-default-null
+  # A native default change makes explicit false reachable (not the same as following default false).
+  - click: { role: switch, nth: 0 }
+    id: click
+  - wait: { text: Enable Craft for all users?, exact: true }
+    id: wait-enable-craft-for-all-users
+  - shot: users-craft-enable-default-confirm
+    id: shot-users-craft-enable-default-confirm
+  - click: { role: button, name: Enable for Everyone, exact: true }
+    id: click-enable-for-everyone
+  - wait: { text: Craft is now enabled by default, exact: true }
+    id: wait-craft-is-now-enabled-by-default
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="true"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-5
+  - click: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"]' }
+    id: click-tr-has-text-maya-chen-seasidecollection-example-button-rol-3
+  - wait: { text: Craft disabled for user, exact: true }
+    id: wait-craft-disabled-for-user-2
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="false"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-6
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== false || me.craft_enabled !== false) throw new Error('Accepted Users/current-user Craft override did not preserve false');
+      })()
+    id: eval-script-4
+  - shot: users-craft-disabled-false
+    id: shot-users-craft-disabled-false
+  - goto: /admin/users
+    id: goto-admin-users-3
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests-3
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users-4
+  - wait: { text: "{{people.maya.name}}", exact: true }
+    id: wait-maya-chen-2
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== false || me.craft_enabled !== false) throw new Error('Accepted Users/current-user Craft override did not preserve false');
+      })()
+    id: eval-script-5
+  - shot: users-craft-disabled-users-readback
+    id: shot-users-craft-disabled-users-readback
+  - goto: /admin/craft/access
+    id: goto-admin-craft-access-2
+  - wait: { text: Per-user access, exact: true }
+    id: wait-per-user-access-3
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users-5
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="false"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-7
+  - click: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"]' }
+    id: click-tr-has-text-maya-chen-seasidecollection-example-button-rol-4
+  - wait: { text: Craft enabled for user, exact: true }
+    id: wait-craft-enabled-for-user-2
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="true"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-8
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== null || me.craft_enabled !== null) throw new Error('Accepted Users/current-user Craft override did not preserve null');
+      })()
+    id: eval-script-6
+  - shot: users-craft-enabled-default-null
+    id: shot-users-craft-enabled-default-null
+  # Leave default true AND explicit false dirty, then reset the actual joined factories.
+  - click: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"]' }
+    id: click-tr-has-text-maya-chen-seasidecollection-example-button-rol-5
+  - wait: { text: Craft disabled for user, exact: true }
+    id: wait-craft-disabled-for-user-3
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Native Craft join readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== false || me.craft_enabled !== false) throw new Error('Accepted Users/current-user Craft override did not preserve false');
+      })()
+    id: eval-script-7
+  - shot: users-craft-before-reset
+    id: shot-users-craft-before-reset
+  - id: eval-script-8-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en'})});
+        if (!res.ok) throw new Error('Mock reset failed');
+        location.reload();
+      })()
+    id: eval-script-8
+  - wait: { text: Per-user access, exact: true }
+    id: wait-per-user-access-4
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users-6
+  - wait: { selector: 'tr:has-text("{{people.maya.email}}") button[role="switch"][aria-checked="false"]' }
+    id: wait-tr-has-text-maya-chen-seasidecollection-example-button-role-9
+  - wait: { text: Craft is off for everyone. Toggle individual users below., exact: true }
+    id: wait-craft-is-off-for-everyone-toggle-individual-users-below
+  - shot: users-craft-reset
+    id: shot-users-craft-reset
+  - goto: /admin/users
+    id: goto-admin-users-4
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests-4
+  - fill: { selector: 'input[placeholder="Search users..."]', value: maya.chen }
+    id: fill-input-placeholder-search-users-7
+  - wait: { text: "{{people.maya.name}}", exact: true }
+    id: wait-maya-chen-3
+  - eval: |
+      (async () => {
+        const usersRes = await fetch('/api/manage/users/accepted/all'), meRes = await fetch('/api/me');
+        if (!usersRes.ok || !meRes.ok) throw new Error('Craft reset readback failed');
+        const user = (await usersRes.json()).find(row => row.email === '{{people.maya.email}}'), me = await meRes.json();
+        if (!user || user.craft_enabled !== null || me.craft_enabled !== false) throw new Error('Fresh reset did not restore accepted null and original current-user false seeds');
+      })()
+    id: eval-script-9
+  - shot: users-craft-users-reset
+    id: shot-users-craft-users-reset
+world: ../../../worlds/seaside/world.yaml

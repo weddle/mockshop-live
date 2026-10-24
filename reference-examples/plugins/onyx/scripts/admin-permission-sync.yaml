@@ -1,0 +1,50 @@
+# Admin view of a permission-synced connector (Confluence – Training space, access type "sync"):
+# status card (permission syncing + last synced) -> Advanced -> Document Permissions tab -> Group Membership tab.
+name: admin-permission-sync
+requires: enterprise # permission sync (access type "sync") is a Business+ feature
+title: Admin checks permission sync on a connector
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/indexing-status
+    id: goto-admin-indexing-status
+  - type: { placeholder: Search connectors..., value: "{{teams.training.name}}" }
+    id: type
+  - settle: 800
+    id: settle
+  - click: { text: Expand All }
+    id: click-expand-all
+  - settle: 600
+    id: settle-2
+  - shot: indexing-status-synced
+    id: shot-indexing-status-synced
+  - click: { text: "Confluence – {{teams.training.name}} space" }
+    id: click-confluence-training-space
+  - wait: { text: Connector Configuration }
+    id: wait-connector-configuration
+  - settle: 800
+    id: settle-3
+  - shot: connector-detail-permissions
+    id: shot-connector-detail-permissions
+  - click: { text: Advanced }
+    id: click-advanced
+  - settle: 800
+    id: settle-4
+  - scroll: { selector: "table", last: true }
+    id: scroll-table
+  - shot: advanced-indexing-tab
+    id: shot-advanced-indexing-tab
+  - click: { role: tab, name: Document Permission Sync }
+    id: click-document-permission-sync
+  - settle: 800
+    id: settle-5
+  - shot: doc-permission-sync
+    id: shot-doc-permission-sync
+  - click: { role: tab, name: Group Membership Sync }
+    id: click-group-membership-sync
+  - settle: 800
+    id: settle-6
+  - shot: group-membership-sync
+    id: shot-group-membership-sync
+  # Not shown: /admin/connector/101 (Salesforce) renders, but Onyx pulls Salesforce ACLs inline while indexing, so its
+  # Permission Syncing badge reads "Not Started" and both sync tabs say "not applicable". Demo Confluence instead.
+world: ../../../worlds/seaside/world.yaml

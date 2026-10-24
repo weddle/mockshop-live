@@ -1,0 +1,118 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset of base + demo-mcp-admin; original native menu/direct entry and seed read.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+
+name: admin-agent-curation-feature
+title: Native Feature cancellation, confirmation, unfeature and gallery persistence
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/documents/sets
+    id: goto-admin-documents-sets
+  - click: { selector: 'a[href="/admin/agents"]' }
+    id: click-a-href-admin-agents
+  - wait: { testid: agent-row-actions-14 }
+    id: wait
+  - eval: |
+      (async () => {
+        const get = async path => {
+          const r = await fetch('/api' + path);
+          if (!r.ok) throw new Error('Missing native read: ' + path);
+          return r.json();
+        };
+        const seeds = await Promise.all([11,12,13,14].map(id => get('/persona/' + id)));
+        sessionStorage.setItem('admin-curation-seeds', JSON.stringify(seeds));
+        sessionStorage.setItem('admin-curation-pins', JSON.stringify((await get('/me')).preferences.pinned_assistants));
+        const ids = [...document.querySelectorAll('tbody [data-testid^="agent-row-actions-"]')].map(e => e.dataset.testid);
+        if (ids.join(',') !== 'agent-row-actions-11,agent-row-actions-12,agent-row-actions-13,agent-row-actions-14')
+          throw new Error('Seeded native admin order is incorrect');
+      })()
+    id: eval-script
+  - shot: curation-menu-seeded
+    id: shot-curation-menu-seeded
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - wait: { testid: agent-row-actions-13 }
+    id: wait-2
+  - hover: { testid: agent-row-actions-13 }
+    id: hover
+  - click: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+    id: click-data-testid-agent-row-actions-13-button-aria-label-set-as-
+  - wait: { role: dialog, has_text: "Feature {{teams.training.name}} Analyst" }
+    id: wait-3
+  - shot: feature-confirmation
+    id: shot-feature-confirmation
+  - press: Escape
+    id: press-escape
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - wait: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+    id: wait-data-testid-agent-row-actions-13-button-aria-label-set-as-f
+  - eval: |
+      (async () => {
+        if ((await (await fetch('/api/persona/13')).json()).is_featured) throw new Error('Cancel changed featured state');
+      })()
+    id: eval-script-2
+  - hover: { testid: agent-row-actions-13 }
+    id: hover-2
+  - click: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+    id: click-data-testid-agent-row-actions-13-button-aria-label-set-as--2
+  - click: { selector: '[role="dialog"] button:has-text("Feature")' }
+    id: click-role-dialog-button-has-text-feature
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Remove Featured"]' }
+    id: wait-data-testid-agent-row-actions-13-button-aria-label-remove-f
+  - shot: featured-admin
+    id: shot-featured-admin
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { selector: '.radial-00:has-text("{{teams.training.name}} Analyst")' }
+    id: wait-radial-00-has-text-training-analyst
+  - eval: |
+      (async () => {
+        const card = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')].find(e => e.textContent.includes('{{teams.training.name}} Analyst'));
+        if (!card?.closest('.grid')?.parentElement?.textContent.includes('Featured')) throw new Error('Featured agent not in native Featured section');
+        const a = await (await fetch('/api/persona/13')).json();
+        if (!a.is_featured || !a.is_listed) throw new Error('Feature not persisted in detail');
+      })()
+    id: eval-script-3
+  - shot: featured-gallery-reload
+    id: shot-featured-gallery-reload
+  - goto: /admin/agents
+    id: goto-admin-agents-2
+  - wait: { testid: agent-row-actions-13 }
+    id: wait-4
+  - hover: { testid: agent-row-actions-13 }
+    id: hover-3
+  - click: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Remove Featured"]' }
+    id: click-data-testid-agent-row-actions-13-button-aria-label-remove-
+  - wait: { role: dialog, has_text: "Remove {{teams.training.name}} Analyst from Featured" }
+    id: wait-5
+  - shot: unfeature-confirmation
+    id: shot-unfeature-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Unfeature")' }
+    id: click-role-dialog-button-has-text-unfeature
+  - wait_gone: { role: dialog }
+    id: wait-gone-3
+  - wait: { selector: '[data-testid="agent-row-actions-13"] button[aria-label="Set as Featured"]' }
+    id: wait-data-testid-agent-row-actions-13-button-aria-label-set-as-f-2
+  - goto: /app/agents
+    id: goto-app-agents-2
+  - wait: { selector: '.radial-00:has-text("{{teams.training.name}} Analyst")' }
+    id: wait-radial-00-has-text-training-analyst-2
+  - eval: |
+      (async () => {
+        const card = [...document.querySelectorAll('[data-testid="AgentsPage/container"] .radial-00')].find(e => e.textContent.includes('{{teams.training.name}} Analyst'));
+        if (card?.closest('.grid')?.parentElement?.textContent.includes('Featured')) throw new Error('Unfeature left agent in native Featured section');
+        if ((await (await fetch('/api/persona/13')).json()).is_featured) throw new Error('Unfeature lost on navigation');
+      })()
+    id: eval-script-4
+  - shot: unfeatured-gallery
+    id: shot-unfeatured-gallery
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,29 @@
+name: _probe
+requires: enterprise # indexing-status and connector pages are shot with the Business+ columns
+continue_on_error: true
+steps:
+  - goto: /admin/connectors
+    id: goto-admin-connectors
+  - shot: catalog
+    id: shot-catalog
+  - goto: /admin/connectors/confluence
+    id: goto-admin-connectors-confluence
+  - shot: add-confluence
+    id: shot-add-confluence
+  - goto: /admin/indexing-status
+    id: goto-admin-indexing-status
+  - shot: indexing-status
+    id: shot-indexing-status
+  - goto: /admin/connector/102
+    id: goto-admin-connector-102
+  - shot: cc-pair
+    id: shot-cc-pair
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  - shot: llm
+    id: shot-llm
+  - goto: /app/agents
+    id: goto-app-agents
+  - shot: agents
+    id: shot-agents
+world: ../../../worlds/seaside/world.yaml

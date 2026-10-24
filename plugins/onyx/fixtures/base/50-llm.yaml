@@ -1,0 +1,184 @@
+# llm area routes, split from the former 00-core.yaml (base/*.yaml merge in file-name order).
+GET /admin/llm/provider-contextual-cost: []
+GET /admin/cost-overrides: []
+GET /llm/provider:
+  providers:
+    - id: 1
+      name: OpenAI
+      provider: openai
+      provider_display_name: OpenAI
+      model_configurations:
+        - id: 1
+          name: gpt-5.2
+          display_name: GPT-5.2
+          is_visible: true
+          max_input_tokens: 400000
+          supports_image_input: true
+          supports_reasoning: true
+          supported_reasoning_efforts:
+            - low
+            - medium
+            - high
+          is_recommended_default: true
+          vendor: openai
+        - id: 2
+          name: gpt-5-mini
+          display_name: GPT-5 mini
+          is_visible: true
+          max_input_tokens: 400000
+          supports_image_input: true
+          supports_reasoning: true
+          supported_reasoning_efforts:
+            - low
+            - medium
+            - high
+          vendor: openai
+        - id: 3
+          name: gpt-4.1
+          display_name: GPT-4.1
+          is_visible: true
+          max_input_tokens: 1000000
+          supports_image_input: true
+          supports_reasoning: false
+          vendor: openai
+      next_model_configuration_offset: null
+  default_text:
+    provider_id: 1
+    model_name: gpt-5.2
+  default_vision:
+    provider_id: 1
+    model_name: gpt-5.2
+  default_chat_naming:
+    provider_id: 1
+    model_name: gpt-5-mini
+  default_craft: null
+GET /llm/persona/:id/providers:
+  providers:
+    - id: 1
+      name: OpenAI
+      provider: openai
+      provider_display_name: OpenAI
+      model_configurations:
+        - id: 1
+          name: gpt-5.2
+          display_name: GPT-5.2
+          is_visible: true
+          max_input_tokens: 400000
+          supports_image_input: true
+          supports_reasoning: true
+          supported_reasoning_efforts:
+            - low
+            - medium
+            - high
+          is_recommended_default: true
+          vendor: openai
+        - id: 2
+          name: gpt-5-mini
+          display_name: GPT-5 mini
+          is_visible: true
+          max_input_tokens: 400000
+          supports_image_input: true
+          supports_reasoning: true
+          supported_reasoning_efforts:
+            - low
+            - medium
+            - high
+          vendor: openai
+        - id: 3
+          name: gpt-4.1
+          display_name: GPT-4.1
+          is_visible: true
+          max_input_tokens: 1000000
+          supports_image_input: true
+          supports_reasoning: false
+          vendor: openai
+      next_model_configuration_offset: null
+  default_text:
+    provider_id: 1
+    model_name: gpt-5.2
+  default_vision:
+    provider_id: 1
+    model_name: gpt-5.2
+  default_chat_naming:
+    provider_id: 1
+    model_name: gpt-5-mini
+  default_craft: null
+GET /admin/llm/provider:
+  providers:
+    - id: 1
+      name: OpenAI
+      provider: openai
+      api_key: sk-••••••••••••3f9a
+      api_base: null
+      api_version: null
+      custom_config: null
+      is_public: true
+      is_auto_mode: true
+      groups: []
+      personas: []
+      deployment_name: null
+      model_configurations:
+        - id: 1
+          name: gpt-5.2
+          display_name: GPT-5.2
+          is_visible: true
+          max_input_tokens: 400000
+          supports_image_input: true
+          supports_reasoning: true
+          supported_reasoning_efforts:
+            - low
+            - medium
+            - high
+          is_recommended_default: true
+          vendor: openai
+        - id: 2
+          name: gpt-5-mini
+          display_name: GPT-5 mini
+          is_visible: true
+          max_input_tokens: 400000
+          supports_image_input: true
+          supports_reasoning: true
+          supported_reasoning_efforts:
+            - low
+            - medium
+            - high
+          vendor: openai
+        - id: 3
+          name: gpt-4.1
+          display_name: GPT-4.1
+          is_visible: true
+          max_input_tokens: 1000000
+          supports_image_input: true
+          supports_reasoning: false
+          vendor: openai
+      next_model_configuration_offset: null
+  default_text:
+    provider_id: 1
+    model_name: gpt-5.2
+  default_vision:
+    provider_id: 1
+    model_name: gpt-5.2
+  default_chat_naming:
+    provider_id: 1
+    model_name: gpt-5-mini
+  default_craft: null
+GET /admin/llm/custom-provider-names: []
+GET /temperature-default: null
+GET /reasoning-effort-default: null
+GET /admin/llm/built-in/options/ollama_chat:
+  name: ""
+  known_models: []
+  recommended_default_model: null
+GET /admin/llm/built-in/options/openai:
+  name: ""
+  known_models: []
+  recommended_default_model:
+    name: ""
+    display_name: ""
+GET /admin/llm/built-in/options/anthropic:
+  name: ""
+  known_models: []
+  recommended_default_model:
+    name: ""
+    display_name: ""
+POST /admin/llm/ollama/available-models: []

@@ -1,0 +1,83 @@
+# Native condition only: oauth_provider_enabled=true, fake authenticated user; no authorize/login flow.
+name: user-settings-controls-connected-apps
+title: Native authorized-app list, cancel, disconnect, keep and reset
+requires: enterprise
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - click: { selector: 'a[href="/app/settings/accounts-access"]' }
+    id: click-a-href-app-settings-accounts-access
+  - wait: { text: Connected apps, exact: true }
+    id: wait-connected-apps
+  - wait: { text: Workshop Reader (fictional), exact: true }
+    id: wait-workshop-reader-fictional
+  - shot: { name: authorized-app-native-loaded, full_page: true }
+    id: shot-authorized-app-native-loaded
+  - click: { role: button, name: Disconnect Workshop Reader (fictional), exact: true }
+    id: click-disconnect-workshop-reader-fictional
+  - wait: { text: Disconnect Workshop Reader (fictional)?, exact: true }
+    id: wait-disconnect-workshop-reader-fictional
+  - shot: { name: authorized-app-disconnect-confirm, full_page: true }
+    id: shot-authorized-app-disconnect-confirm
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access
+  - wait: { text: Workshop Reader (fictional), exact: true }
+    id: wait-workshop-reader-fictional-2
+  - shot: { name: authorized-app-cancel-protected, full_page: true }
+    id: shot-authorized-app-cancel-protected
+  - click: { role: button, name: Disconnect Workshop Reader (fictional), exact: true }
+    id: click-disconnect-workshop-reader-fictional-2
+  - click: { selector: '[role="dialog"] button:has-text("Disconnect")' }
+    id: click-role-dialog-button-has-text-disconnect
+  - wait: { text: No connected apps., exact: true }
+    id: wait-no-connected-apps
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-settings-connected-apps.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+    id: eval-script
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-2
+  - wait: { text: No connected apps., exact: true }
+    id: wait-no-connected-apps-2
+  - eval: |
+      (async () => {
+        const grants = await (await fetch('/api/oauth-provider/grants')).json();
+        if (grants.length !== 0 || document.body.innerText.includes('Workshop Reader (fictional)')) throw new Error('Disconnected app reappeared after keep/reload');
+      })()
+    id: eval-script-2
+  - shot: { name: authorized-app-disconnected-kept-empty, full_page: true }
+    id: shot-authorized-app-disconnected-kept-empty
+  - id: eval-script-3-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-settings-connected-apps.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+    id: eval-script-3
+  - goto: /app/settings/accounts-access
+    id: goto-app-settings-accounts-access-3
+  - wait: { text: Workshop Reader (fictional), exact: true }
+    id: wait-workshop-reader-fictional-3
+  - wait: { role: button, name: Disconnect Workshop Reader (fictional), exact: true }
+    id: wait-disconnect-workshop-reader-fictional-2
+  - shot: { name: authorized-app-reset-restored, full_page: true }
+    id: shot-authorized-app-reset-restored
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-settings-connected-apps.yaml

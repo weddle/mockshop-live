@@ -1,0 +1,198 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-reset
+title: "Craft non-vacuous composed dirty reset through real native creators"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: "/craft/v1/skills"
+    id: goto-craft-v1-skills
+  - wait: { "placeholder": "Search skills..." }
+    id: wait
+  - click: { role: button, name: Create skill, exact: true }
+    id: click-create-skill
+  - click: { text: Start from scratch, exact: true }
+    id: click-start-from-scratch
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - fill: { selector: 'input[name="name"]', value: accessible-workshop }
+    id: fill-input-name-name
+  - fill: { selector: 'textarea[name="description"]', value: A fictional inclusive workshop handout guide. }
+    id: fill-textarea-name-description
+  - fill:
+      {
+        selector: 'textarea[name="instructions_markdown"]',
+        value: "# Accessible workshop
+
+
+          Offer clear headings, large-print notes and quiet reflection time."
+      }
+    id: fill-textarea-name-instructions-markdown
+  - click: { role: button, name: Rendered markdown, exact: true }
+    id: click-rendered-markdown
+  - click: { role: button, name: Raw markdown, exact: true }
+    id: click-raw-markdown
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - eval: |
+      (async () => {
+        const skills = await (await fetch('/api/skills')).json();
+        const skill = skills.customs.find(s => s.name === 'accessible-workshop');
+        if (!skill?.instructions_markdown.includes('quiet reflection')) throw new Error('Native skill create did not retain editable content');
+        sessionStorage.setItem('craft-created-skill', skill.id);
+        location.href = '/craft/v1/skills/edit/' + skill.id;
+      })()
+    id: eval-script-2
+  - wait: { selector: 'textarea[name="description"]' }
+    id: wait-textarea-name-description
+  - fill: { selector: 'textarea[name="description"]', value: Updated fictional learning guide. }
+    id: fill-textarea-name-description-2
+  - click: { role: button, name: Save, exact: true }
+    id: click-save-2
+  - eval: location.href = '/craft/v1/skills/edit/' + sessionStorage.getItem('craft-created-skill')
+    id: eval-script-3
+  - wait: { selector: 'textarea[name="description"]' }
+    id: wait-textarea-name-description-2
+  - goto: "/admin/craft/apps"
+    id: goto-admin-craft-apps
+  - wait: { "role": "button", "name": "Add app", "exact": true }
+    id: wait-add-app
+  - click: { role: button, name: Add app, exact: true }
+    id: click-add-app
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { text: Create custom app, exact: true }
+    id: wait-create-custom-app
+  - fill: { placeholder: My Custom App, value: Campus Reflection API }
+    id: fill
+  - fill: { placeholder: 'https://api.example.com/*', value: 'https://campus-reflection.example/*' }
+    id: fill-2
+  - press: Enter
+    id: press-enter
+  - fill: { placeholder: Authorization, value: Authorization }
+    id: fill-3
+  - fill: { placeholder: 'Bearer {api_key}', value: 'Bearer {learning_key}' }
+    id: fill-4
+  - click: { selector: '[role="dialog"] button:has-text("Create")' }
+    id: click-role-dialog-button-has-text-create
+  - wait: { text: Add skills to Campus Reflection API, exact: true }
+    id: wait-add-skills-to-campus-reflection-api
+  - click: { role: button, name: Skip for now, exact: true }
+    id: click-skip-for-now
+  - goto: /craft/v1/tasks/new
+    id: goto-craft-v1-tasks-new
+  - wait: { selector: '[data-testid="task-name-input"]' }
+    id: wait-data-testid-task-name-input
+  - fill: { selector: '[data-testid="task-name-input"]', value: Fictional workshop reminder }
+    id: fill-data-testid-task-name-input
+  - fill: { selector: '[data-testid="task-prompt-input"]', value: Prepare a fictional accessible workshop checklist. }
+    id: fill-data-testid-task-prompt-input
+  - click: { selector: '[data-testid="save-and-run-now"]' }
+    id: click-data-testid-save-and-run-now
+  # Native create-and-run returns to the list; open the actual created row.
+  - click: { selector: '.table-footer button:has(svg path[d="M6 12L10 8L6 4"])' }
+    id: click-table-footer-button-has-svg-path-d-m6-12l10-8l6-4
+  - click: { text: Fictional workshop reminder, exact: true }
+    id: click-fictional-workshop-reminder
+  - wait: { selector: '[data-testid="run-now-button"]' }
+    id: wait-data-testid-run-now-button
+  - eval: sessionStorage.setItem('craft-created-task', location.pathname.split('/').pop())
+    id: eval-script-4
+  - goto: "/craft/v1"
+    id: goto-craft-v1
+  - wait: { "selector": "[contenteditable=\"true\"][role=\"textbox\"]" }
+    id: wait-contenteditable-true-role-textbox
+  - click: { role: button, name: Open add menu, exact: true }
+    id: click-open-add-menu
+  - click: { text: Library, exact: true }
+    id: click-library
+  - click: { text: Manage library…, exact: true }
+    id: click-manage-library
+  - wait: { text: Library, exact: true }
+    id: wait-library
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      if (!input) throw new Error('Native library upload input missing');
+      const files = new DataTransfer();
+      files.items.add(new File(['Synthetic workshop notes.'], 'workshop-notes.txt', {type:'text/plain'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-5
+  - wait: { text: workshop-notes.txt, exact: true }
+    id: wait-workshop-notes-txt
+  - eval: |
+      (async () => {
+        const skills = await (await fetch('/api/skills')).json();
+        const tasks = await (await fetch('/api/build/scheduled-tasks')).json();
+        const apps = await (await fetch('/api/build/admin/apps')).json();
+        const library = await (await fetch('/api/build/user-library/tree')).json();
+        if (!skills.customs.some(s => s.name === 'accessible-workshop')) throw new Error('Reset prerequisite native skill creation missing');
+        if (!tasks.items.some(t => t.name.startsWith('Fictional workshop reminder'))) throw new Error('Reset prerequisite native task creation missing');
+        if (!apps.some(a => a.name === 'Campus Reflection API')) throw new Error('Reset prerequisite native app creation missing');
+        if (!library.some(f => f.name === 'workshop-notes.txt')) throw new Error('Reset prerequisite native library upload missing');
+      })()
+    id: eval-script-6
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')), anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Craft composed reset failed');
+      })()
+    id: eval-script-7
+  - goto: /craft/v1/skills
+    id: goto-craft-v1-skills-2
+  - wait: { text: campus-study-plan, exact: true }
+    id: wait-campus-study-plan
+  - eval: |
+      (async () => {
+        const skills = await (await fetch('/api/skills')).json();
+        const tasks = await (await fetch('/api/build/scheduled-tasks')).json();
+        const apps = await (await fetch('/api/build/admin/apps')).json();
+        const library = await (await fetch('/api/build/user-library/tree')).json();
+        if (skills.customs.some(s => s.name === 'accessible-workshop' || s.name === 'study-circle')) throw new Error('Craft skill reset retained creations');
+        if (tasks.items.some(t => t.name.startsWith('Fictional workshop reminder'))) throw new Error('Craft task reset retained creations');
+        if (apps.some(a => a.name === 'Campus Reflection API')) throw new Error('#65 app reset retained creation');
+        if (library.some(f => f.name === 'workshop-notes.txt')) throw new Error('Craft library reset retained upload');
+      })()
+    id: eval-script-8
+  - shot: craft-reset-skills-restored
+    id: shot-craft-reset-skills-restored
+  - goto: /craft/v1/tasks
+    id: goto-craft-v1-tasks
+  - wait: { text: Clinic teaching checklist, exact: true }
+    id: wait-clinic-teaching-checklist
+  - shot: craft-reset-tasks-restored
+    id: shot-craft-reset-tasks-restored
+  - goto: /craft/v1/apps
+    id: goto-craft-v1-apps
+  - wait: { "text": "Clinic Learning API", "exact": true }
+    id: wait-clinic-learning-api
+  - shot: craft-reset-apps-restored
+    id: shot-craft-reset-apps-restored
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

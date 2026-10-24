@@ -1,0 +1,430 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/weddle/mockshop-live/schema/script.schema.json",
+  "title": "Mockshop script",
+  "description": "An executable script YAML/JSON file: optional reusable world/content and profile, then ordered scenes with stable IDs or a precise flat manual step list. References and structured use defaults resolve before validation and plugin compilation.",
+  "type": "object",
+  "additionalProperties": false,
+  "oneOf": [{ "required": ["steps"] }, { "required": ["scenes"] }],
+  "properties": {
+    "name": { "type": "string", "description": "Output folder / clip name. Default: the file name without .yaml." },
+    "title": { "type": "string", "description": "Informational label (not read by the runner)." },
+    "plugin": { "type": "string", "minLength": 1, "description": "Must match the selected plugin." },
+    "world": { "type": "string", "minLength": 1, "description": "World YAML/JSON path, relative to this script." },
+    "content": { "type": "object", "description": "Script-local additions and overrides, with the world shape; validated after composition." },
+    "remove": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "Entity paths removed after composition and before reference validation." },
+    "profile": { "type": "string", "minLength": 1, "description": "One reusable presentation profile path, relative to this script; --profile replaces it." },
+    "presentation": { "$ref": "#/$defs/presentation" },
+    "scenes": { "type": "array", "items": { "$ref": "#/$defs/scene" }, "description": "Ordered scenes, each with stable scene and step IDs. Cannot be combined with root steps." },
+    "viewport": { "$ref": "#/$defs/point", "description": "[width, height]. Default: manifest runner.viewport, else [1440, 900]. clip.viewport wins in clip mode." },
+    "scale": { "type": "number", "minimum": 0.5, "maximum": 4, "description": "deviceScaleFactor. Default 1." },
+    "theme": { "enum": ["light", "dark"], "description": "prefers-color-scheme (default light). An explicit theme here, in presentation, a profile or --render-overrides is also sent to the mock as core.state.theme for plugins to apply; without one the world's own preference stays." },
+    "locale": { "type": "string", "description": "Language for this script. Precedence: CLI --locale, script locale, manifest runner.locale, a selector cookie in cookies, then manifest localization.default (else en-US). Must be in localization.locales when the plugin lists them." },
+    "timezone": { "type": "string", "description": "IANA zone. Default: manifest runner.timezone, else America/New_York." },
+    "cookies": { "type": "array", "items": { "type": "object", "required": ["name", "value"], "properties": { "name": { "type": "string" }, "value": { "type": "string" }, "domain": { "type": "string" }, "path": { "type": "string" } }, "additionalProperties": true }, "description": "Extra cookies added after the manifest's runner.cookies." },
+    "overlays": { "type": "array", "items": { "type": "string" }, "description": "Extra fixture layer dirs under the plugin's fixtures/ (e.g. demo-empty-sidebar)." },
+    "demo_anchor": { "type": ["string", "number"], "description": "Fixed demo 'now' (ISO 8601 with offset). Default: manifest runner.demo_anchor, else the real start time." },
+    "continue_on_error": { "type": "boolean", "description": "Keep running after a failed step. Default false." },
+    "strict": { "type": "boolean", "description": "Fail on any problem (console errors, HTTP>=400, unmocked requests), not just failed steps. Default: manifest runner.strict, else false." },
+    "known_errors": { "$ref": "#/$defs/knownErrors" },
+    "requires": { "type": ["string", "array"], "items": { "type": "string" }, "description": "Edition name(s) the built runtime must have; otherwise shot/clip skip this script." },
+    "clip": { "$ref": "#/$defs/clip" },
+    "cursor": { "$ref": "#/$defs/cursor", "description": "Script-level cursor defaults (docs/cursor.md)." },
+    "steps": { "type": "array", "items": { "$ref": "#/$defs/step" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$", "description": "Stable author-chosen name, unique within its script." },
+    "scene": {
+      "type": "object", "additionalProperties": false, "required": ["id", "steps"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string" },
+        "presentation": { "$ref": "#/$defs/scopedPresentation" },
+        "steps": { "type": "array", "items": { "allOf": [{ "$ref": "#/$defs/step" }, { "required": ["id"] }] } }
+      }
+    },
+    "presentation": {
+      "type": "object", "additionalProperties": false,
+      "description": "Render settings. Cursor toggles retain inherited appearance; narrower scopes revert when they end.",
+      "properties": {
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "clip": { "$ref": "#/$defs/clip" },
+        "viewport": { "$ref": "#/$defs/point" },
+        "scale": { "$ref": "#/properties/scale" },
+        "theme": { "$ref": "#/properties/theme" }
+      }
+    },
+    "profile": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" }, "title": { "type": "string" },
+        "cursor": { "$ref": "#/$defs/cursor" },
+        "clip": { "$ref": "#/$defs/clip" },
+        "viewport": { "$ref": "#/$defs/point" },
+        "scale": { "$ref": "#/properties/scale" },
+        "theme": { "$ref": "#/properties/theme" }
+      }
+    },
+    "scopedPresentation": {
+      "type": "object", "additionalProperties": false,
+      "description": "Temporary cursor and clip pacing settings. Frame/session/encoding options are script-wide.",
+      "properties": { "cursor": { "$ref": "#/$defs/cursor" }, "clip": { "$ref": "#/$defs/clipPacing" } }
+    },
+    "clipPacing": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "type_delay_ms": { "$ref": "#/$defs/clip/properties/type_delay_ms" },
+        "type_ms": { "$ref": "#/$defs/clip/properties/type_ms" },
+        "type_cps": { "$ref": "#/$defs/clip/properties/type_cps" },
+        "nav_fade": { "$ref": "#/$defs/clip/properties/nav_fade" },
+        "fade_ms": { "$ref": "#/$defs/clip/properties/fade_ms" },
+        "after_type_ms": { "$ref": "#/$defs/clip/properties/after_type_ms" },
+        "move_ms": { "$ref": "#/$defs/clip/properties/move_ms" },
+        "pre_click_ms": { "$ref": "#/$defs/clip/properties/pre_click_ms" },
+        "after_click_ms": { "$ref": "#/$defs/clip/properties/after_click_ms" },
+        "settle_cap_ms": { "$ref": "#/$defs/clip/properties/settle_cap_ms" },
+        "idle_timeout_ms": { "$ref": "#/$defs/clip/properties/idle_timeout_ms" },
+        "hold_ms": { "$ref": "#/$defs/clip/properties/hold_ms" },
+        "title_ms": { "$ref": "#/$defs/clip/properties/title_ms" },
+        "cursor": { "$ref": "#/$defs/cursor" }
+      }
+    },
+    "renderOverrides": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "presentation": { "$ref": "#/$defs/presentation" },
+        "scenes": { "type": "object", "additionalProperties": { "$ref": "#/$defs/scopedPresentation" } },
+        "steps": { "type": "object", "additionalProperties": { "$ref": "#/$defs/scopedPresentation" } }
+      }
+    },
+    "knownErrors": { "type": "array", "description": "Strict-mode allowlist: runner problems matching an entry are reported as known (with the reason) and do not fail the run. Failed steps are never allowlisted. Added to manifest runner.known_errors.", "items": { "type": "object", "additionalProperties": false, "required": ["match", "reason"], "properties": { "match": { "type": "string", "minLength": 1, "description": "Substring of the problem line, or /regex/flags." }, "reason": { "type": "string", "minLength": 1, "description": "Why this is expected (upstream race, declared placeholder, ...). Reviewed by the plugin owner." } } } },
+    "point": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+    "cursorStyle": { "type": "string", "enum": ["signature_arc", "spring_settle", "magnetic", "comet_swoop", "adaptive", "classic", "straight", "arc", "bow", "custom"] },
+    "cursor": {
+      "type": ["object", "boolean", "string"],
+      "description": "Cursor options (docs/cursor.md): a known style name, true/false, or an object with motion/look options and optional shot still keys.",
+      "anyOf": [{ "type": "boolean" }, { "$ref": "#/$defs/cursorStyle" }, { "type": "object" }],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "screenshots": { "type": "boolean" },
+        "style": { "$ref": "#/$defs/cursorStyle" },
+        "timing": { "enum": ["native", "fitts", "fixed", "distance"] },
+        "ms": { "type": ["number", "null"] },
+        "speed": { "type": "number" },
+        "ease": { "$ref": "#/$defs/cursorEase" },
+        "path": { "enum": ["straight", "arc", "bow", null] },
+        "settle": { "enum": ["none", "follow_through", "spring", null] },
+        "heading": { "enum": ["tangent", "fixed", null] },
+        "seed": { "type": ["string", "null"] },
+        "reduced_motion": { "type": "boolean" },
+        "arc_size": { "type": ["number", "null"] },
+        "arc_flow": { "type": ["number", "null"] },
+        "start_handle": { "type": ["number", "null"] },
+        "end_handle": { "type": ["number", "null"] },
+        "bow": { "type": ["number", "null"] },
+        "overshoot": { "type": ["number", "null"] },
+        "overshoot_px": { "type": ["number", "null"] },
+        "cycles": { "type": ["number", "null"] },
+        "decay": { "type": ["number", "null"] },
+        "spring": { "type": ["number", "null"] },
+        "peak_speed": { "type": ["number", "null"] },
+        "min_start_speed": { "type": ["number", "null"] },
+        "min_end_speed": { "type": ["number", "null"] },
+        "turn_radius": { "type": ["number", "null"] },
+        "base_ms": { "type": ["number", "null"] },
+        "ms_per_px": { "type": ["number", "null"] },
+        "min_ms": { "type": ["number", "null"] },
+        "max_ms": { "type": ["number", "null"] },
+        "effects": { "$ref": "#/$defs/cursorEffects" },
+        "trail": { "$ref": "#/$defs/cursorTrail" },
+        "glow": { "type": "number" },
+        "pre_click_ms": { "type": ["number", "null"] },
+        "look": { "$ref": "#/$defs/cursorLook" },
+        "at": { "oneOf": [{ "$ref": "#/$defs/point" }, { "$ref": "#/$defs/locator" }] },
+        "ripple": { "$ref": "#/$defs/cursorPulse" },
+        "squish": { "$ref": "#/$defs/cursorPulse" },
+        "magnet": { "oneOf": [{ "type": "boolean" }, { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 }] }
+      }
+    },
+    "cursorEase": {
+      "oneOf": [
+        { "enum": ["linear", "min_jerk", "smootherstep", "in_out_cubic", "in_out_sine", "out_cubic", null] },
+        { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+        { "type": "string", "pattern": "^cubic-bezier\\(\\s*[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?\\s*,\\s*[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?\\s*,\\s*[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?\\s*,\\s*[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?\\s*\\)$" }
+      ]
+    },
+    "cursorEffects": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "trail": { "type": ["boolean", "null"] },
+        "glow": { "type": ["boolean", "null"] },
+        "magnet": { "type": ["boolean", "null"] },
+        "ripple": { "type": ["boolean", "null"] },
+        "squish": { "type": ["boolean", "null"] }
+      }
+    },
+    "cursorTrail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "secs": { "type": "number" },
+        "fade_len": { "type": "number" },
+        "steps": { "type": "number" },
+        "tail_width": { "type": "number" },
+        "head_width": { "type": "number" },
+        "alpha": { "type": "number" }
+      }
+    },
+    "cursorLook": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Built-in shape or custom SVG path (which overrides shape). Null fallback values retain the existing renderer defaults.",
+      "properties": {
+        "shape": { "type": "string" },
+        "path": { "type": ["string", "null"] },
+        "viewbox": { "oneOf": [{ "$ref": "#/$defs/point" }, { "type": "null" }] },
+        "hotspot": { "oneOf": [{ "$ref": "#/$defs/point" }, { "type": "null" }] },
+        "size": { "type": ["number", "null"] },
+        "fill": { "type": ["string", "null"] },
+        "stroke": { "type": ["string", "null"] },
+        "stroke_width": { "type": ["number", "null"] },
+        "shadow": { "type": "boolean" },
+        "shadow_color": { "type": ["string", "null"] },
+        "shadow_blur": { "type": ["number", "null"] },
+        "shadow_y": { "type": ["number", "null"] },
+        "effect_color": { "type": "string" },
+        "opacity": { "type": ["number", "null"] },
+        "rotate": { "type": "boolean" },
+        "halo": { "type": "boolean" },
+        "float": { "type": "boolean" },
+        "ripple_fill": { "type": "boolean" },
+        "ripple_scale": { "type": ["number", "null"] }
+      },
+      "anyOf": [
+        { "properties": { "shape": { "enum": ["arrow", "pointer", "dot", "ring"] } } },
+        { "required": ["path"], "properties": { "path": { "type": "string", "minLength": 1 } } }
+      ]
+    },
+    "cursorPulse": { "oneOf": [{ "type": "boolean" }, { "type": "number", "minimum": 0, "maximum": 1 }] },
+    "clip": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Clip-mode pacing (all optional). Defaults from core/clip.mjs clipDefaults().",
+      "properties": {
+        "viewport": { "$ref": "#/$defs/point" },
+        "type_delay_ms": { "type": "number", "minimum": 0, "description": "Default 55; per keystroke when type_ms is null." },
+        "type_ms": { "type": ["number", "null"], "description": "Default 2500; fixed total time per `type` step, used only when type_cps is null; null = per-keystroke." },
+        "type_cps": { "type": ["number", "null"], "minimum": 1, "description": "Default 32; typing speed in characters per second. A `type` step without clip_ms takes length / type_cps seconds, clamped to 700..3200 ms. null = fixed type_ms." },
+        "nav_fade": { "type": "number", "minimum": 0, "description": "Default 450 ms crossfade between navigations; 0 = hard cut." },
+        "fade_ms": { "type": "number", "minimum": 0, "description": "Default 450; crossfade for click steps with fade: true." },
+        "after_type_ms": { "type": "number", "minimum": 0, "description": "Default 700." },
+        "move_ms": { "type": "number", "minimum": 0, "description": "Default 700; cursor glide duration." },
+        "pre_click_ms": { "type": "number", "minimum": 0, "description": "Default 220." },
+        "after_click_ms": { "type": "number", "minimum": 0, "description": "Default 600." },
+        "settle_cap_ms": { "type": "number", "minimum": 0, "description": "Default 300; caps `settle` waits in clips." },
+        "idle_timeout_ms": { "type": "number", "minimum": 0, "description": "Default 1500." },
+        "hold_ms": { "type": "number", "minimum": 0, "description": "Default 2200; how long a `shot` holds." },
+        "end_hold_ms": { "type": "number", "minimum": 0, "description": "Default 2500." },
+        "title": { "type": ["string", "object"], "properties": { "title": { "type": "string" }, "subtitle": { "type": "string" } }, "additionalProperties": true, "description": "Title card over the first page: a string or { title, subtitle }." },
+        "title_ms": { "type": "number", "minimum": 0, "description": "Default 3200." },
+        "cursor": { "$ref": "#/$defs/cursor", "description": "Default true: draw the cursor overlay." },
+        "fps": { "type": "number", "minimum": 1, "maximum": 120, "description": "Default 30." },
+        "crf": { "type": "number", "minimum": 0, "maximum": 51, "description": "Default 18." },
+        "preset": { "type": "string", "description": "x264 preset. Default slow." }
+      }
+    },
+    "locatorObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Exactly one base key; the runner checks them in this order: testid, role, placeholder, label, selector, text.",
+      "properties": {
+        "testid": { "type": "string" },
+        "role": { "type": "string", "description": "ARIA role; optional name/exact." },
+        "name": { "type": "string", "description": "Accessible name (with role)." },
+        "exact": { "type": "boolean", "description": "Exact match for name (with role) or text." },
+        "placeholder": { "type": "string" },
+        "label": { "type": "string" },
+        "selector": { "type": "string", "description": "CSS/Playwright selector; visibility is NOT filtered." },
+        "text": { "type": "string" },
+        "has_text": { "type": "string", "description": "Further filter by contained text." },
+        "nth": { "type": "integer", "minimum": 0 },
+        "last": { "type": "boolean" },
+        "any_visibility": { "type": "boolean", "description": "Include hidden elements." },
+        "value": { "type": "string", "description": "fill/type: text to enter." },
+        "delay": { "type": "number", "description": "type, shot mode: ms per key (default 15)." },
+        "clip_delay": { "type": "number", "description": "type, clip mode: ms per key." },
+        "clip_ms": { "type": ["number", "null"], "description": "type, clip mode: total typing time (default: length / clip.type_cps, clamped 700..3200 ms); null = per-keystroke." },
+        "click": { "type": "boolean", "description": "type, clip mode: click the field first (cursor glide, hover, press) unless the pointer is already on it. Default true; false focuses without a click." },
+        "cursor_path": { "type": "array", "minItems": 1, "items": { "oneOf": [{ "$ref": "#/$defs/point" }, { "$ref": "#/$defs/locator" }] }, "description": "type: ordered cursor waypoints ([x, y] CSS px or locator) moved through while this one step types; the step ends when both finish. Clip: glides; shot: the pointer ends at the last waypoint." },
+        "edge": { "enum": ["top", "bottom"], "description": "scroll: move the located element's own native scroller (itself, else its nearest scrollable ancestor, else its frame's document) to this edge instead of scrolling the element into view." },
+        "fade": { "type": "boolean", "description": "click, clip mode: crossfade the state change." },
+        "settle": { "type": "number", "description": "click+fade, clip mode: settle ms (default 500)." },
+        "state": { "enum": ["attached", "detached", "visible", "hidden"], "description": "wait: target state (default visible)." },
+        "cursor": { "$ref": "#/$defs/cursor", "description": "Inline per-step cursor override; a step-level cursor modifier takes precedence." },
+        "timeout": { "type": "number", "description": "wait/wait_gone: ms (default 20000)." }
+      },
+      "anyOf": [{ "required": ["testid"] }, { "required": ["role"] }, { "required": ["placeholder"] }, { "required": ["label"] }, { "required": ["selector"] }, { "required": ["text"] }]
+    },
+    "locator": { "oneOf": [{ "type": "string", "description": "Visible text (substring)." }, { "$ref": "#/$defs/locatorObject" }] },
+    "moveObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["to"],
+      "properties": {
+        "to": { "oneOf": [{ "$ref": "#/$defs/point" }, { "$ref": "#/$defs/locator" }] },
+        "hold": { "type": "number", "minimum": 0, "description": "Clip mode ms to hold after moving." },
+        "cursor": { "$ref": "#/$defs/cursor" }
+      }
+    },
+    "scrollBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by"],
+      "description": "Pointer-anchored wheel scroll: glide the pointer to `at`, then wheel `by` px.",
+      "properties": {
+        "by": { "type": "number", "description": "Pixels to scroll down (negative = up)." },
+        "at": { "$ref": "#/$defs/locator", "description": "Where the pointer goes before the wheel (clip: glides there). Default: the centre of the main content area, never the sidebar." }
+      }
+    },
+    "uploadObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["click", "files"],
+      "properties": {
+        "click": { "$ref": "#/$defs/locator", "description": "The visible control (e.g. Add Files) whose click opens the native file chooser." },
+        "files": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "description": "File name shown to the app. Default for `path`: its base name." },
+              "text": { "type": "string", "description": "Inline UTF-8 content, uploaded as an in-memory file." },
+              "path": { "type": "string", "minLength": 1, "description": "File read relative to this script's folder." }
+            },
+            "oneOf": [{ "required": ["name", "text"] }, { "required": ["path"] }]
+          }
+        }
+      }
+    },
+    "metaObject": { "type": "object", "description": "Free-form author data (for example lint allowances or QA intent). Never an operation; copied into the clip timeline's action record." },
+    "step": {
+      "type": "object",
+      "description": "Exactly one operation, plus an optional stable ID, presentation, and precise only/at/cursor modifiers.",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "presentation": { "$ref": "#/$defs/scopedPresentation" },
+        "meta": { "$ref": "#/$defs/metaObject" },
+        "send": { "type": "object", "additionalProperties": false, "required": ["text", "reply"], "properties": { "text": { "type": "string" }, "reply": { "type": "object" }, "wait": { "$ref": "#/$defs/step/properties/wait" }, "beats": { "type": "array", "items": { "enum": ["submitted", "answer-complete"] }, "description": "DOM replay: which phases of this turn become presenter beats (default both)." } }, "description": "Plugin convenience: exact authored question and response, with an optional completion wait. The selected plugin must compile it." },
+        "only": { "enum": ["clip", "shot"], "description": "Run this step only in clip mode or only in screenshot mode." },
+        "at": { "type": ["number", "string"], "description": "Clip mode: wait until this clip timestamp before running the step. Seconds (12.5), '12.5s', '1500ms' or 'mm:ss.s'." },
+        "cursor": { "$ref": "#/$defs/cursor", "description": "Per-step cursor override for this step (docs/cursor.md)." },
+        "goto": { "type": "string", "pattern": "^/", "description": "Path appended to the base URL, e.g. /app. Query strings are fine." },
+        "click": { "$ref": "#/$defs/locator", "description": "Click at the element centre. Locator (+ fade, settle for clips)." },
+        "hover": { "$ref": "#/$defs/locator" },
+        "move": { "oneOf": [{ "$ref": "#/$defs/point" }, { "$ref": "#/$defs/locator" }, { "$ref": "#/$defs/moveObject" }], "description": "Glide the cursor to [x, y], a locator, or {to, hold?, cursor?} without clicking." },
+        "pause": { "type": "number", "minimum": 0, "description": "ms; clip mode only (no-op for screenshots)." },
+        "card": { "oneOf": [{ "type": "string" }, { "type": "object", "properties": { "title": { "type": "string" }, "subtitle": { "type": "string" }, "ms": { "type": "number" }, "keep": { "type": "boolean" }, "cursor": { "$ref": "#/$defs/cursor" } }, "additionalProperties": false }], "description": "Full-screen title card; clip mode only." },
+        "fill": { "allOf": [{ "$ref": "#/$defs/locatorObject" }, { "required": ["value"] }], "description": "Locator + value; sets the value instantly." },
+        "type": { "allOf": [{ "$ref": "#/$defs/locatorObject" }, { "required": ["value"] }], "description": "Locator + value; keystrokes (+ delay, clip_delay, clip_ms, click, cursor_path). Clip mode clicks the field first unless click: false." },
+        "press": { "type": "string", "description": "Playwright key name, e.g. Enter, Control+K." },
+        "wait": { "oneOf": [{ "type": "number", "minimum": 0 }, { "$ref": "#/$defs/locatorObject" }, { "type": "string" }], "description": "ms, or a locator (+ state: attached|detached|visible|hidden, timeout ms, default 20000)." },
+        "wait_gone": { "$ref": "#/$defs/locator", "description": "Wait until the locator is hidden (+ timeout ms, default 20000)." },
+        "settle": { "type": ["number", "null"], "description": "Wait for network idle and no skeletons, then ms (default 600)." },
+        "eval": { "type": "string", "description": "JavaScript evaluated in the page." },
+        "assert_state": { "$ref": "#/$defs/assertState", "description": "Assert against the mock backend's own state (runner-only state API), not the page. Operators: equals, not_equals, in, contains, exists, count, keys, unchanged_since (+ except), equals_snapshot." },
+        "snapshot_state": { "$ref": "#/$defs/snapshotState", "description": "Remember an entity or list of the mock backend's state under a name (as:) for a later assert_state unchanged_since / equals_snapshot. Replaces sessionStorage threading." },
+        "scroll": { "oneOf": [{ "type": "number" }, { "$ref": "#/$defs/locatorObject" }, { "$ref": "#/$defs/scrollBy" }], "description": "Pixels to scroll down (negative = up), {by, at} for a pointer-anchored wheel, or a locator to scroll into view (+ edge: top|bottom to move that element's own scroller to an edge)." },
+        "upload": { "$ref": "#/$defs/uploadObject", "description": "Click the visible control that opens a file chooser, then set the files (text: in-memory, path: relative to the script)." },
+        "shot": { "oneOf": [{ "type": "string", "minLength": 1 }, { "$ref": "#/$defs/shotObject" }], "description": "Screenshot (shot mode) / hold beat (clip mode)." },
+        "mark": { "$ref": "#/$defs/mark", "description": "Named timeline marker (no browser action). Written to the clip timeline and, with --dom, a presenter beat." },
+        "keyframe": { "$ref": "#/$defs/mark", "description": "Alias of mark." },
+        "state": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "world": { "type": "string", "minLength": 1, "description": "Advanced persistent whole-world switch (for account/org-switch demos), compiled to a complete fixture set. No scoped entity mutations." },
+            "viewer": { "type": "string", "minLength": 1, "description": "Switches who is signed in to another shared person (world `people` key), compiled like a world switch with the same world. Follow with goto." },
+            "overlays": { "type": "array", "items": { "type": "string" } },
+            "sidebar": { "type": "array", "items": { "type": "string" } },
+            "connectors": { "type": "array", "items": { "type": "string" } },
+            "agent": { "type": ["string", "null"] },
+            "model": { "type": ["string", "null"] },
+            "turn": { "type": "string", "minLength": 1 },
+            "screen": { "type": "object" },
+            "keep": { "type": "boolean" },
+            "resetChats": { "type": "boolean" },
+            "cursor": { "$ref": "#/$defs/cursor" }
+          },
+          "anyOf": [{ "required": ["overlays"] }, { "required": ["world"] }, { "required": ["viewer"] }, { "required": ["sidebar"] }, { "required": ["connectors"] }, { "required": ["agent"] }, { "required": ["model"] }, { "required": ["turn"] }, { "required": ["screen"] }],
+          "description": "Persistent explicit app screen state, or an exact manual fixture overlay switch. Plugin entity keys are compiled to backend values; the current conversation is retained unless resetChats is explicit."
+        }
+      },
+      "oneOf": [
+        { "required": ["goto"] }, { "required": ["click"] }, { "required": ["hover"] }, { "required": ["move"] }, { "required": ["pause"] },
+        { "required": ["card"] }, { "required": ["fill"] }, { "required": ["type"] }, { "required": ["press"] }, { "required": ["wait"] },
+        { "required": ["wait_gone"] }, { "required": ["settle"] }, { "required": ["eval"] }, { "required": ["assert_state"] }, { "required": ["snapshot_state"] }, { "required": ["scroll"] }, { "required": ["shot"] },
+        { "required": ["mark"] }, { "required": ["keyframe"] }, { "required": ["state"] }, { "required": ["send"] }, { "required": ["upload"] },
+        { "required": ["cursor"], "properties": { "cursor": {}, "only": {}, "at": {}, "id": {}, "presentation": {}, "meta": {} }, "additionalProperties": false, "description": "A step with cursor and optional modifiers: change manual cursor settings from here on (no browser action)." }
+      ]
+    },
+    "stateTarget": {
+      "type": "object",
+      "properties": {
+        "entity": { "type": "string", "pattern": "^[^.]+\\.[^.]+$", "description": "<collection>.<key>, e.g. agents.guest-ops or user.pinned_agents." },
+        "list": { "type": "string", "pattern": "^[^.]+$", "description": "A collection, e.g. agents." },
+        "field": { "type": "string", "minLength": 1, "description": "Dotted path into the entity (or the column of each list row)." },
+        "where": { "type": "object", "description": "List filter: every field equals its value." },
+        "order_by": { "type": "string", "minLength": 1, "description": "List order: a field, '-field' for descending." }
+      }
+    },
+    "assertState": {
+      "allOf": [{ "$ref": "#/$defs/stateTarget" }],
+      "type": "object",
+      "properties": {
+        "entity": {}, "list": {}, "field": {}, "where": {}, "order_by": {},
+        "equals": {}, "not_equals": {}, "contains": {},
+        "in": { "type": "array" },
+        "exists": { "type": "boolean" },
+        "count": { "type": "integer", "minimum": 0 },
+        "keys": { "type": "array", "items": { "type": "string" }, "description": "List only: entity keys in order." },
+        "unchanged_since": { "type": "string", "minLength": 1 },
+        "except": { "type": "array", "items": { "type": "string" } },
+        "equals_snapshot": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["entity"] }, { "required": ["list"] }]
+    },
+    "snapshotState": {
+      "allOf": [{ "$ref": "#/$defs/stateTarget" }],
+      "type": "object",
+      "required": ["as"],
+      "properties": { "as": { "type": "string", "minLength": 1 }, "entity": {}, "list": {}, "field": {}, "where": {}, "order_by": {} },
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["entity"] }, { "required": ["list"] }]
+    },
+    "shotObject": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "description": "File becomes NN-<name>.png." },
+        "beat": { "type": "boolean", "description": "DOM replay: also make this shot a presenter beat (default false; beats come from mark steps and send phases)." },
+        "hover": { "$ref": "#/$defs/locator" },
+        "delay": { "type": "number", "minimum": 0, "description": "Shot mode ms before capture. Default 300." },
+        "hold": { "type": "number", "minimum": 0, "description": "Clip mode ms the beat holds. Default clip.hold_ms." },
+        "full_page": { "type": "boolean" },
+        "clip": { "type": "object", "required": ["x", "y", "width", "height"], "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "width": { "type": "number" }, "height": { "type": "number" } }, "description": "Crop rectangle in CSS px." },
+        "mouse": { "$ref": "#/$defs/point", "description": "Park the mouse here (default: bottom-right corner)." },
+        "cursor": { "$ref": "#/$defs/cursor", "description": "Inline cursor override for this shot; a step-level cursor modifier takes precedence." }
+      }
+    },
+    "mark": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "object", "required": ["name"], "additionalProperties": false, "properties": { "name": { "type": "string", "minLength": 1 }, "note": { "type": "string" }, "cursor": { "$ref": "#/$defs/cursor" } } }
+      ]
+    }
+  }
+}

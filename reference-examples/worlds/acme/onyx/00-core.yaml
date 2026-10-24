@@ -1,0 +1,1723 @@
+apps:
+  onyx:
+    viewer: dana
+    people:
+      dana:
+        id: 8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11
+      kenji:
+        id: u2
+      sam:
+        id: u6
+      priya:
+        id: u3
+      marcus:
+        id: u4
+      lena:
+        id: u5
+      tomas:
+        id: u7
+      oncall:
+        id: u8
+    agents:
+      assistant:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 0
+        name: Assistant
+        description: Your everyday assistant, grounded in {{company.name}}'s connected knowledge.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 2
+            name: web_search
+            display_name: Web Search
+            description: Search the public web.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: WebSearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 4
+            name: python
+            display_name: Code Interpreter
+            description: Run Python to analyze data and build charts.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: PythonTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 3
+            name: image_generation
+            display_name: Image Generation
+            description: Generate images from a text prompt.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: ImageGenerationTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 0
+        is_featured: true
+        builtin_persona: true
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: null
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      sre-copilot:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: null
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 11
+        name: SRE Copilot
+        description: Incident timelines, root causes and runbooks for {{company.name}} Meetings, Phone and Rooms.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 31
+            name: get_oncall_schedule
+            display_name: On-call schedule
+            description: Look up who is on call for a service this week, with escalation order.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 32
+            name: get_service_status
+            display_name: Service status
+            description: Check current health and open incidents for a service or region.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: null
+            passthrough_auth: false
+            mcp_server_id: 1
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: false
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Latency spike
+            message: Why did meeting join latency spike on Tuesday?
+          - name: On-call now
+            message: Who is on call for media-platform this week, and how healthy is us-east-1 right now?
+        document_sets:
+          - id: 21
+            name: Runbooks & Postmortems
+            description: Operational runbooks, architecture docs and incident postmortems
+            cc_pair_summaries:
+              - id: 102
+                name: Confluence – Engineering Runbooks
+                source: confluence
+                access_type: public
+              - id: 103
+                name: Google Drive – Postmortems
+                source: google_drive
+                access_type: sync
+              - id: 108
+                name: Confluence – Platform Architecture
+                source: confluence
+                access_type: sync
+            is_up_to_date: true
+            is_public: true
+            users: []
+            groups: []
+            permissions:
+              edit: true
+              manage_access: true
+              delete: true
+              publish: true
+            federated_connector_summaries: []
+        is_public: false
+        is_listed: true
+        display_priority: 1
+        is_featured: true
+        builtin_persona: false
+        labels:
+          - id: 1
+            name: "{{teams.reliability.name}}"
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Activity
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: |
+          You are the SRE Copilot for {{company.name}}. Answer questions about incidents, root causes,
+          rollbacks and runbooks using GitHub, #inc-* Slack, Jira, Confluence runbooks and
+          postmortems. Always cite sources, state impact in numbers, and suggest a next step.
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      incident-commander:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 12
+        name: Incident Commander
+        description: "Runs the incident checklist: rollbacks, status updates and postmortem follow-ups."
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Rollback runbook
+            message: Walk me through the relay-scorer rollback runbook.
+          - name: Status update
+            message: Draft the customer status update for INC-2291.
+        document_sets:
+          - id: 22
+            name: Platform Code & Incidents
+            description: Pull requests, commits and incident tickets for the media platform
+            cc_pair_summaries:
+              - id: 101
+                name: GitHub – acme/media-platform
+                source: github
+                access_type: sync
+              - id: 105
+                name: Jira – SRE incidents
+                source: jira
+                access_type: public
+            is_up_to_date: true
+            is_public: true
+            users: []
+            groups: []
+            permissions:
+              edit: true
+              manage_access: true
+              delete: true
+              publish: true
+            federated_connector_summaries: []
+        is_public: true
+        is_listed: true
+        display_priority: 2
+        is_featured: true
+        builtin_persona: false
+        labels:
+          - id: 2
+            name: Incident Response
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BooksStack
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      capacity-analyst:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 13
+        name: Capacity Analyst
+        description: Pulls relay and media-server capacity data and runs quick analyses in Python.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 4
+            name: python
+            display_name: Code Interpreter
+            description: Run Python to analyze data and build charts.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: PythonTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: false
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 3
+        is_featured: false
+        builtin_persona: false
+        labels:
+          - id: 1
+            name: "{{teams.reliability.name}}"
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BarChart
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      support-escalation-helper:
+        search_start_date: null
+        user_shares: []
+        group_shares:
+          - group_id: 1
+            group_name: "{{teams.reliability.name}}"
+            permission: VIEWER
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 14
+        name: Support Escalation Helper
+        description: Matches customer escalations to known incidents and suggested replies.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected company knowledge (GitHub, Slack, Confluence, Jira, Google Drive, Zendesk).
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+          - id: 2
+            name: web_search
+            display_name: Web Search
+            description: Search the public web.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: WebSearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 4
+        is_featured: false
+        builtin_persona: false
+        labels:
+          - id: 3
+            name: Support
+          - id: 2
+            name: Incident Response
+        owner: dana
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Terminal
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+    documents:
+      rollback:
+        id: CONF-ENG-RB-5521
+        blurb: Operational runbook for media relay incidents.
+        updated: "{{vars.onyx_template_open}}ago:21d}}"
+      scorer-pr:
+        id: GITHUB-acme-media-platform-pr-4821
+        blurb: "Replaces the static relay scorer. Rolled out behind flag relay-scorer-v2: 10% on Monday, 100% of us-east-1 on Tuesday 14:05 UTC. Missing guard: when the nearest relay pool is saturated, allocation falls back to any region."
+        updated: "{{vars.onyx_template_open}}ago:4d}}"
+      rollback-thread:
+        id: SLACK-C07INCLATENCY-1728396720
+        blurb: "{{people.sam.name}}: p95 join is 6.8s, relays are being allocated in eu-central-1 for us-east-1 clients. Rolling back flag relay-scorer-v2 now (14:52). Latency is already dropping."
+        updated: "{{vars.onyx_template_open}}ago:3d}}"
+      incident:
+        id: JIRA-SRE-2291
+        blurb: "Impact: 47 minutes (14:05 to 14:52 UTC), about 38,000 meetings delayed, 2.1% join failures. Severity 2. Root cause: cross-region relay allocation after relay-scorer-v2 reached 100%."
+        updated: "{{vars.onyx_template_open}}ago:3d}}"
+      postmortem:
+        id: GDRIVE-1xINC2291POSTMORTEM
+        blurb: "Draft. Contributing factors: no region-affinity guard, no staged rollout above 25%, alert threshold on p99 only. Review scheduled Thursday."
+        updated: "{{vars.onyx_template_open}}ago:2d}}"
+      rollout-checklist:
+        id: FILE__relay-scorer-v2-rollout-checklist
+        blurb: "Staged rollout: 5% for 1h, 25% for 4h, 50% for 24h, then 100%. Each stage needs a p95 join latency check and a named rollback owner."
+        updated: "{{vars.onyx_template_open}}ago:9d}}"
+      conf-eng-oc-3310:
+        id: CONF-ENG-OC-3310
+        blurb: "Primary: {{people.sam.name}}. Secondary: {{people.kenji.name}}. Escalation: {{people.marcus.name}}, then {{people.dana.name}}."
+        updated: "{{vars.onyx_template_open}}ago:1d}}"
+      slack-c07engmedia-1728480000:
+        id: SLACK-C07ENGMEDIA-1728480000
+        blurb: "{{people.kenji.name}}: us-east-1 join p95 back to 1.3s, allocation errors at baseline. relay-scorer-v2 stays off until the guard lands."
+        updated: "{{vars.onyx_template_open}}ago:2d}}"
+    conversations:
+      postmortem-outline-for-inc-2291:
+        id: 11111111-0000-4000-8000-000000000001
+        time_created: "{{vars.onyx_template_open}}ago:3h}}"
+        time_updated: "{{vars.onyx_template_open}}ago:3h}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: sre-copilot
+        turns:
+          - message: "{{conversations.postmortem-outline-for-inc-2291.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://acme.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.postmortem-outline-for-inc-2291.messages.1.text}}"
+      relay-rollback-runbook-walkthrough:
+        id: 11111111-0000-4000-8000-000000000002
+        time_created: "{{vars.onyx_template_open}}ago:1d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:1d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: incident-commander
+        turns:
+          - message: "{{conversations.relay-rollback-runbook-walkthrough.messages.0.text}}"
+            script:
+              title: Relay rollback runbook walkthrough
+              queries:
+                - Media relay rollback and failover runbook
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://acme.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: To roll back relay scoring, disable the relay-scorer flag in the flag console and confirm allocation latency recovers within 10 minutes.
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.relay-rollback-runbook-walkthrough.messages.1.text}}"
+      weekend-on-call-handoff-notes:
+        id: 11111111-0000-4000-8000-000000000003
+        time_created: "{{vars.onyx_template_open}}ago:2d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:2d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: incident-commander
+        turns:
+          - message: "{{conversations.weekend-on-call-handoff-notes.messages.0.text}}"
+            script:
+              title: Weekend on-call handoff notes
+              queries:
+                - "{{teams.media-platform.name}} on-call handoff"
+              documents:
+                - id: "{{apps.onyx.documents.conf-eng-oc-3310.id}}"
+                  title: "{{documents.conf-eng-oc-3310.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://acme.atlassian.example/wiki/spaces/ENG/pages/3310/Media+Platform+on-call
+                  blurb: "{{apps.onyx.documents.conf-eng-oc-3310.blurb}}"
+                  updated: "{{apps.onyx.documents.conf-eng-oc-3310.updated}}"
+              answer: "{{conversations.weekend-on-call-handoff-notes.messages.1.text}}"
+      q3-relay-capacity-by-region:
+        id: 11111111-0000-4000-8000-000000000004
+        time_created: "{{vars.onyx_template_open}}ago:4d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:4d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: capacity-analyst
+        turns:
+          - message: "{{conversations.q3-relay-capacity-by-region.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://acme.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.q3-relay-capacity-by-region.messages.1.text}}"
+      draft-release-notes-for-relay-scorer-v2:
+        id: 11111111-0000-4000-8000-000000000005
+        time_created: "{{vars.onyx_template_open}}ago:6d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:6d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: assistant
+        turns:
+          - message: "{{conversations.draft-release-notes-for-relay-scorer-v2.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://acme.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.draft-release-notes-for-relay-scorer-v2.messages.1.text}}"
+      zendesk-escalation-dropped-calls-in-frankfurt:
+        id: 11111111-0000-4000-8000-000000000006
+        time_created: "{{vars.onyx_template_open}}ago:9d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:9d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: support-escalation-helper
+        turns:
+          - message: "{{conversations.zendesk-escalation-dropped-calls-in-frankfurt.messages.0.text}}"
+            script:
+              default: true
+              title: "{{company.name}} reliability question"
+              chunk_delay_ms: 50
+              queries:
+                - "{{company.name}} reliability knowledge"
+              documents:
+                - id: "{{apps.onyx.documents.rollback.id}}"
+                  title: "{{documents.rollback.title}}"
+                  source: "{{sources.runbooks.vendor}}"
+                  link: https://acme.atlassian.example/wiki/spaces/ENG/pages/5521/Media+relay+rollback+and+failover
+                  blurb: "{{apps.onyx.documents.rollback.blurb}}"
+                  updated: "{{apps.onyx.documents.rollback.updated}}"
+              answer: "{{conversations.zendesk-escalation-dropped-calls-in-frankfurt.messages.1.text}}"
+    replies:
+      99-default:
+        default: true
+        title: "{{company.name}} reliability question"
+        chunk_delay_ms: 50
+        queries:
+          - "{{company.name}} reliability knowledge"
+        text: |
+          This is a scripted demo. Ask about the **Tuesday join latency spike**, the **on-call schedule** or the **relay rollback runbook** to see cited answers [1].
+        cites:
+          - rollback
+      10-join-latency-spike:
+        match: join latency|latency.*spike|spike.*latency|latency spike
+        title: Why meeting join latency spiked on Tuesday
+        chunk_delay_ms: 55
+        reasoning: |
+          The user wants the cause of Tuesday's join latency spike. I should check recent merges and flag rollouts in GitHub, the incident channel in Slack, the Jira incident ticket, the relay runbook and the postmortem draft, then state impact in numbers and a next step.
+        queries:
+          - Meeting join latency spike Tuesday us-east-1
+          - relay-scorer-v2 rollout pull request 4821
+          - INC-2291 incident timeline and impact
+        text: |
+          Join latency spiked because **relay-scorer-v2 reached 100% of us-east-1 traffic** and started allocating TURN relays in the wrong region, which made clients retry [1][2].
+
+          **What happened (Tuesday, UTC)**
+          - **14:05** The flag hit 100% and p95 join latency climbed from **1.2s to 6.8s** [1][3].
+          - **14:31** Incident declared in #inc-meetings-latency. The saturated nearby relay pool pushed allocations to eu-central-1 [1][2].
+          - **14:52** {{people.sam.name}} rolled the flag back, and latency recovered within minutes [2][4].
+
+          **Impact:** about **38,000 meetings delayed** and **2.1% join failures** over 47 minutes [3][5].
+
+          **Next steps**
+          1. Add a region-affinity guard before the scorer is re-enabled [1][5].
+          2. Require the staged rollout above 25% traffic: 5%, 25%, 50%, then 100% [4][6].
+          3. Alert on p95 join latency, not only p99, and review the postmortem draft on Thursday [5].
+        cites:
+          - scorer-pr
+          - rollback-thread
+          - incident
+          - rollback
+          - postmortem
+          - rollout-checklist
+      20-status-update:
+        match: status update|status page
+        title: Customer status update for INC-2291
+        chunk_delay_ms: 45
+        reasoning: |
+          The user wants a customer-facing status update. I should reuse the incident facts, keep it factual, avoid blame and say what is changing.
+        queries:
+          - INC-2291 customer communication guidelines
+        text: |
+          Here's a draft status update, written for customers [1][2]:
+
+          > **Resolved: slower joins for {{company.name}} Meetings in the US East region**
+          >
+          > Between **14:05 and 14:52 UTC on Tuesday**, some participants in the US East region experienced slow or failed meeting joins. About **2.1% of join attempts failed** during this window.
+          >
+          > The issue was caused by a recent change to how media relays are selected. We reverted the change at 14:52 UTC and joins returned to normal.
+          >
+          > We're adding safeguards to staged rollouts so a change like this is caught before it reaches all customers. A full summary will follow within five business days.
+
+          I left out the internal flag name and individual names, per the runbook's guidance for customer updates [2].
+        cites:
+          - incident
+          - rollback
+      30-on-call:
+        match: on.call|oncall
+        title: Media-platform on-call and us-east-1 health
+        chunk_delay_ms: 50
+        reasoning: |
+          The user wants the current on-call and service health. I should use the on-call schedule and the service status tool, then summarize.
+        queries:
+          - media-platform on-call schedule this week
+          - us-east-1 service status
+        text: |
+          **On call for media-platform this week** [1]
+          - Primary: **{{people.sam.name}}**
+          - Secondary: **{{people.kenji.name}}**
+          - Escalation: {{people.marcus.name}}, then {{people.dana.name}}
+
+          **us-east-1 right now:** healthy. Join p95 is back to **1.3s** and relay allocation errors are at baseline. relay-scorer-v2 stays off until the region-affinity guard lands [2].
+        cites:
+          - conf-eng-oc-3310
+          - slack-c07engmedia-1728480000
+      98-follow-up:
+        follow_up_default: true
+        title: "{{vars.onyx_template_open}}prev.title}}"
+        chunk_delay_ms: 50
+        queries: []
+        text: |
+          This is a scripted demo follow-up. Try asking for a **customer status update** for INC-2291.
+        cites: []
+      40-rollback-runbook:
+        match: runbook|rollback
+        title: Relay-scorer rollback runbook
+        chunk_delay_ms: 50
+        reasoning: |
+          The user wants the rollback steps. I should pull the relay rollback runbook and the rollout checklist.
+        queries:
+          - Media relay rollback and failover runbook
+        text: |
+          **Rolling back relay scoring** [1]
+          1. Declare the incident and name a rollback owner.
+          2. In the flag console, **disable the relay-scorer flag**.
+          3. Watch p95 join latency; it should recover within **10 minutes**.
+          4. If it doesn't, fail over relay allocation to the secondary pool.
+
+          **Before re-enabling:** use the staged rollout of 5%, 25%, 50%, then 100%, with a latency check at each stage [2].
+        cites:
+          - rollback
+          - rollout-checklist
+    teams:
+      reliability:
+        id: 1
+        managers:
+          - dana
+      media-platform:
+        id: 2
+        managers:
+          - marcus
+      support-engineering:
+        id: 3
+        managers:
+          - lena
+    fixtures:
+      GET /manage/admin/user-group:
+        - cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+          id: 1
+          name: "{{teams.reliability.name}}"
+          users:
+            - id: "{{apps.onyx.people.dana.id}}"
+              email: "{{people.dana.email}}"
+            - id: "{{apps.onyx.people.kenji.id}}"
+              email: "{{people.kenji.email}}"
+            - id: "{{apps.onyx.people.sam.id}}"
+              email: "{{people.sam.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.dana.id}}"
+        - cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+          id: 2
+          name: "{{teams.media-platform.name}}"
+          users:
+            - id: "{{apps.onyx.people.priya.id}}"
+              email: "{{people.priya.email}}"
+            - id: "{{apps.onyx.people.marcus.id}}"
+              email: "{{people.marcus.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.marcus.id}}"
+        - cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+          permissions:
+            manage: true
+            manage_members: true
+            delete: true
+            edit_permissions: true
+            edit_token_limits: true
+          id: 3
+          name: "{{teams.support-engineering.name}}"
+          users:
+            - id: "{{apps.onyx.people.lena.id}}"
+              email: "{{people.lena.email}}"
+          manager_ids:
+            - "{{apps.onyx.people.lena.id}}"
+      GET /manage/user-groups/minimal:
+        - id: 1
+          name: "{{teams.reliability.name}}"
+        - id: 2
+          name: "{{teams.media-platform.name}}"
+        - id: 3
+          name: "{{teams.support-engineering.name}}"
+      GET /manage/users:
+        accepted:
+          - id: "{{apps.onyx.people.dana.id}}"
+            email: "{{people.dana.email}}"
+          - id: "{{apps.onyx.people.kenji.id}}"
+            email: "{{people.kenji.email}}"
+          - id: "{{apps.onyx.people.priya.id}}"
+            email: "{{people.priya.email}}"
+          - id: "{{apps.onyx.people.marcus.id}}"
+            email: "{{people.marcus.email}}"
+          - id: "{{apps.onyx.people.lena.id}}"
+            email: "{{people.lena.email}}"
+          - id: "{{apps.onyx.people.sam.id}}"
+            email: "{{people.sam.email}}"
+        invited: []
+        slack_users: []
+        accepted_pages: 1
+        invited_pages: 0
+        slack_users_pages: 0
+      GET /user/projects:
+        - id: 1
+          name: Q4 {{teams.reliability.name}} Review
+          description: null
+          created_at: "{{vars.onyx_template_open}}ago:7d}}"
+          user_id: "{{apps.onyx.people.dana.id}}"
+          instructions: Use plain, numeric language. Cite incident tickets, runbooks and the attached capacity data.
+          chat_sessions: []
+          chat_session_ids:
+            - 11111111-0000-4000-8000-000000000001
+          file_ids:
+            - uf-demo-reading
+            - uf-demo-guide
+            - uf-demo-diagram
+            - uf-demo-protected
+            - uf-demo-attendance
+        - id: 2
+          name: Relay Migration
+          description: null
+          created_at: "{{vars.onyx_template_open}}ago:2d}}"
+          user_id: "{{apps.onyx.people.dana.id}}"
+          instructions: null
+          chat_sessions: []
+          chat_session_ids: []
+          file_ids: []
+      GET /mockshop/admin-groups/seeds:
+        groups:
+          - id: 1
+            name: "{{teams.reliability.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.dana.id}}"
+            cc_pair_ids:
+              - 102
+              - 103
+              - 105
+            document_set_ids:
+              - 21
+              - 22
+            agent_ids:
+              - 11
+              - 12
+            enabled_permissions:
+              - add:agents
+              - read:query_history
+              - create:user_api_keys
+            token_limits:
+              - token_id: 601
+                enabled: true
+                token_budget: 500
+                period_hours: 24
+                cost_budget_cents: 2500
+          - id: 2
+            name: "{{teams.media-platform.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.marcus.id}}"
+            cc_pair_ids:
+              - 101
+              - 108
+            document_set_ids:
+              - 22
+            agent_ids:
+              - 13
+            enabled_permissions:
+              - add:agents
+            token_limits: []
+          - id: 3
+            name: "{{teams.support-engineering.name}}"
+            manager_ids:
+              - "{{apps.onyx.people.lena.id}}"
+            cc_pair_ids:
+              - 104
+              - 106
+            document_set_ids: []
+            agent_ids:
+              - 14
+            enabled_permissions: []
+            token_limits: []
+        connectors:
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 101
+            name: GitHub – acme/media-platform
+            connector:
+              id: 301
+              name: GitHub – acme/media-platform
+              source: github
+            groups:
+              - id: 2
+                name: "{{teams.media-platform.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 102
+            name: Confluence – Engineering Runbooks
+            connector:
+              id: 302
+              name: Confluence – Engineering Runbooks
+              source: confluence
+            groups:
+              - id: 1
+                name: "{{teams.reliability.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 103
+            name: Google Drive – Postmortems
+            connector:
+              id: 303
+              name: Google Drive – Postmortems
+              source: google_drive
+            groups:
+              - id: 1
+                name: "{{teams.reliability.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 104
+            name: "Slack – #inc-*, #eng-media"
+            connector:
+              id: 304
+              name: "Slack – #inc-*, #eng-media"
+              source: slack
+            groups:
+              - id: 3
+                name: "{{teams.support-engineering.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 105
+            name: Jira – SRE incidents
+            connector:
+              id: 305
+              name: Jira – SRE incidents
+              source: jira
+            groups:
+              - id: 1
+                name: "{{teams.reliability.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 106
+            name: Zendesk – Support escalations
+            connector:
+              id: 306
+              name: Zendesk – Support escalations
+              source: zendesk
+            groups:
+              - id: 3
+                name: "{{teams.support-engineering.name}}"
+            access_type: private
+          - credential:
+              id: 0
+            status: ACTIVE
+            has_successful_run: true
+            cc_pair_id: 108
+            name: Confluence – Platform Architecture
+            connector:
+              id: 308
+              name: Confluence – Platform Architecture
+              source: confluence
+            groups:
+              - id: 2
+                name: "{{teams.media-platform.name}}"
+            access_type: private
+        resource_permissions:
+          manage: true
+          manage_members: true
+          delete: true
+          edit_permissions: true
+          edit_token_limits: true
+        create_defaults:
+          manager_ids: []
+          cc_pairs: []
+          document_sets: []
+          personas: []
+          is_up_to_date: true
+          is_up_for_deletion: false
+          is_default: false
+          incognito_enabled: false
+      GET /manage/admin/permissions/registry:
+        - id: manage_llms
+          display_name: Manage Language Models
+          description: Configure language model providers and defaults.
+          permissions:
+            - manage:llms
+          group: 1
+        - id: manage_connectors_and_document_sets
+          display_name: Manage Connectors and Document Sets
+          description: Organize connectors and document sets for knowledge access.
+          permissions:
+            - manage:connectors
+            - manage:document_sets
+          group: 1
+        - id: manage_actions
+          display_name: Manage Actions
+          description: Configure tools and MCP servers.
+          permissions:
+            - manage:actions
+          group: 1
+        - id: manage_groups
+          display_name: Manage Groups
+          description: Organize groups and memberships.
+          permissions:
+            - manage:user_groups
+          group: 1
+        - id: manage_service_accounts
+          display_name: Manage Service Accounts
+          description: Configure service account API keys.
+          permissions:
+            - manage:service_account_api_keys
+          group: 1
+        - id: manage_bots
+          display_name: Manage Bots
+          description: Configure Slack and Discord bots.
+          permissions:
+            - manage:bots
+          group: 1
+        - id: create_agents
+          display_name: Create Agents
+          description: Create agents for the team.
+          permissions:
+            - add:agents
+          group: 2
+        - id: manage_agents
+          display_name: Manage Agents
+          description: Edit and curate team agents.
+          permissions:
+            - manage:agents
+          group: 2
+        - id: view_agent_analytics
+          display_name: View Agent Analytics
+          description: View agent usage summaries.
+          permissions:
+            - read:agent_analytics
+          group: 2
+        - id: view_query_history
+          display_name: View Query History
+          description: View query history.
+          permissions:
+            - read:query_history
+          group: 2
+        - id: create_user_access_token
+          display_name: Create User Access Tokens
+          description: Create personal access tokens.
+          permissions:
+            - create:user_api_keys
+          group: 2
+      GET /persona/labels:
+        - id: 1
+          name: "{{teams.reliability.name}}"
+        - id: 2
+          name: Incident Response
+        - id: 3
+          name: Support
+      GET /user/pinned-assistants:
+        - 0
+        - 11
+        - 12
+      GET /manage/document-set:
+        - id: 21
+          name: Runbooks & Postmortems
+          description: On-call runbooks, architecture docs and incident postmortems
+          cc_pair_summaries:
+            - id: 102
+              name: Confluence – Engineering Runbooks
+              source: confluence
+              access_type: public
+            - id: 103
+              name: Google Drive – Postmortems
+              source: google_drive
+              access_type: sync
+            - id: 108
+              name: Confluence – Platform Architecture
+              source: confluence
+              access_type: sync
+          is_up_to_date: true
+          is_public: true
+          users: []
+          groups: []
+          permissions:
+            edit: true
+            manage_access: true
+            delete: true
+            publish: true
+          federated_connector_summaries: []
+        - id: 22
+          name: Platform Code & Incidents
+          description: Media platform source code and SRE incident tickets
+          cc_pair_summaries:
+            - id: 101
+              name: GitHub – acme/media-platform
+              source: github
+              access_type: sync
+            - id: 105
+              name: Jira – SRE incidents
+              source: jira
+              access_type: public
+          is_up_to_date: true
+          is_public: true
+          users: []
+          groups: []
+          permissions:
+            edit: true
+            manage_access: true
+            delete: true
+            publish: true
+          federated_connector_summaries: []
+      GET /manage/admin/index-attempt/10101/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10102/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10103/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10201/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10202/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10203/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10204/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10205/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10801/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10802/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10803/stage-metrics:
+        stages: []
+      GET /manage/admin/index-attempt/10804/stage-metrics:
+        stages: []
+      GET /mockshop/user-files:
+        upload_delay_ms: 1800
+        processing_delay_ms: 3600
+        delete_delay_ms: 1000
+        preview_delay_ms: 1200
+        rejection_reason: Offline demo accepts only the fictional filenames listed in the acme overlay; no caller bytes are stored.
+        answer_title: Attached file summary
+        answer_intro: "This is a scripted demonstration, not an analysis of uploaded bytes. The attached synthetic files suggest:"
+        seed_ids:
+          - reading-note
+          - study-guide
+          - activity-diagram
+          - protected-reading
+          - attendance
+        catalog:
+          - key: reading-note
+            id: uf-demo-reading
+            file_id: demo-reading
+            name: oncall-handoff.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 42
+            chunk_count: 1
+            preview: |
+              Synthetic on-call handoff note
+              Media-platform primary: {{people.sam.name}}. Secondary: {{people.kenji.name}}.
+              Escalate relay allocation errors to {{people.marcus.name}}'s team.
+            answer: Escalate relay allocation errors to the {{teams.media-platform.name}} on-call.
+          - key: study-guide
+            id: uf-demo-guide
+            file_id: demo-guide
+            name: incident-timeline-INC-2291.md
+            file_type: text/markdown
+            chat_file_type: plain_text
+            token_count: 48
+            chunk_count: 1
+            preview: |
+              # INC-2291 timeline (synthetic)
+              - 14:05 UTC join latency p95 climbs from 1.2s
+              - 14:31 incident declared
+              - 14:52 relay-scorer-v2 flag rolled back
+            answer: Join latency climbed at 14:05 UTC and recovered after the 14:52 rollback.
+          - key: activity-diagram
+            id: uf-demo-diagram
+            file_id: demo-diagram
+            name: relay-topology.svg
+            file_type: image/svg+xml
+            chat_file_type: image
+            token_count: 0
+            chunk_count: 0
+            preview: <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#eaf1ff"/><text x="40" y="60" font-size="26" fill="#0b2a66">Relay topology (fictional)</text><rect x="60" y="120" width="140" height="70" rx="10" fill="#0b5cff"/><text x="86" y="162" font-size="18" fill="#fff">us-east-1</text><rect x="250" y="120" width="140" height="70" rx="10" fill="#3b82f6"/><text x="276" y="162" font-size="18" fill="#fff">us-west-2</text><rect x="440" y="120" width="140" height="70" rx="10" fill="#93b4ff"/><text x="466" y="162" font-size="18" fill="#0b2a66">eu-central-1</text></svg>
+            answer: Relay traffic is spread across us-east-1, us-west-2 and eu-central-1.
+          - key: protected-reading
+            id: uf-demo-protected
+            file_id: demo-protected
+            name: sla-credits-policy.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 24
+            chunk_count: 1
+            assistant_names:
+              - SRE Copilot
+            preview: Synthetic SLA credit policy. The demo agent association prevents library deletion.
+            answer: Keep the SLA credit policy available to the SRE Copilot.
+          - key: workshop-notes
+            id: uf-demo-workshop
+            file_id: demo-workshop
+            name: workshop-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 55
+            chunk_count: 1
+            preview: |
+              Synthetic workshop notes
+              Begin with a five-minute welcome circle.
+              Offer large-print instructions and quiet reflection time.
+              End with one question from each learner.
+              This preview is fixture text, not uploaded content.
+            answer: Begin with a five-minute welcome circle, offer large-print instructions, and end with one question from each learner.
+          - key: reflection
+            id: uf-demo-reflection
+            file_id: demo-reflection
+            name: reflection.md
+            file_type: text/markdown
+            chat_file_type: plain_text
+            token_count: 32
+            chunk_count: 1
+            preview: |
+              # Synthetic reflection exercise
+              Ask each learner to name one new idea and one next step.
+              This is editable fictional demo content.
+            answer: Ask each learner to name one new idea and one next step.
+          - key: attendance
+            id: uf-demo-attendance
+            file_id: demo-attendance
+            name: relay-capacity-q3.csv
+            file_type: text/csv
+            chat_file_type: tabular
+            token_count: 1200
+            chunk_count: 1
+            preview: |
+              Region,Peak relays used,Capacity
+              us-east-1,812,1000
+              us-west-2,604,900
+              eu-central-1,455,700
+            answer: us-east-1 peaked at 812 of 1,000 relays, the highest utilization of the three regions.
+          - key: unsupported-preview
+            id: uf-demo-unsupported
+            file_id: demo-unsupported
+            name: demo-resource.bin
+            file_type: application/octet-stream
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic download-only resource. No caller bytes are retained.
+            answer: Treat this fictional resource as a download-only attachment.
+          - key: failed-upload
+            id: uf-demo-failed
+            file_id: demo-failed
+            name: failed-demo.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            final_status: FAILED
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic failure-stage demonstration.
+            answer: This failed file is not ready to attach.
+          - key: rejected-upload
+            id: uf-demo-rejected
+            file_id: demo-rejected
+            name: rejected-demo.exe
+            reject: true
+            file_type: application/octet-stream
+            chat_file_type: document
+            preview: Rejected demo fixture; never stored as a user file.
+          - key: code-example
+            id: uf-demo-code
+            file_id: demo-code
+            name: learning-example.py
+            file_type: text/x-python
+            chat_file_type: plain_text
+            token_count: 12
+            chunk_count: 1
+            preview: |
+              print('Welcome every learner')
+            answer: The fictional Python example welcomes every learner.
+          - key: structured-data
+            id: uf-demo-data
+            file_id: demo-data
+            name: learning-demo.json
+            file_type: application/json
+            chat_file_type: plain_text
+            token_count: 12
+            chunk_count: 1
+            preview: '{"activity":"Reading circle","participants":6,"synthetic":true}'
+            answer: The fictional reading-circle data has six participants.
+          - key: learning-pdf
+            id: uf-demo-pdf
+            file_id: demo-pdf
+            name: learning-handout.pdf
+            file_type: application/pdf
+            chat_file_type: document
+            token_count: 20
+            chunk_count: 1
+            answer: The synthetic learning handout welcomes every learner.
+            preview_base64: JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiA+PiA+PiAvQ29udGVudHMgNSAwIFIgPj4KZW5kb2JqCjQgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+CmVuZG9iago1IDAgb2JqCjw8IC9MZW5ndGggMTMwID4+CnN0cmVhbQpCVCAvRjEgMjAgVGYgNTAgNzIwIFRkIChTeW50aGV0aWMgbGVhcm5pbmcgaGFuZG91dCkgVGogMCAtNDAgVGQgL0YxIDEyIFRmIChXZWxjb21lIGV2ZXJ5IGxlYXJuZXIuIFRoaXMgaXMgZml4dHVyZSBjb250ZW50LikgVGogRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1OCAwMDAwMCBuIAowMDAwMDAwMTE1IDAwMDAwIG4gCjAwMDAwMDAyNDEgMDAwMDAgbiAKMDAwMDAwMDMxMSAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjQ5MQolJUVPRgo=
+          - key: learning-docx
+            id: uf-demo-docx
+            file_id: demo-docx
+            name: learning-handout.docx
+            file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            chat_file_type: document
+            token_count: 20
+            chunk_count: 1
+            answer: Offer quiet reflection time in the synthetic learning handout.
+            preview_base64: UEsDBBQAAAAIAAAAIVz3S4B1wgAAAHYBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbH2QuQ7CMAyGX6XKiqgRAwOiLMAKDLyAlbptRC7FLsfbk3INCBjt//gsLw7XSFxcnPVcqU4kzgFYd+SQyxDJZ6UJyaHkMbUQUR+xJZhOJjPQwQt5GcvQoZaLNTXYWyk2l7xmE3ylEllWxephHFiVwhit0ShZh5OvPyjjJ6HMybuHOxN5lA0KvhIG5TfgmdudKCVTU7HHJFt02QXnkGqog+5dTpb/a77cGZrGaHrnh7aYgiZm41tny7fi0PjX/XB/9/IGUEsDBBQAAAAIAAAAIVxhey9DiQAAAPIAAAALAAAAX3JlbHMvLnJlbHONzzsOAiEQBuCrEA6ws1pYGKCy2dZ4AQLDIy6PDBj19lJYrMbCcuaffH9GnHHVPZbcQqyNPdKam+Sh93oEaCZg0m0qFfNIXKGk+xjJQ9Xmqj3Cfp4PQFuDK7E12WIlp8XuOLs8K/5jF+eiwVMxt4S5/6j4uhiyJo9d8nshC/a9ngbLQQn4eFG9AFBLAwQUAAAACAAAACFcrbHWouAAAAB9AQAAEQAAAHdvcmQvZG9jdW1lbnQueG1sbVBBasQwDPyKyQPWadiWEtL8YKGwh569jhIbbMuVlabp62snhEDpZTyj0UhY3dIOqGcPgcW3dyG1y1tlmGMrZdIGvEoXjBCyNyJ5xVnSJBekIRJqSMmGyTvZ1PWL9MqGqu+W9oHDWt5YgApwf18DG2CrhQNFIceEUWHAmTtZ/IK0Yfwb/QCn0YOAL6B1jwOJHBY4jpl9zhZYEIwONFsMgq2Hy79jU+5438bG6f4jlvLdp6a51lXmJvPn18zl3nBTlKuMMdevewvZyfApH8iM/tQOxsOV29JjnzyOIs+D979QSwECFAMUAAAACAAAACFc90uAdcIAAAB2AQAAEwAAAAAAAAAAAAAAgAEAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAxQAAAAIAAAAIVxhey9DiQAAAPIAAAALAAAAAAAAAAAAAACAAfMAAABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAAAAIVytsdai4AAAAH0BAAARAAAAAAAAAAAAAACAAaUBAAB3b3JkL2RvY3VtZW50LnhtbFBLBQYAAAAAAwADALkAAAC0AgAAAAA=
+          - key: learning-workbook
+            id: uf-demo-xlsx
+            file_id: demo-xlsx
+            name: learning-workbook.xlsx
+            file_type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+            chat_file_type: tabular
+            token_count: 20
+            chunk_count: 1
+            answer: The synthetic workbook records six reading-circle participants.
+            parsed_preview:
+              sheets:
+                - name: Learning
+                  csv: |
+                    Activity,Participants
+                    Reading circle,6
+                  truncated: false
+                - name: Empty reflection
+                  csv: ""
+                  truncated: false
+                - name: Truncated demonstration
+                  csv: ""
+                  truncated: true
+            preview_base64: UEsDBBQAAAAIAAAAIVwcdPw42AAAAPYBAAATAAAAW0NvbnRlbnRfVHlwZXNdLnhtbK2RvU4DMQzHX+WUtWpcGDqgXhfKCgy8gJvz9aLLl2K3XN++uVAYUIGFyUr+Hz9L3rydE3EzeRe4VYNIegBgM5BH1jFRKEofs0cpz3yAhGbEA8H9arUGE4NQkKXMHWq72VGPRyfN01S+2cbQqkyOVfP4YZxZrcKUnDUoRYdT6L5RlleCLsnq4cEmXhSDgpuEWfkZcM29nChn21Hzilme0RcXTA7eYx73MY7695IbW8a+t4a6aI6+RDSnTNjxQCTe6Tq1RxsWf/OrmaGOu39e5Kv/cw+o595eAFBLAwQUAAAACAAAACFc/luGcooAAADwAAAACwAAAF9yZWxzLy5yZWxzjc8xDsIwDAXQq1Q+QF0YGFDaiaUr4gImddqqTRw5QZTbk7EgBkbrf70vmyuvlGcJaZpjqja/htTClHM8IyY7sadUS+RQEifqKZdTR4xkFxoZj01zQt0b0Jm9WfVDC9oPB6hur8j/2OLcbPki9uE55B8TX40ik46cW9hWfIoud5GlLihgZ/Djwe4NUEsDBBQAAAAIAAAAIVzlp8WJkwAAAOYAAAAPAAAAeGwvd29ya2Jvb2sueG1sjY8xDoMwDEWvgnyAGjp0QMDUBamXSMGQCGJHdqr2+EVQ9k72/19+X27eostTZCk+cWVrweecakQbPEVnF0nEWzKJRpc3qTNaUnKjeaIcV7yW5Q2jCwwHodZ/GDJNYaC7DK9InA+I0upyEDYfkkHX7A32mwW7SC08yCkHnqHY3X5soYJC67At2o8VYNfgeYjnb90XUEsDBBQAAAAIAAAAIVy2VKrPjgAAAPEAAAAaAAAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHONzz0OwjAMBeCrVDlA3TIwoCYTS1fEBaLUbaI2P7KNgNsTMaAiMTBZfpa+Jw8X3KyEnNiHws0jbom18iLlBMDOY7Tc5oKpXuZM0UpdaYFi3WoXhEPXHYH2hjLD3mzGSSsap14112fBf+w8z8HhObtbxCQ/KuCeaWWPKBW1tKBo9YkY3qNvq6rADPD1oXkBUEsDBBQAAAAIAAAAIVwXDT8nswAAACkBAAAYAAAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1sdZA7DsIwDIavEuUAmHbogNJIIE5ATxCCoVHzqByrwO1JOlQwMFiyf9ufH+qZaMojIotX8DH3cmSeDwDZjhhM3qUZY8ncEwXDJaQH5JnQ3Nam4KHd7zsIxkWp1aqdDRutKD0F9bIpqq3OsZGCe+midxEHpqK7rBXr4R15RHZWeDQUXXyIutM1pUkBawW1DGyxgty47cZt/3AvZccKs46sx1/U2nmqjEV3CpbvAfB1BGzf0R9QSwECFAMUAAAACAAAACFcHHT8ONgAAAD2AQAAEwAAAAAAAAAAAAAAgAEAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAxQAAAAIAAAAIVz+W4ZyigAAAPAAAAALAAAAAAAAAAAAAACAAQkBAABfcmVscy8ucmVsc1BLAQIUAxQAAAAIAAAAIVzlp8WJkwAAAOYAAAAPAAAAAAAAAAAAAACAAbwBAAB4bC93b3JrYm9vay54bWxQSwECFAMUAAAACAAAACFctlSqz44AAADxAAAAGgAAAAAAAAAAAAAAgAF8AgAAeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHNQSwECFAMUAAAACAAAACFcFw0/J7MAAAApAQAAGAAAAAAAAAAAAAAAgAFCAwAAeGwvd29ya3NoZWV0cy9zaGVldDEueG1sUEsFBgAAAAAFAAUARQEAACsEAAAAAA==
+          - key: legacy-word
+            id: uf-demo-doc
+            file_id: demo-doc
+            name: legacy-handout.doc
+            file_type: application/msword
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic legacy-format download-only demonstration.
+            answer: Download the synthetic legacy resource to view it.
+          - key: word-preview-error
+            id: uf-demo-broken-docx
+            file_id: demo-broken-docx
+            name: broken-demo.docx
+            file_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+            chat_file_type: document
+            token_count: 0
+            chunk_count: 0
+            preview: Synthetic deliberately invalid DOCX, for the native preview error state.
+            answer: This synthetic resource demonstrates the native preview error message.
+          - key: pasted-notes
+            id: uf-demo-paste
+            file_id: demo-paste
+            name: pasted-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 15
+            chunk_count: 1
+            preview: "Synthetic pasted learning note: allow time for reflection."
+            answer: Allow time for reflection in the learning circle.
+          - key: dropped-notes
+            id: uf-demo-drop
+            file_id: demo-drop
+            name: dropped-notes.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 15
+            chunk_count: 1
+            preview: "Synthetic dropped learning note: provide accessible instructions."
+            answer: Provide accessible instructions for every learner.
+          - key: preview-unavailable
+            id: uf-demo-unavailable
+            file_id: demo-unavailable
+            name: unavailable-demo.txt
+            file_type: text/plain
+            chat_file_type: plain_text
+            token_count: 0
+            chunk_count: 0
+            preview_error: true
+            preview: Synthetic unavailable-preview demonstration.
+            answer: This fictional file demonstrates the native unavailable-preview state.
+      GET /me:
+        id: "{{apps.onyx.people.dana.id}}"
+        email: "{{people.dana.email}}"
+        is_active: true
+        is_superuser: true
+        is_verified: true
+        role: admin
+        account_type: STANDARD
+        is_admin: true
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - admin
+          - basic
+        admin_capabilities:
+          - admin
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 11
+            - 12
+          default_model: null
+          recent_assistants:
+            - 0
+            - 11
+            - 12
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.dana.name}}"
+          role: "{{people.dana.title}}"
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /chat/max-selected-document-tokens:
+        max_tokens: 128000
+      GET /chat/available-context-tokens/:id:
+        available_tokens: 128000
+      GET /users:
+        - id: "{{apps.onyx.people.dana.id}}"
+          email: "{{people.dana.email}}"
+        - id: "{{apps.onyx.people.kenji.id}}"
+          email: "{{people.kenji.email}}"
+        - id: "{{apps.onyx.people.priya.id}}"
+          email: "{{people.priya.email}}"
+        - id: "{{apps.onyx.people.marcus.id}}"
+          email: "{{people.marcus.email}}"
+        - id: "{{apps.onyx.people.lena.id}}"
+          email: "{{people.lena.email}}"
+        - id: "{{apps.onyx.people.sam.id}}"
+          email: "{{people.sam.email}}"
+      GET /manage/users/accepted/all:
+        - account_type: STANDARD
+          is_admin: true
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.dana.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.reliability.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.dana.id}}"
+          email: "{{people.dana.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.kenji.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.reliability.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.kenji.id}}"
+          email: "{{people.kenji.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.priya.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 2
+              name: "{{teams.media-platform.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.priya.id}}"
+          email: "{{people.priya.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.marcus.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 2
+              name: "{{teams.media-platform.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.marcus.id}}"
+          email: "{{people.marcus.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.lena.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 3
+              name: "{{teams.support-engineering.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.lena.id}}"
+          email: "{{people.lena.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: "{{people.sam.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups:
+            - id: 1
+              name: "{{teams.reliability.name}}"
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.sam.id}}"
+          email: "{{people.sam.email}}"
+        - account_type: STANDARD
+          is_admin: false
+          is_active: false
+          password_configured: true
+          personal_name: "{{people.tomas.name}}"
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: null
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.tomas.id}}"
+          email: "{{people.tomas.email}}"
+        - account_type: BOT
+          is_admin: false
+          is_active: true
+          password_configured: true
+          personal_name: On-call Bot
+          created_at: 2026-09-01T14:00:00Z
+          updated_at: 2026-10-08T14:00:00Z
+          last_active: 2026-10-12T13:30:00Z
+          groups: []
+          is_scim_synced: false
+          craft_enabled: null
+          id: "{{apps.onyx.people.oncall.id}}"
+          email: "{{people.oncall.email}}"
+      GET /manage/users/invited:
+        - email: "{{people.amara.email}}"
+        - email: "{{people.jonas.email}}"
+      GET /tenants/users/pending:
+        - email: "{{people.robin.email}}"
+      GET /manage/users/counts:
+        account_type_counts:
+          STANDARD: 7
+          BOT: 1
+        status_counts:
+          active: 7
+          inactive: 1
+      GET /manage/users/mock-feedback:
+        simulated: true
+        invite_message: Simulated invitation only; no email is sent and no account is created.
+        reset_password: DEMO-ONLY-NOT-A-CREDENTIAL
+      GET /mockshop/sharing-feedback/seeds:
+        errors:
+          share: Fictional share-link creation failed for this attempt.
+          private: Fictional privacy change failed for this attempt.
+          feedback: Fictional feedback submission failed for this attempt.
+          remove: Fictional feedback removal failed for this attempt.
+        sessions: []

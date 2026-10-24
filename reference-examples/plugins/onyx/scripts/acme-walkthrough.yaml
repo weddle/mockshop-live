@@ -1,0 +1,210 @@
+# Acme engineering walkthrough: ask across sources -> cited answer -> source preview -> any model -> agents -> projects.
+# Zoom-blue cursor. Run: MOCKSHOP_ONYX_EDITION=enterprise ./mockshop clip onyx/acme-walkthrough
+name: acme-walkthrough
+title: "{{company.name}} reliability team uses Onyx to investigate an incident"
+requires: enterprise
+strict: true
+overlays:
+  - edition-enterprise
+viewport: [ 1440, 900 ]
+demo_anchor: "2026-10-09T16:00:00Z"
+timezone: UTC
+locale: en
+cursor:
+  style: magnetic
+  speed: 1.1
+  look: { shape: pointer, size: 34, fill: "#0B5CFF", stroke: "#FFFFFF", stroke_width: 2, effect_color: "#0B5CFF", halo: true }
+  effects: { trail: false, glow: false, ripple: true, squish: false, magnet: true }
+clip:
+  title: { title: "{{company.name}} + Onyx", subtitle: "Answers from everything your team knows (fictional data)" }
+  title_ms: 2500
+  hold_ms: 1200
+  type_ms: 1800
+  end_hold_ms: 2500
+steps:
+  - goto: /app
+    id: goto-app
+  - wait: { selector: "#onyx-chat-input-textbox" }
+    id: wait-onyx-chat-input-textbox
+  - shot: home
+    id: shot-home
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox
+  - type: { selector: "#onyx-chat-input-textbox", value: "Why did meeting join latency spike on Tuesday?" }
+    id: type-onyx-chat-input-textbox
+  - shot: { name: question-typed, hold: 600 }
+    id: shot-question-typed
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button
+  - wait: 1800
+    id: wait
+  - shot: { name: streaming, delay: 0 }
+    id: shot-streaming
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait-2
+  - settle: 1500
+    id: settle
+  - eval: "document.querySelector('[data-testid=chat-scroll-container]')?.scrollTo(0, 1e6)"
+    id: eval-script
+  - shot: answer-with-citations
+    id: shot-answer-with-citations
+  - pause: 1500
+    only: clip
+    id: pause
+  # --- beat 2: the work behind the answer, then a cited source ---
+  - click: { text: "2 steps" }
+    id: click-2-steps
+  - settle: 600
+    id: settle-2
+  - shot: search-steps
+    id: shot-search-steps
+  - pause: 1200
+    only: clip
+    id: pause-2
+  - click: { text: "2 steps" }
+    id: click-2-steps-2
+  - move: [ 1290, 420 ]
+    only: clip
+    id: move
+  - click: { role: button, name: Sources, fade: true, settle: 900 }
+    id: click-sources
+  - settle: 800
+    id: settle-3
+  - shot: sources-panel
+    id: shot-sources-panel
+  - pause: 1200
+    only: clip
+    id: pause-3
+  - shot: { name: citation-preview, hover: { role: button, name: GitHub, exact: true, nth: 0 }, delay: 700, hold: 2500 }
+    id: shot-citation-preview
+  # --- beat 3: any model, one click ---
+  - click: { text: New Session }
+    id: click-new-session
+  - wait: { selector: "#onyx-chat-input-textbox" }
+    id: wait-onyx-chat-input-textbox-2
+  - click: { role: button, name: GPT-5.2 }
+    id: click-gpt-5-2
+  - settle: 500
+    id: settle-4
+  - shot: model-picker
+    id: shot-model-picker
+  - click: { text: Anthropic }
+    id: click-anthropic
+  - settle: 400
+    id: settle-5
+  - click: { text: Claude Sonnet 4.5 }
+    id: click-claude-sonnet-4-5
+  - settle: 500
+    id: settle-6
+  - shot: model-switched
+    id: shot-model-switched
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox-2
+  - type: { selector: "#onyx-chat-input-textbox", value: "Draft the customer status update for INC-2291." }
+    id: type-onyx-chat-input-textbox-2
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button-2
+  - wait: { text: "Resolved: slower joins", timeout: 30000 }
+    id: wait-resolved-slower-joins
+  - settle: 1500
+    id: settle-7
+  - eval: "document.querySelector('[data-testid=chat-scroll-container]')?.scrollTo(0, 1e6)"
+    id: eval-script-2
+  - shot: follow-up-status-update
+    id: shot-follow-up-status-update
+  - pause: 1500
+    only: clip
+    id: pause-4
+  # --- beat 4: team agents ---
+  - click: { text: More Agents }
+    id: click-more-agents
+  - wait: { text: Featured Agents }
+    id: wait-featured-agents
+  - shot: agent-gallery
+    id: shot-agent-gallery
+  - pause: 1200
+    only: clip
+    id: pause-5
+  - click: { text: Start Chat, nth: 0 }
+    id: click-start-chat
+  - settle: 800
+    id: settle-8
+  - shot: agent-selected
+    id: shot-agent-selected
+  - click: { text: "Who is on call for media-platform" }
+    id: click-who-is-on-call-for-media-platform
+  - wait: { text: "Escalation: {{people.marcus.name}}", timeout: 30000 }
+    id: wait-escalation-marcus-cole
+  - settle: 1500
+    id: settle-9
+  - shot: agent-answer
+    id: shot-agent-answer
+  - pause: 1500
+    only: clip
+    id: pause-6
+  # --- beat 5: projects with files ---
+  - click: { text: "Q4 {{teams.reliability.name}} Review" }
+    id: click-q4-reliability-review
+  - settle: 800
+    id: settle-10
+  - shot: project-home
+    id: shot-project-home
+  - pause: 1500
+    only: clip
+    id: pause-7
+  - click: { text: View All, exact: true }
+    id: click-view-all
+  - wait: { text: Project Files, exact: true }
+    id: wait-project-files
+  - shot: project-files
+    id: shot-project-files
+  - pause: 1500
+    only: clip
+    id: pause-8
+  - press: Escape
+    id: press-escape
+  # --- beat 6: your data, your control (admin) ---
+  - click: { text: Admin Panel }
+    id: click-admin-panel
+  - settle: 800
+    id: settle-11
+  - click: { selector: 'a[href="/admin/indexing-status"]' }
+    id: click-a-href-admin-indexing-status
+  - wait: { text: Zendesk, exact: true }
+    id: wait-zendesk
+  - shot: connectors
+    id: shot-connectors
+  - pause: 1500
+    only: clip
+    id: pause-9
+  - click: { selector: 'a[href="/admin/groups"]' }
+    id: click-a-href-admin-groups
+  - wait: { text: "{{teams.reliability.name}}", exact: true }
+    id: wait-reliability
+  - shot: groups
+    id: shot-groups
+  - pause: 1200
+    only: clip
+    id: pause-10
+  - click: { role: button, name: View group, exact: true, nth: 0 }
+    id: click-view-group
+  - wait: { placeholder: Search members... }
+    id: wait-3
+  - shot: group-detail
+    id: shot-group-detail
+  - pause: 1500
+    only: clip
+    id: pause-11
+  - click: { selector: 'a[href="/admin/language-models"]' }
+    id: click-a-href-admin-language-models
+  - wait: { text: "{{company.name}} GPU cluster" }
+    id: wait-acme-gpu-cluster
+  - shot: llm-providers
+    id: shot-llm-providers
+  - pause: 1800
+    only: clip
+    id: pause-12
+  - card: { title: "{{company.name}} + Onyx", subtitle: "Complete context for your people and agents", ms: 2500 }
+    only: clip
+    id: card
+world: ../../../worlds/acme/world.yaml

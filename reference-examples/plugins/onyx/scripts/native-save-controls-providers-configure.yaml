@@ -1,0 +1,271 @@
+# Issue #3 independent native proof unit; edit-only declaration, acceptance PENDING.
+# Fresh runner start resets the same Enterprise/demo-mcp-admin fixtures and browser context.
+# No previous unit outputs; native dirty/reset prerequisites are local to this file.
+
+# Entry: Menu /admin/connectors → Language Models; direct /admin/language-models.
+# Outcome: Required/pristine fields; edit/default/reload; Anthropic/Azure forms and Azure manual model/create/reopen; OpenAI key/create/reopen; dirty provider/default reset.
+name: native-save-controls-providers-configure
+title: "Native provider editing, defaults, Azure model and OpenAI creation/reset"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Preserved source step 1 (line 9).
+  - goto: /admin/connectors
+    id: goto-admin-connectors
+  # Preserved source step 2 (line 10).
+  - click: { selector: 'a[href="/admin/language-models"]' }
+    id: click-a-href-admin-language-models
+  # Preserved source step 3 (line 11).
+  - wait: { text: On-prem GPU cluster, exact: true }
+    id: wait-on-prem-gpu-cluster
+  # Preserved source step 4 (line 12).
+  - shot: providers-menu
+    id: shot-providers-menu
+  # Preserved source step 5 (line 13).
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  # Preserved source step 6 (line 14).
+  - click: { role: button, name: "Edit On-prem GPU cluster", exact: true }
+    id: click-edit-on-prem-gpu-cluster
+  # Preserved source step 7 (line 15).
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled' }
+    id: wait-role-dialog-button-type-submit-disabled
+  # Preserved source step 8 (line 16).
+  - shot: provider-pristine-disabled
+    id: shot-provider-pristine-disabled
+  # Preserved source step 9 (line 17).
+  - fill: { selector: 'input[name="api_base"]', value: "" }
+    id: fill-input-name-api-base
+  # Preserved source step 10 (line 18).
+  - press: Tab
+    id: press-tab
+  # Preserved source step 11 (line 19).
+  - wait: { text: API Base URL is required, exact: true }
+    id: wait-api-base-url-is-required
+  # Preserved source step 12 (line 20).
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled' }
+    id: wait-role-dialog-button-type-submit-disabled-2
+  # Preserved source step 13 (line 21).
+  - shot: provider-required-base-error
+    id: shot-provider-required-base-error
+  # Preserved source step 14 (line 22).
+  - fill: { selector: 'input[name="name"]', value: "Learning Lab local models" }
+    id: fill-input-name-name
+  # Preserved source step 15 (line 23).
+  - fill: { selector: 'input[name="api_base"]', value: "http://learning-lab.example:11434" }
+    id: fill-input-name-api-base-2
+  # Preserved source step 16 (line 24).
+  - shot: provider-edit-fields
+    id: shot-provider-edit-fields
+  # Preserved source step 17 (line 25).
+  - click: { role: button, name: Update, exact: true }
+    id: click-update
+  # Preserved source step 18 (line 26).
+  - wait: { text: Learning Lab local models, exact: true }
+    id: wait-learning-lab-local-models
+  # Preserved source step 19 (line 27).
+  - shot: provider-saved-card
+    id: shot-provider-saved-card
+  # Preserved source step 20 (line 28).
+  - eval: "window.location.reload()"
+    id: eval-script
+  # Preserved source step 21 (line 29).
+  - wait: { text: Learning Lab local models, exact: true }
+    id: wait-learning-lab-local-models-2
+  # Preserved source step 22 (line 30).
+  - click: { role: button, name: "Edit Learning Lab local models", exact: true }
+    id: click-edit-learning-lab-local-models
+  # Preserved source step 23 (line 31).
+  - shot: provider-reopened
+    id: shot-provider-reopened
+  # Preserved source step 24 (line 32).
+  - eval: "if(document.querySelector('input[name=\"api_base\"]').value !== 'http://learning-lab.example:11434') throw new Error('Saved provider API base did not reopen')"
+    id: eval-script-2
+  # Preserved source step 25 (line 33).
+  - press: Escape
+    id: press-escape
+  # Preserved source step 26 (line 34).
+  - click: { selector: '.opal-input-single-select', nth: 0 }
+    id: click-opal-input-single-select
+  # Preserved source step 27 (line 35).
+  - click: { text: GPT-4.1, exact: true }
+    id: click-gpt-4-1
+  # Preserved source step 28 (line 36).
+  - wait: { selector: '.opal-input-single-select input[value="GPT-4.1"]' }
+    id: wait-opal-input-single-select-input-value-gpt-4-1
+  # Preserved source step 29 (line 37).
+  - shot: provider-default-saved
+    id: shot-provider-default-saved
+  # Preserved source step 30 (line 38).
+  - eval: "window.location.reload()"
+    id: eval-script-3
+  # Preserved source step 31 (line 39).
+  - wait: { selector: '.opal-input-single-select input[value="GPT-4.1"]' }
+    id: wait-opal-input-single-select-input-value-gpt-4-1-2
+  # Preserved source step 32 (line 40).
+  - shot: provider-default-reloaded
+    id: shot-provider-default-reloaded
+  # Every provider-specific Add form in the pin; shared save lifecycle is exercised below.
+  # Preserved source step 33 (line 42).
+  - click: { selector: '[aria-label="Add Anthropic Claude"]' }
+    id: click-aria-label-add-anthropic-claude
+  # Preserved source step 34 (line 43).
+  - wait: { selector: 'input[name="api_key"]' }
+    id: wait-input-name-api-key
+  # Preserved source step 35 (line 44).
+  - shot: provider-anthropic-form
+    id: shot-provider-anthropic-form
+  # Preserved source step 36 (line 45).
+  - press: Escape
+    id: press-escape-2
+  # Preserved source step 37 (line 46).
+  - click: { selector: '[aria-label="Add Microsoft Azure Azure OpenAI"]' }
+    id: click-aria-label-add-microsoft-azure-azure-openai
+  # Preserved source step 38 (line 47).
+  - wait: { selector: 'input[name="target_uri"]' }
+    id: wait-input-name-target-uri
+  # Preserved source step 39 (line 48).
+  - shot: provider-azure-form
+    id: shot-provider-azure-form
+  # Preserved source step 40 (line 49).
+  - fill: { selector: 'input[name="target_uri"]', value: "not-a-target-uri" }
+    id: fill-input-name-target-uri
+  # Preserved source step 41 (line 50).
+  - press: Tab
+    id: press-tab-2
+  # Preserved source step 42 (line 51).
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled' }
+    id: wait-role-dialog-button-type-submit-disabled-3
+  # Preserved source step 43 (line 52).
+  - shot: provider-azure-invalid-uri
+    id: shot-provider-azure-invalid-uri
+  # Preserved source step 44 (line 53).
+  - fill: { selector: 'input[name="target_uri"]', value: "https://workshop-resource.example/openai/deployments/azure-workshop-demo/chat/completions?api-version=2025-01-01-preview" }
+    id: fill-input-name-target-uri-2
+  # Preserved source step 45 (line 54).
+  - fill: { selector: 'input[name="api_key"]', value: "mock-only-not-a-secret" }
+    id: fill-input-name-api-key
+  # Preserved source step 46 (line 55).
+  - fill: { selector: 'input[name="name"]', value: "Workshop Azure (local fake)" }
+    id: fill-input-name-name-2
+  # Preserved source step 47 (line 56).
+  - wait: { selector: 'button:disabled:has-text("Add Model")' }
+    id: wait-button-disabled-has-text-add-model
+  # Preserved source step 48 (line 57).
+  - fill: { placeholder: Enter model name, value: azure-workshop-demo }
+    id: fill
+  # Preserved source step 49 (line 58).
+  - click: { role: button, name: Add Model, exact: true }
+    id: click-add-model
+  # Preserved source step 50 (line 59).
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  # Preserved source step 51 (line 60).
+  - wait: { text: "Workshop Azure (local fake)", exact: true }
+    id: wait-workshop-azure-local-fake
+  # Preserved source step 52 (line 61).
+  - shot: provider-azure-created
+    id: shot-provider-azure-created
+  # Preserved source step 53 (line 62).
+  - eval: "window.location.reload()"
+    id: eval-script-4
+  # Preserved source step 54 (line 63).
+  - wait: { text: "Workshop Azure (local fake)", exact: true }
+    id: wait-workshop-azure-local-fake-2
+  # Preserved source step 55 (line 64).
+  - click: { role: button, name: "Edit Workshop Azure (local fake)", exact: true }
+    id: click-edit-workshop-azure-local-fake
+  # Preserved source step 56 (line 65).
+  - wait: { text: azure-workshop-demo, exact: true }
+    id: wait-azure-workshop-demo
+  # Preserved source step 57 (line 66).
+  - eval: "if(!document.querySelector('input[name=\"target_uri\"]').value.includes('workshop-resource.example')) throw new Error('Azure fake fields did not reopen')"
+    id: eval-script-5
+  # Preserved source step 58 (line 67).
+  - shot: provider-azure-model-reopened
+    id: shot-provider-azure-model-reopened
+  # Preserved source step 59 (line 68).
+  - press: Escape
+    id: press-escape-3
+  # Preserved source step 108 (line 117).
+  - click: { selector: '[aria-label="Add OpenAI GPT"]' }
+    id: click-aria-label-add-openai-gpt
+  # Preserved source step 109 (line 118).
+  - wait: { selector: '[role="dialog"] button[type="submit"]:disabled' }
+    id: wait-role-dialog-button-type-submit-disabled-4
+  # Preserved source step 110 (line 119).
+  - fill: { selector: 'input[name="api_key"]', value: "" }
+    id: fill-input-name-api-key-2
+  # Preserved source step 111 (line 120).
+  - press: Tab
+    id: press-tab-3
+  # Preserved source step 112 (line 121).
+  - wait: { text: API Key is required, exact: true }
+    id: wait-api-key-is-required
+  # Preserved source step 113 (line 122).
+  - shot: provider-create-required-key
+    id: shot-provider-create-required-key
+  # Preserved source step 114 (line 123).
+  - fill: { selector: 'input[name="name"]', value: "Workshop provider (local fake)" }
+    id: fill-input-name-name-3
+  # Preserved source step 115 (line 124).
+  - fill: { selector: 'input[name="api_key"]', value: "mock-only-not-a-secret" }
+    id: fill-input-name-api-key-3
+  # Preserved source step 116 (line 125).
+  - shot: provider-create-fields
+    id: shot-provider-create-fields
+  # Preserved source step 117 (line 126).
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit-2
+  # Preserved source step 118 (line 127).
+  - wait: { text: "Workshop provider (local fake)", exact: true }
+    id: wait-workshop-provider-local-fake
+  # Preserved source step 119 (line 128).
+  - shot: provider-created-card
+    id: shot-provider-created-card
+  # Preserved source step 120 (line 129).
+  - eval: "window.location.reload()"
+    id: eval-script-6
+  # Preserved source step 121 (line 130).
+  - wait: { text: "Workshop provider (local fake)", exact: true }
+    id: wait-workshop-provider-local-fake-2
+  # Preserved source step 122 (line 131).
+  - click: { role: button, name: "Edit Workshop provider (local fake)", exact: true }
+    id: click-edit-workshop-provider-local-fake
+  # Preserved source step 123 (line 132).
+  - shot: provider-created-reopen
+    id: shot-provider-created-reopen
+  # Preserved source step 124 (line 133).
+  - press: Escape
+    id: press-escape-4
+  - id: eval-script-7-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  # Preserved source step 370 (line 437).
+  - eval: "fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays})}).then(()=>window.location.assign('/admin/language-models'))"
+    id: eval-script-7
+  # Preserved source step 371 (line 438).
+  - wait: { text: On-prem GPU cluster, exact: true }
+    id: wait-on-prem-gpu-cluster-2
+  # Preserved source step 372 (line 439).
+  - wait: { selector: '.opal-input-single-select input[value="GPT-5.2"]' }
+    id: wait-opal-input-single-select-input-value-gpt-5-2
+  # Preserved source step 373 (line 440).
+  - wait_gone: { role: button, name: "Edit Learning Lab local models", exact: true }
+    id: wait-gone-edit-learning-lab-local-models
+  # Preserved source step 374 (line 441).
+  - wait_gone: { role: button, name: "Edit Workshop provider (local fake)", exact: true }
+    id: wait-gone-edit-workshop-provider-local-fake
+  # Preserved source step 375 (line 442).
+  - wait_gone: { role: button, name: "Edit Workshop Azure (local fake)", exact: true }
+    id: wait-gone-edit-workshop-azure-local-fake
+  # Preserved source step 376 (line 443).
+  - shot: provider-reset
+    id: shot-provider-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

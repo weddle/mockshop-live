@@ -1,0 +1,227 @@
+# Required native Cloud Billing frontend; source-derived, not runtime accepted.
+# Real Onyx controls only; external Stripe UI/purchases/portal remain unprovided.
+name: admin-billing-cloud-statuses
+title: Native Cloud trial cancellation and expired display states
+strict: true
+requires: enterprise-cloud
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/documents/sets
+    id: goto-admin-documents-sets
+  - click: { selector: 'a[href="/admin/billing"]' }
+    id: click-a-href-admin-billing
+  - wait: { role: button, name: Upgrade now, exact: true }
+    id: wait-upgrade-now
+  - shot: billing-cloud-trial-menu
+    id: shot-billing-cloud-trial-menu
+  - goto: /admin/billing
+    id: goto-admin-billing
+  - wait: { role: button, name: Manage Plan, exact: true }
+    id: wait-manage-plan
+  - shot: billing-cloud-trial-direct-handoff-visible
+    id: shot-billing-cloud-trial-direct-handoff-visible
+  - click: { role: button, name: Upgrade now, exact: true }
+    id: click-upgrade-now
+  - wait_gone: { role: button, name: Upgrade now, exact: true }
+    id: wait-gone-upgrade-now
+  - eval: |
+      (async () => {
+        const billing = await fetch('/api/tenants/billing-information').then(r => r.json());
+        if (billing.status !== 'active' || billing.trial_end !== null) throw new Error('Native Upgrade did not update fictional display status');
+      })()
+    id: eval-script
+  - shot: billing-cloud-trial-display-upgraded
+    id: shot-billing-cloud-trial-display-upgraded
+  - goto: /admin/documents/sets
+    id: goto-admin-documents-sets-2
+  - click: { selector: 'a[href="/admin/billing"]' }
+    id: click-a-href-admin-billing-2
+  - wait: { role: button, name: Manage Plan, exact: true }
+    id: wait-manage-plan-2
+  - wait_gone: { role: button, name: Upgrade now, exact: true }
+    id: wait-gone-upgrade-now-2
+  - shot: billing-cloud-trial-display-navigation
+    id: shot-billing-cloud-trial-display-navigation
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-billing-cloud-trialing.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en',anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!res.ok) throw new Error('Billing fixture reset failed');
+        location.href = '/admin/billing';
+      })()
+    id: eval-script-2
+  - wait: { role: button, name: Upgrade now, exact: true }
+    id: wait-upgrade-now-2
+  - shot: billing-cloud-trial-dirty-reset
+    id: shot-billing-cloud-trial-dirty-reset
+  - id: eval-script-3-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-billing-cloud-canceling.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en',anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!res.ok) throw new Error('Billing fixture reset failed');
+        location.href = '/admin/billing';
+      })()
+    id: eval-script-3
+  - wait: { text: Your subscription is expiring in }
+    id: wait-your-subscription-is-expiring-in
+  - eval: |
+      (async () => {
+        const billing = await fetch('/api/tenants/billing-information').then(r => r.json());
+        const days = Math.ceil((new Date(billing.current_period_end).getTime() - Date.now()) / 86400000);
+        if (!document.body.textContent.includes('Your subscription is expiring in ' + days + ' days.')) throw new Error('Native cancellation warning does not match snapshot date');
+        if (!document.body.textContent.includes('Valid until')) throw new Error('Native cancellation subtitle missing');
+      })()
+    id: eval-script-4
+  - shot: billing-cloud-canceling-annual-warning
+    id: shot-billing-cloud-canceling-annual-warning
+  - click: { role: button, name: View Plan Details, exact: true }
+    id: click-view-plan-details
+  - wait: { text: Your Current Plan, exact: true }
+    id: wait-your-current-plan
+  - shot: billing-cloud-canceling-current-plan
+    id: shot-billing-cloud-canceling-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - wait: { text: Your subscription is expiring in }
+    id: wait-your-subscription-is-expiring-in-2
+  - shot: billing-cloud-canceling-plan-back
+    id: shot-billing-cloud-canceling-plan-back
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-billing-cloud-expired.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en',anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!res.ok) throw new Error('Billing fixture reset failed');
+        location.href = '/admin/billing';
+      })()
+    id: eval-script-5
+  - wait: { text: Your subscription has expired. }
+    id: wait-your-subscription-has-expired
+  - eval: |
+      (async () => {
+        const billing = await fetch('/api/tenants/billing-information').then(r => r.json());
+        const deletionDays = Math.max(0, Math.ceil((new Date(billing.current_period_end).getTime() + 30 * 86400000 - Date.now()) / 86400000));
+        const title = deletionDays ? 'Your subscription has expired. Data will be deleted in ' + deletionDays + ' days.' : 'Your subscription has expired.';
+        if (!document.body.textContent.includes(title) || !document.body.textContent.includes('Expired on')) throw new Error('Native expired banner/subtitle missing');
+      })()
+    id: eval-script-6
+  - shot: billing-cloud-expired-error-display
+    id: shot-billing-cloud-expired-error-display
+  - click: { role: button, name: View Plan Details, exact: true }
+    id: click-view-plan-details-2
+  - wait: { text: Your Current Plan, exact: true }
+    id: wait-your-current-plan-2
+  - shot: billing-cloud-expired-current-plan
+    id: shot-billing-cloud-expired-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel-2
+  - wait: { text: Your subscription has expired. }
+    id: wait-your-subscription-has-expired-2
+  - shot: billing-cloud-expired-plan-back
+    id: shot-billing-cloud-expired-plan-back
+  - id: eval-script-7-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-billing-cloud-none.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en',anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!res.ok) throw new Error('Billing fixture reset failed');
+        location.href = '/admin/billing';
+      })()
+    id: eval-script-7
+  - wait: { role: button, name: Get Business Plan, exact: true }
+    id: wait-get-business-plan
+  - shot: billing-cloud-statuses-unsubscribed-restore
+    id: shot-billing-cloud-statuses-unsubscribed-restore
+  - id: eval-script-8-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-billing-cloud-trialing.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/billing';
+      })()
+    id: eval-script-8
+  - wait: { role: button, name: Manage Plan, exact: true }
+    id: wait-manage-plan-3
+  - shot: billing-cloud-portal-native-control
+    id: shot-billing-cloud-portal-native-control
+  - click: { role: button, name: Manage Plan, exact: true }
+    id: click-manage-plan
+  - wait: { role: heading, name: LOCAL FAKE DEMO, exact: true }
+    id: wait-local-fake-demo
+  - wait: { text: 'LOCAL FAKE DEMO — billing portal handoff staged; no payment, Stripe session or live account changed', exact: true }
+    id: wait-local-fake-demo-billing-portal-handoff-staged-no-payment-st
+  - wait: { text: Native Manage Plan POST received; same-origin handoff only., exact: true }
+    id: wait-native-manage-plan-post-received-same-origin-handoff-only
+  - shot: billing-cloud-portal-local-fake-disclosure
+    id: shot-billing-cloud-portal-local-fake-disclosure
+  - eval: |
+      (async () => {
+        if (location.pathname !== '/api/mockshop/admin-pages/billing-portal') throw new Error('Native portal redirect did not reach the approved same-origin disclosure');
+        const receipt = await fetch('/api/mockshop/admin-pages/billing-handoffs').then(r => r.json());
+        const billing = await fetch('/api/tenants/billing-information').then(r => r.json());
+        if (!receipt.portal || receipt.portal.request_keys.join(',') !== 'return_url' || receipt.portal.return_path !== '/admin/billing?portal_return=true' || receipt.portal.response_path !== location.pathname || receipt.portal.provider_contacted !== false || billing.status !== 'trialing') throw new Error('Native portal request/response or protected subscription changed');
+      })()
+    id: eval-script-9
+  - shot: billing-cloud-portal-request-response-boundary
+    id: shot-billing-cloud-portal-request-response-boundary
+  - click: { role: link, name: Back to native Billing, exact: true }
+    id: click-back-to-native-billing
+  - wait: { role: button, name: Manage Plan, exact: true }
+    id: wait-manage-plan-4
+  - wait: { role: button, name: Upgrade now, exact: true }
+    id: wait-upgrade-now-3
+  - shot: billing-cloud-portal-native-return
+    id: shot-billing-cloud-portal-native-return
+  - id: eval-script-10-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-billing-cloud-trialing.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/billing';
+      })()
+    id: eval-script-10
+  - wait: { role: button, name: Manage Plan, exact: true }
+    id: wait-manage-plan-5
+  - eval: |
+      (async () => {
+        const receipt = await fetch('/api/mockshop/admin-pages/billing-handoffs').then(r => r.json());
+        if (receipt.checkout !== null || receipt.portal !== null) throw new Error('Fresh reset retained portal request metadata');
+      })()
+    id: eval-script-11
+  - shot: reset-billing-cloud-portal-handoff
+    id: shot-reset-billing-cloud-portal-handoff
+  - wait: { text: Business Plan, exact: true }
+    id: wait-business-plan
+  - click: { role: button, name: View Plan Details, exact: true }
+    id: click-view-plan-details-3
+  - wait: { selector: '[aria-label="Business plan card"]:has-text("Your Current Plan")' }
+    id: wait-aria-label-business-plan-card-has-text-your-current-plan
+  - eval: |
+      if (document.querySelector('[aria-label="Enterprise plan card"]')?.textContent.includes('Your Current Plan')) throw new Error('Subscribed trial must not mark Enterprise as current');
+    id: eval-script-12
+  - shot: billing-cloud-trial-business-current-plan
+    id: shot-billing-cloud-trial-business-current-plan
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel-3
+  - wait: { text: Business Plan, exact: true }
+    id: wait-business-plan-2
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-billing-cloud-trialing.yaml

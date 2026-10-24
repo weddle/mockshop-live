@@ -1,0 +1,69 @@
+# #65 route-sized native proof: Craft MCP policies.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-craft-mcp-policies
+title: Craft MCP policies - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/craft/apps?tab=mcp
+    id: goto-admin-craft-apps-tab-mcp
+  - shot: inventory-craft-apps-mcp
+    id: shot-inventory-craft-apps-mcp
+  - goto: /admin/craft/apps?tab=mcp
+    id: goto-admin-craft-apps-tab-mcp-2
+  - shot: craft-apps-mcp-tab
+    id: shot-craft-apps-mcp-tab
+  - wait: { text: "{{company.name}} PMS (internal MCP)", exact: true }
+    id: wait-seaside-pms-internal-mcp
+  - click: { selector: '[aria-label="Enable {{company.name}} PMS (internal MCP)"]' }
+    id: click-aria-label-enable-seaside-pms-internal-mcp
+  - wait: { selector: '[aria-label="Disable {{company.name}} PMS (internal MCP)"]' }
+    id: wait-aria-label-disable-seaside-pms-internal-mcp
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/craft/apps?tab=mcp
+    id: goto-admin-craft-apps-tab-mcp-3
+  - wait: { selector: '[aria-label="Disable {{company.name}} PMS (internal MCP)"]' }
+    id: wait-aria-label-disable-seaside-pms-internal-mcp-2
+  - shot: craft-mcp-enabled
+    id: shot-craft-mcp-enabled
+  - click: { selector: '[aria-label="{{company.name}} PMS (internal MCP) actions"]' }
+    id: click-aria-label-seaside-pms-internal-mcp-actions
+  - click: { text: Edit, exact: true }
+    id: click-edit
+  - wait: { role: dialog }
+    id: wait
+  - shot: craft-mcp-policy-dialog
+    id: shot-craft-mcp-policy-dialog
+  - click: { selector: '[role="dialog"] input', nth: 0 }
+    id: click-role-dialog-input
+  - click: { text: Auto-approve, exact: true }
+    id: click-auto-approve
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+    id: click-role-dialog-button-has-text-save
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/voice
+    id: goto-admin-voice-2
+  - goto: /admin/craft/apps?tab=mcp
+    id: goto-admin-craft-apps-tab-mcp-4
+  - click: { selector: '[aria-label="{{company.name}} PMS (internal MCP) actions"]' }
+    id: click-aria-label-seaside-pms-internal-mcp-actions-2
+  - click: { text: Edit, exact: true }
+    id: click-edit-2
+  - wait: { role: dialog }
+    id: wait-2
+  - eval: |
+      if (![...document.querySelectorAll('[role="dialog"] input')].some(el => el.value === 'Auto-approve')) throw new Error('MCP tool policy did not persist');
+    id: eval-script
+  - shot: craft-mcp-policy-saved
+    id: shot-craft-mcp-policy-saved
+  - press: Escape
+    id: press-escape
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

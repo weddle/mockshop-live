@@ -1,0 +1,3 @@
+apps:
+  onyx:
+    llm_providers: null  # drops the inherited providers: this variant has none

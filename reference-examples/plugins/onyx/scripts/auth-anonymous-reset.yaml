@@ -1,0 +1,107 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-anonymous-reset
+title: "Independent native #69 unit: auth-anonymous-reset"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Independent prerequisites: Scenario-start reset seeds this unit; native signup/verify and Forgot/reset dirty mailbox/flags, then guest/Claude/welcome dirties chat before the supported live keep switch. Fresh clearing belongs to auth-anonymous-reset-fresh.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /auth/signup?email=robin.guest%40workshop.example
+    id: goto-auth-signup-email-robin-guest-40workshop-example
+  - wait: { testid: email }
+    id: wait
+  - eval: |
+      if (document.querySelector('[data-testid="email"]')?.value !== 'robin.guest@workshop.example') throw new Error('Signup direct email was not prefilled');
+    id: eval-script-2
+  - fill: { testid: password, value: MockOnly-Workshop1! }
+    id: fill
+  - click: { role: button, name: Create Account, exact: true }
+    id: click-create-account
+  - wait: { text: "it looks like you haven't verified your email yet.", exact: false }
+    id: wait-it-looks-like-you-haven-t-verified-your-email-yet
+  - eval: window.location.assign('/api/mockshop/auth-anonymous/email-link/verify')
+    id: eval-script-3
+  - wait: { text: Your email has been verified! Please sign in to continue. }
+    id: wait-your-email-has-been-verified-please-sign-in-to-continue
+  - goto: /auth/forgot-password
+    id: goto-auth-forgot-password
+  - wait: { selector: 'input[name="email"]' }
+    id: wait-input-name-email
+  - fill: { selector: 'input[name="email"]', value: "{{people.alex-learner.email}}" }
+    id: fill-input-name-email
+  - click: { role: button, name: Reset Password, exact: true }
+    id: click-reset-password
+  - wait: { text: Password reset email sent. Please check your inbox. }
+    id: wait-password-reset-email-sent-please-check-your-inbox
+  - eval: window.location.assign('/api/mockshop/auth-anonymous/email-link/reset')
+    id: eval-script-4
+  - wait: { selector: 'input[name="password"]' }
+    id: wait-input-name-password
+  - fill: { selector: 'input[name="password"]', value: MockOnly-Workshop1! }
+    id: fill-input-name-password
+  - fill: { selector: 'input[name="confirmPassword"]', value: MockOnly-Workshop1! }
+    id: fill-input-name-confirmpassword
+  - click: { role: button, name: Reset Password, exact: true }
+    id: click-reset-password-2
+  - wait: { text: Password reset successfully. Redirecting to login... }
+    id: wait-password-reset-successfully-redirecting-to-login
+  - wait: { testid: email }
+    id: wait-2
+  - eval: |
+      (async () => {
+        if (!(await (await fetch('/api/mockshop/auth-anonymous/messages')).json()).reset_complete) throw new Error('Fake reset result did not persist');
+      })()
+    id: eval-script-5
+  - goto: /anonymous/workshop-demo
+    id: goto-anonymous-workshop-demo
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      (async () => {const me = await (await fetch('/api/me')).json(); if (!me.is_anonymous_user || location.pathname !== '/app') throw new Error('Native anonymous redirect/session did not complete');})()
+    id: eval-script-6
+  - click: { role: button, name: GPT-5.2, exact: true }
+    id: click-gpt-5-2
+  - click: { text: Anthropic, exact: true }
+    id: click-anthropic
+  - click: { text: Claude Sonnet 4.5, exact: true }
+    id: click-claude-sonnet-4-5
+  - type: { selector: '#onyx-chat-input-textbox', value: 'Local fake workshop welcome' }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: 'No provider, authentication, real document search or email service was contacted.', exact: false }
+    id: wait-no-provider-authentication-real-document-search-or-email-se
+  - wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+    id: wait-3
+  - settle: 600
+    id: settle
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state-2
+  - eval: |
+      (async () => {const box = await (await fetch('/api/mockshop/auth-anonymous/messages')).json(); if (box.mode !== 'anonymous' || !box.messages.length) throw new Error('Live keep switch lost fake auth state');})()
+    id: eval-script-7
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

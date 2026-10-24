@@ -1,0 +1,59 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-apps-empty
+title: "Craft native empty Apps and MCP"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - eval: |
+      (async () => {
+        for (const path of ['/skills','/build/apps','/mcp/servers/craft','/build/scheduled-tasks']) await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path,state:path === '/skills'?'loaded':'empty'})});
+      })()
+    id: eval-script-2
+  - goto: /craft/v1/apps
+    id: goto-craft-v1-apps
+  - wait: { "text": "Nothing to connect yet", "exact": true }
+    id: wait-nothing-to-connect-yet
+  - shot: craft-apps-empty
+    id: shot-craft-apps-empty
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-3
+  - goto: "/craft/v1/apps"
+    id: goto-craft-v1-apps-2
+  - wait: { "text": "Clinic Learning API", "exact": true }
+    id: wait-clinic-learning-api
+  - shot: "craft-unit-apps-empty-reset"
+    id: shot-craft-unit-apps-empty-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

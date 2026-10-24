@@ -1,0 +1,409 @@
+apps:
+  onyx:
+    viewer: sam
+    people:
+      sam:
+        id: hc-u1
+    agents:
+      assistant:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 0
+        name: Assistant
+        description: Everyday assistant grounded in Riverbend Community Health's policies and intranet.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 0
+        is_featured: true
+        builtin_persona: true
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: null
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      clinical-policy-finder:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 21
+        name: Clinical Policy Finder
+        description: Finds the current version of a clinical policy or procedure.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: Hand hygiene
+            message: What is the current hand hygiene policy for inpatient units?
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 1
+        is_featured: true
+        builtin_persona: false
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: BooksStack
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      patient-access-desk:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 22
+        name: Patient Access Desk
+        description: Scheduling, registration and referral procedures for front-desk staff.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages:
+          - name: New referral
+            message: How do I register a new specialist referral?
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 2
+        is_featured: true
+        builtin_persona: false
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Activity
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+      it-service-desk:
+        search_start_date: null
+        user_shares: []
+        group_shares: []
+        public_permission: VIEWER
+        sharing_status: SHARED
+        admin_count: 1
+        ownership_vacant: false
+        hierarchy_nodes: []
+        attached_documents: []
+        id: 23
+        name: IT Service Desk
+        description: Badge, workstation and EHR login troubleshooting.
+        tools:
+          - id: 1
+            name: internal_search
+            display_name: Internal Search
+            description: Search connected knowledge.
+            definition: null
+            custom_headers: []
+            in_code_tool_id: SearchTool
+            passthrough_auth: false
+            enabled: true
+            chat_selectable: true
+            agent_creation_selectable: true
+            default_enabled: true
+            permissions:
+              edit: true
+              delete: false
+              toggle: true
+              authenticate: false
+        starter_messages: null
+        document_sets: []
+        is_public: true
+        is_listed: true
+        display_priority: 3
+        is_featured: false
+        builtin_persona: false
+        labels: []
+        permissions:
+          edit: true
+          share: true
+          view_stats: true
+          delete: true
+          publish: true
+          feature: true
+          list: true
+          reorder: true
+        owner_group: null
+        user_permission: OWNER
+        icon_name: Terminal
+        user_file_ids: []
+        users: []
+        groups: []
+        system_prompt: null
+        replace_base_system_prompt: false
+        task_prompt: null
+        datetime_aware: true
+    sources:
+      sharepoint:
+        visible: false
+      confluence:
+        visible: false
+    documents:
+      hc-pol-0142:
+        id: HC-POL-0142
+        blurb: "Placeholder policy text: perform hand hygiene before and after every patient contact; alcohol-based rub unless hands are visibly soiled."
+        updated: "{{vars.onyx_template_open}}ago:12d}}"
+      hc-conf-edu-88:
+        id: HC-CONF-EDU-88
+        blurb: "Placeholder refresher outline: five moments of hand hygiene, glove use, audit schedule."
+        updated: "{{vars.onyx_template_open}}ago:30d}}"
+    conversations:
+      hand-hygiene-policy-update:
+        id: 33333333-0000-4000-8000-000000000001
+        time_created: "{{vars.onyx_template_open}}ago:5h}}"
+        time_updated: "{{vars.onyx_template_open}}ago:5h}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: clinical-policy-finder
+        turns:
+          - message: "{{conversations.hand-hygiene-policy-update.messages.0.text}}"
+            script:
+              match: hand hygiene|policy|referral
+              default: true
+              title: Hand hygiene policy update
+              queries:
+                - inpatient hand hygiene policy current version
+              documents:
+                - id: "{{apps.onyx.documents.hc-pol-0142.id}}"
+                  title: "{{documents.hc-pol-0142.title}}"
+                  source: "{{sources.sharepoint.vendor}}"
+                  link: https://intranet.{{company.domain}}/policies/IC-142
+                  blurb: "{{apps.onyx.documents.hc-pol-0142.blurb}}"
+                  updated: "{{apps.onyx.documents.hc-pol-0142.updated}}"
+                - id: "{{apps.onyx.documents.hc-conf-edu-88.id}}"
+                  title: "{{documents.hc-conf-edu-88.title}}"
+                  source: "{{sources.confluence.vendor}}"
+                  link: https://wiki.{{company.domain}}/display/EDU/88
+                  blurb: "{{apps.onyx.documents.hc-conf-edu-88.blurb}}"
+                  updated: "{{apps.onyx.documents.hc-conf-edu-88.updated}}"
+              answer: "{{conversations.hand-hygiene-policy-update.messages.1.text}}"
+      badge-reader-not-working-on-4-west:
+        id: 33333333-0000-4000-8000-000000000002
+        time_created: "{{vars.onyx_template_open}}ago:2d}}"
+        time_updated: "{{vars.onyx_template_open}}ago:2d}}"
+        shared_status: private
+        current_alternate_model: null
+        current_temperature_override: null
+        current_reasoning_effort_override: null
+        agent: it-service-desk
+        turns:
+          - message: "{{conversations.badge-reader-not-working-on-4-west.messages.0.text}}"
+            script:
+              title: Badge reader not working on 4 West
+              answer: "{{conversations.badge-reader-not-working-on-4-west.messages.1.text}}"
+    replies:
+      10-healthcare:
+        match: hand hygiene|policy|referral
+        default: true
+        title: Hand hygiene policy update
+        queries:
+          - inpatient hand hygiene policy current version
+        text: |
+          The current inpatient hand hygiene policy is **IC-142**, last revised 12 days ago [1]. In short (placeholder text):
+
+          - Clean hands before and after every patient contact, using alcohol-based rub unless hands are visibly soiled [1].
+          - The infection-prevention refresher for nurse educators covers the same five moments and the audit schedule [2].
+        cites:
+          - hc-pol-0142
+          - hc-conf-edu-88
+    fixtures:
+      GET /me:
+        id: "{{apps.onyx.people.sam.id}}"
+        email: "{{people.sam.email}}"
+        is_active: true
+        is_superuser: false
+        is_verified: true
+        role: basic
+        account_type: STANDARD
+        is_admin: false
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - basic
+        admin_capabilities: []
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 21
+            - 22
+          default_model: null
+          recent_assistants:
+            - 0
+            - 21
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.sam.name}}"
+          role: "{{people.sam.title}}"
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /enterprise-settings:
+        application_name: "{{company.name}}"
+        use_custom_logo: false
+        use_custom_logotype: false
+        logo_display_style: null
+        custom_nav_items: []
+        custom_lower_disclaimer_content: Riverbend Community Health — placeholder demo org (fictional).
+        custom_header_content: null
+        two_lines_for_chat_header: null
+        custom_popup_header: null
+        custom_popup_content: null
+        enable_consent_screen: null
+        consent_screen_prompt: null
+        show_first_visit_notice: null
+        custom_greeting_message: Good morning, {{people.sam.name}}. What can I find for you?
+      GET /user/pinned-assistants:
+        - 0
+        - 21
+        - 22
+      GET /tool:
+        - id: 1
+          name: internal_search
+          display_name: Internal Search
+          description: Search connected knowledge.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: SearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+    teams: {}

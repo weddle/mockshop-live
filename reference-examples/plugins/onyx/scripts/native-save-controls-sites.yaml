@@ -1,0 +1,185 @@
+# Issue #3 independent native proof unit; edit-only declaration, acceptance PENDING.
+# Fresh runner start resets the same Enterprise/demo-mcp-admin fixtures and browser context.
+# No previous unit outputs; native dirty/reset prerequisites are local to this file.
+
+# Entry: Direct /admin/connectors/google_sites → native empty submit/name/base/archive/Create → indexing pair/detail.
+# Outcome: Actual Name error and empty archive/base disabled; filled name/base absent archive disabled; native drop enables Create; base-URL pair/detail/reload; own dirty reset removes created Sites pair. Native chooser proof separately required.
+name: native-save-controls-sites
+title: "Native Google Sites required-state, archive/Create/detail/reload/reset"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Preserved source step 334 (line 382).
+  - goto: /admin/connectors/google_sites
+    id: goto-admin-connectors-google-sites
+  # Preserved source step 335 (line 383).
+  - wait: { role: button, name: Choose files, exact: true }
+    id: wait-choose-files
+  # Actual diagnostic UI shows the native name error, not archive/base inline labels.
+  # Keep empty archive/base validation through the real fields and disabled Create.
+  # Preserved source step 336 (line 386).
+  - click: { role: button, name: Create Connector, exact: true }
+    id: click-create-connector
+  # Preserved source step 337 (line 387).
+  - wait: { text: Connector Name is required, exact: true }
+    id: wait-connector-name-is-required
+  # Preserved source step 338 (line 388).
+  - wait: { selector: 'input[name="name"][value=""]' }
+    id: wait-input-name-name-value
+  # Preserved source step 339 (line 389).
+  - wait: { selector: 'input[name="base_url"][value=""]' }
+    id: wait-input-name-base-url-value
+  # Preserved source step 340 (line 390).
+  - wait_gone: { text: Workshop site.zip, exact: true }
+    id: wait-gone-workshop-site-zip
+  # Preserved source step 341 (line 391).
+  - wait: { selector: 'button:disabled:has-text("Create Connector")' }
+    id: wait-button-disabled-has-text-create-connector
+  # Preserved source step 342 (line 392).
+  - shot: sites-connector-required-fields
+    id: shot-sites-connector-required-fields
+  # Preserved source step 343 (line 393).
+  - fill: { selector: 'input[name="base_url"]', value: "https://workshop-site.example" }
+    id: fill-input-name-base-url
+  # Preserved source step 344 (line 394).
+  - fill: { selector: 'input[name="name"]', value: "Workshop Site (fake metadata)" }
+    id: fill-input-name-name
+  # Preserved source step 345 (line 395).
+  - wait_gone: { text: Connector Name is required, exact: true }
+    id: wait-gone-connector-name-is-required
+  # Preserved source step 346 (line 396).
+  - wait: { selector: 'input[name="name"][value="Workshop Site (fake metadata)"]' }
+    id: wait-input-name-name-value-workshop-site-fake-metadata
+  # Preserved source step 347 (line 397).
+  - wait: { selector: 'input[name="base_url"][value="https://workshop-site.example"]' }
+    id: wait-input-name-base-url-value-https-workshop-site-example
+  # Preserved source step 348 (line 398).
+  - wait_gone: { text: Workshop site.zip, exact: true }
+    id: wait-gone-workshop-site-zip-2
+  # Preserved source step 349 (line 399).
+  - wait: { selector: 'button:disabled:has-text("Create Connector")' }
+    id: wait-button-disabled-has-text-create-connector-2
+  # Preserved source step 350 (line 400).
+  - shot: sites-connector-archive-required
+    id: shot-sites-connector-archive-required
+  # Google Sites is a native multi-file field at this pin, not an isZip/single input.
+  # Preserved source step 351 (line 402).
+  - eval: |
+      const choose = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Choose files');
+      const dropzone = choose?.closest('div.border-dashed');
+      if (!dropzone) throw new Error('Native Google Sites drop area is missing');
+      const transfer = new DataTransfer();
+      transfer.items.add(new File(['Fictional site archive metadata only; not a real archive.'], 'Workshop site.zip', {type: 'application/zip'}));
+      dropzone.dispatchEvent(new DragEvent('drop', {dataTransfer: transfer, bubbles: true, cancelable: true}));
+    id: eval-script
+  # Preserved source step 352 (line 409).
+  - wait: { text: Workshop site.zip, exact: true }
+    id: wait-workshop-site-zip
+  # Preserved source step 353 (line 410).
+  - wait: { selector: 'button:not(:disabled):has-text("Create Connector")' }
+    id: wait-button-not-disabled-has-text-create-connector
+  # Preserved source step 354 (line 411).
+  - shot: sites-connector-create-fields
+    id: shot-sites-connector-create-fields
+  # Preserved source step 355 (line 412).
+  - click: { role: button, name: Create Connector, exact: true }
+    id: click-create-connector-2
+  # Preserved source step 356 (line 413).
+  - wait: { placeholder: "Search connectors..." }
+    id: wait
+  # Preserved source step 357 (line 414).
+  - fill: { placeholder: "Search connectors...", value: "workshop-site.example" }
+    id: fill
+  # Preserved source step 358 (line 415).
+  - wait: { selector: 'tr.bg-background-sidebar' }
+    id: wait-tr-bg-background-sidebar
+  # Preserved source step 359 (line 416).
+  - eval: |
+      (async () => {
+      const expand = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Expand All');
+      if (expand) expand.click();
+      else for (const group of document.querySelectorAll('tr.bg-background-sidebar')) {
+        if (!group.nextElementSibling?.querySelector('th')) {
+          group.click();
+          await new Promise(requestAnimationFrame);
+        }
+      }
+      })()
+    id: eval-script-2
+  # Preserved source step 360 (line 427).
+  - click: { text: "https://workshop-site.example", exact: true }
+    id: click-https-workshop-site-example
+  # Preserved source step 361 (line 428).
+  - wait: { text: Connector Configuration }
+    id: wait-connector-configuration
+  # Preserved source step 362 (line 429).
+  - wait: { text: base_url, exact: true }
+    id: wait-base-url
+  # Preserved source step 363 (line 430).
+  - wait: { selector: 'button:has-text("https://workshop-site.example")' }
+    id: wait-button-has-text-https-workshop-site-example
+  # Preserved source step 364 (line 431).
+  - shot: sites-connector-created
+    id: shot-sites-connector-created
+  # Preserved source step 365 (line 432).
+  - eval: "window.location.reload()"
+    id: eval-script-3
+  # Preserved source step 366 (line 433).
+  - wait: { text: Connector Configuration, exact: true }
+    id: wait-connector-configuration-2
+  # Preserved source step 367 (line 434).
+  - wait: { text: base_url, exact: true }
+    id: wait-base-url-2
+  # Preserved source step 368 (line 435).
+  - wait: { selector: 'button:has-text("https://workshop-site.example")' }
+    id: wait-button-has-text-https-workshop-site-example-2
+  # Preserved source step 369 (line 436).
+  - shot: sites-connector-reloaded
+    id: shot-sites-connector-reloaded
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  # Independent native prerequisite/reset: Fresh reset after this unit native dirty writes; hard navigation clears browser caches.
+  - eval: fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays})}).then(()=>window.location.assign("/admin/indexing-status"))
+    id: eval-script-4
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit Sites archive/Create writes.
+  - goto: /admin/indexing-status
+    id: goto-admin-indexing-status
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit Sites archive/Create writes.
+  - wait: { placeholder: "Search connectors..." }
+    id: wait-2
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit Sites archive/Create writes.
+  - fill: { placeholder: "Search connectors...", value: "" }
+    id: fill-2
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit Sites archive/Create writes.
+  - wait: { selector: 'tr.bg-background-sidebar' }
+    id: wait-tr-bg-background-sidebar-2
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit Sites archive/Create writes.
+  - eval: |
+      (async () => {
+      const expand = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Expand All');
+      if (expand) expand.click();
+      else for (const group of document.querySelectorAll('tr.bg-background-sidebar')) {
+        if (!group.nextElementSibling?.querySelector('th')) {
+          group.click();
+          await new Promise(requestAnimationFrame);
+        }
+      }
+      })()
+    id: eval-script-5
+  # Independent native prerequisite/reset: Independent native reset inventory after this unit Sites archive/Create writes.
+  - wait: { text: "Confluence – OPS space", exact: true }
+    id: wait-confluence-ops-space
+  # Preserved source step 386 (line 463).
+  - wait_gone: { text: "https://workshop-site.example", exact: true }
+    id: wait-gone-https-workshop-site-example
+  # Independent native prerequisite/reset: Owning Sites disappearance after its own native dirty archive/Create.
+  - shot: sites-connector-reset
+    id: shot-sites-connector-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

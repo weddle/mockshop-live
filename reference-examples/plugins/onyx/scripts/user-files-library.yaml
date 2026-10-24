@@ -1,0 +1,191 @@
+# Issue #28 independent native proof unit; no acceptance claim.
+# Fresh runner start resets base fixtures, chats and browser; never chain unit outputs.
+
+# Source/core/artifacts frozen; native file inputs only; no generic error allowances.
+name: user-files-library
+title: Native file picker, selection, text copy/download, Markdown and CSV
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  # Original user-files step 1, source line 22.
+  - goto: /app
+    id: goto-app
+  # Original user-files step 2, source line 23.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814
+  # Original user-files step 3, source line 24.
+  - wait: { text: Upload Files, exact: true }
+    id: wait-upload-files
+  # Original user-files step 4, source line 25.
+  - wait: { text: All Recent Files, exact: true }
+    id: wait-all-recent-files
+  # Original user-files step 5, source line 26.
+  - shot: file-picker-loaded
+    id: shot-file-picker-loaded
+  # Original user-files step 6, source line 27.
+  - hover: { selector: 'div[class~="p-1.5"]:has-text("learning-diagram.svg")' }
+    id: hover-div-class-p-1-5-has-text-learning-diagram-svg
+  # Original user-files step 7, source line 28.
+  - click: { selector: 'div[class~="p-1.5"]:has-text("learning-diagram.svg") button:has(svg path[d^="M12 8.66667"])' }
+    id: click-div-class-p-1-5-has-text-learning-diagram-svg-button-has-s
+  # Original user-files step 8, source line 29.
+  - wait: { selector: '[role="dialog"] img[alt="learning-diagram.svg"]' }
+    id: wait-role-dialog-img-alt-learning-diagram-svg
+  # Original user-files step 9, source line 30.
+  - shot: recent-row-view-preview
+    id: shot-recent-row-view-preview
+  # Original user-files step 10, source line 31.
+  - press: Escape
+    id: press-escape
+  # Original user-files step 11, source line 32.
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814-2
+  # Original user-files step 12, source line 33.
+  - click: { text: All Recent Files, exact: true }
+    id: click-all-recent-files
+  # Original user-files step 13, source line 34.
+  - wait: { placeholder: Search files... }
+    id: wait
+  # Original user-files step 14, source line 35.
+  - wait: { text: library-reading.txt, exact: true }
+    id: wait-library-reading-txt
+  # Original user-files step 15, source line 36.
+  - shot: library-loaded
+    id: shot-library-loaded
+  # Original user-files step 16, source line 37.
+  - fill: { placeholder: Search files..., value: No matching fictional resource }
+    id: fill
+  # Original user-files step 17, source line 38.
+  - wait: { text: No files found, exact: true }
+    id: wait-no-files-found
+  # Original user-files step 18, source line 39.
+  - shot: library-search-empty
+    id: shot-library-search-empty
+  # Original user-files step 19, source line 40.
+  - fill: { placeholder: Search files..., value: '' }
+    id: fill-2
+  # Original user-files step 20, source line 41.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha
+  # Original user-files step 21, source line 42.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("study-guide.md")' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-2
+  # Original user-files step 22, source line 43.
+  - wait: { text: 2 files selected, exact: true }
+    id: wait-2-files-selected
+  # Original user-files step 23, source line 44.
+  - shot: library-multiple-selected
+    id: shot-library-multiple-selected
+  # Original user-files step 24, source line 45.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 16 12"])' }
+    id: click-role-dialog-button-has-svg-viewbox-0-0-16-12
+  # Original user-files step 25, source line 46.
+  - eval: |
+      const dialog = document.querySelector('[role="dialog"]');
+      if (dialog.textContent.includes('attendance-demo.csv') || !dialog.textContent.includes('library-reading.txt') || !dialog.textContent.includes('study-guide.md')) throw new Error('Selected-only filter did not show only the two chosen rows');
+    id: eval-script
+  # Original user-files step 26, source line 49.
+  - shot: library-selected-only
+    id: shot-library-selected-only
+  # Original user-files step 27, source line 50.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 15 15"])' }
+    id: click-role-dialog-button-has-svg-viewbox-0-0-15-15
+  # Original user-files step 28, source line 51.
+  - wait: { text: 0 files selected, exact: true }
+    id: wait-0-files-selected
+  # Original user-files step 29, source line 52.
+  - wait: { text: No files found, exact: true }
+    id: wait-no-files-found-2
+  # Original user-files step 30, source line 53.
+  - shot: library-deselected-empty
+    id: shot-library-deselected-empty
+  # Original user-files step 31, source line 54.
+  - click: { selector: '[role="dialog"] button:has(svg[viewBox="0 0 16 12"])' }
+    id: click-role-dialog-button-has-svg-viewbox-0-0-16-12-2
+  # Original user-files step 32, source line 55.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt")' }
+    id: hover-role-dialog-role-button-has-opal-attachment-item-button-ha
+  # Original user-files step 33, source line 56.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("library-reading.txt") button:has(svg path[d^="M12 8.66667"])', settle: 0 }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-3
+  # Original user-files step 34, source line 57.
+  - wait: { selector: '[role="dialog"]:has-text("library-reading.txt") svg[role="status"]' }
+    id: wait-role-dialog-has-text-library-reading-txt-svg-role-status
+  # Original user-files step 35, source line 58.
+  - shot: text-preview-loading
+    id: shot-text-preview-loading
+  # Original user-files step 36, source line 59.
+  - wait: { text: Synthetic demo reading note }
+    id: wait-synthetic-demo-reading-note
+  # Original user-files step 37, source line 60.
+  - eval: |
+      const dialogs = [...document.querySelectorAll('[role="dialog"]')];
+      const preview = dialogs.find(d => d.textContent.includes('Synthetic demo reading note'));
+      if (!preview?.textContent.includes('uploaded bytes are discarded') || !preview.querySelector('a[download="library-reading.txt"]')) throw new Error('Text preview lacks honest synthetic content or its own downloadable filename');
+    id: eval-script-2
+  # Original user-files step 38, source line 64.
+  - shot: text-preview-metadata
+    id: shot-text-preview-metadata
+  # Original user-files step 39, source line 66.
+  - click: { selector: '[role="dialog"]:has-text("Synthetic demo reading note") button:has(svg path[d^="M3.33333 9.99999"])' }
+    id: click-role-dialog-has-text-synthetic-demo-reading-note-button-ha
+  # Original user-files step 40, source line 67.
+  - wait: { selector: '[role="dialog"]:has-text("Synthetic demo reading note") button:has(svg path[d="M13.5 4.5L6 12L2.5 8.5"])' }
+    id: wait-role-dialog-has-text-synthetic-demo-reading-note-button-has
+  # Original user-files step 41, source line 68.
+  - shot: text-preview-copied
+    id: shot-text-preview-copied
+  # Original user-files step 42, source line 69.
+  # Parent bounded observer must prove browser download completion/failure and actual bytes; clicks alone are not acceptance.
+  - click: { selector: '[role="dialog"]:has-text("Synthetic demo reading note") a[download="library-reading.txt"]' }
+    id: click-role-dialog-has-text-synthetic-demo-reading-note-a-downloa
+  # Original user-files step 43, source line 70.
+  - press: Escape
+    id: press-escape-2
+  # Original user-files step 44, source line 71.
+  - wait: { placeholder: Search files... }
+    id: wait-2
+  # Original user-files step 45, source line 72.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("study-guide.md")' }
+    id: hover-role-dialog-role-button-has-opal-attachment-item-button-ha-2
+  # Original user-files step 46, source line 73.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("study-guide.md") button:has(svg path[d^="M12 8.66667"])' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-4
+  # Original user-files step 47, source line 74.
+  - wait: { text: Synthetic study guide, exact: true }
+    id: wait-synthetic-study-guide
+  # Original user-files step 48, source line 75.
+  - wait: { text: Finish with a reflection circle. }
+    id: wait-finish-with-a-reflection-circle
+  # Original user-files step 49, source line 76.
+  - shot: markdown-preview
+    id: shot-markdown-preview
+  # Original user-files step 50, source line 77.
+  - press: Escape
+    id: press-escape-3
+  # Original user-files step 51, source line 78.
+  - wait: { placeholder: Search files... }
+    id: wait-3
+  # Original user-files step 52, source line 79.
+  - hover: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("attendance-demo.csv")' }
+    id: hover-role-dialog-role-button-has-opal-attachment-item-button-ha-3
+  # Original user-files step 53, source line 80.
+  - click: { selector: '[role="dialog"] [role="button"]:has(.opal-attachment-item-button):has-text("attendance-demo.csv") button:has(svg path[d^="M12 8.66667"])' }
+    id: click-role-dialog-role-button-has-opal-attachment-item-button-ha-5
+  # Original user-files step 54, source line 81.
+  - wait: { role: columnheader, name: Participants, exact: true }
+    id: wait-participants
+  # Original user-files step 55, source line 82.
+  - wait: { role: cell, name: Reading circle, exact: true }
+    id: wait-reading-circle
+  # Original user-files step 56, source line 83.
+  - shot: csv-preview
+    id: shot-csv-preview
+  # Original user-files step 57, source line 84.
+  - press: Escape
+    id: press-escape-4
+  # Original user-files step 58, source line 85.
+  - wait: { placeholder: Search files... }
+    id: wait-4
+world: ../../../worlds/seaside/world.yaml

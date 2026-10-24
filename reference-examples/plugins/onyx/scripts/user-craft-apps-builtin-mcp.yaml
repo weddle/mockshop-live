@@ -1,0 +1,122 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-apps-builtin-mcp
+title: "Craft builtin/managed configuration and current MCP availability"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: "/admin/craft/apps"
+    id: goto-admin-craft-apps
+  - wait: { "role": "button", "name": "Add app", "exact": true }
+    id: wait-add-app
+  - click: { role: button, name: Add app, exact: true }
+    id: click-add-app
+  - click: { selector: 'button:has-text("Add"):near(:text-is("Slack"))' }
+    id: click-button-has-text-add-near-text-is-slack
+  - wait: { placeholder: Fictional demo credential }
+    id: wait
+  - shot: craft-app-builtin-required
+    id: shot-craft-app-builtin-required
+  - fill: { placeholder: Fictional demo credential, value: mock-craft-fictional-not-a-secret }
+    id: fill
+  - click: { selector: '[role="dialog"] [role="combobox"]' }
+    id: click-role-dialog-role-combobox
+  - click: { text: Auto-approve, exact: true }
+    id: click-auto-approve
+  - shot: craft-app-builtin-bulk-policy
+    id: shot-craft-app-builtin-bulk-policy
+  - click: { text: Advanced, exact: true }
+    id: click-advanced
+  - click: { role: button, name: Deny, exact: true }
+    id: click-deny
+  - shot: craft-app-builtin-custom-policy
+    id: shot-craft-app-builtin-custom-policy
+  - click: { selector: '[role="dialog"] button:has-text("Add")' }
+    id: click-role-dialog-button-has-text-add
+  - wait: { role: button, name: Skip for now, exact: true }
+    id: wait-skip-for-now
+  - shot: craft-app-builtin-optional-skills
+    id: shot-craft-app-builtin-optional-skills
+  - click: { role: button, name: Skip for now, exact: true }
+    id: click-skip-for-now
+  - click: { selector: '[aria-label="Slack actions"]' }
+    id: click-aria-label-slack-actions
+  - click: { text: Edit, exact: true }
+    id: click-edit
+  - shot: craft-app-builtin-edit-reopened
+    id: shot-craft-app-builtin-edit-reopened
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+    id: click-role-dialog-button-has-text-cancel
+  - click: { selector: '[aria-label="Classroom Resources (managed fiction) actions"]' }
+    id: click-aria-label-classroom-resources-managed-fiction-actions
+  - click: { text: Edit, exact: true }
+    id: click-edit-2
+  - shot: craft-app-managed-config-hidden
+    id: shot-craft-app-managed-config-hidden
+  - click: { selector: '[role="dialog"] [role="combobox"]' }
+    id: click-role-dialog-role-combobox-2
+  - click: { text: Auto-approve, exact: true }
+    id: click-auto-approve-2
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+    id: click-role-dialog-button-has-text-save
+  - click: { selector: '[aria-label="Slack actions"]' }
+    id: click-aria-label-slack-actions-2
+  - click: { text: Delete, exact: true }
+    id: click-delete
+  - shot: craft-app-builtin-delete-confirmation
+    id: shot-craft-app-builtin-delete-confirmation
+  - click: { role: button, name: Delete app, exact: true }
+    id: click-delete-app
+  - click: { text: MCP servers, exact: false }
+    id: click-mcp-servers
+  - click: { selector: '[aria-label="Enable {{company.name}} PMS (internal MCP)"]' }
+    id: click-aria-label-enable-seaside-pms-internal-mcp
+  - shot: craft-app-admin-mcp-available
+    id: shot-craft-app-admin-mcp-available
+  - goto: /craft/v1/apps?tab=mcp
+    id: goto-craft-v1-apps-tab-mcp
+  - wait: { text: "{{company.name}} PMS (internal MCP)", exact: true }
+    id: wait-seaside-pms-internal-mcp
+  - shot: craft-app-user-mcp-current-metadata
+    id: shot-craft-app-user-mcp-current-metadata
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-2
+  - goto: "/admin/craft/apps?tab=mcp"
+    id: goto-admin-craft-apps-tab-mcp
+  - wait: { "selector": "[aria-label=\"Enable {{company.name}} PMS (internal MCP)\"]" }
+    id: wait-aria-label-enable-seaside-pms-internal-mcp
+  - shot: "craft-unit-apps-builtin-mcp-reset"
+    id: shot-craft-unit-apps-builtin-mcp-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

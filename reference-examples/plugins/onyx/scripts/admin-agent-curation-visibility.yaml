@@ -1,0 +1,137 @@
+# #58 derived native witness; prepared/unaccepted, parent matching-artifact proof required.
+# Independent prerequisite: Fresh runner reset; direct admin entry and existing seed/pin read. Agent13 starts unfeatured, matching the prior original segment outcome.
+# Source15: All hides unlisted cards; Your retains owned access; sections honor saved rank.
+#
+# Thin journey: entities come from the world ({{agents.<key>.*}}), backend checks use assert_state / snapshot_state.
+
+name: admin-agent-curation-visibility
+title: Native Unlist cancellation, List/re-list, All/Your discovery and pinned direct access
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /admin/agents
+    id: goto-admin-agents
+  - wait: { testid: "agent-row-actions-{{agents.it-helpdesk.id}}" }
+    id: wait
+  - snapshot_state: { as: pins-before, entity: user.pinned_agents }
+    id: snapshot-pins
+  - assert_state: { list: agents, where: { builtin_persona: false }, keys: [training-onboarding-desk, guest-ops-copilot, training-analyst, it-helpdesk] }
+    id: assert-seeded-order
+  - goto: /admin/agents
+    id: goto-admin-agents-2
+  - wait: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: wait-2
+  - hover: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: hover
+  - click: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Agent actions"]' }
+    id: click-agent-actions
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent
+  - wait: { role: dialog, has_text: "Unlist {{agents.guest-ops-copilot.name}}" }
+    id: wait-3
+  - shot: unlist-confirmation
+    id: shot-unlist-confirmation
+  - press: Escape
+    id: press-escape
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - assert_state: { entity: agents.guest-ops-copilot, field: is_listed, equals: true }
+    id: assert-cancel-kept-listed
+  - hover: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: hover-2
+  - click: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Agent actions"]' }
+    id: click-agent-actions-2
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent-2
+  - click: { selector: '[role="dialog"] button:has-text("Unlist")' }
+    id: click-confirm-unlist
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Re-list Agent"]' }
+    id: wait-relist-button
+  - wait: { selector: 'tr:has([data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"]):has-text("Unlisted")' }
+    id: wait-unlisted-row
+  - shot: unlisted-still-manageable
+    id: shot-unlisted-still-manageable
+  - goto: /app/agents
+    id: goto-app-agents
+  - wait: { testid: AgentsPage/container }
+    id: wait-4
+  - wait: { selector: '.radial-00:has-text("{{agents.training-analyst.name}}")' }
+    id: wait-gallery-analyst
+  - wait_gone: { selector: '.radial-00:has-text("{{agents.guest-ops-copilot.name}}")' }
+    id: wait-gone-gallery-unlisted
+  - wait: { selector: '.opal-sidebar-tab a[aria-label="{{agents.guest-ops-copilot.name}}"]' }
+    id: wait-sidebar-pin
+  - assert_state: { entity: agents.guest-ops-copilot, field: is_listed, equals: false }
+    id: assert-unlisted
+  - assert_state: { entity: user.pinned_agents, equals_snapshot: pins-before }
+    id: assert-pins-unchanged
+  - shot: unlisted-gallery-keeps-sidebar-pin
+    id: shot-unlisted-gallery-keeps-sidebar-pin
+  - click: { role: tab, name: Your Agents, exact: true }
+    id: click-your-agents
+  - wait: { selector: '.radial-00:has-text("{{agents.guest-ops-copilot.name}}")' }
+    id: wait-your-gallery-owned
+  - shot: owned-unlisted-your-gallery
+    id: shot-owned-unlisted-your-gallery
+  - click: { role: tab, name: All Agents, exact: true }
+    id: click-all-agents
+  - wait_gone: { selector: '.radial-00:has-text("{{agents.guest-ops-copilot.name}}")' }
+    id: wait-gone-all-gallery
+  - goto: "/app?agentId={{agents.guest-ops-copilot.id}}"
+    id: goto-direct-agent
+  - wait: { text: "{{agents.guest-ops-copilot.starter_messages.0.message}}", exact: true }
+    id: wait-starter-message
+  - shot: unlisted-direct-agent-access
+    id: shot-unlisted-direct-agent-access
+  - goto: /admin/agents
+    id: goto-admin-agents-3
+  - wait: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: wait-5
+  - hover: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: hover-3
+  - click: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Agent actions"]' }
+    id: click-agent-actions-3
+  - wait: { role: menuitem, name: List Agent, exact: true }
+    id: wait-list-agent
+  - shot: list-menu
+    id: shot-list-menu
+  - click: { role: menuitem, name: List Agent, exact: true }
+    id: click-list-agent
+  - wait: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Remove Featured"]' }
+    id: wait-remove-featured
+  - goto: /app/agents
+    id: goto-app-agents-2
+  - wait: { selector: '.radial-00:has-text("{{agents.guest-ops-copilot.name}}")' }
+    id: wait-gallery-relisted
+  - shot: listed-gallery-after-menu
+    id: shot-listed-gallery-after-menu
+  - goto: /admin/agents
+    id: goto-admin-agents-4
+  - wait: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: wait-6
+  - hover: { testid: "agent-row-actions-{{agents.guest-ops-copilot.id}}" }
+    id: hover-4
+  - click: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Agent actions"]' }
+    id: click-agent-actions-4
+  - click: { role: menuitem, name: Unlist Agent, exact: true }
+    id: click-unlist-agent-3
+  - click: { selector: '[role="dialog"] button:has-text("Unlist")' }
+    id: click-confirm-unlist-2
+  - wait: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Re-list Agent"]' }
+    id: wait-relist-button-2
+  - click: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Re-list Agent"]' }
+    id: click-relist
+  - wait: { selector: '[data-testid="agent-row-actions-{{agents.guest-ops-copilot.id}}"] button[aria-label="Remove Featured"]' }
+    id: wait-remove-featured-2
+  - assert_state: { entity: agents.guest-ops-copilot, field: is_listed, equals: true }
+    id: assert-relisted
+  - shot: relisted-inline-admin
+    id: shot-relisted-inline-admin
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,172 @@
+# #33 independent route proof; scoped DEVELOPMENT only, parent acceptance/publication pending.
+
+name: user-extras-reset
+title: Native Extras - reset
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 1000 ]
+steps:
+  # Independent native setup replay; deliberately no duplicate evidence shots.
+  - goto: /app
+    id: goto-app
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning
+  - click: { label: Consent checkbox }
+    id: click
+  - click: { role: button, name: Start, exact: true }
+    id: click-start
+  - wait_gone: { selector: '[role="dialog"]' }
+    id: wait-gone-role-dialog
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - click: { role: button, name: Share, exact: true }
+    id: click-share
+  - wait: { text: Learning Team, exact: true }
+    id: wait-learning-team
+  - click: { label: Change sharing scope }
+    id: click-2
+  - click: { text: Anyone in your organization, exact: true }
+    id: click-anyone-in-your-organization
+  - click: { label: Change public permission }
+    id: click-3
+  - click: { selector: '[role="listbox"][aria-label="Change public permission"] [role="option"]:has(:text-is("Edit"))' }
+    id: click-role-listbox-aria-label-change-public-permission-role-opti
+  - click: { selector: '[role="dialog"] >> role=button[name="Save"]' }
+    id: click-role-dialog-role-button-name-save
+  - click: { role: button, name: Share, exact: true }
+    id: click-share-2
+  - click: { selector: '[role="dialog"] .min-h-11:has(:text-is("Owner")) button', nth: 0 }
+    id: click-role-dialog-min-h-11-has-text-is-owner-button
+  - fill: { placeholder: Add a user or group, value: Clinical }
+    id: fill
+  - click: { text: Clinical Educators, exact: true }
+    id: click-clinical-educators
+  - click: { selector: '[role="dialog"] >> role=button[name="Transfer"]' }
+    id: click-role-dialog-role-button-name-transfer
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-2
+  - fill: { placeholder: Add labels..., value: Inclusive Learning }
+    id: fill-2
+  - press: Enter
+    id: press-enter
+  - wait: { text: Inclusive Learning, exact: true }
+    id: wait-inclusive-learning
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-3
+  - wait: { text: Inclusive Learning, exact: true }
+    id: wait-inclusive-learning-2
+  - click: { selector: '.h-30.w-30' }
+    id: click-h-30-w-30
+  - click: { text: Upload Image, exact: true }
+    id: click-upload-image
+  - eval: |
+      (async () => {
+        const config = await (await fetch('/api/mockshop/user-extras')).json();
+        const bytes = Uint8Array.from(atob(config.avatar_png_base64), c=>c.charCodeAt(0));
+        const transfer = new DataTransfer(); transfer.items.add(new File([bytes], 'fictional-education-avatar.png', {type:'image/png'}));
+        const input = document.querySelector('input[type="file"][accept="image/*"]');
+        input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+      })()
+    id: eval-script
+  - settle: 700
+    id: settle
+  - click: { role: button, name: Save, exact: true }
+    id: click-save-2
+  - goto: /app/agents/edit/11
+    id: goto-app-agents-edit-11-4
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        if (!a.uploaded_image_id?.startsWith('mock-user-extras-avatar-')) throw new Error('Native avatar upload marker did not persist');
+      })()
+    id: eval-script-2
+  - goto: /app
+    id: goto-app-2
+  - click: { selector: '#onyx-user-dropdown' }
+    id: click-onyx-user-dropdown
+  - click: { text: Notifications, exact: true }
+    id: click-notifications
+  - wait: { text: Campus Learning Guide shared with your group, exact: true }
+    id: wait-campus-learning-guide-shared-with-your-group
+  - wait: { text: Clinical Education Guide materials ready, exact: true }
+    id: wait-clinical-education-guide-materials-ready
+  - click: { selector: '[role="menuitem"] .flex-row:has(> span.text-action-selection-05) button' }
+    id: click-role-menuitem-flex-row-has-span-text-action-selection-05-b
+  - settle: 500
+    id: settle-2
+  - eval: |
+      (async () => {
+        const summary = await (await fetch('/api/notifications/summary')).json();
+        if (summary.undismissed_count !== 0) throw new Error('Mark All as Read did not persist');
+      })()
+    id: eval-script-3
+  - goto: /app/agents/edit/14
+    id: goto-app-agents-edit-14
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name-2
+  - click: { role: button, name: Delete Agent, exact: true }
+    id: click-delete-agent
+  - wait: { selector: '[role="dialog"]' }
+    id: wait-role-dialog
+  - press: Escape
+    id: press-escape
+  - click: { role: button, name: Delete Agent, exact: true }
+    id: click-delete-agent-2
+  - click: { selector: '[role="dialog"] >> role=button[name="Delete Agent"]' }
+    id: click-role-dialog-role-button-name-delete-agent
+  - goto: /app/agents
+    id: goto-app-agents
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona')).json();
+        if(a.some(a=>a.id===14)) throw new Error('Native delete did not remove the agent');
+      })()
+    id: eval-script-4
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-extras.yaml
+      overlays: []
+  # Lossless primary operations from the former monolithic proof.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        localStorage.removeItem('allUsersInitialPopupFlowCompleted');
+        const me = await (await fetch('/api/me')).json();
+        localStorage.removeItem(`onyx:onboardingCompleted:${me.id}`);
+      })()
+    id: eval-script-5
+  - goto: /app
+    id: goto-app-3
+  - wait: { text: Welcome to Lakeshore Learning, exact: true }
+    id: wait-welcome-to-lakeshore-learning-2
+  - shot: { name: extras-68-fresh-reset-first-visit, full_page: true }
+    id: shot-extras-68-fresh-reset-first-visit
+  - click: { label: Consent checkbox }
+    id: click-4
+  - click: { role: button, name: Start, exact: true }
+    id: click-start-2
+  - goto: /app/agents
+    id: goto-app-agents-2
+  - wait: { text: IT Helpdesk, exact: true }
+    id: wait-it-helpdesk
+  - eval: |
+      (async () => {
+        const a = await (await fetch('/api/persona/11')).json();
+        const labels = await (await fetch('/api/persona/labels')).json();
+        const summary = await (await fetch('/api/notifications/summary')).json();
+        if (a.owner_group || a.is_public || a.group_shares.length !== 1 || a.group_shares[0].permission !== 'EDITOR') throw new Error('Reset did not restore shared-agent seeds');
+        if (labels.some(l=>l.name==='Inclusive Learning') || a.uploaded_image_id || summary.undismissed_count!==4) throw new Error('Reset retained label/avatar/notification writes');
+      })()
+    id: eval-script-6
+  - shot: { name: extras-69-fresh-reset-agent-notification-seeds, full_page: true }
+    id: shot-extras-69-fresh-reset-agent-notification-seeds
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-extras.yaml

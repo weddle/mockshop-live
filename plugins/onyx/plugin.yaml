@@ -1,0 +1,132 @@
+# Mockshop plugin manifest: Onyx web UI.
+# Every field is documented in the root README.md ("Plugin interface").
+name: onyx
+localization:
+  default: en
+  locales: [en, es, pt, fr, de, ja, zh, ko, ar]
+  cookie: NEXT_LOCALE
+  user_fields:
+    GET /me: [preferences.language]
+title: Onyx (onyx-dot-app/onyx) web UI
+kind: source-build            # build the real front end from a pinned upstream commit
+
+upstream:
+  repo: https://github.com/onyx-dot-app/onyx.git
+  ref: v5.0.0-beta.2           # the tag `commit` is; shown as the app version in /settings and /version (derived, never hand-written in fixtures)
+  commit: b80667827f4ee5c2c9388777477e29e9c15221aa   # tag commit of ref (never main's head). Previous pin: f858083d6 (tag onyx-pin-f858083d6)
+  subdir: web                  # only this directory is exported
+  local_mirror: ../onyx        # optional: an onyx clone next to the mockshop checkout (or MOCKSHOP_ONYX_MIRROR); used if it has the commit (git archive, read-only), otherwise a shallow fetch into work/upstream.git
+
+# Static validation declarations from pinned web/src/proxy.ts:104–114,149–161.
+# Native proxy/layout/edition gates still own serving these URLs; metadata installs no routes.
+route_aliases:
+  - { source: /admin/groups, destination: /ee/admin/groups }
+  - { source: /admin/performance/usage, destination: /ee/admin/performance/usage }
+  - { source: /admin/performance/analytics, destination: /ee/admin/performance/analytics }
+  - { source: /admin/performance/query-history, destination: /ee/admin/performance/query-history }
+  - { source: /admin/theme, destination: /ee/admin/theme }
+  - { source: /admin/performance/custom-analytics, destination: /ee/admin/performance/custom-analytics }
+  - { source: /admin/standard-answer, destination: /ee/admin/standard-answer }
+  - { source: /admin/export-logs, destination: /ee/admin/export-logs }
+  - { source: /agents/stats, destination: /ee/agents/stats }
+
+toolchain:
+  node: 24.22.1                # downloaded to .toolchains/node-24.22.1 (Onyx's Dockerfile uses node:24)
+  bun: 1.4.4                   # system bun; a different version only warns
+
+default_world: worlds/default/world.yaml   # neutral cast + thin apps.onyx; a script's world: or MOCKSHOP_WORLD/--world replaces it
+
+edition: community            # default; Community, Enterprise and native Cloud variant below
+editions:
+  community:                  # MIT Onyx only; source-native local Forgot/Reset remains available without paid EE or Cloud
+    build_env: { NEXT_PUBLIC_ENABLE_PAID_EE_FEATURES: "false", NEXT_PUBLIC_CLOUD_ENABLED: "false", NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED: "true" }
+  enterprise:                 # opt-in: builds with Onyx's paid-EE flag (ee/ code under the Onyx Enterprise License)
+    build_env: { NEXT_PUBLIC_ENABLE_PAID_EE_FEATURES: "true", NEXT_PUBLIC_CLOUD_ENABLED: "false", NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED: "true" }
+    fixtures: edition-enterprise   # fixture overlay (tier enterprise, /license, /enterprise-settings) layered on base while this edition runs
+  enterprise-cloud:           # native Cloud Requests/Billing; enabled Analytics form uses direct aliases plus explicit server marker
+    build_env: { NEXT_PUBLIC_ENABLE_PAID_EE_FEATURES: "true", NEXT_PUBLIC_CLOUD_ENABLED: "true", NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED: "true", CUSTOM_ANALYTICS_SECRET_KEY: "mockshop-admin-pages-demo" }
+    fixtures: edition-enterprise
+
+# Entity reference roots for worlds and scripts: {{agents.<key>.id}}, {{teams.<key>.id}}, ... An explicit id in the world wins; otherwise the
+# ID is derived from onyx:<collection>:<key> (core/ids.mjs), never from declaration order. `from` = where the world keeps the entities.
+world_refs:
+  collections:
+    agents:        { from: apps.onyx.agents,        id: number }
+    llm_providers: { from: apps.onyx.llm_providers, id: number }
+    teams:         { from: apps.onyx.teams,   shared: true, id: number }
+    sources:       { from: apps.onyx.sources, shared: true, id: number }
+    people:        { from: apps.onyx.people,  shared: true, id: uuid }
+    mcp_servers:   { from: apps.onyx.mcp_servers,   id: number }   # {{mcp_servers.<key>.id}}: the /admin/plugins/mcp/<id> and /admin/mcp-actions/<id> routes
+    replies:       { from: apps.onyx.replies,       id: number }   # {{replies.<key>.question}} / .text: prepared chat replies
+
+# Runner-only state API behind the assert_state / snapshot_state script steps (plugins/onyx/handlers-state.mjs). `collections` lists what
+# `entity:` / `list:` may name; a test keeps it equal to the handler's COLLECTIONS and SINGLETONS.
+state_api:
+  collections: [agents, teams, people, sources, llm_providers, skills, user]
+
+workdir: work/web             # temporary build dir: pinned, patched source + node_modules (deleted after build)
+
+ports:
+  web: 3300
+  mock: 8800
+
+build:
+  patches: patches             # *.patch applied in name order with `patch -p1` after export
+  overlay: overlay             # optional dir copied over the export (absent for Onyx)
+  install: bun install --frozen-lockfile     # also builds lib/opal + lib/shared via their prepare scripts
+  command: node tools/prepare-pdf-assets.cjs && node_modules/.bin/next build
+  env:
+    SKIP_TYPE_CHECK: "1"
+    NEXT_TELEMETRY_DISABLED: "1"
+    NODE_OPTIONS: --max-old-space-size=2560
+  keep_work: false             # build deletes work/ (source, node_modules, .next/cache) after assembling; --keep-work overrides
+
+runtime:                       # the slim runnable artifact (standard Next standalone layout), all that's kept
+  dir: runtime
+  assemble:                    # copied from workdir (symlinks preserved) in this order
+    - { from: .next/standalone, to: . }        # server.js, traced node_modules, .next/server
+    - { from: .next/static, to: .next/static }
+    - { from: public, to: public }
+  artifact: server.js          # `up` builds if this is missing
+  runtime_written: [.next/cache/]   # paths the server may write at runtime; ignored by verify
+
+start:                         # run from the runtime dir
+  cwd: .
+  command: node server.js
+  env:
+    PORT: "{{ports.web}}"
+    HOSTNAME: 127.0.0.1
+    INTERNAL_URL: http://127.0.0.1:{{ports.mock}}   # SSR fetches go straight to the mock
+    OVERRIDE_API_PRODUCTION: "true"                  # enables Onyx's own /api/* -> INTERNAL_URL proxy in prod builds
+    WEB_DOMAIN: http://127.0.0.1:{{ports.web}}
+    NEXT_TELEMETRY_DISABLED: "1"
+  ready: /auth/login           # GET this until it answers
+
+mock:
+  handlers: handlers.mjs       # dynamic routes (chat streaming, sessions, filters)
+  fixtures: fixtures           # fixtures/base + overlay dirs
+  strip_prefix: /api           # tolerate direct /api/... calls
+
+auth_bypass: >
+  No login. Onyx's middleware (web/src/proxy.ts) only checks that the auth cookie exists, so the runner
+  sets fastapiusersauth=mockshop. World-backed viewers default to basic; admin journeys must explicitly
+  set apps.onyx.people.<viewer>.role: admin to satisfy native requireAdminAuth.
+
+runner:
+  strict: true                 # unknown routes fail; never an empty 200
+  viewport: [1440, 900]
+  timezone: America/New_York
+  demo_anchor: 2026-10-09T10:00:00-04:00   # fixed demo "now": fixture {{ago:..}} times and the page clock start here, so every run shows the same times (override per script)
+  cookies:
+    - { name: fastapiusersauth, value: mockshop }
+  allow_hosts:                 # everything else outbound is blocked
+    - fonts.googleapis.com
+    - fonts.gstatic.com
+    - www.google.com/s2/favicons
+  crash_text:
+    - "Application error: a client-side exception"
+  known_errors:                # native, edition-wide diagnostics (the Enterprise editions mock /license, so these never match there)
+    - match: '/^http 404 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/license$/'
+      reason: Community has no license endpoint; every admin page probes it and treats 404 as "no license" (native CE boundary).
+    - match: '/^console: Failed to load resource: the server responded with a status of 404 \(Not Found\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/license\]$/'
+      reason: Browser diagnostic of the same native Community no-license 404.

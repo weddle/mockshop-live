@@ -1,0 +1,16 @@
+apps:
+  onyx:
+    settings:  # sparse over the base /settings
+      ee_features_enabled: true
+      tier: "enterprise"
+      oauth_provider_enabled: true
+    fixtures:
+      GET /oauth-provider/grants:
+        - id: mock-workshop-reader
+          client_name: Workshop Reader (fictional)
+          client_id: mock-workshop-reader-client
+          resource: mockshop-education
+          scopes:
+            - read:search
+          created_at: "{{vars.onyx_template_open}}ago:2d}}"
+          expires_at: "{{vars.onyx_template_open}}in:7d}}"

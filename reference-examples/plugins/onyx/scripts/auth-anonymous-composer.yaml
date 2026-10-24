@@ -1,0 +1,139 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-anonymous-composer
+title: "Independent native #69 unit: auth-anonymous-composer"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Independent prerequisites: Native anonymous entry in this run; empty/send guard, upload lifecycle/remove, actions/search, source toggles and selected-model send.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /anonymous/workshop-demo
+    id: goto-anonymous-workshop-demo
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox
+  - eval: |
+      (async () => {const me = await (await fetch('/api/me')).json(); if (!me.is_anonymous_user || location.pathname !== '/app') throw new Error('Native anonymous redirect/session did not complete');})()
+    id: eval-script-2
+  - goto: /app
+    id: goto-app
+  - wait: { selector: '#onyx-chat-input-textbox' }
+    id: wait-onyx-chat-input-textbox-2
+  - eval: |
+      if (!document.querySelector('#onyx-chat-input-send-button')?.disabled) throw new Error('Empty anonymous composer can submit');
+    id: eval-script-3
+  - click: { selector: '#onyx-chat-input button:has(svg path[d^="M12.0924 3.99814"])' }
+    id: click-onyx-chat-input-button-has-svg-path-d-m12-0924-3-99814
+  - wait: { text: Upload Files, exact: true }
+    id: wait-upload-files
+  - shot: anonymous-attachment-menu
+    id: shot-anonymous-attachment-menu
+  - click: { text: Upload Files, exact: true }
+    id: click-upload-files
+  - eval: |
+      (async () => {
+        const demo = await (await fetch('/api/mockshop/auth-anonymous/content')).json();
+        const input = document.querySelector('input[type="file"][accept="*/*"]');
+        if (!input?.multiple) throw new Error('Native anonymous upload input missing');
+        const transfer = new DataTransfer();
+        transfer.items.add(new File([demo.upload_text], demo.upload_name, {type:'text/plain'}));
+        input.files = transfer.files;
+        input.dispatchEvent(new Event('change', {bubbles:true}));
+      })()
+    id: eval-script-4
+  - wait: { text: Uploading..., exact: true }
+    id: wait-uploading
+  - shot: anonymous-file-uploading
+    id: shot-anonymous-file-uploading
+  - wait: { text: Processing..., exact: true }
+    id: wait-processing
+  - shot: anonymous-file-processing
+    id: shot-anonymous-file-processing
+  - wait_gone: { text: Processing..., exact: true, timeout: 20000 }
+    id: wait-gone-processing
+  - wait: { text: workshop-notes.txt, exact: true }
+    id: wait-workshop-notes-txt
+  - shot: anonymous-file-ready
+    id: shot-anonymous-file-ready
+  - hover: { text: workshop-notes.txt, exact: true }
+    id: hover-workshop-notes-txt
+  - click: { selector: '#onyx-chat-input button[aria-label="Remove"]' }
+    id: click-onyx-chat-input-button-aria-label-remove
+  - wait_gone: { selector: '#onyx-chat-input div.relative:has-text("workshop-notes.txt")' }
+    id: wait-gone-onyx-chat-input-div-relative-has-text-workshop-notes-t
+  - shot: anonymous-file-removed
+    id: shot-anonymous-file-removed
+  - click: { testid: action-management-toggle }
+    id: click
+  - wait: { placeholder: Search actions... }
+    id: wait
+  - shot: anonymous-actions-menu
+    id: shot-anonymous-actions-menu
+  - fill: { placeholder: Search actions..., value: No matching fictional action }
+    id: fill
+  - shot: anonymous-actions-empty-search
+    id: shot-anonymous-actions-empty-search
+  - fill: { placeholder: Search actions..., value: '' }
+    id: fill-2
+  - click: { role: button, name: Select Search Sources, exact: true }
+    id: click-select-search-sources
+  - wait: { placeholder: Search Filters }
+    id: wait-2
+  - shot: anonymous-source-filters
+    id: shot-anonymous-source-filters
+  - click: { role: button, name: Disable All Sources, exact: true }
+    id: click-disable-all-sources
+  - shot: anonymous-sources-disabled
+    id: shot-anonymous-sources-disabled
+  - click: { role: button, name: Enable All Sources, exact: true }
+    id: click-enable-all-sources
+  - shot: anonymous-sources-enabled
+    id: shot-anonymous-sources-enabled
+  - press: Escape
+    id: press-escape
+  - click: { role: button, name: GPT-5.2, exact: true }
+    id: click-gpt-5-2
+  - shot: anonymous-model-menu
+    id: shot-anonymous-model-menu
+  - click: { text: Anthropic, exact: true }
+    id: click-anthropic
+  - click: { text: Claude Sonnet 4.5, exact: true }
+    id: click-claude-sonnet-4-5
+  - shot: anonymous-model-selected
+    id: shot-anonymous-model-selected
+  - type: { selector: '#onyx-chat-input-textbox', value: 'Local fake workshop welcome' }
+    id: type-onyx-chat-input-textbox
+  - shot: anonymous-composer-ready
+    id: shot-anonymous-composer-ready
+  - click: { selector: '#onyx-chat-input-send-button' }
+    id: click-onyx-chat-input-send-button
+  - wait: { text: 'No provider, authentication, real document search or email service was contacted.', exact: false }
+    id: wait-no-provider-authentication-real-document-search-or-email-se
+  - wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+    id: wait-3
+  - settle: 600
+    id: settle
+  - shot: anonymous-scripted-answer
+    id: shot-anonymous-scripted-answer
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

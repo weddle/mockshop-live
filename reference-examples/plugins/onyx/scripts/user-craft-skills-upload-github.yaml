@@ -1,0 +1,116 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-skills-upload-github
+title: "Craft upload duplicate confirmation and offline GitHub selection/results"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+known_errors:
+  - match: "/^http 400 POST http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/skills\\/custom\\/editor$/"
+    reason: "Native SKILL_NAME_CONFLICT duplicate-create response is required before the positive original confirmation438 and retry440. Exact status, verb, loopback port field and native path/query only; all other HTTP problems, console errors and failed steps remain strict."
+  - match: "/^console: Failed to load resource: the server responded with a status of 400 \\(Bad Request\\) \\[source: http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/skills\\/custom\\/editor\\]$/"
+    reason: "Actual 18.3s scoped DEV observed this native console source URL alongside the exact duplicate-create POST400 and positive native duplicate confirmation/retry. Only this unit/status/message/owned-port/path; unlocated or other-source console remains strict."
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: /craft/v1/skills
+    id: goto-craft-v1-skills
+  - click: { role: button, name: Create skill, exact: true }
+    id: click-create-skill
+  - click: { text: Upload a skill, exact: true }
+    id: click-upload-a-skill
+  - shot: craft-skill-upload-modal
+    id: shot-craft-skill-upload-modal
+  - eval: |
+      const input = document.querySelector('[role="dialog"] input[type="file"]');
+      if (!input) throw new Error('Native skill bundle input missing');
+      const files = new DataTransfer();
+      files.items.add(new File(['---\nname: campus-study-plan\ndescription: Fictional teaching bundle\n---\n# Teaching bundle\nOffer quiet reflection time.\n'], 'SKILL.md', {type:'text/markdown'}));
+      input.files = files.files; input.dispatchEvent(new Event('change', {bubbles:true}));
+    id: eval-script-2
+  - wait: { role: button, name: Review skill, exact: true }
+    id: wait-review-skill
+  - shot: craft-skill-upload-reviewed
+    id: shot-craft-skill-upload-reviewed
+  - click: { role: button, name: Review skill, exact: true }
+    id: click-review-skill
+  - wait: { selector: 'input[name="name"]' }
+    id: wait-input-name-name
+  - shot: craft-skill-imported-draft
+    id: shot-craft-skill-imported-draft
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - wait: { text: 'Create another “campus-study-plan” skill?', exact: true }
+    id: wait-create-another-campus-study-plan-skill
+  - shot: craft-skill-create-duplicate-confirmation
+    id: shot-craft-skill-create-duplicate-confirmation
+  - click: { role: button, name: Create anyway, exact: true }
+    id: click-create-anyway
+  - goto: /craft/v1/skills
+    id: goto-craft-v1-skills-2
+  - click: { role: button, name: Create skill, exact: true }
+    id: click-create-skill-2
+  - click: { text: Import from GitHub, exact: true }
+    id: click-import-from-github
+  - shot: craft-skill-github-input
+    id: shot-craft-skill-github-input
+  - fill: { selector: '[role="dialog"] input', value: fictional-learning/teaching-skills }
+    id: fill-role-dialog-input
+  - click: { role: button, name: Search repository, exact: true }
+    id: click-search-repository
+  - wait: { selector: '[aria-label="Select study-circle"]' }
+    id: wait-aria-label-select-study-circle
+  - shot: craft-skill-github-selection
+    id: shot-craft-skill-github-selection
+  - click: { selector: '[aria-label="Select study-circle"]' }
+    id: click-aria-label-select-study-circle
+  - shot: craft-skill-github-partial-selection
+    id: shot-craft-skill-github-partial-selection
+  - click: { selector: '[aria-label="Select all importable skills"]' }
+    id: click-aria-label-select-all-importable-skills
+  - click: { role: button, name: Import 2 skills, exact: true }
+    id: click-import-2-skills
+  - wait: { text: GitHub import complete, exact: true }
+    id: wait-github-import-complete
+  - shot: craft-skill-github-results
+    id: shot-craft-skill-github-results
+  - click: { role: button, name: Done, exact: true }
+    id: click-done
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-3
+  - goto: "/craft/v1/skills"
+    id: goto-craft-v1-skills-3
+  - wait: { "text": "campus-study-plan", "exact": true }
+    id: wait-campus-study-plan
+  - shot: "craft-unit-skills-upload-github-reset"
+    id: shot-craft-unit-skills-upload-github-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

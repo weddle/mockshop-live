@@ -1,0 +1,54 @@
+name: demo-chat-ask-agent
+title: Ask the assistant about the next review, check the source, then chat with {{agents.helper.name}}
+strict: true
+scenes:
+  - id: ask
+    steps:
+      - id: open-chat
+        goto: /app
+      - id: wait-composer
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: ask-planning
+        send:
+          text: "{{apps.onyx.replies.planning.question}}"
+          reply: { use: apps.onyx.replies.planning }
+      - id: wait-answer
+        wait: { testid: AgentMessage/toolbar, timeout: 30000 }
+      - id: shot-answer
+        shot: answer-with-citations
+  - id: check-source
+    steps:
+      - id: open-sources
+        click: { role: button, name: Sources, exact: true }
+      - id: wait-sources-heading
+        wait: { text: Cited Sources, exact: true }
+      - id: wait-cited-document
+        wait: { text: "{{documents.placeholder_one.title}}" }
+      - id: settle-sources
+        settle: 900
+      - id: hover-cited-document
+        hover: { text: "{{documents.placeholder_one.title}}" }
+      - id: shot-sources
+        shot: sources-panel
+  - id: find-agent
+    steps:
+      - id: open-gallery
+        click: { testid: AppSidebar/more-agents }
+      - id: wait-gallery
+        wait: { testid: AgentsPage/container }
+      - id: search-agent
+        fill: { placeholder: Search agents..., value: "{{agents.helper.name}}" }
+      - id: wait-agent-card
+        wait: { selector: '.radial-00:has-text("{{agents.helper.name}}")' }
+      - id: shot-gallery
+        shot: agent-gallery
+  - id: start-chat
+    steps:
+      - id: open-agent-chat
+        goto: "/app?agentId={{agents.helper.id}}"
+      - id: wait-agent-composer
+        wait: { selector: "#onyx-chat-input-textbox" }
+      - id: wait-agent-name
+        wait: { text: "{{agents.helper.name}}" }
+      - id: shot-agent-selected
+        shot: agent-selected

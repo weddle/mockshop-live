@@ -1,0 +1,208 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-apps-custom
+title: "Craft custom app configuration, association, retained-skill delete and stale reload"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - goto: "/admin/craft/apps"
+    id: goto-admin-craft-apps
+  - wait: { "role": "button", "name": "Add app", "exact": true }
+    id: wait-add-app
+  - click: { role: button, name: Add app, exact: true }
+    id: click-add-app
+  - shot: craft-app-catalog
+    id: shot-craft-app-catalog
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { text: Create custom app, exact: true }
+    id: wait-create-custom-app
+  - shot: craft-app-custom-pristine
+    id: shot-craft-app-custom-pristine
+  - fill: { placeholder: My Custom App, value: Campus Reflection API }
+    id: fill
+  - fill: { placeholder: 'https://api.example.com/*', value: 'https://campus-reflection.example/*' }
+    id: fill-2
+  - press: Enter
+    id: press-enter
+  - fill: { placeholder: Authorization, value: Authorization }
+    id: fill-3
+  - fill: { placeholder: 'Bearer {api_key}', value: 'Bearer {learning_key}' }
+    id: fill-4
+  - shot: craft-app-custom-configured
+    id: shot-craft-app-custom-configured
+  - click: { selector: '[role="dialog"] button:has-text("Create")' }
+    id: click-role-dialog-button-has-text-create
+  - wait: { text: Add skills to Campus Reflection API, exact: true }
+    id: wait-add-skills-to-campus-reflection-api
+  - shot: craft-app-skills-step
+    id: shot-craft-app-skills-step
+  - click: { role: button, name: Associate existing, exact: true }
+    id: click-associate-existing
+  - fill: { placeholder: Search editable skills..., value: campus-study-plan }
+    id: fill-5
+  - click: { text: campus-study-plan, exact: true }
+    id: click-campus-study-plan
+  - wait: { text: 'Make “campus-study-plan” organization-wide?', exact: true }
+    id: wait-make-campus-study-plan-organization-wide
+  - shot: craft-app-association-promotion
+    id: shot-craft-app-association-promotion
+  - click: { text: Make organization-wide, exact: true }
+    id: click-make-organization-wide
+  - click: { role: button, name: Save skills, exact: true }
+    id: click-save-skills
+  - eval: |
+      (async () => {
+        const apps = await (await fetch('/api/build/admin/apps')).json();
+        const app = apps.find(a => a.name === 'Campus Reflection API');
+        if (!app?.associated_skills.some(s => s.id === 'skill-campus')) throw new Error('#65 shared association PATCH did not consume current #70 skills');
+        sessionStorage.setItem('craft-created-app', String(app.id));
+        const skills = await (await fetch('/api/skills')).json();
+        if (skills.customs.find(s => s.id === 'skill-campus')?.public_permission !== 'VIEWER') throw new Error('App association did not promote shared skill');
+      })()
+    id: eval-script-2
+  - shot: craft-app-created-and-associated
+    id: shot-craft-app-created-and-associated
+  - click: { selector: '[aria-label="Disable Campus Reflection API"]' }
+    id: click-aria-label-disable-campus-reflection-api
+  - shot: craft-app-admin-disabled
+    id: shot-craft-app-admin-disabled
+  - click: { selector: '[aria-label="Enable Campus Reflection API"]' }
+    id: click-aria-label-enable-campus-reflection-api
+  - click: { selector: '[aria-label="Campus Reflection API actions"]' }
+    id: click-aria-label-campus-reflection-api-actions
+  - click: { text: Edit, exact: true }
+    id: click-edit
+  - wait: { placeholder: My Custom App }
+    id: wait
+  - shot: craft-app-custom-edit-reopened
+    id: shot-craft-app-custom-edit-reopened
+  - fill: { placeholder: 'https://api.example.com/*', value: 'https://campus-reflection.example/resources/*' }
+    id: fill-6
+  - press: Enter
+    id: press-enter-2
+  - click: { selector: '[role="dialog"] button:has-text("Add header")' }
+    id: click-role-dialog-button-has-text-add-header
+  - fill: { selector: ':nth-match(input[placeholder="Authorization"], 2)', value: X-Workshop }
+    id: fill-nth-match-input-placeholder-authorization-2
+  - fill: { selector: ':nth-match(input[placeholder="Bearer {api_key}"], 2)', value: fictional-education }
+    id: fill-nth-match-input-placeholder-bearer-api-key-2
+  - shot: craft-app-custom-header-added
+    id: shot-craft-app-custom-header-added
+  - click: { selector: '[aria-label="Remove Authorization pair 2"]' }
+    id: click-aria-label-remove-authorization-pair-2
+  - click: { selector: '[role="dialog"] button:has-text("Add credential")' }
+    id: click-role-dialog-button-has-text-add-credential
+  - fill: { selector: '[role="dialog"] [role="group"][aria-label="Credential key and Value pairs"] input[placeholder="api_key"]', value: learning_key }
+    id: fill-role-dialog-role-group-aria-label-credential-key-and-value-
+  - fill: { placeholder: sk-…, value: mock-craft-fictional-not-a-secret }
+    id: fill-7
+  - wait: { selector: '[role="dialog"] [role="group"][aria-label="Credential key and Value pairs"] input[placeholder="api_key"][value="learning_key"]' }
+    id: wait-role-dialog-role-group-aria-label-credential-key-and-value-
+  - shot: craft-app-custom-org-credential-added
+    id: shot-craft-app-custom-org-credential-added
+  - click: { selector: '[aria-label="Remove api_key pair 1"]' }
+    id: click-aria-label-remove-api-key-pair-1
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+    id: click-role-dialog-button-has-text-cancel
+  - shot: craft-app-custom-unsaved-confirmation
+    id: shot-craft-app-custom-unsaved-confirmation
+  - click: { selector: '[role="dialog"] button:has-text("Cancel")' }
+    id: click-role-dialog-button-has-text-cancel-2
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+    id: click-role-dialog-button-has-text-save
+  - click: { selector: '[aria-label="Campus Reflection API actions"]' }
+    id: click-aria-label-campus-reflection-api-actions-2
+  - click: { text: Edit, exact: true }
+    id: click-edit-2
+  - shot: craft-app-custom-edit-saved
+    id: shot-craft-app-custom-edit-saved
+  - click: { selector: '[aria-label="Unlink campus-study-plan"]' }
+    id: click-aria-label-unlink-campus-study-plan
+  - shot: craft-app-association-unlink-confirmation
+    id: shot-craft-app-association-unlink-confirmation
+  - click: { role: button, name: Unlink, exact: true }
+    id: click-unlink
+  - shot: craft-app-association-unlinked-draft
+    id: shot-craft-app-association-unlinked-draft
+  - click: { role: button, name: Associate existing, exact: true }
+    id: click-associate-existing-2
+  - fill: { placeholder: Search editable skills..., value: campus-study-plan }
+    id: fill-8
+  - click: { text: campus-study-plan, exact: true }
+    id: click-campus-study-plan-2
+  - click: { selector: '[role="dialog"] button:has-text("Save")' }
+    id: click-role-dialog-button-has-text-save-2
+  - goto: /admin/craft/apps
+    id: goto-admin-craft-apps-2
+  - click: { selector: '[aria-label="Campus Reflection API actions"]' }
+    id: click-aria-label-campus-reflection-api-actions-3
+  - click: { text: Delete, exact: true }
+    id: click-delete
+  - shot: craft-app-delete-retained-skills-confirmation
+    id: shot-craft-app-delete-retained-skills-confirmation
+  - click: { role: button, name: Delete app, exact: true }
+    id: click-delete-app
+  - goto: /craft/v1/skills
+    id: goto-craft-v1-skills
+  - eval: |
+      (async () => {
+        const apps = await (await fetch('/api/build/admin/apps')).json();
+        const skills = await (await fetch('/api/skills')).json();
+        const retained = skills.customs.find(skill => skill.id === 'skill-campus');
+        if (apps.some(app => app.name === 'Campus Reflection API') || !retained || retained.enabled || retained.external_app) throw new Error('Shared app delete must retain, unlink and disable its custom skill');
+      })()
+    id: eval-script-3
+  - shot: craft-app-deleted-skill-retained
+    id: shot-craft-app-deleted-skill-retained
+  - goto: /craft/v1?sessionId=craft-workshop
+    id: goto-craft-v1-sessionid-craft-workshop
+  - wait: { text: Your agent’s capabilities have changed, exact: true }
+    id: wait-your-agent-s-capabilities-have-changed
+  - shot: craft-capabilities-stale
+    id: shot-craft-capabilities-stale
+  - click: { role: button, name: Reload, exact: true }
+    id: click-reload
+  - shot: craft-capabilities-reloaded
+    id: shot-craft-capabilities-reloaded
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-4
+  - goto: "/craft/v1/apps"
+    id: goto-craft-v1-apps
+  - wait: { "text": "Clinic Learning API", "exact": true }
+    id: wait-clinic-learning-api
+  - shot: "craft-unit-apps-custom-reset"
+    id: shot-craft-unit-apps-custom-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

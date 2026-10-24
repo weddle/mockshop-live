@@ -1,0 +1,6 @@
+apps:
+  onyx:
+    settings:  # sparse over the base /settings
+      ee_features_enabled: true
+      tier: "enterprise"
+      hooks_enabled: true

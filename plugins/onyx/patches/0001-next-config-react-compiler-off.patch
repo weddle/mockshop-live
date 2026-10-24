@@ -1,0 +1,12 @@
+# Mockshop build patch (rebased for v5.0.0-beta.2 trial).
+--- a/next.config.js
++++ b/next.config.js
+@@ -334,7 +334,6 @@
+           },
+         }),
+-        reactCompiler:
+-          !isDevServer || process.env.ENABLE_REACT_COMPILER === "1",
++        reactCompiler: process.env.ENABLE_REACT_COMPILER === "1", // mockshop: off to save memory
+       },
+       sentryWebpackPluginOptions
+     )

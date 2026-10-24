@@ -1,0 +1,12 @@
+node_modules/
+.toolchains/
+plugins/*/work/
+plugins/*/runtime/
+plugins/*/fixtures/.built/
+out/
+logs/
+.preserved/
+*.mp4
+mockshop.local.yaml
+# Live supervisor state (not versioned)
+STATE.md

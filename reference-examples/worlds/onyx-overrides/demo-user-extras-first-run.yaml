@@ -1,0 +1,59 @@
+apps:
+  onyx:
+    llm_providers: null  # drops the inherited providers: this variant has none
+    state:
+      user_extras:
+        options:
+          enabled: true
+          personalization:
+            name: ""
+          empty_sidebar: true
+          notifications: []
+          branding:
+            show_first_visit_notice: false
+    fixtures:
+      GET /chat/get-user-chat-sessions:
+        sessions: []
+      GET /admin/llm/built-in/options:
+        - name: openai
+          known_models: []
+          recommended_default_model: null
+        - name: anthropic
+          known_models: []
+          recommended_default_model: null
+        - name: azure
+          known_models: []
+          recommended_default_model: null
+        - name: vertex_ai
+          known_models: []
+          recommended_default_model: null
+        - name: bedrock
+          known_models: []
+          recommended_default_model: null
+        - name: openrouter
+          known_models: []
+          recommended_default_model: null
+        - name: litellm_proxy
+          known_models: []
+          recommended_default_model: null
+        - name: portkey
+          known_models: []
+          recommended_default_model: null
+        - name: vercel_ai_gateway
+          known_models: []
+          recommended_default_model: null
+        - name: nebius_tokenfactory
+          known_models: []
+          recommended_default_model: null
+        - name: bifrost
+          known_models: []
+          recommended_default_model: null
+        - name: ollama_chat
+          known_models: []
+          recommended_default_model: null
+        - name: lm_studio
+          known_models: []
+          recommended_default_model: null
+        - name: openai_compatible
+          known_models: []
+          recommended_default_model: null

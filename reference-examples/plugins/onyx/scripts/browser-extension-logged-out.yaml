@@ -1,0 +1,56 @@
+# #71 EDITONLY declaration; actual parent build/native acceptance still pending.
+# Independent existing runner seed/reset/browser; never consume predecessor unit state.
+
+# Genuine chrome-extension ancestor/origin proof remains a separately required parent supplement.
+name: browser-extension-logged-out
+title: Independent native local logged-out modal on both NRF routes using accepted #69 staging
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 1000 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/127\.0\.0\.1:[0-9]+\/api\/me$/'
+    reason: 'Only the actual #69 local logged-out GET /api/me 401 in this isolated unit; every other HTTP endpoint/status remains independently strict.'
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/127\.0\.0\.1:3328\/api\/me\]$/'
+    reason: 'Exact observed Chromium companion of staged local /api/me 401 on the assigned runtime; native login modal, untouched blank credentials and disabled submit are positively asserted on both routes. Other endpoints/statuses remain strict.'
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /nrf
+    id: goto-nrf
+  - eval: |
+      (async () => {
+        const stage = await fetch('/api/mockshop/auth-anonymous/stage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({mode:'logged-out'})});
+        if (!stage.ok) throw new Error('Accepted #69 local logged-out staging failed');
+        location.reload();
+      })()
+    id: eval-script
+  - wait: { role: dialog }
+    id: wait
+  - eval: |
+      const dialog = document.querySelector('[role="dialog"]');
+      const email = dialog?.querySelector('input[name="email"]');
+      const password = dialog?.querySelector('input[name="password"]');
+      const submit = dialog?.querySelector('button[type="submit"]');
+      if (!dialog?.innerText.includes('Welcome to Onyx') || !email || !password || email.value || password.value || !submit?.disabled || document.querySelector('[data-testid="AgentMessage/toolbar"]')) throw new Error('Logged-out native modal/protected blank login state was not preserved');
+    id: eval-script-2
+  - shot: { name: nrf-new-tab-local-login-modal, full_page: true }
+    id: shot-nrf-new-tab-local-login-modal
+  - goto: /nrf/side-panel
+    id: goto-nrf-side-panel
+  - wait: { role: dialog }
+    id: wait-2
+  - eval: |
+      const dialog = document.querySelector('[role="dialog"]');
+      const email = dialog?.querySelector('input[name="email"]');
+      const password = dialog?.querySelector('input[name="password"]');
+      const submit = dialog?.querySelector('button[type="submit"]');
+      if (!dialog?.innerText.includes('Welcome to Onyx') || !email || !password || email.value || password.value || !submit?.disabled || document.querySelector('[data-testid="AgentMessage/toolbar"]')) throw new Error('Logged-out native modal/protected blank login state was not preserved');
+    id: eval-script-3
+  - shot: { name: nrf-side-panel-local-login-modal, full_page: true }
+    id: shot-nrf-side-panel-local-login-modal
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

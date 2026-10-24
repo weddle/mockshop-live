@@ -1,0 +1,16 @@
+# Preserve selected File objects before the native input clears its mutable FileList.
+# Required native Add Files staging; exact Onyx f858083d, no upload/backend/API changes.
+--- a/src/views/admin/connectors/ConnectorDetailPage/InlineFileManagement.tsx
++++ b/src/views/admin/connectors/ConnectorDetailPage/InlineFileManagement.tsx
+@@ -68,8 +68,8 @@
+   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+-    const selectedFiles = event.target.files;
+-    if (!selectedFiles || selectedFiles.length === 0) return;
++    const selectedFiles = Array.from(event.target.files || []);
++    if (selectedFiles.length === 0) return;
+ 
+-    setFilesToAdd((prev) => [...prev, ...Array.from(selectedFiles)]);
++    setFilesToAdd((prev) => [...prev, ...selectedFiles]);
+     // Reset the input
+     if (fileInputRef.current) {
+       fileInputRef.current.value = "";

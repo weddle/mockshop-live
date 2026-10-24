@@ -1,0 +1,95 @@
+# Bring-your-own-model walkthrough. Admin: providers (OpenAI, Anthropic, on-prem Ollama) -> self-hosted group ->
+# on-prem provider modal. End user: Training & Onboarding Desk -> model picker -> on-prem Llama -> starter -> cited answer.
+# Records as a clip too (./mockshop clip onyx/byo-model-on-prem).
+name: byo-model-on-prem
+title: Bring your own model, including an on-prem one
+viewport: [ 1440, 900 ]
+clip:
+  title: { title: "Bring your own model, including on-prem", subtitle: "Onyx · {{company.name}} demo (fictional data)" }
+  title_ms: 3500
+  hold_ms: 1800
+  after_click_ms: 300
+  pre_click_ms: 160
+  end_hold_ms: 4000
+steps:
+  - goto: /admin/language-models
+    id: goto-admin-language-models
+  - shot: { name: providers, hold: 1200 }
+    id: shot-providers
+  - scroll: { text: "Self-hosted & Custom" }
+    id: scroll-self-hosted-custom
+  - settle: 600
+    id: settle
+  - shot: { name: add-provider-groups, hold: 1600 }
+    id: shot-add-provider-groups
+  - scroll: { text: Available Providers }
+    id: scroll-available-providers
+  - settle: 600
+    id: settle-2
+  - click: { role: button, name: "Edit On-prem GPU cluster" }
+    id: click-edit-on-prem-gpu-cluster
+  - wait: { text: "Self-hosted Ollama" }
+    id: wait-self-hosted-ollama
+  - settle: 800
+    id: settle-3
+  - shot: { name: onprem-provider-modal, hold: 2600 }
+    id: shot-onprem-provider-modal
+  - press: Escape
+    id: press-escape
+  - settle: 500
+    id: settle-4
+  # screenshots go through the agent gallery; the clip cuts from a title card straight to the agent's chat
+  - card: { title: "Now, as an end user", subtitle: "Users pick from the models the admin allows", ms: 2000, keep: true }
+    only: clip
+    id: card
+  - goto: /app?agentId=11
+    only: clip
+    id: goto-app-agentid-11
+  - goto: /app
+    only: shot
+    id: goto-app
+  - click: { text: More Agents }
+    only: shot
+    id: click-more-agents
+  - wait: { text: Featured Agents }
+    only: shot
+    id: wait-featured-agents
+  - click: { text: Start Chat, nth: 1 } # "Training & Onboarding Desk" card
+    only: shot
+    id: click-start-chat
+  - settle: 800
+    id: settle-5
+  - shot: { name: agent-selected, hold: 1000 }
+    id: shot-agent-selected
+  - click: { role: button, name: GPT-5.2 }
+    id: click-gpt-5-2
+  - settle: 500
+    id: settle-6
+  - shot: { name: model-picker-open, hold: 700 }
+    id: shot-model-picker-open
+  - click: { text: On-prem GPU cluster }
+    id: click-on-prem-gpu-cluster
+  - settle: 400
+    id: settle-7
+  - shot: { name: model-picker-onprem, hold: 1100 }
+    id: shot-model-picker-onprem
+  - click: { text: Llama 3.3 70B }
+    id: click-llama-3-3-70b
+  - settle: 500
+    id: settle-8
+  - shot: { name: model-switched, hold: 700 }
+    id: shot-model-switched
+  - click: { text: "What training do new front desk hires need" }
+    id: click-what-training-do-new-front-desk-hires-need
+  - wait: { testid: onyx-ai-message, timeout: 40000 }
+    id: wait
+  - settle: 1500
+    id: settle-9
+  - eval: "document.querySelector('[data-testid=chat-scroll-container]')?.scrollTo(0, 1e6)"
+    id: eval-script
+  - move: [ 1300, 380 ] # park the cursor off the answer text
+    only: clip
+    id: move
+  - shot: answer-with-citations
+    id: shot-answer-with-citations
+world: ../../../worlds/seaside/world.yaml

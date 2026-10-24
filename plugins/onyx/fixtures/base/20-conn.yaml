@@ -1,0 +1,221 @@
+# conn area routes, split from the former 00-core.yaml (base/*.yaml merge in file-name order).
+GET /manage/connector-group-restrictions:
+  enabled: false
+GET /search-settings/get-current-search-settings:
+  model_name: ""
+  model_dim: 0
+  normalize: false
+  query_prefix: ""
+  passage_prefix: ""
+  provider_type: null
+  api_key: null
+  api_url: null
+  index_name: ""
+  multipass_indexing: false
+  enable_contextual_rag: false
+  contextual_rag_model_configuration_id: null
+  multilingual_expansion: []
+  disable_rerank_for_streaming: false
+  num_rerank: 0
+  reduced_dimension: null
+  vector_quantization: ""
+  rerank_model_name: null
+  rerank_provider_type: null
+  rerank_api_key: null
+  rerank_api_url: null
+  use_port_flow: false
+GET /search-settings/get-secondary-search-settings: null
+GET /search-settings/reindex-progress:
+  total: 0
+  waiting: 0
+  in_progress: 0
+  completed: 0
+  failed: 0
+  paused: 0
+GET /search-settings/reindex-errors: []
+GET /admin/embedding/embedding-provider: []
+GET /search-settings/unstructured-api-key-set: false
+GET /manage/admin/doc-boosts: []
+GET /federated/6501:
+  id: 0
+  name: ""
+  source: ""
+  credentials: {}
+  config:
+    channel_names: ""
+  oauth_connected: false
+GET /federated/sources/federated_slack/credentials/schema:
+  credentials:
+    bot_token:
+      type: ""
+      description: ""
+      required: false
+      secret: false
+GET /federated/sources/federated_slack/configuration/schema:
+  configuration:
+    channel_names:
+      type: ""
+      description: ""
+      required: false
+      secret: false
+GET /mockshop/save-controls:
+  oauth_sources:
+    - google_drive
+    - slack
+    - zoom
+  provider_models:
+    - id: 1
+      name: gpt-5.2
+      display_name: GPT-5.2
+      is_visible: true
+      max_input_tokens: 400000
+      supports_image_input: true
+      supports_reasoning: true
+      supported_reasoning_efforts:
+        - low
+        - medium
+        - high
+      is_recommended_default: true
+      vendor: openai
+    - id: 2
+      name: gpt-5-mini
+      display_name: GPT-5 mini
+      is_visible: true
+      max_input_tokens: 400000
+      supports_image_input: true
+      supports_reasoning: true
+      supported_reasoning_efforts:
+        - low
+        - medium
+        - high
+      vendor: openai
+    - id: 3
+      name: gpt-4.1
+      display_name: GPT-4.1
+      is_visible: true
+      max_input_tokens: 1000000
+      supports_image_input: true
+      supports_reasoning: false
+      vendor: openai
+  pair:
+    status: ACTIVE
+    in_repeated_error_state: false
+    num_docs_indexed: 0
+    number_of_index_attempts: 0
+    last_index_attempt_status: null
+    latest_deletion_attempt: null
+    is_editable_for_current_user: true
+    permissions:
+      operate: true
+      edit: true
+      delete: true
+      publish: true
+    deletion_failure_message: null
+    indexing: false
+    creator: 00000000-0000-4000-8000-000000000000
+    last_indexed: null
+    last_pruned: null
+    last_full_permission_sync: null
+    overall_indexing_speed: null
+    latest_checkpoint_description: null
+    last_permission_sync_attempt_status: null
+    permission_syncing: false
+    last_permission_sync_attempt_finished: null
+    last_permission_sync_attempt_error_message: null
+    supports_targeted_reindex: false
+    groups: []
+    auto_sync_options: null
+    processing_mode: REGULAR
+    indexing_hold: null
+GET /manage/admin/cc-pair/:id/index-attempts:
+  items: []
+  total_items: 0
+GET /manage/admin/cc-pair/:id/errors:
+  items: []
+  total_items: 0
+POST /manage/admin/connector/indexing-status: []
+GET /manage/connector-status: []
+GET /manage/admin/cc-pair/:id/permission-sync-attempts:
+  applicable: false
+  items: []
+  total_items: 0
+GET /manage/admin/cc-pair/:id/external-group-sync-attempts:
+  applicable: false
+  items: []
+  total_items: 0
+GET /manage/admin/similar-credentials/google_drive: []
+GET /manage/admin/similar-credentials/slack: []
+GET /manage/admin/similar-credentials/zoom: []
+GET /manage/admin/similar-credentials/jira: []
+GET /connector/oauth/details/google_drive:
+  oauth_enabled: false
+  additional_kwargs: []
+GET /connector/oauth/details/slack:
+  oauth_enabled: false
+  additional_kwargs: []
+GET /connector/oauth/details/zoom:
+  oauth_enabled: false
+  additional_kwargs: []
+GET /connector/oauth/details/jira:
+  oauth_enabled: false
+  additional_kwargs: []
+GET /manage/admin/similar-credentials/confluence: []
+GET /connector/oauth/details/confluence:
+  oauth_enabled: false
+  additional_kwargs: []
+POST /manage/admin/connector-checks/plan:
+  checks: []
+GET /manage/admin/credential: []
+GET /federated/oauth-status: []
+POST /manage/admin/opensearch-health/popup: {}
+POST /manage/admin/credential/:id/binding-check:
+  field_errors: {}
+  rejection: null
+GET /manage/admin/connector/status: []
+GET /manage/admin/opensearch-health:
+  issues: []
+GET /federated: []
+# v5.0.0-beta.2 index monitoring (indexing status page, connector detail runs card): neutral empty feeds. The status page connector list,
+# and a pair's runs, index attempts and stage metrics when the world authors apps.onyx.cc_pairs/index_runs, are derived from the world
+# (adapter/connectors.mjs, adapter/index-runs.mjs). handlers-index-monitoring.mjs applies the query parameters and computes throughput
+# and the overview from the runs per request.
+GET /manage/admin/index-attempt/:id/stage-metrics:
+  __status: 404
+  __body:
+    detail: Index attempt not found
+GET /manage/admin/cc-pair/:id/runs:
+  items: []
+  total_items: 0
+  kinds: []
+  status_counts: {running: 0, succeeded: 0, failed: 0, canceled: 0}
+GET /manage/admin/cc-pair/:id/runs/resolvable-count:
+  count: 0
+GET /manage/admin/cc-pair/:id/throughput:
+  window_start: "{{ago:1h}}"
+  window_end: "{{ago:1m}}"
+  docs_indexed: []
+  runs: []
+GET /manage/admin/index-monitoring/runs:
+  items: []
+  total_items: 0
+  status_counts: {running: 0, succeeded: 0, failed: 0, canceled: 0}
+GET /manage/admin/index-monitoring/runs/resolvable-count:
+  count: 0
+GET /manage/admin/index-monitoring/overview:
+  indexing_connectors: 0
+  active_connectors: 0
+  recent_docs_indexed: 0
+  total_docs_indexed: 0
+  throughput:
+    window_start: "{{ago:1h}}"
+    window_end: "{{ago:1m}}"
+    docs_indexed: []
+    runs: []
+GET /manage/admin/index-monitoring/connectors:
+  items: []
+  total_items: 0
+  status_counts: {indexing: 0, failed: 0, paused: 0, scheduled: 0, indexed: 0}
+  federated_connectors: []
+GET /manage/admin/credential/capability-reports: []
+GET /manage/admin/cc-pair/:id/hierarchy-breakdown: null
+GET /manage/admin/cc-pair/:id/manage-access: []

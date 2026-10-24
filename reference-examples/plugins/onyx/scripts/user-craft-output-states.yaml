@@ -1,0 +1,129 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-output-states
+title: "Craft native starting, empty Files/Artifacts and disabled Preview"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - eval: |
+      (async () => {
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/build/user-library/directories',state:'loaded'})});
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/build/sessions/:id/webapp-info',state:'starting'})});
+      })()
+    id: eval-script-2
+  - goto: /craft/v1?sessionId=craft-workshop
+    id: goto-craft-v1-sessionid-craft-workshop
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+    id: click-ps-4-pe-4-py-3-shrink-0-button
+  - click: { role: button, name: Preview, exact: true }
+    id: click-preview
+  - wait: { "text": "Starting the dev server...", "exact": true }
+    id: wait-starting-the-dev-server
+  - shot: craft-output-preview-starting
+    id: shot-craft-output-preview-starting
+  - eval: |
+      (async () => {
+        for (const path of ['/build/sessions/:id/webapp-info','/build/sessions/:id/files','/build/sessions/:id/artifacts']) await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,state:'empty'})});
+      })()
+    id: eval-script-3
+  - goto: /craft/v1?sessionId=craft-workshop
+    id: goto-craft-v1-sessionid-craft-workshop-2
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft--demo-user-craft-no-provider.yaml
+      overlays:
+        - edition-enterprise
+  # No visible supported model prevents native auto-preprovisioning; FilesTab then has no session.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Native no-session provider prerequisite failed');
+      })()
+    id: eval-script-4
+  - goto: /craft/v1
+    id: goto-craft-v1
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+    id: click-ps-4-pe-4-py-3-shrink-0-button-2
+  - click: { role: button, name: Files, exact: true }
+    id: click-files
+  - wait: { "text": "No files yet", "exact": true }
+    id: wait-no-files-yet
+  - shot: craft-output-files-empty
+    id: shot-craft-output-files-empty
+  # Preserve the staged real saved-session empty-directory state separately.
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Ordinary Craft provider restore failed');
+        for (const path of ['/build/sessions/:id/webapp-info','/build/sessions/:id/files','/build/sessions/:id/artifacts']) await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,state:'empty'})});
+      })()
+    id: eval-script-5
+  - goto: /craft/v1?sessionId=craft-workshop
+    id: goto-craft-v1-sessionid-craft-workshop-3
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+    id: click-ps-4-pe-4-py-3-shrink-0-button-3
+  - click: { role: button, name: Files, exact: true }
+    id: click-files-2
+  - wait: { text: No files in this directory, exact: true }
+    id: wait-no-files-in-this-directory
+  - shot: craft-output-saved-directory-empty
+    id: shot-craft-output-saved-directory-empty
+  - click: { role: button, name: Artifacts, exact: true }
+    id: click-artifacts
+  - wait: { "text": "No artifacts yet", "exact": true }
+    id: wait-no-artifacts-yet
+  - wait: { "selector": "button[aria-disabled=\"true\"]:has-text(\"Preview\")" }
+    id: wait-button-aria-disabled-true-has-text-preview
+  - shot: craft-output-artifacts-empty-preview-disabled
+    id: shot-craft-output-artifacts-empty-preview-disabled
+  - eval: |
+      (async () => {
+        for (const path of ['/build/sessions/:id/webapp-info','/build/sessions/:id/files','/build/sessions/:id/artifacts']) await fetch('/api/mockshop/user-craft/stage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,state:'loaded'})});
+      })()
+    id: eval-script-6
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-7
+  - goto: "/craft/v1?sessionId=craft-workshop"
+    id: goto-craft-v1-sessionid-craft-workshop-4
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+    id: click-ps-4-pe-4-py-3-shrink-0-button-4
+  - wait: { "role": "button", "name": "Files", "exact": true }
+    id: wait-files
+  - shot: "craft-unit-output-states-reset"
+    id: shot-craft-unit-output-states-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

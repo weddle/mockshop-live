@@ -1,0 +1,79 @@
+# #65 route-sized native proof: SCIM.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-scim
+title: SCIM - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/scim
+    id: goto-admin-scim
+  - shot: inventory-scim
+    id: shot-inventory-scim
+  - goto: /admin/hooks
+    id: goto-admin-hooks
+  - click: { selector: 'a[href="/admin/scim"]' }
+    id: click-a-href-admin-scim
+  - wait: { text: Generate SCIM Token, exact: true }
+    id: wait-generate-scim-token
+  - shot: scim-menu-empty
+    id: shot-scim-menu-empty
+  - goto: /admin/scim
+    id: goto-admin-scim-2
+  - click: { role: button, name: Generate SCIM Token, exact: true }
+    id: click-generate-scim-token
+  - wait: { text: SCIM Token, exact: true }
+    id: wait-scim-token
+  - shot: scim-created-token-dialog
+    id: shot-scim-created-token-dialog
+  - press: Escape
+    id: press-escape
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/scim
+    id: goto-admin-scim-3
+  - wait: { text: Waiting for Connection, exact: true }
+    id: wait-waiting-for-connection
+  - shot: scim-persisted
+    id: shot-scim-persisted
+  - click: { role: button, name: Regenerate Token, exact: true }
+    id: click-regenerate-token
+  - wait: { role: dialog }
+    id: wait
+  - shot: scim-regenerate-confirm
+    id: shot-scim-regenerate-confirm
+  - click: { selector: '[role="dialog"] button:has-text("Regenerate Token")' }
+    id: click-role-dialog-button-has-text-regenerate-token
+  - wait: { text: SCIM Token, exact: true }
+    id: wait-scim-token-2
+  - shot: scim-regenerated-token-dialog
+    id: shot-scim-regenerated-token-dialog
+  - press: Escape
+    id: press-escape-2
+  - goto: /admin/voice
+    id: goto-admin-voice-2
+  - goto: /admin/scim
+    id: goto-admin-scim-4
+  - shot: scim-regenerated-persisted
+    id: shot-scim-regenerated-persisted
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+      })()
+    id: eval-script
+  - goto: /admin/scim
+    id: goto-admin-scim-5
+  - wait: { text: Generate SCIM Token, exact: true }
+    id: wait-generate-scim-token-2
+  - shot: reset-scim-seed
+    id: shot-reset-scim-seed
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

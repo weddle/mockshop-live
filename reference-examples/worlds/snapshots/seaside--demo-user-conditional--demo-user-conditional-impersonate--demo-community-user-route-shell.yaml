@@ -1,0 +1,5 @@
+includes:
+  - ../seaside/world.yaml
+  - ../onyx-overrides/demo-user-conditional.yaml
+  - ../onyx-overrides/demo-user-conditional-impersonate.yaml
+  - ../onyx-overrides/demo-community-user-route-shell.yaml

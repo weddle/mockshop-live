@@ -1,0 +1,67 @@
+# Neutral content, shared unchanged by every plugin.
+company:
+  name: Example Org
+  domain: example.test
+people:
+  owner: {name: Owner User, email: "owner@{{company.domain}}", title: Program Director}
+  admin: {name: Admin User, email: "admin@{{company.domain}}", title: IT Administrator}
+  adminTwo: {name: Second Admin, email: "adminTwo@{{company.domain}}", title: Learning Coordinator}
+  member: {name: Member User, email: "member@{{company.domain}}", title: Training Coordinator}
+  memberTwo: {name: Second Member, email: "memberTwo@{{company.domain}}", title: Program Manager}
+  memberThree: {name: Third Member, email: "memberThree@{{company.domain}}", title: Research Coordinator}
+  guest: {name: Guest User, email: "guest@{{company.domain}}", title: Library Assistant}
+  guestTwo: {name: Second Guest, email: "guestTwo@{{company.domain}}", title: Library Assistant}
+  sample: {name: Sample User, email: "sample@{{company.domain}}"}
+teams:
+  placeholder:
+    name: Placeholder Team
+    description: A shared planning team.
+    members: [member, admin, owner]
+sources:
+  knowledge:
+    name: Shared knowledge
+    vendor: file
+    url: "https://{{company.domain}}"
+documents:
+  placeholder_one:
+    source: knowledge
+    title: Placeholder Document A
+    summary: The shared planning notes describe the next review and its owners.
+    body: Review the plan together and record the agreed next actions.
+    url: "https://{{company.domain}}/documents/placeholder-one"
+    author: member
+  placeholder_two:
+    source: knowledge
+    title: Placeholder Document B
+    summary: The status update records decisions and remaining actions.
+    body: Keep the current status and the assigned owners in one place.
+    url: "https://{{company.domain}}/documents/placeholder-two"
+    author: admin
+  placeholder_three:
+    source: knowledge
+    title: Placeholder Document C
+    summary: The reference guide explains the current process.
+    body: Use this guide when preparing the next team review.
+    url: "https://{{company.domain}}/documents/placeholder-three"
+    author: owner
+  planning_meeting:
+    source: knowledge
+    title: Placeholder Planning Meeting
+    summary: The team reviewed the plan and assigned the next actions.
+    body: Review the plan, confirm the owners, and share a short follow-up.
+    url: "https://{{company.domain}}/meetings/planning"
+    author: member
+vars:
+  account_id: ExampleAccount00000000
+  asset_origin: https://art.example.test
+  nativeTemplates: {open: "{{", close: "}}"}
+  cast:
+    owner: {id: ExampleOwner00000000demo}
+    admin: {id: ExampleAdmin00000000demo}
+    adminTwo: {id: ExampleAdminTwo00000demo}
+    member: {id: ExampleMember0000000demo}
+    memberTwo: {id: ExampleMemberTwo0000demo}
+    memberThree: {id: ExampleMemberThree00demo}
+    guest: {id: ExampleGuest00000000demo}
+    guestTwo: {id: ExampleGuestTwo00000demo}
+    sample: {id: ExampleSample0000000demo}

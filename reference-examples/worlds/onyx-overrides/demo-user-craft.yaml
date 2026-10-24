@@ -1,0 +1,133 @@
+apps:
+  onyx:
+    settings:  # sparse over the base /settings
+      ee_features_enabled: true
+      tier: "enterprise"
+      craft_default_enabled: true
+      craft_instructions: "Use fictional education and healthcare teaching examples only."
+      onyx_craft_enabled: true
+      onyx_craft_available: true
+    fixtures:
+      GET /me:
+        id: 8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11
+        email: "{{people.learning-coordinator.email}}"
+        is_active: true
+        is_superuser: true
+        is_verified: true
+        role: admin
+        account_type: STANDARD
+        is_admin: true
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - admin
+          - basic
+        admin_capabilities:
+          - admin
+        craft_enabled: true
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 11
+            - 12
+          default_model: null
+          recent_assistants:
+            - 0
+            - 11
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: "{{people.maya.name}}"
+          role: Fictional education coordinator
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+      GET /build/admin/apps:
+        - id: 7001
+          name: Clinic Learning API
+          app_type: CUSTOM
+          enabled: true
+          credential_placeholder_keys:
+            - learning_key
+          upstream_url_patterns:
+            - https://learning-api.example/*
+          auth_template:
+            Authorization: Bearer {learning_key}
+          organization_credentials: {}
+          actions: []
+          associated_skills:
+            - id: skill-clinic
+              name: clinic-education
+              description: Fictional clinic education handouts.
+              is_available: true
+              is_valid: true
+              unavailable_reason: null
+              public_permission: VIEWER
+          is_onyx_managed: false
+        - id: 7002
+          name: Campus GitHub (fictional receipt)
+          app_type: GITHUB
+          enabled: true
+          credential_placeholder_keys:
+            - workshop_token
+          upstream_url_patterns:
+            - https://workshop.example/github/*
+          auth_template:
+            Authorization: Bearer {workshop_token}
+          organization_credentials: {}
+          actions:
+            - action_id: read_notes
+              normalised_name: Read workshop notes (fake)
+              description: Read fictional teaching notes only.
+              state: ASK
+          associated_skills: []
+          is_onyx_managed: false
+        - id: 7003
+          name: Classroom Resources (managed fiction)
+          app_type: NOTION
+          enabled: true
+          credential_placeholder_keys: []
+          upstream_url_patterns: []
+          auth_template: {}
+          organization_credentials: {}
+          actions:
+            - action_id: read_notes
+              normalised_name: Read workshop notes (fake)
+              description: Fictional managed-app action policy only.
+              state: ASK
+          associated_skills: []
+          is_onyx_managed: true
+    viewer: maya
+    people:
+      maya:
+        id: 8f1c2c1e-5a0b-4b8e-9d3e-2f7a1c0d5e11
+    state:
+      browser:
+        local_storage:   # the Craft welcome flow is already dismissed for the viewer
+          - key: "onyx:craftOnboardingSeen:{{people.maya.id}}"
+            value: "true"
+people:
+  maya:
+    name: Maya Learning
+    email: "{{people.learning-coordinator.email}}"
+    title: Fictional education coordinator

@@ -1,0 +1,35 @@
+# The same new-hire training question as user-ask-with-citations, asked by Lena Brooks (Property Operations).
+# Her answer is shorter and cites only the operations sources she can see. Scripted illustration: Onyx enforces access
+# in the backend at query time (Mockshop doesn't run that), so don't present this as proof.
+name: user-permission-aware
+title: Same question, a {{teams.property-operations.name}} user
+viewport: [ 1440, 900 ]
+clip:
+  title: { title: "Same question, different person", subtitle: "Onyx · {{company.name}} demo (fictional data)" }
+steps:
+  - goto: /app
+    id: goto-app
+  - shot: chat-home
+    id: shot-chat-home
+  - click: { selector: "#onyx-chat-input-textbox" }
+    id: click-onyx-chat-input-textbox
+  - type: { selector: "#onyx-chat-input-textbox", value: "What training do new front desk hires need in their first 30 days, and who is behind on it?" }
+    id: type-onyx-chat-input-textbox
+  - click: { selector: "#onyx-chat-input-send-button" }
+    id: click-onyx-chat-input-send-button
+  - wait: { testid: onyx-ai-message, timeout: 30000 }
+    id: wait
+  - settle: 1500
+    id: settle
+  - shot: answer-ops-sources
+    id: shot-answer-ops-sources
+  - click: { role: button, name: Sources }
+    id: click-sources
+  - settle: 800
+    id: settle-2
+  - shot: sources-panel
+    id: shot-sources-panel
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-property-ops-user.yaml

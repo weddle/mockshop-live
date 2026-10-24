@@ -1,0 +1,1101 @@
+# Neutral Onyx platform defaults. Fictional content is explicit in worlds/.
+GET /mockshop/user-conditional/content:
+  label: ""
+  callback_state: ""
+  demo_key: ""
+  impersonate_email: ""
+  old_demo_input: ""
+  new_demo_input: ""
+  form_delay_ms: 0
+  messages:
+    callback_invalid: ""
+    consent_unavailable: ""
+    consent_failed: ""
+    impersonate_failed: ""
+    password_failed: ""
+  callbacks:
+    federated:
+      receipt:
+        source: ""
+        redirect_url: ""
+      cases:
+        mock-only-success:
+          status: 0
+          delay_ms: 0
+        mock-only-validation:
+          status: 0
+          body:
+            detail: ""
+        mock-only-client-secret:
+          status: 0
+          body:
+            detail: ""
+        mock-only-oauth:
+          status: 0
+          body:
+            detail: ""
+        mock-only-generic:
+          status: 0
+          body:
+            detail: ""
+    oauth-config:
+      receipt:
+        service_name: ""
+        redirect_url: ""
+      cases:
+        mock-only-success:
+          status: 0
+          delay_ms: 0
+        mock-only-generic:
+          status: 0
+          body:
+            error: ""
+    mcp/oauth:
+      receipt:
+        success: false
+        server_id: 0
+        server_name: ""
+        message: ""
+        redirect_url: ""
+      cases:
+        mock-only-success:
+          status: 0
+          delay_ms: 0
+        mock-only-state:
+          status: 0
+          body:
+            detail: ""
+        mock-only-timeout:
+          status: 0
+          body:
+            detail: ""
+        mock-only-exchange:
+          status: 0
+          body:
+            detail: ""
+        mock-only-server:
+          status: 0
+          body:
+            detail: ""
+        mock-only-generic:
+          status: 0
+          body:
+            detail: ""
+  consent:
+    return_path: ""
+    info:
+      client_name: ""
+      redirect_origin: ""
+      account_email: ""
+      workspace_name: ""
+      scopes: []
+      csrf_token: ""
+    requests:
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:
+        status: 0
+        delay_ms: 0
+        submit_delay_ms: 0
+      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB:
+        status: 0
+        submit_delay_ms: 0
+      CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC:
+        status: 0
+        submit_failure: false
+      DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD:
+        status: 0
+      EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:
+        status: 0
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF:
+        status: 0
+      GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG:
+        status: 0
+        retry_once: false
+GET /manage/admin/user-group: []
+GET /manage/user-groups/minimal: []
+GET /manage/users:
+  accepted: []
+  invited: []
+  slack_users: []
+  accepted_pages: 0
+  invited_pages: 0
+  slack_users_pages: 0
+GET /user/projects: []
+GET /mockshop/browser-extension/seed:
+  active_tab: ""
+  tabs:
+    education:
+      title: ""
+      url: ""
+      content: ""
+    healthcare:
+      title: ""
+      url: ""
+      content: ""
+  script:
+    match: (?!)
+    title: ""
+    chunk_delay_ms: 0
+    answer: ""
+    disabled_answer: ""
+    regenerate: []
+    error:
+      error: ""
+      stack_trace: ""
+      error_code: ""
+      is_retryable: false
+GET /admin/web-search/search-providers: []
+GET /admin/web-search/content-providers: []
+GET /admin/image-generation/config: []
+GET /admin/voice/providers: []
+GET /admin/voice/voices: []
+GET /admin/tracing/providers: []
+GET /admin/code-interpreter:
+  enabled: false
+GET /admin/code-interpreter/health:
+  connected: false
+  error: ""
+GET /admin/default-assistant/configuration:
+  tool_ids: []
+  system_prompt: null
+  default_system_prompt: ""
+GET /admin/security:
+  user_directory_admin_only: false
+  incognito_availability: ""
+  incognito_record_mode: ""
+  allow_connector_group_restrictions: false
+  track_external_idp_expiry: false
+  allow_same_provider_subject_relink: false
+  ssrf_protection_level: ""
+  mask_credential_prefix: false
+  llm_custom_config_env_injection: false
+  valid_email_domains: []
+  password_min_length: 0
+  password_max_length: 0
+  password_require_uppercase: false
+  password_require_lowercase: false
+  password_require_digit: false
+  password_require_special_char: false
+  password_auth_enabled: false
+  jwt_public_key_url: null
+  jwt_expected_audience: null
+  jwt_expected_issuer: null
+GET /admin/security/pinned-fields: []
+GET /admin/sso/provider: []
+GET /admin/sso/provider-type: []
+GET /admin/sso/domain:
+  domains: []
+GET /admin/api-key: []
+GET /admin/enterprise-settings/scim/token: null
+GET /manage/admin/slack-app/bots: []
+GET /manage/admin/slack-app/channel: []
+GET /manage/admin/discord-bot/config:
+  configured: false
+  created_at: ""
+GET /manage/admin/discord-bot/guilds: []
+GET /manage/admin/discord-bot/guilds/6501/channels: []
+GET /admin/hooks: []
+GET /admin/hooks/specs: []
+GET /manage/admin/standard-answer/category: []
+GET /manage/admin/standard-answer: []
+GET /analytics/admin/query: []
+GET /analytics/admin/user: []
+GET /analytics/admin/onyxbot: []
+GET /analytics/admin/persona/messages: []
+GET /analytics/admin/persona/unique-users: []
+GET /admin/usage-report: []
+GET /admin/usage/export:
+  start: ""
+  end: ""
+  users: []
+GET /admin/usage/system:
+  start: ""
+  end: ""
+  categories: []
+GET /admin/chat-session-history:
+  items: []
+  total_items: 0
+GET /admin/chat-session-history/6501:
+  id: 0
+  user_email: ""
+  name: ""
+  assistant_id: 0
+  assistant_name: ""
+  time_created: ""
+  flow_type: ""
+  messages: []
+GET /admin/query-history/list: []
+GET /admin/banner: null
+GET /admin/oauth-test/claims:
+  found: false
+  email: ""
+  captured_at: null
+  oauth_name: null
+  id_token_claims: null
+  userinfo: null
+  directory_profile: null
+  directory_source: null
+  resolved_profile: null
+  enrichment_enabled: false
+  token_meta: null
+GET /mockshop/admin-pages/documents: []
+GET /mockshop/admin-pages/defaults:
+  fake_secret: mock-only-not-a-secret
+  checkout_feedback_delay_ms: 2500
+  settings: {}
+  billing_tiers: {}
+  api_key_display: mock-only-demo-key
+  scim_name: Directory
+  hook_creator: viewer@workspace.example
+  export_csv: |
+    date,activity,count
+GET /admin/token-rate-limits/global: []
+GET /admin/token-rate-limits/users: []
+GET /mockshop/admin-pages/billing-snapshots:
+  none:
+    subscribed: false
+  active:
+    tenant_id: ""
+    status: ""
+    plan_type: null
+    seats: 0
+    billing_period: ""
+    current_period_start: ""
+    current_period_end: ""
+    cancel_at_period_end: false
+    canceled_at: null
+    trial_start: null
+    trial_end: null
+    payment_method_enabled: false
+  trialing:
+    tenant_id: ""
+    status: ""
+    plan_type: null
+    seats: 0
+    billing_period: ""
+    current_period_start: ""
+    current_period_end: ""
+    cancel_at_period_end: false
+    canceled_at: null
+    trial_start: ""
+    trial_end: ""
+    payment_method_enabled: false
+  canceling:
+    tenant_id: ""
+    status: ""
+    plan_type: null
+    seats: 0
+    billing_period: ""
+    current_period_start: ""
+    current_period_end: ""
+    cancel_at_period_end: false
+    canceled_at: ""
+    trial_start: null
+    trial_end: null
+    payment_method_enabled: false
+  expired:
+    tenant_id: ""
+    status: ""
+    plan_type: null
+    seats: 0
+    billing_period: ""
+    current_period_start: ""
+    current_period_end: ""
+    cancel_at_period_end: false
+    canceled_at: ""
+    trial_start: null
+    trial_end: null
+    payment_method_enabled: false
+GET /mockshop/admin-groups/seeds:
+  groups: []
+  connectors: []
+  resource_permissions:
+    manage: false
+    manage_members: false
+    delete: false
+    edit_permissions: false
+    edit_token_limits: false
+  create_defaults:
+    manager_ids: []
+    cc_pairs: []
+    document_sets: []
+    personas: []
+    is_up_to_date: false
+    is_up_for_deletion: false
+    is_default: false
+    incognito_enabled: false
+GET /manage/admin/permissions/registry:
+  - id: manage_llms
+    display_name: Manage Language Models
+    description: Configure fictional model settings.
+    permissions:
+      - manage:llms
+    group: 1
+  - id: manage_connectors_and_document_sets
+    display_name: Manage Connectors and Document Sets
+    description: Organize fictional learning and operations resources.
+    permissions:
+      - manage:connectors
+      - manage:document_sets
+    group: 1
+  - id: manage_actions
+    display_name: Manage Actions
+    description: Configure fictional actions.
+    permissions:
+      - manage:actions
+    group: 1
+  - id: manage_groups
+    display_name: Manage Groups
+    description: Organize fictional group records.
+    permissions:
+      - manage:user_groups
+    group: 1
+  - id: manage_service_accounts
+    display_name: Manage Service Accounts
+    description: Configure fictional service account records.
+    permissions:
+      - manage:service_account_api_keys
+    group: 1
+  - id: manage_bots
+    display_name: Manage Bots
+    description: Configure fictional bot records.
+    permissions:
+      - manage:bots
+    group: 1
+  - id: create_agents
+    display_name: Create Agents
+    description: Create fictional workshop agents.
+    permissions:
+      - add:agents
+    group: 2
+  - id: manage_agents
+    display_name: Manage Agents
+    description: Edit fictional agent records.
+    permissions:
+      - manage:agents
+    group: 2
+  - id: view_agent_analytics
+    display_name: View Agent Analytics
+    description: View fictional usage summaries.
+    permissions:
+      - read:agent_analytics
+    group: 2
+  - id: view_query_history
+    display_name: View Query History
+    description: View fictional query history.
+    permissions:
+      - read:query_history
+    group: 2
+  - id: create_user_access_token
+    display_name: Create User Access Tokens
+    description: Create nonfunctional demo access tokens.
+    permissions:
+      - create:user_api_keys
+    group: 2
+GET /persona:
+  - search_start_date: null
+    user_shares: []
+    group_shares: []
+    public_permission: VIEWER
+    sharing_status: SHARED
+    admin_count: 1
+    ownership_vacant: false
+    hierarchy_nodes: []
+    attached_documents: []
+    id: 0
+    name: Assistant
+    description: Your assistant for the connected workspace.
+    tools:
+      - id: 1
+        name: internal_search
+        display_name: Internal Search
+        description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+        definition: null
+        custom_headers: []
+        in_code_tool_id: SearchTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: true
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+      - id: 2
+        name: web_search
+        display_name: Web Search
+        description: Search the public web.
+        definition: null
+        custom_headers: []
+        in_code_tool_id: WebSearchTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: true
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+      - id: 3
+        name: image_generation
+        display_name: Image Generation
+        description: Generate images from a text prompt.
+        definition: null
+        custom_headers: []
+        in_code_tool_id: ImageGenerationTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: false
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+      - id: 4
+        name: python
+        display_name: Code Interpreter
+        description: Run Python to analyze data and build charts.
+        definition: null
+        custom_headers: []
+        in_code_tool_id: PythonTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: false
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+    starter_messages: null
+    document_sets: []
+    knowledge_sources: []
+    is_public: true
+    is_listed: true
+    display_priority: 0
+    is_featured: true
+    builtin_persona: true
+    labels: []
+    owner: null
+    permissions:
+      edit: true
+      share: true
+      view_stats: true
+      delete: true
+      publish: true
+      feature: true
+      list: true
+      reorder: true
+    owner_group: null
+    user_permission: OWNER
+    icon_name: null
+    user_file_ids: []
+    users: []
+    groups: []
+    system_prompt: null
+    replace_base_system_prompt: false
+    task_prompt: null
+    datetime_aware: true
+GET /persona/labels: []
+GET /admin/agents:
+  items:
+    - search_start_date: null
+      user_shares: []
+      group_shares: []
+      public_permission: VIEWER
+      sharing_status: SHARED
+      admin_count: 1
+      ownership_vacant: false
+      hierarchy_nodes: []
+      attached_documents: []
+      id: 0
+      name: Assistant
+      description: Your assistant for the connected workspace.
+      tools:
+        - id: 1
+          name: internal_search
+          display_name: Internal Search
+          description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+          definition: null
+          custom_headers: []
+          in_code_tool_id: SearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 2
+          name: web_search
+          display_name: Web Search
+          description: Search the public web.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: WebSearchTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: true
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 3
+          name: image_generation
+          display_name: Image Generation
+          description: Generate images from a text prompt.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: ImageGenerationTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+        - id: 4
+          name: python
+          display_name: Code Interpreter
+          description: Run Python to analyze data and build charts.
+          definition: null
+          custom_headers: []
+          in_code_tool_id: PythonTool
+          passthrough_auth: false
+          enabled: true
+          chat_selectable: true
+          agent_creation_selectable: true
+          default_enabled: false
+          permissions:
+            edit: true
+            delete: false
+            toggle: true
+            authenticate: false
+      starter_messages: null
+      document_sets: []
+      knowledge_sources: []
+      is_public: true
+      is_listed: true
+      display_priority: 0
+      is_featured: true
+      builtin_persona: true
+      labels: []
+      owner: null
+      permissions:
+        edit: true
+        share: true
+        view_stats: true
+        delete: true
+        publish: true
+        feature: true
+        list: true
+        reorder: true
+      owner_group: null
+      user_permission: OWNER
+      icon_name: null
+      user_file_ids: []
+      users: []
+      groups: []
+      system_prompt: null
+      replace_base_system_prompt: false
+      task_prompt: null
+      datetime_aware: true
+  total_items: 1
+GET /admin/persona:
+  - search_start_date: null
+    user_shares: []
+    group_shares: []
+    public_permission: VIEWER
+    sharing_status: SHARED
+    admin_count: 1
+    ownership_vacant: false
+    hierarchy_nodes: []
+    attached_documents: []
+    id: 0
+    name: Assistant
+    description: Your assistant for the connected workspace.
+    tools:
+      - id: 1
+        name: internal_search
+        display_name: Internal Search
+        description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+        definition: null
+        custom_headers: []
+        in_code_tool_id: SearchTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: true
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+      - id: 2
+        name: web_search
+        display_name: Web Search
+        description: Search the public web.
+        definition: null
+        custom_headers: []
+        in_code_tool_id: WebSearchTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: true
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+      - id: 3
+        name: image_generation
+        display_name: Image Generation
+        description: Generate images from a text prompt.
+        definition: null
+        custom_headers: []
+        in_code_tool_id: ImageGenerationTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: false
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+      - id: 4
+        name: python
+        display_name: Code Interpreter
+        description: Run Python to analyze data and build charts.
+        definition: null
+        custom_headers: []
+        in_code_tool_id: PythonTool
+        passthrough_auth: false
+        enabled: true
+        chat_selectable: true
+        agent_creation_selectable: true
+        default_enabled: false
+        permissions:
+          edit: true
+          delete: false
+          toggle: true
+          authenticate: false
+    starter_messages: null
+    document_sets: []
+    knowledge_sources: []
+    is_public: true
+    is_listed: true
+    display_priority: 0
+    is_featured: true
+    builtin_persona: true
+    labels: []
+    owner: null
+    permissions:
+      edit: true
+      share: true
+      view_stats: true
+      delete: true
+      publish: true
+      feature: true
+      list: true
+      reorder: true
+    owner_group: null
+    user_permission: OWNER
+    icon_name: null
+    user_file_ids: []
+    users: []
+    groups: []
+    system_prompt: null
+    replace_base_system_prompt: false
+    task_prompt: null
+    datetime_aware: true
+GET /user/pinned-assistants:
+  - 0
+GET /manage/document-set: []
+GET /mockshop/user-files:
+  upload_delay_ms: 0
+  processing_delay_ms: 0
+  delete_delay_ms: 0
+  preview_delay_ms: 0
+  rejection_reason: ""
+  answer_title: ""
+  answer_intro: ""
+  seed_ids: []
+  catalog: []
+GET /me:
+  id: 00000000-0000-4000-8000-000000000000
+  email: viewer@workspace.example
+  is_active: true
+  is_superuser: true
+  is_verified: true
+  role: admin
+  account_type: STANDARD
+  is_admin: true
+  is_group_manager: false
+  password_configured: true
+  team_name: null
+  is_anonymous_user: false
+  is_cloud_superuser: false
+  tenant_info: null
+  effective_permissions:
+    - admin
+    - basic
+  admin_capabilities:
+    - admin
+  craft_enabled: false
+  preferences:
+    chosen_assistants: null
+    visible_assistants: []
+    hidden_assistants: []
+    pinned_assistants:
+      - 0
+    default_model: null
+    recent_assistants:
+      - 0
+    auto_scroll: false
+    shortcut_enabled: false
+    temperature_override_enabled: false
+    temperature_default: null
+    reasoning_effort_default: null
+    theme_preference: light
+    language: en
+    chat_background: null
+    default_app_mode: CHAT
+    paste_as_tile: true
+    voice_auto_send: false
+    voice_auto_playback: false
+    voice_playback_speed: 1
+  personalization:
+    name: Workspace viewer
+    role: ""
+    memories: []
+    use_memories: true
+    enable_memory_tool: true
+    user_preferences: ""
+  oidc_expiry: null
+GET /auth/type:
+  auth_type: basic
+  multi_tenant: false
+  requires_verification: false
+  anonymous_user_enabled: false
+  password_min_length: 8
+  password_max_length: 64
+  password_require_uppercase: false
+  password_require_lowercase: false
+  password_require_digit: false
+  password_require_special_char: false
+  has_users: true
+  oauth_enabled: false
+  password_auth_enabled: true
+  sso_providers: []
+GET /notifications: []
+GET /notifications/summary:
+  unread_count: 0
+  max_severity: null
+GET /chat/incognito-availability:
+  available: true
+GET /user/files/recent: []
+GET /input_prompt: []
+GET /tenants/anonymous-user: {}
+GET /user/usage:
+  per_day_by_model: []
+  window_cost_cents: 0
+  budget_cents: 0
+  budget_remaining_cents: 0
+  budget_period_hours: 0
+  budget_reset_at: ""
+  selected_model_price:
+    model: ""
+    provider: ""
+    input_per_mtok: 0
+    output_per_mtok: 0
+    cache_per_mtok: 0
+  available_model_prices: []
+GET /voice/status:
+  tts_enabled: false
+  stt_enabled: false
+POST /auth/refresh: {}
+GET /admin/billing/billing-information:
+  subscribed: false
+GET /tenants/billing-information:
+  subscribed: false
+GET /chat/get-user-chat-sessions:
+  has_more: false
+  sessions: []
+GET /chat/max-selected-document-tokens:
+  max_tokens: 0
+GET /chat/available-context-tokens/:id:
+  available_tokens: 0
+GET /query/valid-tags:
+  tags: []
+GET /user/projects/session/:id/files: []
+GET /users: []
+GET /manage/users/accepted/all: []
+GET /manage/users/invited: []
+GET /tenants/users/pending: []
+GET /manage/users/counts:
+  account_type_counts:
+    STANDARD: 0
+    BOT: 0
+    EXT_PERM_USER: 0
+    SERVICE_ACCOUNT: 0
+  status_counts:
+    active: 0
+    inactive: 0
+GET /manage/users/mock-feedback:
+  simulated: false
+  invite_message: ""
+  reset_password: ""
+GET /mockshop/auth-anonymous/content:
+  label: ""
+  email: ""
+  join_email: ""
+  error_email: ""
+  name: ""
+  guest_name: ""
+  team: ""
+  demo_input: ""
+  verify_token: ""
+  reset_token: ""
+  anonymous_path: ""
+  upload_name: ""
+  upload_text: ""
+  authorize_delay_ms: 0
+  auth_profiles:
+    mixed:
+      multi_tenant: false
+      password_auth_enabled: false
+      sso_providers: []
+    sso-only:
+      multi_tenant: false
+      password_auth_enabled: false
+      sso_providers: []
+    auto-sso:
+      multi_tenant: false
+      password_auth_enabled: false
+      sso_providers: []
+    first-user:
+      multi_tenant: false
+      has_users: false
+    multitenant:
+      multi_tenant: false
+      password_auth_enabled: false
+      sso_providers: []
+  messages:
+    login_error: ""
+    register_error: ""
+    email_error: ""
+    verify_error: ""
+    reset_error: ""
+    password_error: ""
+    authorize_error: ""
+    discovery_error: ""
+    verify_subject: ""
+    reset_subject: ""
+GET /user/pats: []
+GET /user/pats/scopes: []
+GET /oauth-provider/grants: []
+GET /user-oauth-token/status: []
+GET /mockshop/user-search-seed:
+  chat_query_match: (?!)
+  search_delay_ms: 0
+  chat_title: Search results
+  auto_search_match: (?!)
+  empty_query_match: (?!)
+  error_query_match: (?!)
+  error_text: Search unavailable
+  answer_intro: Connected workspace documents.
+  empty_answer: No documents match these filters.
+  tags: []
+  documents: []
+GET /mockshop/user-extras:
+  avatar_png_base64: ""
+  branding:
+    application_name: ""
+    use_custom_logo: false
+    use_custom_logotype: false
+    logo_display_style: ""
+    custom_nav_items: []
+    custom_lower_disclaimer_content: ""
+    custom_header_content: ""
+    two_lines_for_chat_header: false
+    custom_popup_header: ""
+    custom_popup_content: ""
+    enable_consent_screen: false
+    consent_screen_prompt: ""
+    show_first_visit_notice: false
+    custom_greeting_message: ""
+    custom_login_subtitle: ""
+    custom_help_link_url: ""
+    custom_help_link_label: ""
+  notifications: []
+  agent_defaults:
+    "11":
+      name: ""
+      description: ""
+      system_prompt: ""
+      starter_messages: []
+      is_public: false
+      is_listed: false
+      owner_group: null
+      users: []
+      user_shares: []
+      groups: []
+      group_shares: []
+      sharing_status: ""
+      public_permission: ""
+    "12":
+      name: ""
+      description: ""
+      system_prompt: ""
+      is_public: false
+      is_listed: false
+      owner: null
+      owner_group:
+        id: 0
+        name: ""
+      users: []
+      user_shares: []
+      groups: []
+      group_shares: []
+      sharing_status: ""
+      public_permission: ""
+  daily_stats:
+    "11": []
+    "12": []
+GET /mockshop/sharing-feedback/seeds:
+  errors:
+    share: ""
+    private: ""
+    feedback: ""
+    remove: ""
+  sessions: []
+GET /persona/0:
+  search_start_date: null
+  user_shares: []
+  group_shares: []
+  public_permission: VIEWER
+  sharing_status: SHARED
+  admin_count: 1
+  ownership_vacant: false
+  hierarchy_nodes: []
+  attached_documents: []
+  id: 0
+  name: Assistant
+  description: Your assistant for the connected workspace.
+  tools:
+    - id: 1
+      name: internal_search
+      display_name: Internal Search
+      description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+      definition: null
+      custom_headers: []
+      in_code_tool_id: SearchTool
+      passthrough_auth: false
+      enabled: true
+      chat_selectable: true
+      agent_creation_selectable: true
+      default_enabled: true
+      permissions:
+        edit: true
+        delete: false
+        toggle: true
+        authenticate: false
+    - id: 2
+      name: web_search
+      display_name: Web Search
+      description: Search the public web.
+      definition: null
+      custom_headers: []
+      in_code_tool_id: WebSearchTool
+      passthrough_auth: false
+      enabled: true
+      chat_selectable: true
+      agent_creation_selectable: true
+      default_enabled: true
+      permissions:
+        edit: true
+        delete: false
+        toggle: true
+        authenticate: false
+    - id: 3
+      name: image_generation
+      display_name: Image Generation
+      description: Generate images from a text prompt.
+      definition: null
+      custom_headers: []
+      in_code_tool_id: ImageGenerationTool
+      passthrough_auth: false
+      enabled: true
+      chat_selectable: true
+      agent_creation_selectable: true
+      default_enabled: false
+      permissions:
+        edit: true
+        delete: false
+        toggle: true
+        authenticate: false
+    - id: 4
+      name: python
+      display_name: Code Interpreter
+      description: Run Python to analyze data and build charts.
+      definition: null
+      custom_headers: []
+      in_code_tool_id: PythonTool
+      passthrough_auth: false
+      enabled: true
+      chat_selectable: true
+      agent_creation_selectable: true
+      default_enabled: false
+      permissions:
+        edit: true
+        delete: false
+        toggle: true
+        authenticate: false
+  starter_messages: null
+  document_sets: []
+  knowledge_sources: []
+  is_public: true
+  is_listed: true
+  display_priority: 0
+  is_featured: true
+  builtin_persona: true
+  labels: []
+  owner: null
+  permissions:
+    edit: true
+    share: true
+    view_stats: true
+    delete: true
+    publish: true
+    feature: true
+    list: true
+    reorder: true
+  owner_group: null
+  user_permission: OWNER
+  icon_name: null
+  user_file_ids: []
+  users: []
+  groups: []
+  system_prompt: null
+  replace_base_system_prompt: false
+  task_prompt: null
+  datetime_aware: true

@@ -1,0 +1,160 @@
+# >3 distinct model prerequisite is supplied by the named usage-only overlay; no base #31 data changes.
+name: user-settings-controls-usage
+title: Native usage presets, custom calendar, model expansion and price groups
+strict: true
+locale: en
+steps:
+  - goto: /app/settings/general
+    id: goto-app-settings-general
+  - click: { selector: 'a[href="/app/settings/usage"]' }
+    id: click-a-href-app-settings-usage
+  - wait: { text: '$0.72 spent', exact: true }
+    id: wait-0-72-spent
+  - wait: { role: button, name: Show 3 more models, exact: true }
+    id: wait-show-3-more-models
+  - wait: { testid: usage-model-preview }
+    id: wait
+  - wait: { text: 'gpt-5.2 · default', exact: true }
+    id: wait-gpt-5-2-default
+  - shot: { name: usage-month-native-collapsed, full_page: true }
+    id: shot-usage-month-native-collapsed
+  - click: { role: button, name: Show 3 more models, exact: true }
+    id: click-show-3-more-models
+  - wait: { role: button, name: Show fewer models, exact: true }
+    id: wait-show-fewer-models
+  - wait_gone: { testid: usage-model-preview }
+    id: wait-gone
+  - eval: |
+      if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 6) throw new Error('Native expansion did not reveal six month models');
+    id: eval-script
+  - shot: { name: usage-month-expanded-models, full_page: true }
+    id: shot-usage-month-expanded-models
+  - click: { role: button, name: Show fewer models, exact: true }
+    id: click-show-fewer-models
+  - wait: { testid: usage-model-preview }
+    id: wait-2
+  - click: { role: button, name: Anthropic, exact: true }
+    id: click-anthropic
+  - wait: { text: '$3.00 in · $15.00 out · $0.30 cache', exact: true }
+    id: wait-3-00-in-15-00-out-0-30-cache
+  - shot: { name: usage-anthropic-price-expanded, full_page: true }
+    id: shot-usage-anthropic-price-expanded
+  - click: { role: button, name: Anthropic, exact: true }
+    id: click-anthropic-2
+  - wait_gone: { text: '$3.00 in · $15.00 out · $0.30 cache', exact: true }
+    id: wait-gone-3-00-in-15-00-out-0-30-cache
+  - click: { role: button, name: On-prem GPU cluster, exact: true }
+    id: click-on-prem-gpu-cluster
+  - wait: { selector: 'text="— in · — out · — cache" >> nth=0' }
+    id: wait-text-in-out-cache-nth-0
+  - shot: { name: usage-unpriced-model-native, full_page: true }
+    id: shot-usage-unpriced-model-native
+  - click: { role: button, name: 1D, exact: true }
+    id: click-1d
+  - wait: { text: '$0.24 spent', exact: true }
+    id: wait-0-24-spent
+  - wait_gone: { testid: usage-models-expander }
+    id: wait-gone-2
+  - eval: |
+      if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 1) throw new Error('One-day native filter did not leave one model');
+    id: eval-script-2
+  - shot: { name: usage-one-day-filtered, full_page: true }
+    id: shot-usage-one-day-filtered
+  - click: { role: button, name: 7D, exact: true }
+    id: click-7d
+  - wait: { text: '$0.68 spent', exact: true }
+    id: wait-0-68-spent
+  - wait: { role: button, name: Show 2 more models, exact: true }
+    id: wait-show-2-more-models
+  - shot: { name: usage-seven-day-filtered, full_page: true }
+    id: shot-usage-seven-day-filtered
+  - click: { testid: admin-date-range-selector-button }
+    id: click
+  - wait: { selector: '.opal-calendar' }
+    id: wait-opal-calendar
+  - eval: |
+      if (!document.querySelector('.opal-calendar-cell--disabled button')) throw new Error('Native future-date disabled guard missing');
+    id: eval-script-3
+  - shot: { name: usage-custom-calendar-native, full_page: true }
+    id: shot-usage-custom-calendar-native
+  - click: { selector: '.opal-calendar-day:text-is("1")' }
+    id: click-opal-calendar-day-text-is-1
+  - wait: { selector: '.opal-calendar' }
+    id: wait-opal-calendar-2
+  - wait: { text: '$0.68 spent', exact: true }
+    id: wait-0-68-spent-2
+  - shot: { name: usage-custom-pending-start, full_page: true }
+    id: shot-usage-custom-pending-start
+  - click: { selector: '.opal-calendar-day:text-is("2")' }
+    id: click-opal-calendar-day-text-is-2
+  - wait_gone: { selector: '.opal-calendar' }
+    id: wait-gone-opal-calendar
+  - wait: { text: No usage recorded yet, exact: true }
+    id: wait-no-usage-recorded-yet
+  - wait: { text: '$0.00 spent', exact: true }
+    id: wait-0-00-spent
+  - wait: { text: '$9.26 remaining', exact: true }
+    id: wait-9-26-remaining
+  - shot: { name: usage-custom-empty-window, full_page: true }
+    id: shot-usage-custom-empty-window
+  - click: { testid: admin-date-range-selector-button }
+    id: click-2
+  - click: { selector: '.opal-calendar-day:text-is("9")' }
+    id: click-opal-calendar-day-text-is-9
+  - click: { selector: '.opal-calendar-day:text-is("8")' }
+    id: click-opal-calendar-day-text-is-8
+  - wait: { text: '$0.42 spent', exact: true }
+    id: wait-0-42-spent
+  - eval: |
+      if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 2) throw new Error('Reversed custom range did not yield Oct 8–9 models');
+    id: eval-script-4
+  - shot: { name: usage-custom-reversed-range-loaded, full_page: true }
+    id: shot-usage-custom-reversed-range-loaded
+  - click: { role: button, name: 3M, exact: true }
+    id: click-3m
+  - wait: { text: '$0.74 spent', exact: true }
+    id: wait-0-74-spent
+  - click: { role: button, name: Show 4 more models, exact: true }
+    id: click-show-4-more-models
+  - wait: { role: button, name: Show fewer models, exact: true }
+    id: wait-show-fewer-models-2
+  - id: eval-script-5-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-settings-usage.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        if (document.querySelectorAll('[data-testid="usage-model-tokens"]').length !== 7) throw new Error('Three-month expansion did not reveal seven models');
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, keep:true, resetChats:false})});
+        if (!response.ok) throw new Error('Keep reset failed');
+      })()
+    id: eval-script-5
+  - wait: { text: '$0.74 spent', exact: true }
+    id: wait-0-74-spent-2
+  - shot: { name: usage-three-month-expanded-kept, full_page: true }
+    id: shot-usage-three-month-expanded-kept
+  - id: eval-script-6-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-user-settings-usage.yaml
+      overlays: []
+  # Date window/expansion are source-local React state, not a fabricated saved backend preference.
+  - eval: |
+      (async () => {
+        const response = await fetch('/api/__mockshop/state', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays, locale:'en', anchor:'2026-10-09T10:00:00-04:00'})});
+        if (!response.ok) throw new Error('Fresh reset failed');
+      })()
+    id: eval-script-6
+  - goto: /app/settings/usage
+    id: goto-app-settings-usage
+  - wait: { text: '$0.72 spent', exact: true }
+    id: wait-0-72-spent-2
+  - wait: { role: button, name: Show 3 more models, exact: true }
+    id: wait-show-3-more-models-2
+  - wait: { testid: usage-model-preview }
+    id: wait-3
+  - shot: { name: usage-reset-native-default-month, full_page: true }
+    id: shot-usage-reset-native-default-month
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-user-settings-usage.yaml

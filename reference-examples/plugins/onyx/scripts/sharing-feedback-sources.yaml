@@ -1,0 +1,70 @@
+# DEVELOPMENT inventory; independent parent strict/every-PNG acceptance/publication remains pending.
+# Independent fresh reset uses the existing control plane; mutations under test use only native controls.
+
+name: sharing-feedback-sources
+title: Native live Sources sidebar and saved file row previews
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+steps:
+  - goto: /app
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const currentResponse = await fetch('/api/__mockshop/state');
+        if (!currentResponse.ok) throw new Error('Independent Sharing seed read failed');
+        const current = await currentResponse.json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,locale:'en',keep:false,resetChats:true,anchor:current.demo_anchor})});
+        if (!response.ok) throw new Error('Independent Sharing reset failed');
+        sessionStorage.removeItem('sharing-workshop-id');
+        sessionStorage.removeItem('sharing-workshop-link');
+      })();
+    id: eval-script
+  # Primary original operations 169-187; every original interaction and named PNG is retained.
+  - goto: /app?chatId=61616161-0000-4000-8000-000000000001
+    id: goto-app-chatid-61616161-0000-4000-8000-000000000001
+  - wait: { text: Closing reflection, exact: true }
+    id: wait-closing-reflection
+  - click: { role: button, name: Sources, exact: true }
+    id: click-sources
+  - wait: { text: Cited Sources, exact: true }
+    id: wait-cited-sources
+  - wait: { text: More, exact: true }
+    id: wait-more
+  - wait: { text: User Files, exact: true }
+    id: wait-user-files
+  - shot: live-native-sources-sidebar
+    id: shot-live-native-sources-sidebar
+  - click: { selector: '#onyx-chat-sidebar button', has_text: library-reading.txt, nth: 0 }
+    id: click-onyx-chat-sidebar-button
+  - wait: { role: dialog }
+    id: wait
+  - wait: { text: Synthetic demo reading note, exact: false }
+    id: wait-synthetic-demo-reading-note
+  - shot: live-source-row-preview
+    id: shot-live-source-row-preview
+  - press: Escape
+    id: press-escape
+  - click: { selector: '#onyx-chat-sidebar button', has_text: attendance-demo.csv, nth: 0 }
+    id: click-onyx-chat-sidebar-button-2
+  - wait: { role: dialog }
+    id: wait-2
+  - wait: { selector: '[role="dialog"]', has_text: Reading circle }
+    id: wait-role-dialog
+  - shot: live-tabular-source-preview
+    id: shot-live-tabular-source-preview
+  - press: Escape
+    id: press-escape-2
+  - click: { selector: '#onyx-chat-sidebar button', nth: 0 }
+    id: click-onyx-chat-sidebar-button-3
+  - wait_gone: { selector: '.w-100 #onyx-chat-sidebar' }
+    id: wait-gone-w-100-onyx-chat-sidebar
+  - shot: live-sources-closed
+    id: shot-live-sources-closed
+  # Typed optional positive feedback, same-vote removal and navigation reuse the real live-chat store and assistant IDs.
+world: ../../../worlds/seaside/world.yaml

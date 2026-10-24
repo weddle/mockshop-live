@@ -1,0 +1,28 @@
+name: acme-followup-example
+plugin: onyx
+world: ../../worlds/acme/world.yaml
+profile: ../../profiles/zoom-blue.yaml
+strict: true
+content:
+  vars:
+    incident: INC-2400
+  documents:
+    followup:
+      source: runbooks
+      title: "{{vars.incident}} follow-up"
+      summary: "{{people.dana.name}} owns the follow-up review."
+      body: "{{people.dana.name}} will review the rollout safeguards on Friday."
+scenes:
+  - id: followup
+    steps:
+      - id: open-chat
+        goto: /app
+      - id: followup-question
+        send:
+          text: "Who owns the {{vars.incident}} follow-up?"
+          reply:
+            queries: ["{{vars.incident}} review owner"]
+            cites: [followup]
+            text: "{{people.dana.name}} will review the rollout safeguards on Friday."
+      - id: answer
+        shot: answer

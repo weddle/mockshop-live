@@ -1,0 +1,112 @@
+# plug area routes, split from the former 00-core.yaml (base/*.yaml merge in file-name order).
+GET /tool/openapi: []
+GET /tool:
+  - id: 1
+    name: internal_search
+    display_name: Internal Search
+    description: Search connected company knowledge (Confluence, Slack, Google Drive, Zoom).
+    definition: null
+    custom_headers: []
+    in_code_tool_id: SearchTool
+    passthrough_auth: false
+    enabled: true
+    chat_selectable: true
+    agent_creation_selectable: true
+    default_enabled: true
+    permissions:
+      edit: true
+      delete: false
+      toggle: true
+      authenticate: false
+  - id: 2
+    name: web_search
+    display_name: Web Search
+    description: Search the public web.
+    definition: null
+    custom_headers: []
+    in_code_tool_id: WebSearchTool
+    passthrough_auth: false
+    enabled: true
+    chat_selectable: true
+    agent_creation_selectable: true
+    default_enabled: true
+    permissions:
+      edit: true
+      delete: false
+      toggle: true
+      authenticate: false
+  - id: 3
+    name: image_generation
+    display_name: Image Generation
+    description: Generate images from a text prompt.
+    definition: null
+    custom_headers: []
+    in_code_tool_id: ImageGenerationTool
+    passthrough_auth: false
+    enabled: true
+    chat_selectable: true
+    agent_creation_selectable: true
+    default_enabled: false
+    permissions:
+      edit: true
+      delete: false
+      toggle: true
+      authenticate: false
+  - id: 4
+    name: python
+    display_name: Code Interpreter
+    description: Run Python to analyze data and build charts.
+    definition: null
+    custom_headers: []
+    in_code_tool_id: PythonTool
+    passthrough_auth: false
+    enabled: true
+    chat_selectable: true
+    agent_creation_selectable: true
+    default_enabled: false
+    permissions:
+      edit: true
+      delete: false
+      toggle: true
+      authenticate: false
+GET /mcp/servers:
+  mcp_servers: []
+GET /mcp/servers/persona/11:
+  assistant_id: ""
+  mcp_servers: []
+GET /admin/mcp/servers:
+  mcp_servers: []
+GET /admin/mcp/server/1/tools/snapshots: []
+GET /admin/mcp/mock-creation:
+  fake_credential: ""
+  auth_feedback: ""
+  server:
+    name: ""
+    description: ""
+    server_url: ""
+    owner: ""
+    transport: ""
+    auth_type: ""
+    auth_performer: ""
+    oauth_provider_mode: ""
+    auth_template:
+      headers: {}
+      required_fields: []
+    admin_credentials: {}
+    user_credentials: {}
+    user_can_authenticate: false
+    status: ""
+    is_public: false
+    groups: []
+    users: []
+    available_in_craft: false
+    tool_count: 0
+    last_refreshed_at: null
+    permissions:
+      edit: false
+      delete: false
+      authenticate: false
+      manage_status: false
+  tools: []
+GET /mcp/servers/persona/:id:
+  mcp_servers: []

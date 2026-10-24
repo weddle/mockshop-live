@@ -1,0 +1,92 @@
+# #65 route-sized native proof: Document Explorer.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-documents-explorer
+title: Document Explorer - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/documents/explorer
+    id: goto-admin-documents-explorer
+  - shot: inventory-documents-explorer
+    id: shot-inventory-documents-explorer
+  - goto: /admin/documents/explorer
+    id: goto-admin-documents-explorer-2
+  - shot: documents-explorer-empty
+    id: shot-documents-explorer-empty
+  - goto: /admin/documents/explorer?query=workshop
+    id: goto-admin-documents-explorer-query-workshop
+  - shot: documents-explorer-search-empty
+    id: shot-documents-explorer-search-empty
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00', admin_documents_fixture: 'loaded' }) });
+        window.location.href = '/admin/documents/explorer?query=reading';
+      })()
+    id: eval-script
+  - wait: { role: link, name: Workshop reading guide (fake), exact: true }
+    id: wait-workshop-reading-guide-fake
+  - wait: { text: Fictional workshop reading guide with a short comprehension exercise., exact: true }
+    id: wait-fictional-workshop-reading-guide-with-a-short-comprehension
+  - shot: documents-explorer-loaded-reading
+    id: shot-documents-explorer-loaded-reading
+  - click: { role: button, name: Edit, exact: true }
+    id: click-edit
+  - fill: { selector: 'div.text-sm.border-b:has-text("Workshop reading guide (fake)") input', value: '7' }
+    id: fill-div-text-sm-border-b-has-text-workshop-reading-guide-fake-i
+  - click: { role: button, name: Save, exact: true }
+    id: click-save
+  - wait: { text: Updated score!, exact: true }
+    id: wait-updated-score
+  - shot: documents-explorer-boost-saved
+    id: shot-documents-explorer-boost-saved
+  - click: { role: button, name: Hide document, exact: true }
+    id: click-hide-document
+  - wait: { role: button, name: Unhide document, exact: true }
+    id: wait-unhide-document
+  - shot: documents-explorer-hidden
+    id: shot-documents-explorer-hidden
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/documents/explorer?query=reading
+    id: goto-admin-documents-explorer-query-reading
+  - wait: { role: button, name: Unhide document, exact: true }
+    id: wait-unhide-document-2
+  - wait: { selector: 'div.text-sm.border-b:has-text("Workshop reading guide (fake)") button:has-text("7")' }
+    id: wait-div-text-sm-border-b-has-text-workshop-reading-guide-fake-b
+  - shot: documents-explorer-navigation-readback
+    id: shot-documents-explorer-navigation-readback
+  - click: { role: button, name: Unhide document, exact: true }
+    id: click-unhide-document
+  - wait: { role: button, name: Hide document, exact: true }
+    id: wait-hide-document
+  - shot: documents-explorer-visible-again
+    id: shot-documents-explorer-visible-again
+  - id: eval-script-2-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        await fetch('/api/__mockshop/state', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overlays: (await (await fetch('/api/__mockshop/state')).json()).overlays, strict: true, anchor: '2026-10-09T10:00:00-04:00' }) });
+        window.location.href = '/admin/documents/explorer?query=reading';
+      })()
+    id: eval-script-2
+  - wait_gone: { role: link, name: Workshop reading guide (fake), exact: true }
+    id: wait-gone-workshop-reading-guide-fake
+  - wait: { placeholder: Find documents based on title / content... }
+    id: wait
+  - wait_gone: { selector: 'svg[role="status"]' }
+    id: wait-gone-svg-role-status
+  - shot: reset-documents-explorer-empty
+    id: shot-reset-documents-explorer-empty
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

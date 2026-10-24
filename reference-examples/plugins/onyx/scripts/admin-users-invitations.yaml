@@ -1,0 +1,157 @@
+# Independent #59 native unit. Runner starts fresh base state; no preceding unit is required.
+name: admin-users-invitations
+title: Native Users invite validation, duplicate counts, revoke and dirty reset
+strict: true
+requires: enterprise
+locale: en
+steps:
+  - goto: /admin/users
+    id: goto-admin-users
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests
+  # Cancel and Escape discard modal-local input; neither creates an invitation.
+  - click: { role: button, name: Invite Users, exact: true }
+    id: click-invite-users
+  - fill: { selector: 'input[placeholder="Add emails to invite, space or comma separated"]', value: discard.reader@learning-lab.example }
+    id: fill-input-placeholder-add-emails-to-invite-space-or-comma-separ
+  - click: { role: button, name: Cancel, exact: true }
+    id: click-cancel
+  - click: { role: button, name: Invite Users, exact: true }
+    id: click-invite-users-2
+  - eval: |
+      if (document.querySelector('input[placeholder="Add emails to invite, space or comma separated"]').value !== '') throw new Error('Cancelled invite draft survived reopen');
+    id: eval-script
+  - shot: users-invite-cancel-reopened
+    id: shot-users-invite-cancel-reopened
+  - press: Escape
+    id: press-escape
+  - wait_gone: { selector: 'input[placeholder="Add emails to invite, space or comma separated"]' }
+    id: wait-gone-input-placeholder-add-emails-to-invite-space-or-comma-
+  - goto: /admin/users
+    id: goto-admin-users-2
+  - click: { role: button, name: Invite Users, exact: true }
+    id: click-invite-users-3
+  - shot: users-invite-dialog
+    id: shot-users-invite-dialog
+  - fill: { selector: 'input[placeholder="Add emails to invite, space or comma separated"]', value: 'not-an-email ' }
+    id: fill-input-placeholder-add-emails-to-invite-space-or-comma-separ-2
+  - wait: { text: Some email addresses are invalid and will be skipped., exact: true }
+    id: wait-some-email-addresses-are-invalid-and-will-be-skipped
+  - shot: users-invite-invalid
+    id: shot-users-invite-invalid
+  - eval: |
+      const invite = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Invite');
+      if (!invite?.disabled) throw new Error('Invalid-only invitation is not disabled');
+    id: eval-script-2
+  - fill: { selector: 'input[placeholder="Add emails to invite, space or comma separated"]', value: 'taylor.park@learning-lab.example' }
+    id: fill-input-placeholder-add-emails-to-invite-space-or-comma-separ-3
+  - shot: users-invite-ready
+    id: shot-users-invite-ready
+  - click: { role: button, name: Invite, exact: true }
+    id: click-invite
+  - wait: { text: Invited 1 user, exact: true }
+    id: wait-invited-1-user
+  - shot: users-invite-feedback
+    id: shot-users-invite-feedback
+  - goto: /admin/users
+    id: goto-admin-users-3
+  - fill: { selector: 'input[placeholder="Search users..."]', value: taylor.park }
+    id: fill-input-placeholder-search-users
+  - wait: { text: taylor.park@learning-lab.example, exact: true }
+    id: wait-taylor-park-learning-lab-example
+  - shot: users-invite-persisted
+    id: shot-users-invite-persisted
+  # Native tags de-duplicate case-insensitively. The toast counts submitted valid tags (2), not new rows (0).
+  - click: { role: button, name: Invite Users, exact: true }
+    id: click-invite-users-4
+  - fill: { selector: 'input[placeholder="Add emails to invite, space or comma separated"]', value: 'taylor.park@learning-lab.example, TAYLOR.PARK@LEARNING-LAB.EXAMPLE, {{people.devon.email}} ' }
+    id: fill-input-placeholder-add-emails-to-invite-space-or-comma-separ-4
+  - wait: { text: 2 emails to invite, exact: true }
+    id: wait-2-emails-to-invite
+  - shot: users-invite-duplicate-accepted-ready
+    id: shot-users-invite-duplicate-accepted-ready
+  - click: { role: button, name: Invite, exact: true }
+    id: click-invite-2
+  - wait: { text: Invited 2 users, exact: true }
+    id: wait-invited-2-users
+  - goto: /admin/users
+    id: goto-admin-users-4
+  - fill: { selector: 'input[placeholder="Search users..."]', value: taylor.park }
+    id: fill-input-placeholder-search-users-2
+  - wait: { text: taylor.park@learning-lab.example, exact: true }
+    id: wait-taylor-park-learning-lab-example-2
+  - eval: |
+      (async () => {
+        const invitedRes = await fetch('/api/manage/users/invited');
+        const acceptedRes = await fetch('/api/manage/users/accepted/all');
+        if (!invitedRes.ok || !acceptedRes.ok) throw new Error('Post-invitation readback failed');
+        const invitations = await invitedRes.json(), accepted = await acceptedRes.json();
+        if (invitations.length !== 3 || invitations.filter(user => user.email === 'taylor.park@learning-lab.example').length !== 1 || invitations.some(user => user.email === '{{people.devon.email}}')) throw new Error('Duplicate or accepted email inflated invitation rows');
+        if (accepted.length !== 10 || accepted.filter(user => user.is_active).length !== 9) throw new Error('Invitation changed accepted User counts');
+      })()
+    id: eval-script-3
+  - shot: users-invite-duplicate-accepted-counts
+    id: shot-users-invite-duplicate-accepted-counts
+  - click: { role: button, name: User actions, exact: true }
+    id: click-user-actions
+  - shot: users-invited-menu
+    id: shot-users-invited-menu
+  - click: { text: Cancel Invite, exact: true }
+    id: click-cancel-invite
+  - shot: users-cancel-invite-dialog
+    id: shot-users-cancel-invite-dialog
+  - click: { role: button, name: Cancel Invite, exact: true }
+    id: click-cancel-invite-2
+  - wait: { text: Invite cancelled, exact: true }
+    id: wait-invite-cancelled
+  - shot: users-cancel-invite-feedback
+    id: shot-users-cancel-invite-feedback
+  - goto: /admin/users
+    id: goto-admin-users-5
+  - fill: { selector: 'input[placeholder="Search users..."]', value: taylor.park }
+    id: fill-input-placeholder-search-users-3
+  - wait_gone: { text: taylor.park@learning-lab.example, exact: true }
+    id: wait-gone-taylor-park-learning-lab-example
+  - shot: users-cancel-invite-persisted
+    id: shot-users-cancel-invite-persisted
+  # Leave an actual new invitation outstanding before this unit's reset.
+  - click: { role: button, name: Invite Users, exact: true }
+    id: click-invite-users-5
+  - fill: { selector: 'input[placeholder="Add emails to invite, space or comma separated"]', value: reset.reader@learning-lab.example }
+    id: fill-input-placeholder-add-emails-to-invite-space-or-comma-separ-5
+  - click: { role: button, name: Invite, exact: true }
+    id: click-invite-3
+  - wait: { text: Invited 1 user, exact: true }
+    id: wait-invited-1-user-2
+  - goto: /admin/users
+    id: goto-admin-users-6
+  - fill: { selector: 'input[placeholder="Search users..."]', value: reset.reader }
+    id: fill-input-placeholder-search-users-4
+  - wait: { text: reset.reader@learning-lab.example, exact: true }
+    id: wait-reset-reader-learning-lab-example
+  - shot: users-invite-before-reset
+    id: shot-users-invite-before-reset
+  - id: eval-script-4-world
+    state:
+      world: ../../../worlds/seaside/world.yaml
+      overlays: []
+  - eval: |
+      (async () => {
+        const res = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:(await (await fetch('/api/__mockshop/state')).json()).overlays,strict:true,locale:'en'})});
+        if (!res.ok) throw new Error('Mock reset failed');
+        location.reload();
+      })()
+    id: eval-script-4
+  - wait: { text: Users & Requests, exact: true }
+    id: wait-users-requests-2
+  - fill: { selector: 'input[placeholder="Search users..."]', value: reset.reader }
+    id: fill-input-placeholder-search-users-5
+  - wait_gone: { text: reset.reader@learning-lab.example, exact: true }
+    id: wait-gone-reset-reader-learning-lab-example
+  - fill: { selector: 'input[placeholder="Search users..."]', value: iris.ward }
+    id: fill-input-placeholder-search-users-6
+  - wait: { text: "{{people.iris.email}}", exact: true }
+    id: wait-iris-ward-learning-lab-example
+  - shot: users-invitations-reset
+    id: shot-users-invitations-reset
+world: ../../../worlds/seaside/world.yaml

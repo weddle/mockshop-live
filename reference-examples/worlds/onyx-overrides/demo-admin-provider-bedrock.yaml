@@ -1,0 +1,42 @@
+apps:
+  onyx:
+    llm_providers:
+      campus-bedrock:
+        id: 59
+        name: Campus Bedrock (local fake)
+        provider: bedrock
+        custom_config:
+          AWS_REGION_NAME: us-east-1
+          BEDROCK_AUTH_METHOD: access_key
+          AWS_ACCESS_KEY_ID: mock-only-not-a-secret
+          AWS_SECRET_ACCESS_KEY: mock-only-not-a-secret
+        models:
+          learning-notes-demo:
+            id: 5901
+            display_name: Learning Notes (local fake)
+            default:
+              - text
+              - chat_naming
+            max_input_tokens: 32768
+      openai: null
+      anthropic: null
+      onprem-gpu: null
+    fixtures:
+      GET /admin/llm/built-in/options/bedrock:
+        name: bedrock
+        known_models:
+          - id: 5901
+            name: learning-notes-demo
+            display_name: Learning Notes (local fake)
+            is_visible: true
+            max_input_tokens: 32768
+            supports_image_input: false
+            supports_reasoning: false
+        recommended_default_model:
+          name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+      POST /admin/llm/bedrock/available-models:
+        - name: learning-notes-demo
+          display_name: Learning Notes (local fake)
+          max_input_tokens: 32768
+          supports_image_input: false

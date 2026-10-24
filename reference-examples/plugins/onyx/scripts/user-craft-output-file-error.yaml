@@ -1,0 +1,75 @@
+# #70 independent native proof unit; parent strict/PNG acceptance pending.
+# Lossless source-step dispositions and prerequisites: ../USER-CRAFT-PROOF-MAP.md
+name: user-craft-output-file-error
+title: "Craft native artifact-file read error"
+requires: enterprise
+strict: true
+locale: en
+viewport: [ 1440, 900 ]
+overlays:
+  - edition-enterprise
+known_errors:
+  - match: "/^http 500 GET http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/sessions\\/craft-workshop\\/artifacts\\/outputs\\/handout\\.md$/"
+    reason: "Only this independently staged exact handout file read500: original639 positively asserts Error loading file. Exact status, verb, loopback port field and native path/query only; all other HTTP problems, console errors and failed steps remain strict."
+  - match: "/^console: Failed to load resource: the server responded with a status of 500 \\(Internal Server Error\\) \\[source: http:\\/\\/127\\.0\\.0\\.1:3370\\/api\\/build\\/sessions\\/craft-workshop\\/artifacts\\/outputs\\/handout\\.md\\]$/"
+    reason: "Actual 10.8s scoped DEV observed this native console source URL alongside the exact staged handout GET500 and positive Error loading file. Only this unit/status/message/owned-port/path; unlocated or other-source console remains strict."
+steps:
+  - goto: "/app"
+    id: goto-app
+  - id: eval-script-world
+    state:
+      world: ../../../worlds/snapshots/seaside--demo-mcp-admin--demo-user-craft.yaml
+      overlays:
+        - edition-enterprise
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const overlays = (await (await fetch('/api/__mockshop/state')).json()).overlays;
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays,anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft seed reset failed');
+        sessionStorage.setItem('craft-initial-overlays', JSON.stringify(overlays));
+        for (const key of ['craft-created-session','craft-created-app','craft-created-skill','craft-created-task']) sessionStorage.removeItem(key);
+        const me = await (await fetch('/api/me')).json();
+        localStorage.setItem('onyx:craftOnboardingSeen:' + me.id, 'true');
+      })()
+    id: eval-script
+  - eval: |
+      (async () => {
+        for (const path of ['/build/apps','/mcp/servers/craft','/build/scheduled-tasks','/build/scheduled-tasks/:id/runs']) await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path,state:'loaded'})});
+        await fetch('/api/mockshop/user-craft/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path:'/build/sessions/:id/artifacts/*',state:'error'})});
+      })()
+    id: eval-script-2
+  - goto: /craft/v1?sessionId=craft-workshop
+    id: goto-craft-v1-sessionid-craft-workshop
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+    id: click-ps-4-pe-4-py-3-shrink-0-button
+  - click: { role: button, name: Files, exact: true }
+    id: click-files
+  - click: { selector: 'button.w-full:has-text("outputs")' }
+    id: click-button-w-full-has-text-outputs
+  - click: { selector: 'button.w-full:has-text("handout.md")' }
+    id: click-button-w-full-has-text-handout-md
+  - wait: { text: Error loading file, exact: true }
+    id: wait-error-loading-file
+  - shot: craft-output-file-error
+    id: shot-craft-output-file-error
+  - eval: |
+      (async () => {
+        const current = await (await fetch('/api/__mockshop/state')).json();
+        const response = await fetch('/api/__mockshop/state', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overlays:JSON.parse(sessionStorage.getItem('craft-initial-overlays')),anchor:current.demo_anchor,locale:'en',keep:false})});
+        if (!response.ok) throw new Error('Independent Craft dirty-state reset failed');
+      })()
+    id: eval-script-3
+  - goto: "/craft/v1?sessionId=craft-workshop"
+    id: goto-craft-v1-sessionid-craft-workshop-2
+  - click: { selector: '.ps-4.pe-4.py-3 > .shrink-0 > button' }
+    id: click-ps-4-pe-4-py-3-shrink-0-button-2
+  - wait: { "role": "button", "name": "Files", "exact": true }
+    id: wait-files
+  - shot: "craft-unit-output-file-error-reset"
+    id: shot-craft-unit-output-file-error-reset
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml
+    - ../../../worlds/onyx-overrides/demo-user-craft.yaml

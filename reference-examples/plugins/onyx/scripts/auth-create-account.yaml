@@ -1,0 +1,52 @@
+# #69: Enterprise, LOCAL non-cloud build with NEXT_PUBLIC_FORGOT_PASSWORD_ENABLED=true.
+# Parent registration is required. All inputs below are fictional and never stored as credentials.
+name: auth-create-account
+title: "Independent native #69 unit: auth-create-account"
+strict: true
+requires: enterprise
+locale: en
+viewport: [ 1440, 900 ]
+known_errors:
+  - match: '/^http 401 GET http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me(?:\?.*)?$/'
+    reason: Required native logged-out /me response; cookie and fake current user are deliberately cleared.
+  - match: '/^console: Failed to load resource: the server responded with a status of 401 \(Unauthorized\) \[source: http:\/\/(127\.0\.0\.1|localhost):\d+\/api\/me\]$/'
+    reason: Exact logged-out /me401 source diagnostic; native cleared-cookie and unauthorized identity are asserted.
+# Independent prerequisites: Fresh logged-out fake cookie; native Account Not Found CTA→same-origin register→signup and Sign in link.
+steps:
+  - state:
+      world: ../../../worlds/snapshots/seaside--demo-auth-anonymous.yaml
+    id: state
+  - goto: /auth/login
+    id: goto-auth-login
+  - eval: |
+      (async () => {
+        const r = await fetch('/api/mockshop/auth-anonymous/stage', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({mode:'logged-out'})});
+        if (!r.ok) throw new Error('Local fake logged-out staging failed');
+        const me = await fetch('/api/me');
+        if (me.status !== 401 || document.cookie.includes('fastapiusersauth=')) throw new Error('Cookie or /me was not logged out');
+      })()
+    id: eval-script
+  - goto: /auth/create-account
+    id: goto-auth-create-account
+  - wait: { text: Account Not Found, exact: true }
+    id: wait-account-not-found
+  - shot: auth-create-account-direct
+    id: shot-auth-create-account-direct
+  - click: { role: link, name: Create New Organization, exact: true }
+    id: click-create-new-organization
+  - wait: { role: button, name: Create Account, exact: true }
+    id: wait-create-account
+  - shot: auth-create-account-local-register
+    id: shot-auth-create-account-local-register
+  - goto: /auth/create-account
+    id: goto-auth-create-account-2
+  - click: { role: link, name: Sign in, exact: true }
+    id: click-sign-in
+  - wait: { testid: email }
+    id: wait
+  - shot: auth-create-account-sign-in-link
+    id: shot-auth-create-account-sign-in-link
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-auth-anonymous.yaml

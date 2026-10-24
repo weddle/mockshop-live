@@ -1,0 +1,12 @@
+# Exported by `mockshop live onyx`
+name: live
+title: Live session on onyx
+steps:
+  - goto: /app
+  - mark: home
+  - click:
+      selector: "#onyx-chat-input-textbox"
+  - type:
+      selector: "#onyx-chat-input-textbox"
+      value: hello
+  - shot: typed

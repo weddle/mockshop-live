@@ -1,0 +1,80 @@
+# #65 route-sized native proof: Web Search.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-web-search
+title: Web Search - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/web-search
+    id: goto-admin-web-search
+  - shot: inventory-web-search
+    id: shot-inventory-web-search
+  - goto: /admin/web-search
+    id: goto-admin-web-search-2
+  - wait: { text: Search Engine, exact: true }
+    id: wait-search-engine
+  - shot: web-search-direct
+    id: shot-web-search-direct
+  - click: { selector: 'button[aria-label="Edit Learning web search (fake)"]' }
+    id: click-button-aria-label-edit-learning-web-search-fake
+  - wait: { role: dialog }
+    id: wait
+  - fill: { selector: 'input[name="api_key"]', value: mock-only-replacement-not-a-secret }
+    id: fill-input-name-api-key
+  - shot: web-search-edit-dialog
+    id: shot-web-search-edit-dialog
+  - click: { selector: '[role="dialog"] button[type="submit"]' }
+    id: click-role-dialog-button-type-submit
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/security
+    id: goto-admin-security
+  - goto: /admin/web-search
+    id: goto-admin-web-search-3
+  - shot: web-search-saved
+    id: shot-web-search-saved
+  - scroll: { text: Web Crawler, exact: true }
+    id: scroll-web-crawler
+  - wait: { selector: '[data-testid="content-provider-list"] [aria-label="Onyx Web Crawler"]' }
+    id: wait-data-testid-content-provider-list-aria-label-onyx-web-crawl
+  - shot: web-crawler-native-default
+    id: shot-web-crawler-native-default
+  - click: { selector: '[data-testid="content-provider-list"] [aria-label="Firecrawl"]' }
+    id: click-data-testid-content-provider-list-aria-label-firecrawl
+  - wait: { role: dialog }
+    id: wait-2
+  - shot: web-crawler-firecrawl-form
+    id: shot-web-crawler-firecrawl-form
+  - fill: { selector: '[role="dialog"] input[name="api_key"]', value: mock-only-crawler-not-a-secret }
+    id: fill-role-dialog-input-name-api-key
+  - click: { selector: '[role="dialog"] button:has-text("Connect")' }
+    id: click-role-dialog-button-has-text-connect
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - wait: { selector: '[data-testid="content-provider-list"] [aria-label="Firecrawl"] button:has-text("Current Crawler")' }
+    id: wait-data-testid-content-provider-list-aria-label-firecrawl-butt
+  - shot: web-crawler-firecrawl-connected
+    id: shot-web-crawler-firecrawl-connected
+  - goto: /admin/security
+    id: goto-admin-security-2
+  - goto: /admin/web-search
+    id: goto-admin-web-search-4
+  - scroll: { text: Web Crawler, exact: true }
+    id: scroll-web-crawler-2
+  - wait: { selector: '[data-testid="content-provider-list"] [aria-label="Firecrawl"] button:has-text("Current Crawler")' }
+    id: wait-data-testid-content-provider-list-aria-label-firecrawl-butt-2
+  - shot: web-crawler-navigation-readback
+    id: shot-web-crawler-navigation-readback
+  - click: { selector: '[data-testid="content-provider-list"] [aria-label="Onyx Web Crawler"]' }
+    id: click-data-testid-content-provider-list-aria-label-onyx-web-craw
+  - wait: { selector: '[data-testid="content-provider-list"] [aria-label="Onyx Web Crawler"] button:has-text("Current Crawler")' }
+    id: wait-data-testid-content-provider-list-aria-label-onyx-web-crawl-2
+  - shot: web-crawler-native-default-restored
+    id: shot-web-crawler-native-default-restored
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

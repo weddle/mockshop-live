@@ -1,0 +1,80 @@
+# #65 route-sized native proof: Craft Apps.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-craft-apps
+title: Craft Apps - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/craft/apps
+    id: goto-admin-craft-apps
+  - shot: inventory-craft-apps
+    id: shot-inventory-craft-apps
+  - goto: /admin/craft/access
+    id: goto-admin-craft-access
+  - click: { selector: 'a[href="/admin/craft/apps"]' }
+    id: click-a-href-admin-craft-apps
+  - wait: { text: Add app, exact: true }
+    id: wait-add-app
+  - shot: craft-apps-menu-empty
+    id: shot-craft-apps-menu-empty
+  - goto: /admin/craft/apps
+    id: goto-admin-craft-apps-2
+  - click: { role: button, name: Add app, exact: true }
+    id: click-add-app
+  - wait: { role: dialog }
+    id: wait
+  - shot: craft-apps-catalog-dialog
+    id: shot-craft-apps-catalog-dialog
+  - click: { role: button, name: Create, exact: true }
+    id: click-create
+  - wait: { placeholder: My Custom App }
+    id: wait-2
+  - fill: { placeholder: My Custom App, value: Workshop notes (fake app) }
+    id: fill
+  - fill: { placeholder: 'https://api.example.com/*', value: 'https://workshop.example/notes/*' }
+    id: fill-2
+  - press: Enter
+    id: press-enter
+  - shot: craft-apps-custom-form
+    id: shot-craft-apps-custom-form
+  - click: { role: button, name: Create, exact: true }
+    id: click-create-2
+  - wait: { text: Add skills to Workshop notes (fake app), exact: true }
+    id: wait-add-skills-to-workshop-notes-fake-app
+  - shot: craft-apps-optional-skills-dialog
+    id: shot-craft-apps-optional-skills-dialog
+  - click: { role: button, name: Skip for now, exact: true }
+    id: click-skip-for-now
+  - wait_gone: { role: dialog }
+    id: wait-gone
+  - goto: /admin/voice
+    id: goto-admin-voice
+  - goto: /admin/craft/apps
+    id: goto-admin-craft-apps-3
+  - wait: { text: Workshop notes (fake app), exact: true }
+    id: wait-workshop-notes-fake-app
+  - shot: craft-apps-created
+    id: shot-craft-apps-created
+  - click: { selector: 'button[aria-label="Workshop notes (fake app) actions"]' }
+    id: click-button-aria-label-workshop-notes-fake-app-actions
+  - shot: craft-apps-row-menu
+    id: shot-craft-apps-row-menu
+  - click: { text: Delete, exact: true }
+    id: click-delete
+  - wait: { role: dialog }
+    id: wait-3
+  - shot: craft-apps-delete-confirm
+    id: shot-craft-apps-delete-confirm
+  - click: { role: button, name: Delete app, exact: true }
+    id: click-delete-app
+  - wait_gone: { role: dialog }
+    id: wait-gone-2
+  - shot: craft-apps-deleted
+    id: shot-craft-apps-deleted
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

@@ -1,0 +1,22 @@
+# #65 route-sized native proof: System information.
+# Runner fresh-run reset seeds this unit independently; no prior scenario required.
+
+name: admin-systeminfo
+title: System information - fictional local configuration
+strict: true
+requires: enterprise
+locale: en
+demo_anchor: '2026-10-09T10:00:00-04:00'
+steps:
+  - goto: /admin/systeminfo
+    id: goto-admin-systeminfo
+  - shot: inventory-systeminfo
+    id: shot-inventory-systeminfo
+  - goto: /admin/systeminfo
+    id: goto-admin-systeminfo-2
+  - shot: systeminfo-version
+    id: shot-systeminfo-version
+world: ../../../worlds/seaside/world.yaml
+content:
+  includes:
+    - ../../../worlds/onyx-overrides/demo-mcp-admin.yaml

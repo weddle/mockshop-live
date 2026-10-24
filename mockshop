@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Mockshop CLI wrapper: picks a Node (newest in .toolchains/, else system node) and runs core/cli.mjs.
+ROOT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+NODE="$(ls -d "$ROOT"/.toolchains/node-*/bin/node 2>/dev/null | sort -V | tail -1)"
+NODE="${NODE:-$(command -v node)}"
+[ -x "$NODE" ] || { echo "mockshop: need Node >= 20 (none found)"; exit 1; }
+[ -d "$ROOT/node_modules/playwright-core" ] || (cd "$ROOT" && PATH="$(dirname "$NODE"):$PATH" npm install --no-audit --no-fund >/dev/null)
+exec "$NODE" "$ROOT/core/cli.mjs" "$@"

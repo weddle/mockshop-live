@@ -1,0 +1,79 @@
+# World A. The example-workspace cast (renames the default people) over the default world; its own agents, replies, models and settings.
+includes:
+  - ../default/world.yaml
+  - ../../../../worlds/example-workspace/cast.yaml
+sources:
+  wiki:
+    name: Workspace Wiki
+    vendor: confluence
+    url: "https://wiki.{{company.domain}}"
+vars:
+  new_project:
+    name: Workshop Planning
+    instructions: Answer from the Example Workspace planning notes and name the owner of each action.
+  upload:
+    planning_notes:
+      name: workshop-notes.txt
+      text: The workshop notes list the next review, who owns each action and the agreed dates.
+  new_agent:
+    name: Workshop Coordinator
+    description: Coordinates Example Workspace review meetings and tracks the agreed actions.
+    instructions: Summarize the shared workspace documents and list the next actions with their owners.
+    starter: What is on the agenda for the next workspace review?
+  personal:
+    name: Jordan
+    instructions: Keep answers short, plain and list the owners first.
+  new_document_set:
+    name: Workshop Notes
+    description: Example Workspace planning notes and workshop follow-ups.
+  new_skill:
+    name: workshop-recap
+    description: Turns Example Workspace workshop notes into a recap.
+    instructions: Summarize the workshop notes, then list each follow-up with its owner.
+  new_token:
+    name: workspace-token
+apps:
+  onyx:
+    sources:
+      wiki: {id: 5101, connector_id: 5201, credential_id: 5301}
+    mcp_servers:
+      docs:
+        name: Workspace Docs MCP
+        description: Read-only access to the Example Workspace documentation.
+        url: "https://docs.{{company.domain}}/mcp"
+        tools:
+          - {name: find_page, display_name: Find page, description: Find a documentation page by title.}
+          - {name: list_spaces, display_name: List spaces, description: List the documentation spaces.}
+    agents:
+      helper:
+        name: Planning Helper
+        description: Summarizes plans and next actions for the Example Workspace team.
+        sources: [knowledge]
+    replies:
+      planning:
+        question: What did the team agree for the next review?
+        match: next review
+        text: "{{people.member.name}} owns the next review and the owners are listed in the planning notes [1]."
+        regenerate:
+          - "{{people.member.name}} is preparing the next review; the owners are in the planning notes [1]."
+      status:
+        question: Where does the status update stand?
+        match: status update
+        text: "{{people.admin.name}} confirmed the decisions; the remaining actions are with {{teams.placeholder.name}} [1]."
+      overview:
+        question: Give me an overview of the plan and the status.
+        text: "{{people.member.name}} owns the next review [1] and {{people.admin.name}} confirmed the status decisions [2]."
+    llm_providers:
+      primary:
+        provider: openai
+        default: true
+        api_key_set: true
+        v5: {router_models: [standard, fast], routing: {enabled: false}}
+        models:
+          standard: {name: gpt-example-standard, display_name: Example Standard, default: true, max_input_tokens: 200000}
+          fast: {name: gpt-example-fast, display_name: Example Fast, default: [chat_naming], max_input_tokens: 200000}
+    settings:
+      onyx_craft_enabled: true
+      onyx_craft_available: true
+      auto_scroll: true
+      deep_research_enabled: true

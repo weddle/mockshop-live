@@ -1,0 +1,11 @@
+--- a/src/components/tools/ExpandableContentWrapper.tsx
++++ b/src/components/tools/ExpandableContentWrapper.tsx
+@@ -34,7 +34,7 @@
+   const downloadFile = () => {
+     const a = document.createElement("a");
+-    a.href = `api/chat/file/${fileDescriptor.id}`;
++    a.href = `/api/chat/file/${fileDescriptor.id}`;
+     a.download = fileDescriptor.name || "download.csv";
+     a.setAttribute("download", fileDescriptor.name || "download.csv");
+     document.body.appendChild(a);
+     a.click();

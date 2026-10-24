@@ -1,0 +1,66 @@
+apps:
+  onyx:
+    fixtures:
+      GET /me:
+        id: hc-admin1
+        email: alex.morgan@{{company.domain}}
+        is_active: true
+        is_superuser: true
+        is_verified: true
+        role: admin
+        account_type: STANDARD
+        is_admin: true
+        is_group_manager: false
+        password_configured: true
+        team_name: null
+        is_anonymous_user: false
+        is_cloud_superuser: false
+        tenant_info: null
+        effective_permissions:
+          - basic
+          - admin
+        admin_capabilities:
+          - admin
+        craft_enabled: false
+        preferences:
+          chosen_assistants: null
+          visible_assistants: []
+          hidden_assistants: []
+          pinned_assistants:
+            - 0
+            - 21
+            - 22
+          default_model: null
+          recent_assistants:
+            - 0
+            - 21
+          auto_scroll: false
+          shortcut_enabled: false
+          temperature_override_enabled: false
+          temperature_default: null
+          reasoning_effort_default: null
+          theme_preference: light
+          language: en
+          chat_background: null
+          default_app_mode: CHAT
+          paste_as_tile: true
+          voice_auto_send: false
+          voice_auto_playback: false
+          voice_playback_speed: 1
+        personalization:
+          name: Alex {{people.morgan.name}}
+          role: Healthcare IT Administrator
+          memories: []
+          use_memories: true
+          enable_memory_tool: true
+          user_preferences: ""
+        oidc_expiry: null
+    viewer: alex
+    people:
+      alex:
+        id: hc-admin1
+people:
+  alex:
+    name: Alex {{people.morgan.name}}
+    email: alex.morgan@riverbend-health.example
+    title: Healthcare IT Administrator

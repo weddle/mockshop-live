@@ -1,0 +1,27 @@
+apps:
+  onyx:
+    llm_providers:
+      onprem-gpu:
+        id: 3
+        name: On-prem GPU cluster
+        provider: ollama_chat
+        default: true
+        api_base: http://gpu-01.{{company.domain}}:11434
+        models:
+          llama3-3-70b:
+            name: llama3.3:70b
+            id: 21
+            display_name: Llama 3.3 70B
+            default: true
+            max_input_tokens: 128000
+          qwen3-32b:
+            name: qwen3:32b
+            id: 22
+            display_name: Qwen3 32B
+            default:
+              - chat_naming
+            max_input_tokens: 128000
+            reasoning_efforts:
+              - low
+              - medium
+              - high

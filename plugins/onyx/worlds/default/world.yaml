@@ -1,0 +1,57 @@
+# Default Onyx world: the neutral shared cast plus the smallest apps.onyx layer (viewer, replies, typed/uploaded values). It applies beneath EVERY
+# script's world, so it stays additive: no agents, providers or settings here (those would change legacy worlds). Worlds below keep these keys.
+includes:
+  - ../../../../worlds/default/cast.yaml
+vars:
+  new_project:
+    name: Quarterly Planning
+    instructions: Answer using the shared planning documents and name the owner of each action.
+  upload:
+    planning_notes:
+      name: planning-notes.txt
+      text: The planning notes list the next review, the owners and the agreed actions.
+  new_agent:
+    name: Review Coordinator
+    description: Coordinates review meetings and tracks the agreed actions.
+    instructions: Summarize the shared documents and list the next actions with their owners.
+    starter: What is on the agenda for the next review?
+  personal:
+    name: Taylor
+    instructions: Keep answers short and list owners first.
+  new_document_set:
+    name: Planning Documents
+    description: Shared planning notes and status updates.
+  new_skill:
+    name: review-notes
+    description: Turns review meeting notes into a short action list.
+    instructions: Summarize the notes, then list each action with its owner and due date.
+  new_token:
+    name: planning-token
+apps:
+  onyx:
+    viewer: admin
+    people:
+      admin: {role: admin}
+    replies:
+      planning:
+        question: What did the team agree for the next review?
+        match: next review
+        title: Next review
+        queries: [next review owners]
+        cites: [placeholder_one]
+        text: The shared planning notes list the next review and its owners [1].
+        regenerate:
+          - On the next review, the planning notes name the owners and the agreed actions [1].
+      status:
+        question: Where does the status update stand?
+        match: status update
+        title: Status update
+        queries: [status update decisions]
+        cites: [placeholder_two]
+        text: The status update records the decisions and the remaining actions [1].
+      overview:
+        question: Give me an overview of the plan and the status.
+        title: Plan overview
+        queries: [plan overview, status update]
+        cites: [placeholder_one, placeholder_two]
+        text: The planning notes set the next review [1] and the status update records the decisions [2].
